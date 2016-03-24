@@ -1591,7 +1591,7 @@ public: // msg map
 		Update();
 		return 0;
 	}
-	inline static CDIS2Status(DWORD cdis)
+	inline static DWORD CDIS2Status(DWORD cdis)
 	{
 		DWORD status = 0;
 		if(cdis & CDIS_FOCUS)		status |= FOCUSED;
