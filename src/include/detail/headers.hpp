@@ -62,7 +62,7 @@
 // intrinsic
 
 #include <windows.h>
-
+/*
 extern "C"
 {
    long  __cdecl _InterlockedIncrement(long volatile *Addend);
@@ -71,6 +71,7 @@ extern "C"
    long  __cdecl _InterlockedExchange(long* volatile Target, long Value);
    long  __cdecl _InterlockedExchangeAdd(long* volatile Addend, long Value);
 }
+*/
 
 #pragma intrinsic (_InterlockedCompareExchange)
 #define InterlockedCompareExchange _InterlockedCompareExchange
