@@ -4,6 +4,7 @@
 
 #include "mew.hpp"
 #pragma warning( disable : 4702 )
+#define _SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS
 #include <hash_map>
 #include <functional>
 #pragma warning( default : 4702 )
