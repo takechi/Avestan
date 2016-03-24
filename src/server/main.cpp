@@ -2105,16 +2105,16 @@ private:
 		switch(hr)
 		{
 		case ExposeTab:
-			FontDialog(m_form->Handle, m_fonts[FontTab], L"タブのフォント設定", function(this, OptionFont_Tab));
+			FontDialog(m_form->Handle, m_fonts[FontTab], L"タブのフォント設定", function(this, &Main::OptionFont_Tab));
 			break;
 		case ExposeAddress:
-			FontDialog(m_form->Handle, m_fonts[FontAddress], L"アドレスバーのフォント設定", function(this, OptionFont_Address));
+			FontDialog(m_form->Handle, m_fonts[FontAddress], L"アドレスバーのフォント設定", function(this, &Main::OptionFont_Address));
 			break;
 		case ExposeList:
-			FontDialog(m_form->Handle, m_fonts[FontList], L"ファイルリストのフォント設定", function(this, OptionFont_List));
+			FontDialog(m_form->Handle, m_fonts[FontList], L"ファイルリストのフォント設定", function(this, &Main::OptionFont_List));
 			break;
 		case ExposeStatus:
-			FontDialog(m_form->Handle, m_fonts[FontStatus], L"ステータスバーのフォント設定", function(this, OptionFont_Status));
+			FontDialog(m_form->Handle, m_fonts[FontStatus], L"ステータスバーのフォント設定", function(this, &Main::OptionFont_Status));
 			break;
 		default:
 			break;

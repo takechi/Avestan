@@ -35,14 +35,14 @@ void Main::InitCommands()
 
 	// System
 	CommandProcess(L"System.Exit"	, m_form, CommandClose);
-	CommandProcess(L"System.Restart", SystemRestart);
-	CommandProcess(L"System.About"	, SystemAbout);
+	CommandProcess(L"System.Restart", &Main::SystemRestart);
+	CommandProcess(L"System.About"	, &Main::SystemAbout);
 
 	// File
-	CommandProcess(L"Explorer.Clone"	, ExplorerImport, 0);
-	CommandProcess(L"Explorer.Import"	, ExplorerImport, 1);
-	CommandProcess(L"File.Open"			, FileOpen, 0);
-	CommandProcess(L"File.Load"			, FileLoad);
+	CommandProcess(L"Explorer.Clone"	, &Main::ExplorerImport, 0);
+	CommandProcess(L"Explorer.Import"	, &Main::ExplorerImport, 1);
+	CommandProcess(L"File.Open"			, &Main::FileOpen, 0);
+	CommandProcess(L"File.Load"			, &Main::FileLoad);
 	CommandHandler(L"File.Save"			, &Main::FileSave			, null, &Main::EnableIfAnyFolder, null);
 	CommandHandler(L"File.MRU"			, &Main::FileMRU			, null, &Main::ObserveMRU, null);
 	CommandHandler(L"RecycleBin.Empty"	, &Main::ProcessRecycleBin	, null, &Main::ObserveRecycleBin, null);
@@ -112,7 +112,7 @@ void Main::InitCommands()
 
 	CommandToFocus(L"Current.Undo"				, CommandUndo);
 
-	CommandProcess(L"Current.SyncFileDialog"	, ProcessSyncFileDialog);
+	CommandProcess(L"Current.SyncFileDialog"	, &Main::ProcessSyncFileDialog);
 
 	CommandHandler(L"Current.Paste"			, current, CommandPaste			, &Main::ObserveClipboard		, CF_SHELLIDLIST);
 	CommandHandler(L"Current.PasteTo"		, current, AVESTA_PasteTo		, &Main::ObserveClipToSelect	, CF_HDROP);
@@ -196,9 +196,9 @@ void Main::InitCommands()
 	}
 
 	// Form
-	CommandProcess(L"Form.Show(true)"	, WindowVisibleTrue);
+	CommandProcess(L"Form.Show(true)"	, &Main::WindowVisibleTrue);
 	CommandProcess(L"Form.Show(false)"	, m_form, CommandMinimize);
-	CommandProcess(L"Form.Show(toggle)"	, WindowVisibleToggle);
+	CommandProcess(L"Form.Show(toggle)"	, &Main::WindowVisibleToggle);
 	CommandProcess(L"Form.Maximize"		, m_form, CommandMaximize);
 	CommandProcess(L"Form.Restore"		, m_form, CommandRestore);
 	CommandProcess(L"Form.Resize"		, m_form, CommandResize);
@@ -247,9 +247,9 @@ void Main::InitCommands()
 	CommandProcess(L"Tree.CopyTo"		, m_tree, AVESTA_CopyTo);
 
 	// Option
-	CommandProcess(L"Option.Reload"			, OptionReload);
-	CommandProcess(L"Option.Font"			, OptionFont);
-	CommandProcess(L"FolderOptions.Show"	, ProcessFolderOptionsShow);
+	CommandProcess(L"Option.Reload"			, &Main::OptionReload);
+	CommandProcess(L"Option.Font"			, &Main::OptionFont);
+	CommandProcess(L"FolderOptions.Show"	, &Main::ProcessFolderOptionsShow);
 
 	CommandHandler(L"Option.Thumbnail.64"	, &Main::ProcessThumbSize, 64 , &Main::ObserveThumbSize, 64 );
 	CommandHandler(L"Option.Thumbnail.96"	, &Main::ProcessThumbSize, 96 , &Main::ObserveThumbSize, 96 );

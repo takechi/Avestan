@@ -113,7 +113,7 @@ public: // SetHandler and Observer
 	}
 	void DisableCommand(const string& command)
 	{
-		CommandObserve(command, DisableCommandHandler);
+		CommandObserve(command, &Main::DisableCommandHandler);
 	}
 	HRESULT DisableCommandHandler(message msg)
 	{

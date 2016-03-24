@@ -108,7 +108,7 @@ public:
 	{
 		bHandled = false;
 		CenterWindow();
-		for_all(m_targets, mem_fun(this, AddToCombo));
+		for_all(m_targets, mem_fun(this, &WallPaperDialog::AddToCombo));
 		m_LastSel = 0;
 		SendDlgItemMessage(IDC_WALL_TARGET, CB_SETCURSEL, 0, 0);
 		UpdateControls();
