@@ -299,7 +299,7 @@ namespace mew
 		struct Union
 		{
 			///	TLhsの末尾にTRhsを連結し、重複を取り除く.
-			typedef typename NoDuplicates<typename Fold<TLhs, TRhs, Append>::Result>::Result;
+			typedef typename NoDuplicates<typename Fold<TLhs, TRhs, Append>::Result>::Result Result;
 		};
 
 		//排他的和集合
