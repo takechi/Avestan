@@ -100,7 +100,7 @@
       <DebugInformationFormat />
     </ClCompile>
     <Link>
-      <OutputFile>$(OutDir)avesta.exe</OutputFile>
+      <OutputFile>$(OutDir)client.exe</OutputFile>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
