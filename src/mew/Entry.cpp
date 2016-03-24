@@ -411,9 +411,9 @@ public:
 		{
 			ITEMIDLIST* pidl = null;
 			Stream stream(__uuidof(io::Reader), arg);
-			HRESULT hr = ILLoadFromStream(stream, &pidl);
-			if FAILED(hr)
-				throw IOError(_T("シリアライズから復元できません"), hr);
+			//HRESULT hr = ILLoadFromStream(stream, &pidl);
+			//if FAILED(hr)
+			//	throw IOError(_T("シリアライズから復元できません"), hr);
 			ASSERT(pidl);
 			return Entry::NewEntry(pidl);
 		}
