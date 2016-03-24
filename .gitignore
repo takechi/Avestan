@@ -234,3 +234,11 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+
+
+
+bin/
+debug/
+var/config.xml
+var/settings.dat
+var/default.ave
