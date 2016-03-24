@@ -314,7 +314,7 @@ namespace WTLEX
 		}
 		WTL::CImageList SetImageList(IImageList* pImageList, int what = TVSIL_NORMAL)
 		{
-			if(ref<IImageList2> image2 = cast(pImageList))
+			if(ref<mew::drawing::IImageList2> image2 = cast(pImageList))
 				return __super::SetImageList(image2->Normal, what);
 			else
 				return __super::SetImageList((HIMAGELIST)pImageList, what);
