@@ -868,7 +868,7 @@ namespace
 		void set_ImageList(IImageList* value)
 		{
 			SetMenuImageList(value);
-			if(ref<IImageList2> imagelist2 = cast(value))
+			if(ref<mew::drawing::IImageList2> imagelist2 = cast(value))
 			{
 				if(HIMAGELIST hDisabled = imagelist2->Disabled)
 					SetDisabledImageList(hDisabled);

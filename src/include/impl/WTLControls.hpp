@@ -812,7 +812,7 @@ namespace WTLEX
 		}
 		WTL::CImageList SetImageList(IImageList* pImageList, int index = 0)
 		{
-			if(ref<IImageList2> image2 = cast(pImageList))
+			if(ref<mew::drawing::IImageList2> image2 = cast(pImageList))
 				return SetImageList(image2->Normal, index);
 			else
 				return SetImageList((HIMAGELIST)pImageList, index);
