@@ -56,7 +56,7 @@ public:
 	class Invoker : public Root< implements<IMessage, ISerializable> >
 	{
 	private:
-		ref<Messenger>		m_msgr;
+		Messenger *		m_msgr;
 		const range_type	m_range;
 		message				m_orig, m_args;
 

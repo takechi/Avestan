@@ -35,7 +35,7 @@ private:
 	class ShellStream : public Root< implements<IStream, ISequentialStream>, mixin<io::StreamImpl, DynamicLife> >
 	{
 	public:
-		ref<ShellStorage>	m_owner;
+		ShellStorage *	m_owner;
 		const string		m_key;
 		const bool			m_writable;
 		Buffer&				m_buffer;

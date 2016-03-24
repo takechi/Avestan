@@ -205,7 +205,7 @@ private:
 	class EnumFORMATETC : public Root< implements<IEnumFORMATETC> >
 	{
 	private:
-		ref<DragSource>	m_owner;
+		DragSource *	m_owner;
 		size_t			m_iter;
 
 	public:

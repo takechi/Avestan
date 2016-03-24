@@ -25,7 +25,7 @@ private:
 	class EnumVariant : public Root< implements<IEnumVariant> >
 	{
 	private:
-		ref<Message>	m_owner;
+		Message *	m_owner;
 		VariantMap::const_iterator m_iter;
 	public:
 		EnumVariant(Message* owner) : m_owner(owner)
