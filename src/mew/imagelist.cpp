@@ -37,7 +37,7 @@ namespace
 	}
 }
 
-class ImageList : public Root< implements<IImageList2, IImageList> >
+class ImageList : public Root< implements< mew::drawing::IImageList2, IImageList> >
 {
 private:
 	WTL::CImageList	m_normal;
