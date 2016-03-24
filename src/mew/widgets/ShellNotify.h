@@ -1,11 +1,6 @@
 // ShellNotify.h
 #pragma once
 
-const int SHCNRF_InterruptLevel		= 0x0001;
-const int SHCNRF_ShellLevel			= 0x0002;
-const int SHCNRF_RecursiveInterrupt	= 0x1000;	/* Must be combined with SHCNRF_InterruptLevel */
-const int SHCNRF_NewDelivery		= 0x8000;	/* Messages use shared memory */
- 
 class SHNotifyBase
 {
 protected:
