@@ -32,7 +32,7 @@ private:
 	};
 	typedef io::StorageT<string, Value>	Storage;
 
-	class ShellStream : public Root< implements<IStream, ISequentialStream>, mixin<io::StreamImpl, DynamicLife> >
+	class ShellStream : public Root< implements<IStream, ISequentialStream>, mixin<io::StreamImpl, mew::DynamicLife> >
 	{
 	public:
 		ShellStorage *	m_owner;
