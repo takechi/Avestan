@@ -54,8 +54,8 @@ namespace mew
 		Union		m_var;		///< データバッファ.
 
 	private:
-		template < typename T, bool isPOD > struct Get_; friend struct Get_;
-		template < typename T, bool isPOD > struct Set_; friend struct Set_;
+		template < typename T, bool isPOD > struct Get_; //friend struct Get_;
+		template < typename T, bool isPOD > struct Set_; //friend struct Set_;
 		template < typename T > struct Get_<T, true>
 		{
 			enum { Code = VariantType<T>::Code };
