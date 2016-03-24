@@ -167,7 +167,7 @@ namespace mew
 	public:
 		FunctionFactory()
 		{
-			mew::RegisterFactory(__uuidof(T), &fnCreateInstance);
+			mew::RegisterFactory(__uuidof(T), fnCreateInstance);
 		}
 	};
 

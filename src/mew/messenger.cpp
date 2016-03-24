@@ -110,9 +110,9 @@ public:
 			};
 			struct InvokeLock
 			{
-				ref<Messenger>&	m_msgr;
+				Messenger *	m_msgr;
 				message&		m_msg;
-				InvokeLock(ref<Messenger>& msgr, message& msgref, const message& msg) : m_msgr(msgr), m_msg(msgref)
+				InvokeLock(Messenger * msgr, message& msgref, const message& msg) : m_msgr(msgr), m_msg(msgref)
 				{
 					ASSERT(m_msgr);
 					m_msgr->BeginInvoke();
