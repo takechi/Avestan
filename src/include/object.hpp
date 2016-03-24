@@ -127,7 +127,7 @@ namespace mew
 	};
 
 	template < typename TImplements, typename TMixin = mixin<DynamicLife> >
-	class __declspec(novtable) Root : public detail::Object1<Void, TImplements, TMixin>::Result
+	class __declspec(novtable) Root : public detail::Object1<meta::Void, TImplements, TMixin>::Result
 	{
 	};
 
