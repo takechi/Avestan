@@ -358,7 +358,7 @@ namespace
 	};
 }
 
-extern "C"__declspec(dllexport) void APIENTRY initpygmy()
+extern "C" __declspec(dllexport) void APIENTRY initpygmy()
 {
 	pygmy::Module module("pygmy", pygmy_functions, "Avesta extension");
 	//
