@@ -92,7 +92,7 @@ public:
 		{
 			m_orig.clear();
 			m_args.clear();
-			m_msgr.clear();
+			//m_msgr.clear();
 		}
 		HRESULT Send(message msg)
 		{
