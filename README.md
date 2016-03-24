@@ -7,7 +7,7 @@ a fork of Avesta ( http://lamoo.s53.xrea.com/ )
 
 ## ビルドに必要なもの
 * Visual Studio Community 2015
-  * VS Express だと、ATL がないので（そのままでは）ビルドできない
+  * VS Express だと、ATL がないので（そのままでは）ビルドできない。
 * MSXML 4.0
 * Python 3.5 (32bit)
 
