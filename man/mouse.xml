@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="Shift_JIS" ?>
+<?xml-stylesheet type="text/xsl" href="mouse.xsl"?>
+
+<structure>
+	<case name="フォルダにフォーカスがある場合">
+		<widget name="ウィンドウ" file="../usr/mouse-form.xml"  />
+		<widget name="フォルダ"   file="../usr/mouse-folder.xml" />
+	</case>
+	<case name="ツリーにフォーカスがある場合">
+		<widget name="ウィンドウ" file="../usr/mouse-form.xml" />
+		<widget name="ツリー"     file="../usr/mouse-tree.xml"  />
+	</case>
+</structure>

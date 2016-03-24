@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="Shift_JIS" ?>
+<?xml-stylesheet type="text/xsl" href="keyboard.xsl"?>
+
+<!-- modifier := C(control), S(shift), A(alt), W(windows) -->
+
+<!--
+	ウィンドウを開く or 移動系 のコマンドにおいて、
+	修飾キーに Control または Shift が組み合わされている場合は、
+	それぞれ「別ウィンドウで開く」「非表示で開く」の動作が追加されます。
+	例えば、Control+Backspace の場合、
+	「一つ上のフォルダを、別ウィンドウで開く」という動作になります。
+-->
+
+<keyboard name="tree">
+	<bind modifier=""  key="esc"    command="Tab.Focus"/>
+	<bind modifier=""  key="tab"    command="Tab.Focus"/>
+	<bind modifier=""  key="F2"     command="Tree.Rename"/>
+	<bind modifier=""  key="delete" command="Tree.Delete"/>
+	<bind modifier="S" key="delete" command="Tree.Bury"/>
+	<bind modifier="A" key="return" command="Tree.Property"/>
+
+<!-- A -->
+<!-- B -->
+<!-- C -->
+	<bind modifier="C"  key="C" command="Tree.Copy"/>
+	<bind modifier="S"  key="C" command="Tree.CopyTo"/>
+	<bind modifier="CA" key="C" command="Tree.Copy.Path"/>
+	<bind modifier="CS" key="C" command="Tree.Copy.Name"/>
+	<bind modifier="SA" key="C" command="Tree.Copy.Base"/>
+<!-- D -->
+	<bind modifier="C"  key="D" command="Tree.Delete"/>
+	<bind modifier="CS" key="D" command="Tree.Bury"/>
+<!-- E -->
+	<bind modifier="C"  key="E" command="Tree.Rename"/>
+<!-- F -->
+<!-- G -->
+<!-- H -->
+<!-- I -->
+<!-- J -->
+<!-- K -->
+<!-- L -->
+<!-- M -->
+<!-- N -->
+<!-- O -->
+<!-- P -->
+<!-- Q -->
+<!-- R -->
+	<bind modifier="C"  key="R" command="Tree.Refresh"/>
+<!-- S -->
+<!-- T -->
+	<bind modifier="C"  key="T" command="Tab.Focus"/>
+<!-- U: duplicate -->
+	<bind modifier="C"  key="U" command="Tree.Copy.Here"/>
+<!-- V: paste -->
+	<bind modifier="C"  key="V" command="Tree.Paste"/>
+<!-- W: close -->
+<!-- X: cut/move -->
+	<bind modifier="C"  key="X" command="Tree.Cut"/>
+	<bind modifier="S"  key="X" command="Tree.MoveTo"/>
+<!-- Y -->
+<!-- Z -->
+</keyboard>

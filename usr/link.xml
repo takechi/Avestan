@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+
+<!--
+  拡張リンクバーを有効にする場合は、このファイルを link.xml という名前に変更してください。
+  link.xml がある場合は link フォルダ内のショートカット よりも優先されます。
+  拡張リンクバーでは、
+    - 項目の並び順の設定
+    - 項目ごとに「展開深さ」「ファイルを含むか否か」を指定
+    - 入れ子メニュー
+  が可能です。
+  -->
+
+<!--
+  @path:
+      フォルダまたはファイルへの絶対パス。環境変数を含むことができます。
+      指定がない場合は、コマンドを持たない中間メニューになります。
+      認識できる形式は以下の種類があります。
+      また、パスの検索時にアルファベットの大文字小文字は区別しません。
+        - フルパス または ネットワークパス  (例：C:\hoge)
+        - 特殊フォルダGUID (例：::{450D8FBA-AD25-11D0-98A8-0800361B1103} …… マイドキュメント)
+        - CSIDL_* 列挙から、prefix CSIDL_ を取り除いた文字列
+          詳しくは、MSDNのCSIDLの項を参照してください。http://msdn.microsoft.com/library/en-us/shellcc/platform/shell/reference/enums/csidl.asp
+          また、CSIDL_* には含まれていないエイリアスも幾つか追加してあります。
+          よく使われるであろう特殊フォルダを例として挙げます。
+  
+          | デスクトップ       | DESKTOP (仮想フォルダ), DESKTOPDIRECTORY (実フォルダ)
+          | マイコンピュータ   | DRIVES
+          | マイドキュメント   | HOME, MYDOCUMENTS (仮想フォルダ), PERSONAL (実フォルダ)
+          | マイ○○○         | MYMUSIC, MYPICTURES, MYVIDEO
+          | プロフィール       | PROFILE (C:\Documents and Settings\<username>)
+          | コントロールパネル | CONTROLS, CONTROLPANEL
+          | ごみ箱             | BITBUCKET, RECYCLEBIN, TRASH
+          | プログラムファイル | PROGRAM_FILES (C:\Program Files)
+          | システムフォルダ   | SYSTEM (C:\Windows\System32)
+          | Windowsフォルダ    | WINDOWS (C:\Windows)
+
+  @depth:
+      これ以下のフォルダ階層のうち、何段目までを展開するかを指定します。
+      特に "0" の場合は、ドロップダウンではなく単純なボタンになります。
+      指定が無い場合は、無制限に展開されます。
+  
+  @include-files:
+      ファイルを含むか否かを設定します。指定が無い場合は含みません。
+      - ファイルを含む    : true, yes, 0以外の数値
+      - ファイルを含まない: false, no, 0
+
+  メニューの入れ子について:
+      フォルダメニューが入れ子のメニューを持っている場合、
+      まず入れ子メニューが並び、その下にフォルダの内容が並びます。
+  
+  現状での制限:
+      - コマンド系とパス系の項目を混在させることはできません。
+        リンクバーにはパス系の項目だけを使用できます。
+        同様に、メニューバー、ツールバーにはコマンド系の項目だけを使用できます。
+      - アイコンは、リンク先のパスのものが使用されます。
+        個別に設定することはできません。
+  -->
+
+<menu>
+  <menu text="My _Computer" path="DRIVES" depth="0">
+    <menu text="_1: マイ ドキュメント" path="MYDOCUMENTS" depth="0"/>
+    <menu text="_2: マイ ミュージック" path="MYMUSIC"     depth="0"/>
+    <menu text="_3: マイ ピクチャ"     path="MYPICTURES"  depth="0"/>
+    <menu text="_4: マイ ビデオ"       path="MYVIDEO"     depth="0"/>
+    <menu text="_5: ゴミ箱"            path="RECYCLEBIN"  depth="0"/>
+    <menu/>
+    <menu text="_C:" path="C:" depth="0"/>
+  </menu>
+  <menu text="My _Documents" path="MYDOCUMENTS" include-files="true"/>
+  <menu text="_Applications">
+    <!--
+      アーカイブX が導入されている環境以外では、.exe などのフォルダでない項目に
+      depthを設定する必要はありません。（子供を持たないメニューになります。）
+      -->
+    <menu text="メモ帳(_M)"   path="WINDOWS\notepad.exe" depth="0"/>
+    <menu text="ペイント(_P)" path="SYSTEM\mspaint.exe"  depth="0"/>
+    <menu text="電卓(_C)"     path="SYSTEM\calc.exe"     depth="0"/>
+  </menu>
+</menu>

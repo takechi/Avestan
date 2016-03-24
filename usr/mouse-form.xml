@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+
+<!--
+  bug v0.3.0.0 : ジェスチャ中のメッセージがステータスバーに表示されません。
+  -->
+
+<mouse name="frame">
+</mouse>

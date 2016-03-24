@@ -1,0 +1,572 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<log-table>
+	<log version="0.3.1.9">
+		<entry><type>bugfix</type><description>アイコン用画像がbmp形式の場合に発生しうるバグの修正。（※標準添付はpng形式）</description></entry>
+		<entry><type>bugfix</type><description>表示設定用の保存ファイルにゴミが混じる可能性があったバグの修正。（※ゴミを読み飛ばすようなので、実質問題にはならなかった）</description></entry>
+		<entry><type>bugfix</type><description>マニュアル類を更新。</description></entry>
+	</log>
+	<log version="0.3.1.8">
+		<entry><type>bugfix</type><description>アルファ付きアイコンが正しく描画されないバグ<forum id="740"/>を駆除。</description></entry>
+		<entry><type>bugfix</type><description>フォント変更時にMigemizeExplorerが正常に動作しないバグ<forum id="722"/>を駆除。(by s2 氏)</description></entry>
+		<entry><type>bugfix</type><description>パターンマスクが解除できないバグ<forum id="782"/>を駆除。</description></entry>
+		<entry><type>bugfix</type><description>ドロップモード移行時のタスクバーの点滅を抑制。</description></entry>
+	</log>
+	<log version="0.3.1.7">
+		<entry><type>new</type><description>フォルダの表示設定ごとにアイコンサイズを変更できるようにした。<forum id="768"/> profie.ini [Style] Folder* を参照。</description></entry>
+		<entry><type>refine</type><description>ロックしたタブを閉じないようにする設定を追加。<forum id="728"/></description></entry>
+		<entry><type>refine</type><description>ドロップモードの動作の改良。位置の記憶、最小化状態からのドロップモード化など。</description></entry>
+		<entry><type>bugfix</type><description>フォルダの表示設定がリセットされるバグ<forum id="614"/>を駆除。これに伴い profile.ini {Misc] CompoundSettings を削除。</description></entry>
+	</log>
+	<log version="0.3.1.6">
+		<entry><type>new</type><description>Form.DropModeを復活。グローバルキーマップ として Win+Z を割り当て。<forum id="755"/></description></entry>
+		<entry><type>refine</type><description>Current.SyncFileDialog の成功率を高めたつもり。グローバルキーマップ として Win+S を割り当て。</description></entry>
+		<entry><type>bugfix</type><description>callback.py ExecuteVerb() の folder 引数が正しくないバグを修正。<forum id="762"/> (by SS氏)</description></entry>
+	</log>
+	<log version="0.3.1.5">
+		<entry><type>bugfix</type><description>GDIリソースリークを修正。<forum id="742"/> (by SS氏)</description></entry>
+		<entry><type>bugfix</type><description>オプション＞ファイルリスト＞フォルダの中へペーストする のデフォルト値をOFFに変更 <forum id="738"/></description></entry>
+	</log>
+	<log version="0.3.1.4">
+		<entry><type>refine</type><description>「表示マスクの設定」「パターンを指定して選択」にて、大文字小文字を区別しないようになった。また、「; (セミコロン)」で複数のパターンを指定可能になった。<forum id="712"/> (by zark氏)</description></entry>
+		<entry><type>bugfix</type><description>Windows XP (SP無し) での動作を改善。<forum id="706"/> （※ただ、セキュリティのためにも、SPの適用をお勧めします）</description></entry>
+		<entry><type>bugfix</type><description>フォルダを重複して開かない設定時に、重複して開いている作業状態を復元すると、重複がまとめられてしまうバグを修正。</description></entry>
+	</log>
+	<log version="0.3.1.3">
+		<entry><type>refine</type><description>一時しのぎとして、profile.ini [Misc] CompoundSettings にて、フォルダの設定を一つの複合ファイルに格納するか、別々に格納するか(0.2.6以前の動作)を指定できるようにした。 複合ファイルのほうが効率はよいが、設定がリセットされるバグが残っている。</description></entry>
+		<entry><type>bugfix</type><description>拡張子の関連付け実行が正しく行われないバグを修正。<forum id="673"/></description></entry>
+	</log>
+	<log version="0.3.1.2">
+		<entry><type>new</type><description>オプション追加 -- LoopCursor : 選択カーソルを端でループさせます <forum id="618"/></description></entry>
+		<entry><type>bugfix</type><description>起動時にタブを一つの開かない場合、キャプションが空になるバグを修正。</description></entry>
+	</log>
+	<log version="0.3.1.1">
+		<entry><type>bugfix</type><description>バーの固定時に非表示のバーを表示してしまうバグを修正 (enbug at 0.3.1.0)</description></entry>
+		<entry><type>bugfix</type><description>圧縮書庫を関連付けを考慮せずにフォルダとして扱ってしまったバグを修正 (enbug at 0.3.1.0)</description></entry>
+		<entry><type>bugfix</type><description>Tab.Sortのソート順序が間違っていたバグを修正 <forum id="627"/></description></entry>
+	</log>
+	<log version="0.3.1.0">
+		<entry><type>new</type><description>作業状態として表示マスクの設定が保存されるようになった。(by zark 氏)</description></entry>
+		<entry><type>bugfix</type><description>ReBarを固定した場合に左端に隙間が残るバグを修正。</description></entry>
+		<entry><type>bugfix</type><description>表示状態の更新が遅延するバグを修正。（WM_UPDATEUISTATEの扱いが原因）</description></entry>
+		<entry><type>bugfix</type><description>Form.DropModeを削除。意味づけが難しくなったため。</description></entry>
+		<entry><type>bugfix</type><description>CIDAのリークを修正。</description></entry>
+	</log>
+	<log version="0.3.0.0">
+		<entry><type>new</type><description>ウィンドウ・コンポーネントをカスタマイズできるようになった。usr/form.xml で指定する。</description></entry>
+		<entry><type>new</type><description>ツリーでマウスジェスチャが使えるようになった。ただし、ステータスバーへのジェスチャメッセージの表示は未実装。</description></entry>
+		<entry><type>new</type><description>「ファイルの新規作成」で、拡張子ごとにテンプレートを適用できるようになった。まずShellNewを参照し、登録されていなければTEMPLATESフォルダの中の同じ拡張子のファイルを捜す。</description></entry>
+		<entry><type>new</type><description>フォルダの表示状態は、一つのファイル var/settings.dat に保存するようになった。以前のバージョンの表示設定は全て初期化されるので注意。</description></entry>
+		<entry><type>new</type><description>MRUリストの状態を保存するようにした。</description></entry>
+		<entry><type>new</type><description>“Window”, “Frame” と呼んでいたものを、全て“Form”で統一した。ただし、コマンド名についてはエイリアスを残してある。Keyboard-form.xml のファイル名変更に注意。</description></entry>
+		<entry><type>new</type><description>Option.OpenNotify を追加。フォルダを新しく開いた際に分かりやすく通知する……つもりだったが、微妙。</description></entry>
+		<entry><type>refine</type><description>コマンド：Current.Go.Home を削除。代わりに navigate=HOME を使うこと。</description></entry>
+		<entry><type>refine</type><description>profile.ini で指定していた幾つかのオプションは、usr/form.xml に移った。</description></entry>
+		<entry><type>bugfix</type><description>作業状態の保存で、自動的に拡張子 .ave をつけるようにした。</description></entry>
+		<entry><type>bugfix</type><description>ナビゲート時のサウンドファイルが見つからない場合は、音を鳴らさないようにした。</description></entry>
+		<entry><type>bugfix</type><description>デスクトップを開いた場合に、アドレスバーに実パスが表示される不具合を修正。</description></entry>
+		<entry><type>internal</type><description>コンパイラの最適化オプションを変更。/OPT:NOWIN98 /G7</description></entry>
+	</log>
+	<log version="0.2.6.0">
+		<entry><type>bugfix</type><description>アイコン設定「未登録ドキュメント」「デフォルトEXE」「FDD」に対応したつもり。</description></entry>
+		<entry><type>bugfix</type><description>デスクトップ（仮想）に新規ドキュメントが作成できないバグを駆除。</description></entry>
+		<entry><type>bugfix</type><description>再起動コマンドによりアイコンの変更が反映されるようにしたつもり。</description></entry>
+		<entry><type>bugfix</type><description>デフォルトのpythonスクリプトを修正。</description></entry>
+	</log>
+	<log version="0.2.5.5">
+		<entry><type>refine</type><description>画像プレビューのキャプションに、現在の表示の拡大率を付け足した。</description></entry>
+		<entry><type>bugfix</type><description>エクスプローラ用のアイコン設定が反映の際に、適切なサイズのものを使うようになった。</description></entry>
+		<entry><type>bugfix</type><description>たまに勝手にデスクトップに移動するバグを駆除。</description></entry>
+	</log>
+	<log version="0.2.5.4">
+		<entry><type>new</type><description>キー入力エミュレーションコマンド Current.Key.* を追加。Up, Down, Left, Right, PageUp, PageDown, Space, Enter</description></entry>
+		<entry><type>refine</type><description>エクスプローラ用のアイコン設定が反映されるようになった。</description></entry>
+		<entry><type>internal</type><description>Python 2.4.1 での動作を確認。（特に問題なし）</description></entry>
+	</log>
+	<log version="0.2.5.3">
+		<entry><type>refine</type><description>起動時に開くフォルダが無い場合でも、ホームを開かないようにした。</description></entry>
+		<entry><type>bugfix</type><description>フォーカスの切り替えがうまくいかないことがある不具合を修正したつもり。</description></entry>
+	</log>
+	<log version="0.2.5.2">
+		<entry><type>bugfix</type><description>アルファ付き32ビットアイコンに対応したつもり。</description></entry>
+		<entry><type>bugfix</type><description>メインウィンドウを最小化しても、プレビューウィンドウが隠れない不具合を修正。</description></entry>
+		<entry><type>bugfix</type><description>フォルダを移動／開く場合の修飾キーの不具合を修正。</description></entry>
+		<entry><type>bugfix</type><description>タブ部分での左右同時クリックなど時のタブが勝手に追加される不具合を修正。</description></entry>
+	</log>
+	<log version="0.2.5.1">
+		<entry><type>new</type><description>「ついでにコピー機能」を追加(AutoCopy.*)。ファイルをクリップボードへコピーする際、パスなどをテキストとして追加する。</description></entry>
+		<entry><type>new</type><description>ファイルダイアログを同期させる(Current.SyncFileDialog)を追加。他のアプリケーションのダイアログが指すパスを変更する。</description></entry>
+		<entry><type>bugfix</type><description>パスなどをコピーする際、一番最後には改行をつけないようにした。</description></entry>
+		<entry><type>bugfix</type><description>起動したままWindowsをシャットダウンすると設定が保存されないバグを修正したつもり。</description></entry>
+	</log>
+	<log version="0.2.5.0">
+		<entry><type>new</type><description>システムの再起動(System.Restart)を追加。</description></entry>
+		<entry><type>new</type><description>ホットアップデート機能を追加。“avesta.dll”を実行すると、DLLを置き換える。</description></entry>
+		<entry><type>new</type><description>pygmy.dll にExecute(path, args)を追加。</description></entry>
+		<entry><type>refine</type><description>callback.py#NavigateVerb()にて、ダブルクリックと右クリックメニューの「移動」を区別できるようになった。</description></entry>
+		<entry><type>bugfix</type><description>callback.py#NavigateVerb()がCANCELを返した場合の不具合を修正。</description></entry>
+		<entry><type>bugfix</type><description>タブ切り替え時のちらつきを低減。</description></entry>
+	</log>
+	<log version="0.2.4.16">
+		<entry><type>new</type><description>アイテム上での中クリックした際、そのアイテム以外は開かない設定ができるようになった(MiddleClick.SingleExecute)。</description></entry>
+		<entry><type>refine</type><description>プレビューの改良。（右クリックメニュー, ショートカットへの対応）</description></entry>
+		<entry><type>bugfix</type><description>一覧表示の際のアイテムのクリック判定が間違っていたバグを修正。</description></entry>
+	</log>
+	<log version="0.2.4.15">
+		<entry><type>new</type><description>邪魔しないファイル進捗表示を追加(Option.QuietProgress)。動作についてはご意見募集。</description></entry>
+		<entry><type>new</type><description>タブ区別機能の有効無効設定を追加(Option.DistinguishTab)。</description></entry>
+		<entry><type>bugfix</type><description>executeコマンドのパス解決方法の不具合を修正。ついでにAvesta自身を呼び出す場合の動作を最適化。</description></entry>
+		<entry><type>bugfix</type><description>設定ファイルをリロードした際、ツールバーのツールチップが更新されないバグを修正。</description></entry>
+		<entry><type>bugfix</type><description>「パスを指定して開く」ダイアログでの不具合を幾つか修正。</description></entry>
+	</log>
+	<log version="0.2.4.14">
+		<entry><type>new</type><description>ワイルドカードを指定して、表示をフィルタリングできるようになった。コマンド：Current.PatternMask</description></entry>
+		<entry><type>refine</type><description>複数選択時のプレビューの挙動を改善。（ドラッグ選択時の挙動に改善の余地あり）</description></entry>
+		<entry><type>bugfix</type><description>各種外部アプリケーションを実行する際、パスがスペースを含まない場合はクォートで囲まないようにした。一部アプリケーションとの相性問題を回避するため。</description></entry>
+	</log>
+	<log version="0.2.4.13">
+		<entry><type>refine</type><description>リンクバーにショートカットを登録した場合の動作を改善。</description></entry>
+		<entry><type>refine</type><description>異なるパスにEXEを配置した場合のみ、複数起動できるようにした。ただし、グローバルキーマップの動作に制限がある。</description></entry>
+		<entry><type>bugfix</type><description>システムプロパティを変更後、フォントサイズがおかしくなるバグを修正したつもり。</description></entry>
+		<entry><type>bugfix</type><description>画面からはみ出した際の引き戻しを簡略化した。プライマリモニタの解像度が変更された場合のみ、ウィンドウ位置をリセットする。</description></entry>
+	</log>
+	<log version="0.2.4.12">
+		<entry><type>refine</type><description>GUIでフォント指定を行えるようにした。タブ、アドレスバーに加え、ファイルリストとステータスバーのフォントも指定可能。</description></entry>
+		<entry><type>bugfix</type><description>ステータスバーにファイルの詳細が表示されなくなっていたバグを修正。</description></entry>
+	</log>
+	<log version="0.2.4.11">
+		<entry><type>new</type><description>タブとアドレスバーのフォントを指定できるようにした。これに伴い、profile.ini の構成を変更したので注意。</description></entry>
+		<entry><type>bugfix</type><description>プレビューが表示された際に更新されないバグを修正。</description></entry>
+		<entry><type>bugfix</type><description>バージョン情報ダイアログのバグを修正。</description></entry>
+	</log>
+	<log version="0.2.4.10">
+		<entry><type>bugfix</type><description>Alt+Spaceのシステムメニューと、Alt+Enterでプロパティの処理がおかしかったバグを無理やり修正。この副産物として、Current.Menu, Window.Menu コマンドを追加。</description></entry>
+	</log>
+	<log version="0.2.4.9">
+		<entry><type>new</type><description>URL抽出ツール(opt/ExtractURL)を追加。</description></entry>
+		<entry><type>refine</type><description>リンクバー、ツリーを中クリックした場合にも、アイテム上での中クリック(MiddleClick.*)と同じ動作が適用されるようになった。</description></entry>
+	</log>
+	<log version="0.2.4.8">
+		<entry><type>new</type><description>アイテム上での中クリックでフォルダを開けるようになった。オプション＞中クリック(MiddleClick.*)を参照。ジェスチャよりも優先される。</description></entry>
+		<entry><type>refine</type><description>作業状態の復元(*.ave)は、ロック状態も復元するようにした。</description></entry>
+		<entry><type>refine</type><description>Shift=switch は不人気なようなので、reserveに戻した。</description></entry>
+		<entry><type>bugfix</type><description>左クリック始動のマウスジェスチャのバグを修正。</description></entry>
+		<entry><type>internal</type><description>WTLを最新版へ更新。7.5 (build 5002) 2005-01-02 版</description></entry>
+		<entry><type>internal</type><description>使用していない内部処理を削除＆処理方式の変更。多少は軽くなったような？</description></entry>
+	</log>
+	<log version="0.2.4.7">
+		<entry><type>refine</type><description>ツールバー固定オプションを復活。背景コンテキストメニューの項目を削除。</description></entry>
+		<entry><type>bugfix</type><description>システムメニュー(sysmenu.xml)が上下反転していたバグを修正。</description></entry>
+		<entry><type>bugfix</type><description>右ドラッグ＆ドロップから開こうとした際のリソースリークを修正。</description></entry>
+		<entry><type>internal</type><description>.NET Framework 1.1用のmanagedコードとしてコンパイルする設定を追加。現状では利点なし。実行ファイルが馬鹿でかくなるデメリットのみ。</description></entry>
+	</log>
+	<log version="0.2.4.6">
+		<entry><type>new</type><description>ドロップ用モード(Window.DropMode)を追加。リンクバーとタブを残して縮小し、最前面に表示。グローバルホットキーWin+S</description></entry>
+		<entry><type>new</type><description>キーバインドにポップアップメニューを設定可能になった。2ストローク・キーバインドもどきとして。</description></entry>
+		<entry><type>bugfix</type><description>マウスジェスチャ時のステータスバーテキストの不具合を修正。</description></entry>
+	</log>
+	<log version="0.2.4.5">
+		<entry><type>new</type><description>カーソルキーエミュレートコマンド Current.Cursor.XXX を追加。</description></entry>
+		<entry><type>refine</type><description>リストビューへの上下カーソル移動は、先頭・最後をループさせるようにした。</description></entry>
+		<entry><type>refine</type><description>プレビューの排他制御、キー操作、マウス操作などを手直し。keyboard-preview を追加。</description></entry>
+		<entry><type>internal</type><description>最適化を/O1（サイズ優先）に変更してみた。</description></entry>
+		<entry><type>bugfix</type><description>フォーカスが正しく移動しないバグを修正したつもり。</description></entry>
+	</log>
+	<log version="0.2.4.4">
+		<entry><type>refine</type><description>プレビューの読み込みをマルチスレッド化。テキストのプレビュー。</description></entry>
+	</log>
+	<log version="0.2.4.3">
+		<entry><type>new</type><description>Current.SelectPattern : ワイルドカードを指定してファイルを選択するコマンドを追加。</description></entry>
+		<entry><type>new</type><description>プレビューウィンドウを実装開始。現状では雰囲気だけ。</description></entry>
+		<entry><type>bugfix</type><description>ウィンドウサイズの復元バグを駆除。</description></entry>
+	</log>
+	<log version="0.2.4.2">
+		<entry><type>refine</type><description>タブの最小幅を指定可能になった。profile.ini [Misc] MinTabWidth で指定する。</description></entry>
+		<entry><type>refine</type><description>アイコンはアルファ付きフルカラー（32bitカラー）になった。無効(-disable)＆ホット(-hot)状態のアイコンを使うこともできる。形式がPNGになったことに注意。</description></entry>
+		<entry><type>bugfix</type><description>イメージリストがリソースリークしていたバグを駆除。</description></entry>
+	</log>
+	<log version="0.2.4.1">
+		<entry><type>new</type><description>var 以下に保存されるフォルダ設定のうち、一定期間以上アクセスないものを自動的に削除するようにした。usr/profile.ini [Misc] SettingExpire で設定する。デフォルトは1週間。</description></entry>
+		<entry><type>new</type><description>アプリケーションの終了に結構な時間がかかるようなので、終了中のメッセージを表示するようにした。</description></entry>
+		<entry><type>refine</type><description>ツールバーに無効化状態のアイコンを設定できるようになった。tool-disable.bmp, status-disable.bmp を参照する。（現状では、メニューとリンクバーは未対応）</description></entry>
+		<entry><type>internal</type><description>内部的に不要な機能を削除。</description></entry>
+	</log>
+	<log version="0.2.4.0">
+		<entry><type>new</type><description>オプション設定Option.PasteInFolder（フォルダを一つ選択した状態の場合、そのフォルダの中へペーストする）を追加。</description></entry>
+		<entry><type>refine</type><description>同じ名前のタブになってしまう場合、上層のパスを表示するようにした。</description></entry>
+		<entry><type>refine</type><description>下段コンテナバー機能を復活した。Profile.ini [Component] ReBar2 = 1 に設定してください。</description></entry>
+		<entry><type>internal</type><description>Pythonを更新 ⇒ 2.4</description></entry>
+		<entry><type>internal</type><description>WTLを更新 ⇒7.5 (4291)</description></entry>
+	</log>
+	<log version="0.2.3.7">
+		<entry><type>bugfix</type><description>「タスクトレイに表示」状態が起動時に正しく復元されなかったバグを駆除。</description></entry>
+		<entry><type>bugfix</type><description>リンクバーに実行ファイルを登録している場合、ドロップ時にメニューが表示されてしまっていたバグを駆除。</description></entry>
+	</log>
+	<log version="0.2.3.6">
+		<entry><type>new</type><description>コマンドラインオプションで渡すフォルダの開き方を指定できるようにした。</description></entry>
+		<entry><type>refine</type><description>外部実行コマンドへ渡す仮想フォルダ名に parent を追加。</description></entry>
+		<entry><type>internal</type><description>廃止予定で移行期間だった機能の幾つかを実際に廃止した。</description></entry>
+	</log>
+	<log version="0.2.3.5">
+		<entry><type>new</type><description>「名前を変更ダイアログ」に簡易的な連番リネーム機能を追加。</description></entry>
+	</log>
+	<log version="0.2.3.4">
+		<entry><type>new</type><description>一行入力テキストボックスのキーバンドを変更できるようにした。(標準, ATOK風, Emacs風)</description></entry>
+	</log>
+	<log version="0.2.3.3">
+		<entry><type>new</type><description>ファイル名編集中に、F1, F2, F3, F4, F6, F7, F8 に選択と編集効果を持たせた。</description></entry>
+		<entry><type>refine</type><description>下段ツールバーはステータスバー内に埋め込んだ。</description></entry>
+		<entry><type>bugfix</type><description>配布中のソースファイルに書き換け途中のコードが混入していました。修正。</description></entry>
+	</log>
+	<log version="0.2.3.2">
+		<entry><type>new</type><description>コマンド：*.AdjustToItem, *.AdjustToWindow を追加。カラム幅の自動調整をする。</description></entry>
+		<entry><type>bugfix</type><description>デスクトップに置かれたアイテムを特殊実行できないバグを修正。</description></entry>
+	</log>
+	<log version="0.2.3.1">
+		<entry><type>bugfix</type><description>アイテム起動時に作業フォルダの指定が適切でなかったバグを修正。</description></entry>
+		<entry><type>bugfix</type><description>callback.py にミスがあったのを修正。</description></entry>
+		<entry><type>bugfix</type><description>Open時にもNavigateVerb()が呼ばれるようになった。</description></entry>
+	</log>
+	<log version="0.2.3.0">
+		<entry><type>new</type><description>特殊フォルダを関連付けて開けるようになった。関連付けをする際、"%1" の代わりに %I （クォートなし）を指定する。</description></entry>
+		<entry><type>new</type><description>フォルダ移動時の修飾キーの動作をカスタマイズできるようになった。AVESTA/bin/callback.py NavigateVerb(), ExecuteVerb() を参照。</description></entry>
+		<entry><type>new</type><description>navigateコマンドのargsに使える動詞を変更した（goto/goto-always/open/open-always/append/reserve/switch/replace）。</description></entry>
+		<entry><type>new</type><description>サイドバーのフローティング機能を廃止。コマンド名も変更（Side.* ⇒ Tree.*）</description></entry>
+		<entry><type>new</type><description>keyboard-tab.xml を廃止。実質的に keyboard-folder.xml と同じ動作だったため。</description></entry>
+		<entry><type>new</type><description>ステータスバーにツールバーを追加。コマンドは status.xml/bmp で指定する。不要の場合は、非表示にするか、AVESTA/usr/profile.ini [Component] で完全に無効化できる。</description></entry>
+		<entry><type>new</type><description>コマンド：Current.Grouping, Current.SyncDescendants を追加。</description></entry>
+		<entry><type>new</type><description>appendix/SetAvestaAsDefault.reg, opt/BashHere を追加。</description></entry>
+		<entry><type>new</type><description>キー操作一覧、マウス操作一覧を追加。</description></entry>
+		<entry><type>new</type><description>pygmy.dll はPythonモジュールになった。幾つかの引数は、代わりにモジュール関数として提供するように変更。</description></entry>
+		<entry><type>refine</type><description>Explorer.Import は、タイトルバーまたはアドレスバーにファイルのフルパスを表示していなくても、確実に取り込めるようになった。</description></entry>
+		<entry><type>refine</type><description>推奨されない（deprecated）コマンド実行時に、その旨をステータスバーに表示するようにした。</description></entry>
+		<entry><type>refine</type><description>グローバルキーマップの「無変換」は意図しない動作になりやすいようなので、デフォルトでは無効にした。</description></entry>
+		<entry><type>bugfix</type><description>0.2.2.0でエンバグした、壁紙の保存に関する問題を修正。</description></entry>
+		<entry><type>bugfix</type><description>起動時のウィンドウサイズ復元に関するバグがまだ残っていたので修正。</description></entry>
+		<entry><type>bugfix</type><description>リンクバーでファイルが見つからなかった場合のツールチップメッセージを改善。</description></entry>
+		<entry><type>internal</type><description>WTL7.1 ⇒ WTL7.5。</description></entry>
+	</log>
+	<log version="0.2.2.1">
+		<entry><type>new</type><description>マイドキュメントを表す仮想パスとして“~”（チルダ）を追加。</description></entry>
+		<entry><type>new</type><description>ウィンドウとタスクバーのアイコンは、AVESTA/usr/main.ico を使用するようになった。アイコンを変えたい場合はこれを置き換えればよい。</description></entry>
+		<entry><type>bugfix</type><description>リンクバーに無効なネットワークパスがあると起動が遅いバグに対処したつもり。ただし、1段目では効果がなく、2段目以降でも間違えてクリックしないように注意しなければならない。</description></entry>
+	</log>
+	<log version="0.2.2">
+		<entry><type>new</type><description>「Avestaルートフォルダ」を表す仮想パスとして“AVESTA”を追加。</description></entry>
+		<entry><type>new</type><description>外部実行コマンドを追加。command属性の代わりに、execute, args属性で指定する。詳細はreadmeを参照。</description></entry>
+		<entry><type>new</type><description>移動コマンドを追加。command属性の代わりに、navigate, args属性で指定する。詳細はreadmeを参照。</description></entry>
+		<entry><type>new</type><description>外部ツール用フォルダとして“opt”を追加。ただし、このフォルダ以外の場所のファイルも利用できる。付録として幾つかの単機能スクリプトを添付。</description></entry>
+		<entry><type>new</type><description>コマンド：Current.CopyToOther, MoveToOther を追加。2つのフォルダを開いている場合に限り、もう一方へコピー／移動する。3つ以上開いている場合は（操作が曖昧なため）えくすぽぜを使用する。</description></entry>
+		<entry><type>new</type><description>コマンド：Option.GestureOnName を追加。「名前」カラム上での左クリック始動ジェスチャを有効／無効を切り替える。</description></entry>
+		<entry><type>refine</type><description>アドレスバーの単語は、パスごとに区切られるようになった。（CBES_EX_PATHWORDBREAKPROC という専用スタイルが用意されていた）</description></entry>
+		<entry><type>refine</type><description>異なるドライブ間のドラッグ＆ドロップのデフォルト動作はコピーになった。この動作は「システムオプション/ドライブ間のDnDはコピー」で変更できる。（ツリー、タブ、リンクバーのみ。リストからリストへのDnDには設定が反映されない）</description></entry>
+		<entry><type>bugfix</type><description>フォルダの表示が遅く、特に大量のファイルがあると長い間応答しなくなったバグを修正。シェルビューの表示が完了する前に内容の問い合わせをした場合に異様に時間かかかるのが原因だった。</description></entry>
+		<entry><type>bugfix</type><description>「アクティブだが、最小化されている状態」で、Window.Show(toggle) が正常に動作しないバグを修正。</description></entry>
+		<entry><type>bugfix</type><description>ショートカットで設定したウィンドウの初期状態が反映されないバグを修正。「最大化」「最小化」の指定が優先され、それ以外の場合（「通常」を指定、関連付け起動）は前回終了時の状態で起動する。</description></entry>
+		<entry><type>bugfix</type><description>メニューバーの描画バグを修正。クラシックテーマでの描画を改善。（ToDo: 本当はThemeAPIを使うべき）</description></entry>
+		<entry><type>bugfix</type><description>キー設定をしていないにもかかわらず、Delete, BackSpace, F1～F12に対してエクスプローラ互換操作が勝手に割り振られていたバグを修正。（ただし、カーソル移動系のキーには未対応。カーソル移動にあたるコマンドを追加すべき）</description></entry>
+		<entry><type>bugfix</type><description>「並べて表示」だとチェックボックスをマウスでON/OFFできない不具合に対処。</description></entry>
+		<entry><type>internal</type><description>ユーザから見ると、DLLが分割されていることに何のメリットも無いことに気づいたので、一つにまとめた。</description></entry>
+	</log>
+	<log version="0.2.1">
+		<entry><type>new</type><description>Pythonの組み込みの実験を始めた。カスタマイズできるのは、キャプション、ステータスバーに表示されるファイル情報、ジェスチャ中のメッセージ。</description></entry>
+		<entry><type>new</type><description>コマンド追加：Current.SelectToFirst, Current.SelectToLast</description></entry>
+		<entry><type>new</type><description>作業状態ファイル(.ave)のフォーマットを変更。以前までのファイルは使用できなくなりました。</description></entry>
+		<entry><type>new</type><description>リンクバーのボタンに対してドラッグ＆ドロップできるようになった。ボタン上の右クリックメニューは、フォルダのものを表示するようにした。</description></entry>
+		<entry><type>new</type><description>リンクバーをフォーカス中にメニューキーが押された場合、選択中のボタンのフォルダの右クリックメニューを表示するようにした。</description></entry>
+		<entry><type>refine</type><description>パスを文字列で指定する際には、環境変数を展開するようになった。また、パスの解釈が柔軟になった（「%tmp%/.\/\..\/History」などもOK）。</description></entry>
+		<entry><type>refine</type><description>無選択状態で Shift+左クリック したときの挙動を変更した。（Shift+ダブルクリックでの誤爆を防ぐため）</description></entry>
+		<entry><type>refine</type><description>ツールバー上でのホイールを、タブ上でのホイールと同じ動作にした。（タブ上の細い領域にカーソルを合わせなくてもタブ切り替えができる）</description></entry>
+		<entry><type>internal</type><description>アプリケーション全体のIO を IStream ベースに変更したので、io.dll の大部分が必要なくなり、kernel.dll に統合した。</description></entry>
+		<entry><type>internal</type><description>ひたすらに dead code の除去。widgets.dll 以外はそれなりに片付いてきた。</description></entry>
+	</log>
+	<log version="0.2.0">
+		<entry><type>new</type><description>内部構成を変更しました。一部の設定が初期化されます。avecli.exe への関連付けは、avesta.exe に変更してください。</description></entry>
+		<entry><type>new</type><description>リンクバーとツリーのアイコンサイズの変更(profile.ini - Misc - *IconSize)。ただし、メニュー用のアイコンも連動して変更されます。</description></entry>
+		<entry><type>new</type><description>一行選択(Option.FullRowSelect)、グリッドの描画(Option.GridLine)を追加。お好みでどうぞ。</description></entry>
+		<entry><type>new</type><description>ツリーでのファイル操作を幾つか追加。（※0.2.0.1：名前の変更は未完成。／ファイルシステムと自動的に同期しないので、切り取った項目が残る不具合あり。）</description></entry>
+		<entry><type>refine</type><description>タブの右クリックメニューにコマンドを幾つか追加。</description></entry>
+		<entry><type>refine</type><description>「ごみ箱」を表す仮想パスとして“TRASH”を追加。／アルファベット一文字のパスをドライブルートパスと解釈するようにした（“C”⇒“C:\”）。</description></entry>
+		<entry><type>refine</type><description>チェックボックス以外をクリックしてもチェック状態が変更されないようにした。</description></entry>
+		<entry><type>bugfix</type><description>メニューの幅の計算を修正。／チェック状態の描画を修正。</description></entry>
+		<entry><type>bugfix</type><description>「ドラッグ中にウィンドウの内容を表示する」がOFFになっている場合のドラッグ＆ドロップに絡む問題を修正。</description></entry>
+		<entry><type>bugfix</type><description>キーフォーカスの復帰が適切になった。</description></entry>
+	</log>
+	<log version="0.1.31">
+		<entry><type>new</type><description>マウスジェスチャをより詳細に設定できるようになった。クリックとホイールをジェスチャシーケンスとして扱え、中クリックなどからのジェスチャを始められる。</description></entry>
+		<entry><type>new</type><description>リンクバーの項目ごとの個別設定ができるようになった。usr/link.xml を参照。linkフォルダを利用する形式も利用できるが、場所がusr/link/へ変更になり、Link.DropDown および Link.ShowFiles が廃止されたことに注意。</description></entry>
+		<entry><type>new</type><description>パスを指定する場合に、特殊フォルダへのエイリアスを使えるようになった。基本的には、CSIDL_* 列挙から prefix 'CSIDL_' を取り除いた文字を認識できる。ただし、複数形のものは、単数形でもかまわない。さらに追加エイリアスとして CONTROLPANEL, HOME, RECYCLEBIN を使用可能。</description></entry>
+		<entry><type>new</type><description>ツリーとリストの同期を実装した。</description></entry>
+		<entry><type>new</type><description>詳細表示時に、ソートキーをキーボードから操作できるようになった(Header.Focus)。修飾キーなし⇒昇順、Shift⇒降順、Ctrl⇒カラム幅の調整, A⇒全てのカラム幅を調整</description></entry>
+		<entry><type>new</type><description>コマンド：Current.PasteTo, Current.CopyCheckedTo, Current.MoveCheckedTo を追加。（このあたりは、本当はマクロで対処すべきなのかも）</description></entry>
+		<entry><type>refine</type><description>“えくすぽぜ”の操作を変更。ビューとタブをそれぞれグループとし、タブキーはグループ内の移動をする。Ctrlが押されているか、カーソルの上下でグループを切り替える。</description></entry>
+		<entry><type>refine</type><description>ツリーとリンクバーのサブフォルダ判定をなるべく遅らせるようにした。</description></entry>
+		<entry><type>refine</type><description>タブの最大幅が指定できるようになった(profile.ini - Misc - MaxTabWidth)。後々もうちょっと柔軟な処理に変更します。</description></entry>
+		<entry><type>refine</type><description>*.ave を渡すと作業状態を復元するようにした。</description></entry>
+		<entry><type>refine</type><description>「ごみ箱を空にする」メニューのtextが、'{*}' で終わっている場合、現在のゴミ箱内のファイルサイズを表示するようにした。</description></entry>
+		<entry><type>refine</type><description>マイドキュメント以下のフォルダは、なるべくマイドキュメント仮想パスで開くようにした。</description></entry>
+		<entry><type>bugfix</type><description>圧縮書庫やEXEをフォルダとして閲覧できる場合、関連付けを無視してフォルダとして開いてしまうバグを駆除したかもしれません。</description></entry>
+		<entry><type>bugfix</type><description>えくすぽぜ の時間がゼロの場合にゼロ除算で不正終了するバグ、最大化時のレイアウトバグを駆除。パフォーマンスの改善。</description></entry>
+	</log>
+	<log version="0.1.30">
+		<entry><type>new</type><description>マウスクリック時の動作をカスタマイズできるようになった。（設定ファイルが大幅に変更されています。カスタマイズしている方は注意してください）</description></entry>
+		<entry><type>new</type><description>コマンド追加：Option.RenameExtension - ファイル名の変更時に、拡張子部分の選択状態を制御する （参考：『お忍びリネーム。』http://www.digidigiday.com/digidigi/dgbrand/#oshiname）</description></entry>
+		<entry><type>new</type><description>コマンド追加：Tab.Next/Next2/Prev/Prev2/Focus/Sort, Current.ToLeft/ToRight - タブ制御系</description></entry>
+		<entry><type>new</type><description>選択項目を移動／コピー 時のUI に、えくすぽぜ を採用。キーボードまたはマウスで操作できる。</description></entry>
+		<entry><type>refine</type><description>ホームフォルダが変更できるようになった。usr/home.lnk にショートカットを作成してください。</description></entry>
+		<entry><type>refine</type><description>IMEの有効／無効を考慮するようになった。</description></entry>
+		<entry><type>bugfix</type><description>FireFileCopy の右クリックメニューが不正なのは、Avesta側の原因でした。修正しました。</description></entry>
+		<entry><type>bugfix</type><description>マウスの第4, 5ボタンでの操作後、ツールバーの状態が更新されないバグを駆除。</description></entry>
+		<entry><type>bugfix</type><description>フォルダの右クリックメニューから「名前の変更(M)」が動作しなかった問題に対処。</description></entry>
+	</log>
+	<log version="0.1.29">
+		<entry><type>new</type><description>特殊右クリックメニューを追加。シフトまたはコントロールを押しながら右クリック、または左右同時クリックで起動。</description></entry>
+		<entry><type>new</type><description>コマンド追加:Current.NewFolder（フォルダを作成）, Current.Copy.Here（選択項目を複製）, Current.{Move|Copy}To（選択項目を移動／コピー）。移動先指定のUIは再考の余地あり。</description></entry>
+		<entry><type>new</type><description>コンポーネントそのものを無効化する機能を追加。詳しくは、profile.ini の Component エントリを参照。</description></entry>
+		<entry><type>refine</type><description>マウスジェスチャは修飾キーを考慮するようになった。ジェスチャ終了時の Shift/Ctrl/Alt/Win の状態に応じて別のコマンドを割り振ることができる。</description></entry>
+		<entry><type>bugfix</type><description>リムーバブルメディアのフォルダを表示している場合、メディアが排出されても自動的にタブが閉じないバグを駆除。</description></entry>
+	</log>
+	<log version="0.1.28">
+		<entry><type>new</type><description>すでに開かれているフォルダを開こうとした場合に、新しく開く代わりに既存のフォルダをアクティブ化する機能を追加。</description></entry>
+		<entry><type>refine</type><description>「名前の変更」ダイアログで、ひとつの項目を編集後、次の項目を自動的に編集状態にするようにした。</description></entry>
+		<entry><type>bugfix</type><description>「更新」すると、ソートの昇順、降順がリセットされてしまう問題に対処。</description></entry>
+		<entry><type>bugfix</type><description>zipfldr において、ダブルクリック or Enter が動作しない問題に対処。</description></entry>
+	</log>
+	<log version="0.1.27">
+		<entry><type>new</type><description>コマンド追加: 他を閉じる、他を隠す、右を隠す、左を隠す、すべて表示、右を表示、左を表示、自動整列。幾つかのコマンドを改名。</description></entry>
+		<entry><type>new</type><description>フォルダの並べ方として「横」「縦」「自動」を実装。「自動」はなるべく正方形に近くなるように並べる。</description></entry>
+		<entry><type>bugfix</type><description>「名前」以外でソートしている場合に、更新するとソートが「名前」に勝手に変更され、さらにソートキーを示す矢印が残ったままになるバグに一部対処。</description></entry>
+		<entry><type>bugfix</type><description>チェックボックスが非表示の場合に、チェックボックス選択系のコマンドで発生するバグを駆除。</description></entry>
+		<entry><type>bugfix</type><description>MRUリストが適切に更新されないバグを駆除。</description></entry>
+	</log>
+	<log version="0.1.26">
+		<entry><type>new</type><description>常駐機能として、「閉じる」代わりに最小化する機能を追加。</description></entry>
+		<entry><type>bugfix</type><description>タスクトレイに格納されている状態での avecli.exe の動作を改善。</description></entry>
+		<entry><type>bugfix</type><description>作業状態の保存で、タブの選択状態が正常に保存されないバグを駆除。（0.1.25 でのエンバグ）</description></entry>
+		<entry><type>bugfix</type><description>フォルダオプションで隠しファイルを表示する＋Avestaで隠しファイルを表示しない＋ドライブルートを表示する場合に項目が何も表示されなくなる症状に対処。</description></entry>
+		<entry><type>bugfix</type><description>26a: zipfldr に対する動作を改善。コンテキストメニューは動作するようになった。</description></entry>
+	</log>
+	<log version="0.1.25">
+		<entry><type>new</type><description>タスクトレイに格納する機能を追加。</description></entry>
+		<entry><type>new</type><description>ファイルの無い場所での左ダブルクリックを、とりあえず、「上へ」に割り当てた。25a: 暴発を防ぐため、ファイル名カラム上は無視するように変更。</description></entry>
+		<entry><type>refine</type><description>タブ整列の縦横切り替えを簡易的に実装した。タブのコンテキストメニューから変更可能。設定は保存されない。アドレスバーが邪魔かも。</description></entry>
+		<entry><type>refine</type><description>メニュー用のアイコンを16x16に変更し、ツールバーと同じ並びに変更した。ただし、24x24を単に縮小しただけなので見づらい。</description></entry>
+		<entry><type>refine</type><description>チェックボタンを表示するか否かを切り替えられるようにした。後に、表示形式によって細かく設定できるようにする予定。</description></entry>
+		<entry><type>bugfix</type><description>Registry Explorer 使用時に、ツリーでノードごとにフルパスが表示されていた問題に対処。</description></entry>
+		<entry><type>bugfix</type><description>SHLimitInputEdit は、2000では使えないらしいので、動的リンクに変更した。MSDNのウソツキー！</description></entry>
+	</log>
+	<log version="0.1.24">
+		<entry><type>new</type><description>フォルダウィンドウ上での Ctrl/Shift + マウスホイールに、タブを切り替え / 上へ⇔戻る の動作を割り振ってみた。今後、動作をカスタマイズできるようにする予定。</description></entry>
+		<entry><type>refine</type><description>ファイルのバイト数の表示を、Windows標準に従うようにした。[using StrFormatByteSize64()]</description></entry>
+		<entry><type>refine</type><description>名前変更ダイアログにおいて、ファイル名に使用できない文字を入力できないようにした。[using SHLimitInputEdit()]</description></entry>
+		<entry><type>bugfix</type><description>アーカイブX / Registry Explorer との組み合わせで発生した各種不具合を修正した。（zipfldr.dll はまだ正常動作しない。）</description></entry>
+		<entry><type>bugfix</type><description>フォルダを移動した際に、タブのツールチップが更新されなかったバグを駆除。</description></entry>
+		<entry><type>bugfix</type><description>フォルダがエクスプローラ以外に関連付けられている場合に、エクスプローラとして切り離せないバグを駆除。</description></entry>
+	</log>
+	<log version="0.1.23">
+		<entry><type>new</type><description>コマンド：FolderOptions.Show（フォルダオプションを表示する）を追加。[using Options_RunDLL@shell32.dll]</description></entry>
+	</log>
+	<log version="0.1.22">
+		<entry><type>new</type><description>アドレスバーや「パスを指定して開く」ダイアログで、ファイル名のオートコンプリートが使えるようになった。[using SHAutoComplete()]</description></entry>
+		<entry><type>new</type><description>コマンド：RecycleBin.Clear（ごみ箱を空にする）を追加。</description></entry>
+		<entry><type>refine</type><description>起動時などの状態の復元の際、それぞれのフォルダの表示／非表示状態も復元するようにした。</description></entry>
+		<entry><type>refine</type><description>キャプションに現在のフォルダ名を表示するようにした。</description></entry>
+		<entry><type>bugfix</type><description>複数ファイルのリネーム時に、ファイルを表示順に並べるようにした。選択項目が最初に来てしまっていた。</description></entry>
+	</log>
+	<log version="0.1.21">
+		<entry><type>refine</type><description>内部的な処理の効率化。</description></entry>
+	</log>
+	<log version="0.1.20">
+		<entry><type>bugfix</type><description>複数選択時、ウィンドウの右端に数ピクセル余分な隙間ができていたバグを駆除。</description></entry>
+		<entry><type>bugfix</type><description>起動中、Windows側でテーマやフォントサイズの変更などがあった場合に表示が崩れるバグを駆除。</description></entry>
+		<entry><type>bugfix</type><description>サイドバーのレイアウトがおかしくなっていたのを修正。</description></entry>
+		<entry><type>bugfix</type><description>OfficeXPテーマを廃止した。</description></entry>
+		<entry><type>bugfix</type><description>起動に失敗した場合にリソースリークしていたバグ（？）を駆除。（どうせ終了するので、実害はなかったけれど。）</description></entry>
+	</log>
+	<log version="0.1.19">
+		<entry><type>refine</type><description>ツールバーボタンのチェック状態、有効状態が反映されるようになった。</description></entry>
+		<entry><type>refine</type><description>Option.HiddenFiles.* を Option.ShowAllFiles(*) に統合した。</description></entry>
+		<entry><type>refine</type><description>配色によっては、タブとタブ文字列の色が同じになってしまう症状が改善されたかもしれません。</description></entry>
+		<entry><type>bugfix</type><description>ドロップダウンメニューがないツールバーをキーフォーカスし、上か下のカーソルキーを押すとフリーズするバグを駆除。</description></entry>
+		<entry><type>bugfix</type><description>AltまたはControlを押しながらファイルを実行するとsegfaultしていたバグを駆除。</description></entry>
+		<entry><type>bugfix</type><description>フォルダの移動時にレイアウトがリセットされてしまっていたバグを駆除。</description></entry>
+		<entry><type>bugfix</type><description>アドレスバーのアイコンが勝手にドラッグ状態になるバグを駆除。アイコンでコンテキストメニューを表示させると発生していた。</description></entry>
+		<entry><type>bugfix</type><description>コマンドプロンプトの呼び出しができない状況では、メニュー自体を表示しないようにした。ネットワークパス、ZIPフォルダ内など。</description></entry>
+		<entry><type>bugfix</type><description>バー類にフォーカスがあるときに、メニューキーでコンテキストメニューを呼び出すと表示位置がおかしいバグを駆除。</description></entry>
+	</log>
+	<log version="0.1.18">
+		<entry><type>new</type><description>マウスジェスチャを改良。現在のジェスチャの表示と、カスタマイズ(usr/gesture.xml) ができるようになった。</description></entry>
+	</log>
+	<log version="0.1.17">
+		<entry><type>bugfix</type><description>2000でも不具合がありながらも動作するようになった。</description></entry>
+		<entry><type>bugfix</type><description>キャプションへのドロップを受け付けなかったバグを駆除。</description></entry>
+	</log>
+	<log version="0.1.16">
+		<entry><type>new</type><description>自動保存設定ファイルの形式を変更したので、バー類の設定がリセットされます。</description></entry>
+		<entry><type>bugfix</type><description>最近閉じたフォルダの10番目のメニュー項目名が適切でないバグを駆除。</description></entry>
+	</log>
+	<log version="0.1.15">
+		<entry><type>new</type><description>特殊コマンド：File.OpenLast（最後に閉じられたフォルダを開く）を追加。</description></entry>
+		<entry><type>refine</type><description>新規作成時にすでに同名のファイルがある場合に、自動的に別の名前をつけるようにした。</description></entry>
+	</log>
+	<log version="0.1.14">
+		<entry><type>new</type><description>システムメニューをカスタマイズできるようになった。</description></entry>
+		<entry><type>refine</type><description>メニューバーやツールバーで、バーにアイコンを使用しない場合になるべく細くなるようにした。</description></entry>
+		<entry><type>bugfix</type><description>「ファイルがドロップされた場合、その親フォルダを開き、そのファイルを選択する」という動作において、ショートカットファイルの場合に選択されなかったバグを駆除。</description></entry>
+	</log>
+	<log version="0.1.13">
+		<entry><type>refine</type><description>画面解像度が変更されている場合は、ウィンドウの位置・サイズを復元せずにデフォルトに任せるようにした。</description></entry>
+		<entry><type>bugfix</type><description>終了せずにWindowsをシャットダウンした場合に設定が保存されないバグを駆除。</description></entry>
+	</log>
+	<log version="0.1.12">
+		<entry><type>refine</type><description>タブへのドラッグ＆ドロップ時にツールチップを表示するようにした。どのタブがターゲットなのか分かりにくいため。</description></entry>
+		<entry><type>bugfix</type><description>システムメニューからの 移動・サイズ変更 中に、キー操作が食われてしまうバグを駆除。</description></entry>
+		<entry><type>bugfix</type><description>「名前の変更」ダイアログにて、表示名とファイル名が一致しない場合に起きるバグを駆除。ショートカットファイルや拡張子を表示しない設定で問題になった。</description></entry>
+		<entry><type>bugfix</type><description>「ファイル名をコピー」などで、ZIPをフォルダと誤認したり、拡張子を表示しない設定で発生したバグを駆除。</description></entry>
+	</log>
+	<log version="0.1.11">
+		<entry><type>bugfix</type><description>3つ以上の重複がある場合に、「重複を閉じる」でひとつしか閉じなかったバグを駆除。</description></entry>
+		<entry><type>bugfix</type><description>「グループで表示」かつ「種類」でソートすると、フリーズするバグを駆除したかもしれません。</description></entry>
+	</log>
+	<log version="0.1.10">
+		<entry><type>bugfix</type><description>ドラッグ＆ドロップ関連の当たり判定を改善。</description></entry>
+		<entry><type>bugfix</type><description>「表示設定を下層に適用」と同時にそのフォルダの状態をセーブするようにした。</description></entry>
+		<entry><type>bugfix</type><description>シェルやドロップ時のコンテキストメニューで、キー入力がキーマップに食われてしまうバグを駆除。</description></entry>
+	</log>
+	<log version="0.1.9">
+		<entry><type>new</type><description>タブへファイルをドロップすることで、ファイルの移動／コピーができるようになった。また、ドラッグ中に非表示のタブ上で静止させていると、そのタブを自動的に表示する。</description></entry>
+		<entry><type>new</type><description>ファイルがメインウィンドウへ右ボタンでドロップされた場合にコンテキストメニューを表示するようにした。</description></entry>
+		<entry><type>refine</type><description>複合コマンドや新規ファイル作成で、文字列の区切りの認識が柔軟になった。</description></entry>
+		<entry><type>refine</type><description>appendix.OpenWithAvesta で複数のフォルダを開こうとした際に、それらが同時にアクティブ化されなかった問題に対処。原因は、UI的には一度の操作にもかかわらず、内部的には複数回 avecli.exe が起動するため。短い時間の間に複数のファイルを開く場合に、同時とみなすようにした。</description></entry>
+		<entry><type>bugfix</type><description>appendix.OpenWithAvesta で、スペースを含むファイルを開けなかったバグを駆除。ファイル名をダブルクォートで囲む必要があった。</description></entry>
+	</log>
+	<log version="0.1.8">
+		<entry><type>new</type><description>「壁紙の選択」ダイアログを追加した。バーの壁紙を設定できるようになった。</description></entry>
+		<entry><type>bugfix</type><description>Windows2000で起動せず、segfaultしていたバグの一部を修正。ただし、描画のバグは残っていると思われる。</description></entry>
+		<entry><type>bugfix</type><description>メニューやツールバーの描画に関する問題を幾つか修正。</description></entry>
+		<entry><type>bugfix</type><description>メニューやツールバーへのキー入力処理に関するバグを退治。</description></entry>
+	</log>
+	<log version="0.1.7">
+		<entry><type>refine</type><description>サムネイルのサイズを切り替えたとき、古いキャッシュを使わないようにThumbs.db を消去する機能を追加した。</description></entry>
+		<entry><type>refine</type><description>コマンド名を変更。オブジェクト指向と直行性を意識した名前にしてみた。将来はスクリプティングまで繋げて行きたいところ。</description></entry>
+		<entry><type>bugfix</type><description>モーダルダイアログ表示時にグローバルホットキーが使用できてしまうバグを退治したかも。</description></entry>
+	</log>
+	<log version="0.1.6">
+		<entry><type>refine</type><description>タブのツールチップで、フォルダのフルパスを表示するようにした。</description></entry>
+		<entry><type>refine</type><description>File.CloseDuplicates は非表示タブを優先して閉じるようになった。</description></entry>
+		<entry><type>refine</type><description>リンクバーやツリーバーで、Windowsの標準の順番で項目が並ぶようになった。</description></entry>
+		<entry><type>bugfix</type><description>内部フォルダに対する大量のファイルコピー／移動時に、経過ダイアログが出ているとマウスジェスチャが効かなくなるバグを駆除。</description></entry>
+		<entry><type>bugfix</type><description>0.1.5での変更の副作用により、リンクバーからファイルを実行できなくなっていたバグを駆除。</description></entry>
+	</log>
+	<log version="0.1.5">
+		<entry><type>new</type><description>コマンドラインオプション -link <i>shortcut.lnk</i> を追加。リンク先の親フォルダを開く。拙作 OpenLink の代わりとしてavecli.exeを利用可能。</description></entry>
+		<entry><type>new</type><description>フォルダでない一般ファイルを開こうとした場合、その親フォルダを開き、そのファイルを選択するようにした。</description></entry>
+		<entry><type>bugfix</type><description>ファイルの新規作成でデフォルト名を使うとsegfaultする可能性があったバグを駆除。</description></entry>
+	</log>
+	<log version="0.1.4">
+		<entry><type>new</type><description>コマンド：File.New として、「ファイルの新規作成」ダイアログを追加。空のファイルのみに対応。拡張子なしならばフォルダを作成する。名前をファイル名で使えない文字（'/'など）で区切ると複数同時作成。幾つかのコマンドを改名。</description></entry>
+		<entry><type>new</type><description>グローバルホットキーを追加。keymap_global.xml でカスタマイズ可能。デフォルトは、Win+A, 無変換 でウィンドウの表示切替。Win+I でエクスプローラ取り込み。</description></entry>
+		<entry><type>new</type><description>複合コマンドを追加。メニュー、ツールバー、キーマップの command属性に、';'（セミコロン）で区切って連続実行されるコマンドを指定可能。</description></entry>
+		<entry><type>new</type><description>テーマ「デフォルト」「OfficeXP」を切り替えられるようになった。</description></entry>
+		<entry><type>bugfix</type><description>ファイルシステムの変更のため表示中のフォルダが自動移動した場合に、アドレスバーが更新されないバグを駆除。</description></entry>
+		<entry><type>bugfix</type><description>最初に開くフォルダが「フォント」の場合に誤動作するバグを駆除したかも。</description></entry>
+		<entry><type>bugfix</type><description>フォルダ移動時には表示設定が保存されるが、そのまま閉じた場合には保存されないバグを駆除。</description></entry>
+	</log>
+	<log version="0.1.3">
+		<entry><type>new</type><description>複数のフォルダを同時に開く場合（ドラッグ＆ドロップ、コマンドライン引数）は、新しく開いたタブすべてをアクティブ化する.</description></entry>
+		<entry><type>new</type><description>「戻る」「進む」で現在よりも上層のフォルダに移動した場合に、以前いたフォルダをフォーカスするようになった。</description></entry>
+		<entry><type>new</type><description>ファイル起動時に、Ctrl, Shift, Alt を押していることで起動コマンドを変更できるようになった。</description></entry>
+		<entry><type>refine</type><description>File.New はパスを指定してフォルダを開くように変更した。</description></entry>
+		<entry><type>bugfix</type><description>ネットワーク越しのドライブの容量表示を修正。</description></entry>
+		<entry><type>bugfix</type><description>メニューバー、ツールバーの高さを正しく計算するようにした。これでボタンがはみ出すことは無いはず。</description></entry>
+		<entry><type>bugfix</type><description>ReBarの位置固定に関するバグが解決できないので、位置を固定する機能そのものを廃止した。</description></entry>
+	</log>
+	<log version="0.1.2">
+		<entry><type>new</type><description>追加コマンド：Edit.FindDialog</description></entry>
+	</log>
+	<log version="0.1.1">
+		<entry><type>new</type><description>萌え機能（背景に画像を貼り付けられる）を実装。</description></entry>
+		<entry><type>new</type><description>追加コマンド：Edit.RenameDialog(Ctrl+Shift+E), Edit.CheckAll, Edit.CheckNone</description></entry>
+		<entry><type>refine</type><description>Edit.PasteBase を廃止し、拡張子の有無を自動的に判別するようにした。</description></entry>
+		<entry><type>refine</type><description>Edit.SelectAll 時に、「隠しファイルも選択する場合は～」のダイアログを表示しないようにした。</description></entry>
+		<entry><type>refine</type><description>avecli.exe のファイルサイズを最小化した。</description></entry>
+	</log>
+	<log version="0.1.0">
+		<entry><type>new</type><description>外部でのファイルシステムの変更に一部対応した。</description></entry>
+		<entry><type>new</type><description>ツリーペインを作り始めた。</description></entry>
+		<entry><type>new</type><description>サムネイルのサイズを変更できるようになった。（参考：<a href="http://pcweb.mycom.co.jp/column/winxp/winxp013.html"/>）</description></entry>
+		<entry><type>new</type><description>「名前を貼り付け」後のダイアログで名前を再編集できるようになった。また、単一行のテキスト貼り付け時におまけあり。</description></entry>
+		<entry><type>new</type><description>より多くのフォルダの表示状態が保存されるようになった。</description></entry>
+		<entry><type>new</type><description>appendix を追加。</description></entry>
+		<entry><type>new</type><description>コマンド File.CloseDuplicates</description></entry>
+		<entry><type>refine</type><description>avecli.exe は、本体が起動していない場合には、本体を起動する動作に変更した。</description></entry>
+		<entry><type>refine</type><description>avecli.exe -command <i>command-name</i> （スペース区切り）に対応した。</description></entry>
+		<entry><type>refine</type><description>ナビゲートロック中はコントロールキーを反転する。つまり、コントロールキーを押しながらならば通常のようにフォルダ移動ができる。</description></entry>
+		<entry><type>refine</type><description>コンテキストメニューに幾つか機能を追加した。（コマンドプロンプト、表示設定を下層へ適用）</description></entry>
+		<entry><type>refine</type><description>特殊フォルダを表示しているエクスプローラを取り込めるようになった。（マイドキュメント、マイコンピュータ）</description></entry>
+		<entry><type>bugfix</type><description>「バージョン情報」1回ごとにアイコン1つ分リソースリークしていたバグを駆除。</description></entry>
+	</log>
+	<log version="0.0.13">
+		<entry><type>new</type><description>OLEドラッグ＆ドロップを実装。アドレスバーのアイコンをドラッグできるようになった。</description></entry>
+		<entry><type>new</type><description>リンクバーにおいて、中間階層のフォルダをスペースキーで開けるようになった。</description></entry>
+		<entry><type>new</type><description>フォルダ階層移動時にナビゲーションサウンドを鳴らすようにした。</description></entry>
+		<entry><type>refine</type><description>コントロール＋タブキーでタブ間を移動する際の動作を変更した。</description></entry>
+		<entry><type>refine</type><description>タブ上でのマウスホイールを、コントロール＋タブキーと同じ動作にした。</description></entry>
+		<entry><type>refine</type><description>タブのダブルクリックをナビゲートロックのON/OFFに割り当てた。</description></entry>
+		<entry><type>bugfix</type><description>存在しないフォルダを開こうした際に、空のフォルダウィンドウが表示されるバグを駆除したかも。</description></entry>
+		<entry><type>bugfix</type><description>無駄なレイアウト更新を多少減らした。</description></entry>
+	</log>
+	<log version="0.0.12">
+		<entry><type>new</type><description>マニュアルを書き始めた。</description></entry>
+		<entry><type>new</type><description>ナビゲートロック機能を追加した。</description></entry>
+		<entry><type>new</type><description>タブのコンテキストメニューとドラッグを実装した。</description></entry>
+		<entry><type>refine</type><description>終了時の問い合わせをやめた（自動保存が実装されたため）</description></entry>
+		<entry><type>bugfix</type><description>状況によっては、フォルダウィンドウを閉じたときに不正な処理が行われる可能性があったバグを駆除。</description></entry>
+		<entry><type>bugfix</type><description>いったん不正なフォルダ（削除済みなど）にアクセスすると表示が崩れるバグを駆除したかも。</description></entry>
+	</log>
+	<log version="0.0.11">
+		<entry><type>new</type><description>作業状態（現在開いているフォルダ）が保存できるようになった。また、起動＆終了時に自動保存するようにした。</description></entry>
+		<entry><type>new</type><description>コマンドラインオプション -command:<I>command-name</I> を追加。avecli.exe を使って外部からの制御が可能。</description></entry>
+		<entry><type>refine</type><description>ツールバーにツールチップが付いた。</description></entry>
+		<entry><type>refine</type><description>ツールバーのイメージリストを変更した。（参考：<a href="http://www.microsoft.com/japan/msdn/windows/windowsxp/winxpicons.asp"/>）</description></entry>
+		<entry><type>new</type><description>タブクリックの動作を変更。{左|右}を押しながら{右|左}クリック（実質的には左右同時クリック）は、コントロール＋左クリックと同じ。</description></entry>
+		<entry><type>refine</type><description>設定ファイルの文字列は、基本的に大文字小文字を区別しないようにした。（キー名、コマンド名など）</description></entry>
+		<entry><type>refine</type><description>リンクメニューを高速化したかも。</description></entry>
+		<entry><type>bugfix</type><description>ReBarを固定状態で立ち上げ、その後固定を解除した場合に一番目のバーのグリップが表示されないバグを駆除。</description></entry>
+	</log>
+	<log version="0.0.10">
+		<entry><type>refine</type><description>アドレスバーの改善。（テキスト編集、アイコンの右クリック、コマンド:"Focus.Address"）</description></entry>
+		<entry><type>refine</type><description>ReBarの改善。（設定の保存、位置の固定）</description></entry>
+		<entry><type>bugfix</type><description>コンテキストメニューのアクセラレータが正常に処理されなかったバグを駆除。</description></entry>
+		<entry><type>bugfix</type><description>ZIPファイルをフォルダとして閲覧できないバグを駆除。</description></entry>
+		<entry><type>bugfix</type><description>システムが「隠しファイルを表示」で設定されていると、隠す設定にしても隠れないバグを駆除。</description></entry>
+	</log>
+	<log version="0.0.9">
+		<entry><type>new</type><description>ステータスバーに状態を表示するようにした。</description></entry>
+		<entry><type>new</type><description>シェルのデフォルトキーバインドをすべてトラップするようにした。</description></entry>
+	</log>
+	<log version="0.0.8">
+		<entry><type>bugfix</type><description>ツールバーを表示しない＋最大化で起動した際に表示が崩れるバグを駆除。</description></entry>
+		<entry><type>refine</type><description>Enterでフォルダを変更した際、一番初めのファイルを選択するようにした。</description></entry>
+	</log>
+	<log version="0.0.7">
+		<entry><type>new</type><description>フォルダの表示状態が保存されるようになった。</description></entry>
+		<entry><type>new</type><description>フォルダをドロップして開けるようになった。</description></entry>
+		<entry><type>new</type><description>コマンドライン引数を処理できるようになった。起動時にパスを与えると、マイドキュメントの代わりにそれを開く。</description></entry>
+	</log>
+	<log version="0.0.6">
+		<entry><type>new</type><description>エクスプローラとクリップボード系のコマンドをいくつか追加。</description></entry>
+	</log>
+	<log version="0.0.5">
+		<entry><type>new</type><description>メニュー、ツール、リンクの各バーをアクティブ化するコマンドを追加した。</description></entry>
+		<entry><type>new</type><description>バーの表示状態とウィンドウ位置、最大化状態のみ保存するようになった。</description></entry>
+		<entry><type>refine</type><description>ツールバーにセパレータが使えるようになった。</description></entry>
+		<entry><type>refine</type><description>リンクメニューの表示を多少高速化。</description></entry>
+	</log>
+	<log version="0.0.4">
+		<entry><type>new</type><description>メニュー、ツールバー、キーアクセラレータのカスタマイズができるようになった。</description></entry>
+		<entry><type>new</type><description>メニューからのコマンドが実行できるようになった。</description></entry>
+		<entry><type>refine</type><description>アドレスバーに入力されたパスの解釈が柔軟になった。（スラッシュの使用など）</description></entry>
+		<entry><type>refine</type><description>[戻る、進む、上へ、リンクバー]＋[コントロール、シフトキー] が正常に動作するようになった。</description></entry>
+		<entry><type>bugfix</type><description>Adobe Acrobat 5/6 インストール環境下でのpdfの起動に対処。</description></entry>
+	</log>
+</log-table>

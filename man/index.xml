@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="Shift_JIS" ?>
+<?xml-stylesheet type="text/xsl" href="manual.xsl"?>
+
+<manual title="Avesta マニュアル">
+	<brief name="概要">
+		<what>Avesta: the Multi-Tabbed Filer （多画面タブファイラ）</what>
+		<version>0.3.1.9 : &#8220;public alpha&#8221;</version>
+		<when>2006/02/21</when>
+		<who>LaLa Moo-Moo (ITAGAKI Takahiro)</who>
+		<mailto>lamoo@s53.xrea.com</mailto>
+		<url>http://lamoo.s53.xrea.com/</url>
+		<env-dev>日本語版 Windows XP sp2 + Visual Studio.NET 2003</env-dev>
+		<env-run>日本語版 Windows XP (NT 5.1）以上</env-run>
+		<licence><a href="../licence.txt">Avesta Licence</a></licence>
+	</brief>
+	
+	<features name="特徴">
+		<feature>基本的な操作はエクスプローラに倣っています。</feature>
+		<feature>複数のタブを切り替え、複数のフォルダを同時に閲覧することができます。</feature>
+		<feature>マウスでもキーボードでも十分な操作ができます。</feature>
+		<feature>マウスジェスチャと右ドラッグ＆ドロップを両方とも使用できます。</feature>
+		<feature>メニュー、ツールバー、キー操作、マウスジェスチャなどを自由にカスタマイズできます。</feature>
+		<feature>非アクティブ状態からでもホットキーひとつで呼び出せます。</feature>
+		<feature>さまざまなシェル拡張ツールがそのまま利用できます。</feature>
+	</features>
+	
+	<startup name="はじめに">
+		<install name="インストール">
+			<p>
+				適当な場所にフォルダを作成し、そこに解凍して下さい。
+				フォルダに関連付けする方法は<a href="../appendix/readme.txt">appendix</a>にあります。
+			</p>
+		</install>
+		<update name="アップデート">
+			<p>
+				基本的には手動での更新になります。
+				面倒だとは思いますが、ご容赦ください。
+				バージョン上3桁 A.B.C.* の変更が無い場合は、以下の更新方法を使えます。
+				メジャーバージョンアップの場合は、avesta.exe, pygmy.dll の更新が必要なため、
+				完全に終了した後、別のファイラから上書きしてください。
+			</p>
+			<ol>
+				<li>書庫をダウンロード、解凍。</li>
+				<li>新しい avesta.dll をダブルクリックし、ホットアップデート。</li>
+				<li>/man を上書きコピー。</li>
+				<li>更新履歴や、diffを見ながら、変更のあった箇所を 自分の /usr に反映。</li>
+			</ol>
+		</update>
+		<uninstall name="アンインストール">
+			<p>
+				レジストリは使用していないので、フォルダごと削除して下さい。
+				関連付けしている場合は、削除する前に解除して下さい。
+			</p>
+		</uninstall>
+	</startup>
+	
+	<usage name="基本的な使い方">
+		<h3>基本</h3>
+		<ul>
+			<li>基本的には、エクスプローラと同じです。</li>
+			<li>タブクリック時やフォルダ移動時に、コントロールキーやシフトキーを押しておくと通常とは異なる動作をします。</li>
+			<li>タブキーにより、ビュー間の移動ができます。</li>
+		</ul>
+		<h3>タブの選択</h3>
+		<ul>
+			<li>左クリック：クリックしたタブのみを選択し、他のタブの選択を解除します。</li>
+			<li>左クリック＋コントロール：クリックしたタブの選択状態を切り替えます。他のタブには影響しません。</li>
+			<li>左ダブルクリック：タブをロック状態を切り替えます。</li>
+			<li>左ドラッグ：タブを移動します。</li>
+			<li>右クリック：コンテキストメニューを表示します。</li>
+			<li>左右同時クリック：コントロール＋左クリックと同じです。</li>
+			<li>中クリック：タブを閉じます。</li>
+		</ul>
+		<h3>フォルダ構成</h3>
+		<ul>
+			<li>bin : 実行ファイルが置かれています。</li>
+			<li>man : ヘルプファイルが置かれています。</li>
+			<li>opt : 外部拡張ツールが置かれています。</li>
+			<li>usr : 環境非依存の設定ファイルが置かれています。編集することでカスタマイズできます。</li>
+			<li>var : 環境に依存した設定、キャッシュファイルが置かれます。編集しないでください。</li>
+		</ul>
+		<h3>操作一覧</h3>
+		<div>
+			<ul>
+				<li><a href="keyboard.xml">キー操作一覧</a></li>
+				<li><a href="mouse.xml">マウス操作一覧</a></li>
+			</ul>
+		</div>
+	</usage>
+	
+	<usage name="カスタマイズ：表示">
+		<div>
+			<p><a href="../usr/readme.txt">usr/readme.txt</a> も参照してください。</p>
+			<ul>
+				<li><kbd>form.xml</kbd> …… 全てのカスタマイズの元となるファイル</li>
+				<li><kbd>profile.ini</kbd> …… 雑多なオプションの指定</li>
+				<li><kbd>main.ico</kbd> …… Avestaのアプリケーションアイコンとして使われます。</li>
+				<li><kbd>keyboard-global.xml</kbd> …… 「Windows全体」でのキーボード入力</li>
+				<li><kbd>keyboard-frame.xml</kbd> …… 「Avesta全体」でのキーボード入力</li>
+				<li><kbd>keyboard-folder.xml</kbd> …… 「フォルダ」でのキーボード入力</li>
+				<li><kbd>keyboard-tree.xml</kbd> …… 「ツリー」でのキーボード入力</li>
+				<li><kbd>keyboard-preview.xml</kbd> …… 「プレビュー」でのキーボード入力</li>
+				<li><kbd>mouse-folder.xml</kbd> …… マウスでの入力</li>
+				<li><kbd>menu.xml/png</kbd> …… メニューの構成とアイコン</li>
+				<li><kbd>tool.xml/png</kbd> …… ツールバーの構成とアイコン</li>
+				<li><kbd>status.xml/png</kbd> …… ステータスバーの構成とアイコン</li>
+				<li><kbd>sysmenu.xml/png</kbd> …… システムメニューの構成とアイコン</li>
+				<li><kbd>link.xml</kbd> …… リンクバーの構成。</li>
+			</ul>
+		</div>
+	</usage>
+	
+	<usage name="カスタマイズ：操作">
+		<div>
+			<p>
+				メニュー、キーマップ、マウスジェスチャは、それぞれの項目ごとにコマンドを設定できます。
+				コマンドは、組み込みコマンド、外部実行コマンド、移動コマンドの3種類があります。
+			</p>
+		</div>
+		<h3>組み込みコマンド</h3>
+		<div>
+			<p>
+				組み込みコマンドは、<code>command</code> 属性にコマンド名を指定します。
+				コマンドの種類については、コマンド表を参照してください。
+				また、「;」（セミコロン）で区切ることにより、複数のコマンドを連続して実行することもできます。
+			</p>
+			<h5>複合コマンド例</h5>
+			<code>&lt;<i>menu/bind/gesture</i> command=&quot;Explorer.Import;Duplicate.Close;Window.Show(true)&quot; /&gt;</code>
+			<p>エクスプローラを取り込み、重複を整理し、アクティブ化する。</p>
+			<code>&lt;<i>menu/bind/gesture</i> command=&quot;Current.Key.Space;Current.Key.Down&quot; /&gt;</code>
+			<p>チェックボックスをチェックし、その後、カーソルを一つ下に移動する。</p>
+		</div>
+		
+		<h3>外部実行コマンド</h3>
+		<div>
+			<p>
+				外部実行コマンドは、<code>execute</code> 属性に実行ファイルパスを指定します。
+				作業フォルダは現在アクティブなフォルダになります。
+				実行ファイルに渡すコマンドライン引数は、<code>args</code> 属性で指定します。
+				<code>args</code> 属性の中にある以下の文字列を括弧で囲んだ文字は変数とみなされ、置換されます。
+			</p>
+			<table>
+				<tr><th>変数名  </th><th>対象</th><th>効果</th></tr>
+				<tr><td><code>current </code></td><td align="center">タブ</td><td>カレントフォルダ。</td></tr>
+				<tr><td><code>all     </code></td><td align="center">タブ</td><td>開かれている全てのフォルダ。</td></tr>
+				<tr><td><code>shown   </code></td><td align="center">タブ</td><td>表示されているフォルダ。</td></tr>
+				<tr><td><code>hidden  </code></td><td align="center">タブ</td><td>表示されていないフォルダ。</td></tr>
+				<tr><td><code>parent  </code></td><td align="center">タブ</td><td>カレントフォルダの親。</td></tr>
+				<tr><td><code>items   </code></td><td align="center">項目</td><td>カレントフォルダ中の全ての項目。</td></tr>
+				<tr><td><code>selected</code></td><td align="center">項目</td><td>カレントフォルダ中の選択された項目。</td></tr>
+				<tr><td><code>checked </code></td><td align="center">項目</td><td>カレントフォルダ中のチェックされた項目。</td></tr>
+			</table>
+			<h5>括弧の効果</h5>
+			<dl>
+				<dt>all 指定子: <code>{var}</code></dt>
+				<dd>
+					中括弧（“{ }”）で囲んだ場合は、それぞれのパスをスペース区切りで連結した文字列に展開されます。
+				</dd>
+				<dt>each 指定子: <code>[var]</code></dt>
+				<dd>
+					かぎ括弧（“[ ]”）で囲んだ場合は、パス一つ一つに展開され、それぞれについて実行されます。
+					つまり、実行ファイルは複数回起動されることになります。
+				</dd>
+			</dl>
+			<h5>例</h5>
+			<p>
+				<code>execute=&quot;foo.exe&quot; args=&quot;***&quot;</code> について、
+				<kbd>C:\</kbd> を表示しており、<kbd>C:\file01.txt, C:\file02.txt</kbd> を選択した状態から起動した場合を例にすると、それぞれ以下のようになります。
+			</p>
+			<ul>
+				<li><code>{selected}</code> …… <kbd>foo.exe &quot;C:\file01.txt&quot; &quot;C:\file02.txt&quot;</kbd></li>
+				<li><code>[selected]</code> …… <kbd>foo.exe &quot;C:\file01.txt&quot;</kbd> ／ <kbd>foo.exe &quot;C:\file02.txt&quot;</kbd></li>
+				<li><code>{current}</code> …… <kbd>foo.exe &quot;C:\&quot;</kbd></li>
+			</ul>
+			<p>
+				また、<code>args</code> 属性は上記変数以外の文字を含んでいても構いません。
+				変数以外の文字列は、そのまま実行ファイルに渡されます。
+				<code>args</code> 属性が無いか、変数を含んでいない場合は、現在の状態は引数としては渡されませんが、作業フォルダを引き継ぐ効果はあります。
+				このため、例えば「コマンドプロンプトを開く」コマンドは、以下の2つの指定方法があります。
+			</p>
+			<ol>
+				<li><code>&lt;<i>menu/bind/gesture</i> execute=&quot;cmd.exe&quot; args=&quot;/K cd {current}&quot; /&gt;</code> …… 明示的にcdでカレントを変更</li>
+				<li><code>&lt;<i>menu/bind/gesture</i> execute=&quot;cmd.exe&quot; /&gt;</code> …… カレントディレクトリが引き継がれる</li>
+			</ol>
+			<h5>★ 現在の制限</h5>
+			<p>
+				変数は一度にただ一つのみ使用できます。
+				例えば、<code>args=&quot;{currrent} {parent}&quot;</code> のような指定は出来ません。
+			</p>
+		</div>
+		
+		<h3>移動コマンド</h3>
+		<div>
+			<p>
+				移動コマンドは、<code>navigate</code> 属性にパスを指定します。
+				どのように移動するかは、<code>args</code> 属性で指定します。
+				デフォルト（指定が無い場合）は“open”とみなされます。
+				また、フォルダの基本移動は“goto”と等価です。
+			</p>
+			<p>
+				移動が発生するたび、<kbd>callback.py</kbd> の <code>Navigate()</code> 関数が呼ばれます。
+				この関数は、修飾キーやフォルダの特性などを考慮し、移動コマンドを修正することが出来ます。
+			</p>
+			<table>
+				<tr><th>args       </th><th>効果</th></tr>
+				<tr><td>goto       </td><td>現在のタブのパスを変更する。</td></tr>
+				<tr><td>goto-always</td><td>現在のタブのパスを変更する。</td></tr>
+				<tr><td>open       </td><td>タブを追加し、そのタブのみを表示する。</td></tr>
+				<tr><td>open-always</td><td>タブを追加し、そのタブのみを表示する。</td></tr>
+				<tr><td>append     </td><td>タブを追加する。フォーカスは変わらない。</td></tr>
+				<tr><td>reserve    </td><td>タブを非表示で追加する。</td></tr>
+				<tr><td>switch     </td><td>タブを追加し、そのタブにフォーカスを移す。</td></tr>
+				<tr><td>replace    </td><td>タブを追加し、そのタブにフォーカスを移し、元のタブを隠す。</td></tr>
+			</table>
+		</div>
+	</usage>
+	
+	<usage name="コマンドライン">
+		<div>
+			<p>
+				コマンドライン引数は、UNIX風またはDOS風の書式の両方を認識できます。
+				厳密に言えば、<code>avesta.exe [X]option[Y]value</code> を基本形として、
+				オプション開始文字 [X] として “-”（ハイフン）,“/”（スラッシュ）、
+				値区切り文字 [Y] として“=”（イコール）,“:”（コロン）,“ ”（スペース）を使用できます。
+			</p>
+			<h5>利用可能なオプション</h5>
+			<p>デフォルトのフォルダの開き方は“open”です。</p>
+			<table>
+				<tr><th>option     </th><th>効果</th></tr>
+				<tr><td>command    </td><td>続くコマンド名を実行します。</td></tr>
+				<tr><td>link       </td><td>続くショートカットファイルのリンク先を開きます。</td></tr>
+				<tr><td>goto       </td><td>現在のタブのパスを変更する。</td></tr>
+				<tr><td>goto-always</td><td>現在のタブのパスを変更する。</td></tr>
+				<tr><td>open       </td><td>タブを追加し、そのタブのみを表示する。</td></tr>
+				<tr><td>open-always</td><td>タブを追加し、そのタブのみを表示する。</td></tr>
+				<tr><td>append     </td><td>タブを追加する。フォーカスは変わらない。</td></tr>
+				<tr><td>reserve    </td><td>タブを非表示で追加する。</td></tr>
+				<tr><td>switch     </td><td>タブを追加し、そのタブにフォーカスを移す。</td></tr>
+				<tr><td>replace    </td><td>タブを追加し、そのタブにフォーカスを移し、元のタブを隠す。</td></tr>
+			</table>
+			<h5>例</h5>
+			<code>avesta.exe -append C:\ -link C:\memo.txt.lnk -reserve D:\</code>
+			<p>C:\ を追加で開く、C:\memo.txt.lnk のリンク先を追加で開く、D:\ を非表示で開く、を連続して実行します。</p>
+			<code>avesta.exe -command window.maximize</code>
+			<p>ウィンドウを最大化させます。“-command”はコマンドライン型ランチャなどから使うと良いでしょう。</p>
+		</div>
+	</usage>
+
+	<usage name="仮想パス一覧">
+		<div>
+			<p>
+				Avestaでパスを指定する場合、下記の仮想ルートパスを使用できます。
+				例えば、<kbd>AVESTA/bin/avesta.exe</kbd> を指定すれば、インストールした実際のパスに関係なく、どの環境でもAvesta実行ファイルを指定できます。
+			</p>
+			<p>よく使われる仮想パスを以下に示します。その他のパスに関しては、<a href="path.html">一覧</a>をご覧ください。</p>
+			<table>
+				<tr><th>パス文字列</th><th>仮想フォルダ</th><th>典型的なパス</th></tr>
+				<tr><td class="path">AVESTA</td><td>Avestaルートフォルダ</td><td>（インストールしたフォルダ）</td></tr>
+				<tr><td class="path">CONTROL(s), CONTROLPANEL</td><td>コントロールパネル</td><td>（仮想）</td></tr>
+				<tr><td class="path">DESKTOP</td><td>デスクトップ（仮想）</td><td><kbd>PROFILE\デスクトップ</kbd></td></tr>
+				<tr><td class="path">DRIVE(s), MYCOMPUTER</td><td>マイコンピュータ</td><td>（仮想）</td></tr>
+				<tr><td class="path">FAVORITE(s)</td><td>IEお気に入り</td><td><kbd>PROFILE\Favorites</kbd></td></tr>
+				<tr><td class="path">FONT(s)</td><td>フォント</td><td><kbd>C:\WINDOWS\Fonts</kbd></td></tr>
+				<tr><td class="path">HOME, MYDOCUMENT(s), ~</td><td>マイドキュメント（仮想）</td><td><kbd>PROFILE\My Documents</kbd></td></tr>
+				<tr><td class="path">MYMUSIC</td><td>マイミュージック</td><td><kbd>MYDOCUMENT\My Music</kbd></td></tr>
+				<tr><td class="path">MYPICTURE(s)</td><td>マイピクチャ</td><td><kbd>MYDOCUMENT\My Pictures</kbd></td></tr>
+				<tr><td class="path">MYVIDEO</td><td>マイビデオ</td><td><kbd>MYDOCUMENT\My Videos</kbd></td></tr>
+				<tr><td class="path">NETWORK</td><td>ネットワーク</td><td>（仮想）</td></tr>
+				<tr><td class="path">PRINTER(s)</td><td>プリンタ</td><td>（仮想）</td></tr>
+				<tr><td class="path">PROFILE(s)</td><td>ユーザフォルダ</td><td><kbd>C:\Documents and Settings\≪usr≫</kbd></td></tr>
+				<tr><td class="path">PROGRAM_FILE(s)</td><td>プログラムインストールフォルダ</td><td><kbd>C:\Program Files</kbd></td></tr>
+				<tr><td class="path">RECYCLEBIN, TRASH</td><td>ゴミ箱</td><td>（仮想）</td></tr>
+				<tr><td class="path">SENDTO</td><td>右クリックメニューの「送る」</td><td><kbd>PROFILE\SendTo</kbd></td></tr>
+				<tr><td class="path">STARTMENU</td><td>スタートメニュー</td><td><kbd>PROFILE\スタートメニュー</kbd></td></tr>
+				<tr><td class="path">STARTUP</td><td>スタートアップ</td><td><kbd>STARTMENU\プログラム\スタートアップ</kbd></td></tr>
+				<tr><td class="path">SYSTEM</td><td>Windowsシステムフォルダ</td><td><kbd>C:\WINDOWS\system32</kbd></td></tr>
+				<tr><td class="path">TEMPLATE(s)</td><td>右クリックメニューの「新規作成」</td><td><kbd>PROFILE\Templates</kbd></td></tr>
+				<tr><td class="path">WINDOWS</td><td>Windowsフォルダ</td><td><kbd>C:\WINDOWS</kbd></td></tr>
+			</table>
+		</div>
+	</usage>
+	
+	<commands name="コマンド表">
+		<description>
+			コマンド名は大文字・小文字を区別しません。
+			<a href="command.txt">テキスト版</a>
+		</description>
+		<file>command.xml</file>
+	</commands>
+	
+	<changelog name="更新履歴">
+		<file>changelog.xml</file>
+	</changelog>
+</manual>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="Shift_JIS" ?>
+<?xml-stylesheet type="text/xsl" href="keyboard.xsl"?>
+
+<!-- modifier := C(control), S(shift), A(alt), W(windows) -->
+
+<keyboard name="global">
+	<!-- 
+	<bind modifier=""  key="無変換"  command="Form.Show(toggle)"/>
+		-->
+	<bind modifier="W" key="A"  command="Form.Show(toggle)"/>
+	<!-- エクスプローラを取り込み、整理し、アクティブ化する -->
+	<bind modifier="W" key="I"  command="Explorer.Import;Duplicate.Close;Tab.Sort;Form.Show(true)"/>
+	<bind modifier="W" key="S"  command="Current.SyncFileDialog"/>
+	<bind modifier="W" key="Z"  command="Form.DropMode"/>
+</keyboard>

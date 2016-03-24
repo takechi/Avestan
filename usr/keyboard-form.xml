@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="Shift_JIS" ?>
+<?xml-stylesheet type="text/xsl" href="keyboard.xsl"?>
+
+<!-- modifier := C(control), S(shift), A(alt), W(windows) -->
+
+<!--
+  ウィンドウを開く or 移動系 のコマンドにおいて、
+  修飾キーに Control または Shift が組み合わされている場合は、
+  それぞれ「別ウィンドウで開く」「非表示で開く」の動作が追加されます。
+  例えば、Control+Backspace の場合、
+  「一つ上のフォルダを、別ウィンドウで開く」という動作になります。
+-->
+
+<keyboard name="form">
+  <bind modifier="A"  key="space" command="Form.Menu"/>
+  <bind modifier=""   key="backspace" command="Current.Go.Up"/>
+  <bind modifier="C"  key="backspace" command="Current.Go.Up"/>
+  <bind modifier="S"  key="backspace" command="Current.Go.Up"/>
+  <bind modifier="CS" key="backspace" command="Current.Go.Up"/>
+  <bind modifier="A"   key="↑" command="Current.Go.Up"/>
+  <bind modifier="AC"  key="↑" command="Current.Go.Up"/>
+  <bind modifier="AS"  key="↑" command="Current.Go.Up"/>
+  <bind modifier="ACS" key="↑" command="Current.Go.Up"/>
+  <bind modifier="A"   key="←" command="Current.Go.Back"/>
+  <bind modifier="AC"  key="←" command="Current.Go.Back"/>
+  <bind modifier="AS"  key="←" command="Current.Go.Back"/>
+  <bind modifier="ACS" key="←" command="Current.Go.Back"/>
+  <bind modifier="A"   key="→" command="Current.Go.Forward"/>
+  <bind modifier="AC"  key="→" command="Current.Go.Forward"/>
+  <bind modifier="AS"  key="→" command="Current.Go.Forward"/>
+  <bind modifier="ACS" key="→" command="Current.Go.Forward"/>
+
+<!-- A -->
+  <bind modifier="CS" key="A" command="All.Show(true)"/>
+<!-- B -->
+<!-- C -->
+<!-- D -->
+<!-- E -->
+<!-- F -->
+  <bind modifier="CS" key="F">
+    <menu text="_A : アドレスバー" command="Address.Focus"/>
+    <menu text="_H : ヘッダ"       command="Header.Focus"/>
+    <menu text="_T : ツリー"       command="Tree.Focus"/>
+    <menu text="_O : ツールバー"   command="Tool.Focus"/>
+    <menu text="_L : リンクバー"   command="Link.Focus"/>
+    <menu text="_P : プレビュー"   command="Preview.Focus"/>
+  </bind>
+<!-- G -->
+<!-- H -->
+  <bind modifier="C"  key="H" command="Current.Show(false)"/>
+  <bind modifier="CS" key="H" command="Others.Show(false)"/>
+<!-- I -->
+<!-- J -->
+<!-- K -->
+<!-- L -->
+<!-- M -->
+<!-- N -->
+<!-- O -->
+  <bind modifier="C"  key="O" command="File.Open"/>
+  <bind modifier="CS" key="O" command="File.Load"/>
+<!-- P -->
+  <bind modifier="C"  key="P" command="Preview.Show(toggle)"/>
+<!-- Q: quit -->
+  <bind modifier="C"  key="Q" command="System.Exit"/>
+  <bind modifier="CS" key="Q" command="All.Close"/>
+<!-- R -->
+  <bind modifier="CS" key="R" command="File.MRU"/>
+<!-- S -->
+  <bind modifier="CS" key="S" command="File.Save"/>
+<!-- T -->
+<!-- U -->
+<!-- V -->
+<!-- W -->
+  <bind modifier="C"  key="W" command="Current.Close"/>
+  <bind modifier="CS" key="W" command="Others.Close"/>
+<!-- X -->
+<!-- Y -->
+<!-- Z -->
+  <bind modifier="C"  key="Z" command="Current.Undo"/>
+
+<!-- ＜ -->
+  <bind modifier="S"  key="," command="Current.ToLeft"/>
+  <bind modifier="C"  key="," command="Tree.Reflect"/>
+<!-- ＞ -->
+  <bind modifier="S"  key="." command="Current.ToRight"/>
+  <bind modifier="C"  key="." command="Tree.Sync"/>
+
+<!-- numbers -->
+  <bind modifier="C"  key="1" command="Tab[1].Show(toggle)"/>
+  <bind modifier="C"  key="2" command="Tab[2].Show(toggle)"/>
+  <bind modifier="C"  key="3" command="Tab[3].Show(toggle)"/>
+  <bind modifier="C"  key="4" command="Tab[4].Show(toggle)"/>
+  <bind modifier="C"  key="5" command="Tab[5].Show(toggle)"/>
+  <bind modifier="C"  key="6" command="Tab[6].Show(toggle)"/>
+  <bind modifier="C"  key="7" command="Tab[7].Show(toggle)"/>
+  <bind modifier="C"  key="8" command="Tab[8].Show(toggle)"/>
+  <bind modifier="C"  key="9" command="Tab[9].Show(toggle)"/>
+
+  <bind modifier="S"  key="1" command="Tab[1].Focus"/>
+  <bind modifier="S"  key="2" command="Tab[2].Focus"/>
+  <bind modifier="S"  key="3" command="Tab[3].Focus"/>
+  <bind modifier="S"  key="4" command="Tab[4].Focus"/>
+  <bind modifier="S"  key="5" command="Tab[5].Focus"/>
+  <bind modifier="S"  key="6" command="Tab[6].Focus"/>
+  <bind modifier="S"  key="7" command="Tab[7].Focus"/>
+  <bind modifier="S"  key="8" command="Tab[8].Focus"/>
+  <bind modifier="S"  key="9" command="Tab[9].Focus"/>
+
+</keyboard>

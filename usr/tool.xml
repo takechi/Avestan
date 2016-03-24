@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<menu>
+  <menu text="" command="File.Open"   image="13"/>
+  <menu text="" command="File.MRU"    image="2"/>
+  <menu/>
+  <menu text="戻る" command="Current.Go.Back"      image="7"/>
+  <menu text="進む" command="Current.Go.Forward"   image="8"/>
+  <menu text="上へ" command="Current.Go.Up"        image="9"/>
+  <menu/>
+  <menu text="プレビュー" command="Preview.Show(toggle)" image="22"/>
+  <menu text="フォルダ"   command="Tree.Show(toggle)"    image="12"/>
+  <menu text="" command="Tree.Sync"          image="48"/>
+  <menu text="" command="Tree.Reflect"       image="49"/>
+  <menu/>
+  <menu text="" command="Current.NewFolder" image="27">
+    <menu text="フォルダの作成(_F)" command="Current.NewFolder" image="27"/>
+    <menu text="ファイルの作成(_N)" command="Current.New"       image="15"/>
+  </menu>
+  <menu text="" command="Current.Cut"       image="3"/>
+  <menu text="" command="Current.Copy"      image="4"/>
+  <menu text="" command="Current.Paste"     image="5"/>
+  <menu text="" command="Current.Delete"    image="6"/>
+  <menu/>
+  <menu text="" command="Current.Refresh" image="17"/>
+  <menu text="" command="Current.Undo"    image="1"/>
+  <menu text="" command="Current.Lock(toggle)" image="29"/>
+  <menu text="" command="Current.Close"  image="25"/>
+  <menu/>
+  <menu text="" command="Arrange.Horz" image="37"/>
+  <menu text="" command="Arrange.Vert" image="38"/>
+  <menu text="" command="Arrange.Auto" image="39"/>
+  <menu/>
+  <menu text="" image="26">
+    <menu text="縮小版(_H)"     command="Current.Mode.Thumbnail" image="32"/>
+    <menu text="並べて表示(_S)" command="Current.Mode.Tile"      image="33"/>
+    <menu text="アイコン(_N)"   command="Current.Mode.Icon"      image="34"/>
+    <menu text="一覧(_L)"       command="Current.Mode.List"      image="35"/>
+    <menu text="詳細(_D)"       command="Current.Mode.Details"   image="36"/>
+  </menu>
+</menu>

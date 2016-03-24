@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+
+<!--
+  bug v0.3.0.0 : ジェスチャ中のメッセージがステータスバーに表示されません。
+  -->
+
+<mouse name="tree">
+  <!-- 右クリック＋移動 -->
+  <gesture modifier=""  input="2←"   command="Tree.Reflect"/>
+  <gesture modifier=""  input="2→"   command="Tree.Sync"/>
+  <gesture modifier=""  input="2↓"   command="Tree.Show(toggle)"/>
+</mouse>

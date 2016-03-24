@@ -1,0 +1,1422 @@
+<?xml-stylesheet type="text/xsl" href="manual.xsl"><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html lang="ja">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<title>Avesta マニュアル</title>
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="stylesheet" type="text/css" href="manual.css">
+</head>
+<body>
+<h1>Avesta マニュアル</h1>
+<ul>
+	<li><a href="#IDAKAOP">概要</a></li>
+	
+	<li><a href="#IDADBOP">特徴</a></li>
+	
+	<li><a href="#IDAVBOP">はじめに</a></li>
+	
+	<li><a href="#IDA1COP">基本的な使い方</a></li>
+	
+	<li><a href="#IDA4EOP">カスタマイズ：表示</a></li>
+	
+	<li><a href="#IDAGHOP">カスタマイズ：操作</a></li>
+	
+	<li><a href="#IDALPOP">コマンドライン</a></li>
+
+	<li><a href="#IDAXROP">仮想パス一覧</a></li>
+	
+	<li><a href="#IDAUXOP">コマンド表</a></li>
+	
+	<li><a href="#IDAEYOP">更新履歴</a></li>
+</ul>
+	<h2 id="IDAKAOP">概要</h2>
+<table>
+<tr><td nowrap="">タイトル</td><td><what>Avesta: the Multi-Tabbed Filer （多画面タブファイラ）</what></td></tr>
+<tr><td nowrap="">バージョン</td><td><version>0.3.1.9 : “public alpha”</version></td></tr>
+<tr><td nowrap="">日付</td><td><when>2006/02/21</when></td></tr>
+<tr><td nowrap="">著作権者</td><td><who>LaLa Moo-Moo (ITAGAKI Takahiro)</who></td></tr>
+<tr><td nowrap="">メール</td><td><a href="mailto:lamoo@s53.xrea.com"><mailto>lamoo@s53.xrea.com</mailto></a></td></tr>
+<tr><td nowrap="">URL</td><td><a href="http://lamoo.s53.xrea.com/"><url>http://lamoo.s53.xrea.com/</url></a></td></tr>
+<tr><td nowrap="">開発環境</td><td><env-dev>日本語版 Windows XP sp2 + Visual Studio.NET 2003</env-dev></td></tr>
+<tr><td nowrap="">動作環境</td><td><env-run>日本語版 Windows XP (NT 5.1）以上</env-run></td></tr>
+<tr><td nowrap="">ライセンス</td><td><licence><a href="../licence.txt">Avesta Licence</a></licence></td></tr>
+</table>
+	
+	<h2 id="IDADBOP">特徴</h2>
+<ul>
+<li>基本的な操作はエクスプローラに倣っています。</li>
+<li>複数のタブを切り替え、複数のフォルダを同時に閲覧することができます。</li>
+<li>マウスでもキーボードでも十分な操作ができます。</li>
+<li>マウスジェスチャと右ドラッグ＆ドロップを両方とも使用できます。</li>
+<li>メニュー、ツールバー、キー操作、マウスジェスチャなどを自由にカスタマイズできます。</li>
+<li>非アクティブ状態からでもホットキーひとつで呼び出せます。</li>
+<li>さまざまなシェル拡張ツールがそのまま利用できます。</li>
+</ul>
+	
+	<h2 id="IDAVBOP">はじめに</h2>
+<div>
+<h3>インストール</h3>
+<div><p>
+				適当な場所にフォルダを作成し、そこに解凍して下さい。
+				フォルダに関連付けする方法は<a href="../appendix/readme.txt">appendix</a>にあります。
+			</p>
+</div>
+</div>
+<div>
+<h3>アップデート</h3>
+<div><p>
+				基本的には手動での更新になります。
+				面倒だとは思いますが、ご容赦ください。
+				バージョン上3桁 A.B.C.* の変更が無い場合は、以下の更新方法を使えます。
+				メジャーバージョンアップの場合は、avesta.exe, pygmy.dll の更新が必要なため、
+				完全に終了した後、別のファイラから上書きしてください。
+			</p>
+<ol>
+				<li>書庫をダウンロード、解凍。</li>
+				<li>新しい avesta.dll をダブルクリックし、ホットアップデート。</li>
+				<li>/man を上書きコピー。</li>
+				<li>更新履歴や、diffを見ながら、変更のあった箇所を 自分の /usr に反映。</li>
+			</ol>
+</div>
+</div>
+<div>
+<h3>アンインストール</h3>
+<div><p>
+				レジストリは使用していないので、フォルダごと削除して下さい。
+				関連付けしている場合は、削除する前に解除して下さい。
+			</p>
+</div>
+</div>
+	
+	<h2 id="IDA1COP">基本的な使い方</h2>
+		<h3>基本</h3>
+		<ul>
+			<li>基本的には、エクスプローラと同じです。</li>
+			<li>タブクリック時やフォルダ移動時に、コントロールキーやシフトキーを押しておくと通常とは異なる動作をします。</li>
+			<li>タブキーにより、ビュー間の移動ができます。</li>
+		</ul>
+		<h3>タブの選択</h3>
+		<ul>
+			<li>左クリック：クリックしたタブのみを選択し、他のタブの選択を解除します。</li>
+			<li>左クリック＋コントロール：クリックしたタブの選択状態を切り替えます。他のタブには影響しません。</li>
+			<li>左ダブルクリック：タブをロック状態を切り替えます。</li>
+			<li>左ドラッグ：タブを移動します。</li>
+			<li>右クリック：コンテキストメニューを表示します。</li>
+			<li>左右同時クリック：コントロール＋左クリックと同じです。</li>
+			<li>中クリック：タブを閉じます。</li>
+		</ul>
+		<h3>フォルダ構成</h3>
+		<ul>
+			<li>bin : 実行ファイルが置かれています。</li>
+			<li>man : ヘルプファイルが置かれています。</li>
+			<li>opt : 外部拡張ツールが置かれています。</li>
+			<li>usr : 環境非依存の設定ファイルが置かれています。編集することでカスタマイズできます。</li>
+			<li>var : 環境に依存した設定、キャッシュファイルが置かれます。編集しないでください。</li>
+		</ul>
+		<h3>操作一覧</h3>
+		<div>
+			<ul>
+				<li><a href="keyboard.xml">キー操作一覧</a></li>
+				<li><a href="mouse.xml">マウス操作一覧</a></li>
+			</ul>
+		</div>
+	
+	
+	<h2 id="IDA4EOP">カスタマイズ：表示</h2>
+		<div>
+			<p><a href="../usr/readme.txt">usr/readme.txt</a> も参照してください。</p>
+			<ul>
+				<li><kbd>form.xml</kbd> …… 全てのカスタマイズの元となるファイル</li>
+				<li><kbd>profile.ini</kbd> …… 雑多なオプションの指定</li>
+				<li><kbd>main.ico</kbd> …… Avestaのアプリケーションアイコンとして使われます。</li>
+				<li><kbd>keyboard-global.xml</kbd> …… 「Windows全体」でのキーボード入力</li>
+				<li><kbd>keyboard-frame.xml</kbd> …… 「Avesta全体」でのキーボード入力</li>
+				<li><kbd>keyboard-folder.xml</kbd> …… 「フォルダ」でのキーボード入力</li>
+				<li><kbd>keyboard-tree.xml</kbd> …… 「ツリー」でのキーボード入力</li>
+				<li><kbd>keyboard-preview.xml</kbd> …… 「プレビュー」でのキーボード入力</li>
+				<li><kbd>mouse-folder.xml</kbd> …… マウスでの入力</li>
+				<li><kbd>menu.xml/png</kbd> …… メニューの構成とアイコン</li>
+				<li><kbd>tool.xml/png</kbd> …… ツールバーの構成とアイコン</li>
+				<li><kbd>status.xml/png</kbd> …… ステータスバーの構成とアイコン</li>
+				<li><kbd>sysmenu.xml/png</kbd> …… システムメニューの構成とアイコン</li>
+				<li><kbd>link.xml</kbd> …… リンクバーの構成。</li>
+			</ul>
+		</div>
+	
+	
+	<h2 id="IDAGHOP">カスタマイズ：操作</h2>
+		<div>
+			<p>
+				メニュー、キーマップ、マウスジェスチャは、それぞれの項目ごとにコマンドを設定できます。
+				コマンドは、組み込みコマンド、外部実行コマンド、移動コマンドの3種類があります。
+			</p>
+		</div>
+		<h3>組み込みコマンド</h3>
+		<div>
+			<p>
+				組み込みコマンドは、<code>command</code> 属性にコマンド名を指定します。
+				コマンドの種類については、コマンド表を参照してください。
+				また、「;」（セミコロン）で区切ることにより、複数のコマンドを連続して実行することもできます。
+			</p>
+			<h5>複合コマンド例</h5>
+			<code>&lt;<i>menu/bind/gesture</i> command="Explorer.Import;Duplicate.Close;Window.Show(true)" /&gt;</code>
+			<p>エクスプローラを取り込み、重複を整理し、アクティブ化する。</p>
+			<code>&lt;<i>menu/bind/gesture</i> command="Current.Key.Space;Current.Key.Down" /&gt;</code>
+			<p>チェックボックスをチェックし、その後、カーソルを一つ下に移動する。</p>
+		</div>
+		
+		<h3>外部実行コマンド</h3>
+		<div>
+			<p>
+				外部実行コマンドは、<code>execute</code> 属性に実行ファイルパスを指定します。
+				作業フォルダは現在アクティブなフォルダになります。
+				実行ファイルに渡すコマンドライン引数は、<code>args</code> 属性で指定します。
+				<code>args</code> 属性の中にある以下の文字列を括弧で囲んだ文字は変数とみなされ、置換されます。
+			</p>
+			<table>
+				<tr>
+<th>変数名  </th>
+<th>対象</th>
+<th>効果</th>
+</tr>
+				<tr>
+<td><code>current </code></td>
+<td align="center">タブ</td>
+<td>カレントフォルダ。</td>
+</tr>
+				<tr>
+<td><code>all     </code></td>
+<td align="center">タブ</td>
+<td>開かれている全てのフォルダ。</td>
+</tr>
+				<tr>
+<td><code>shown   </code></td>
+<td align="center">タブ</td>
+<td>表示されているフォルダ。</td>
+</tr>
+				<tr>
+<td><code>hidden  </code></td>
+<td align="center">タブ</td>
+<td>表示されていないフォルダ。</td>
+</tr>
+				<tr>
+<td><code>parent  </code></td>
+<td align="center">タブ</td>
+<td>カレントフォルダの親。</td>
+</tr>
+				<tr>
+<td><code>items   </code></td>
+<td align="center">項目</td>
+<td>カレントフォルダ中の全ての項目。</td>
+</tr>
+				<tr>
+<td><code>selected</code></td>
+<td align="center">項目</td>
+<td>カレントフォルダ中の選択された項目。</td>
+</tr>
+				<tr>
+<td><code>checked </code></td>
+<td align="center">項目</td>
+<td>カレントフォルダ中のチェックされた項目。</td>
+</tr>
+			</table>
+			<h5>括弧の効果</h5>
+			<dl>
+				<dt>all 指定子: <code>{var}</code></dt>
+				<dd>
+					中括弧（“{ }”）で囲んだ場合は、それぞれのパスをスペース区切りで連結した文字列に展開されます。
+				</dd>
+				<dt>each 指定子: <code>[var]</code></dt>
+				<dd>
+					かぎ括弧（“[ ]”）で囲んだ場合は、パス一つ一つに展開され、それぞれについて実行されます。
+					つまり、実行ファイルは複数回起動されることになります。
+				</dd>
+			</dl>
+			<h5>例</h5>
+			<p>
+				<code>execute="foo.exe" args="***"</code> について、
+				<kbd>C:\</kbd> を表示しており、<kbd>C:\file01.txt, C:\file02.txt</kbd> を選択した状態から起動した場合を例にすると、それぞれ以下のようになります。
+			</p>
+			<ul>
+				<li><code>{selected}</code> …… <kbd>foo.exe "C:\file01.txt" "C:\file02.txt"</kbd></li>
+				<li><code>[selected]</code> …… <kbd>foo.exe "C:\file01.txt"</kbd> ／ <kbd>foo.exe "C:\file02.txt"</kbd></li>
+				<li><code>{current}</code> …… <kbd>foo.exe "C:\"</kbd></li>
+			</ul>
+			<p>
+				また、<code>args</code> 属性は上記変数以外の文字を含んでいても構いません。
+				変数以外の文字列は、そのまま実行ファイルに渡されます。
+				<code>args</code> 属性が無いか、変数を含んでいない場合は、現在の状態は引数としては渡されませんが、作業フォルダを引き継ぐ効果はあります。
+				このため、例えば「コマンドプロンプトを開く」コマンドは、以下の2つの指定方法があります。
+			</p>
+			<ol>
+				<li><code>&lt;<i>menu/bind/gesture</i> execute="cmd.exe" args="/K cd {current}" /&gt;</code> …… 明示的にcdでカレントを変更</li>
+				<li><code>&lt;<i>menu/bind/gesture</i> execute="cmd.exe" /&gt;</code> …… カレントディレクトリが引き継がれる</li>
+			</ol>
+			<h5>★ 現在の制限</h5>
+			<p>
+				変数は一度にただ一つのみ使用できます。
+				例えば、<code>args="{currrent} {parent}"</code> のような指定は出来ません。
+			</p>
+		</div>
+		
+		<h3>移動コマンド</h3>
+		<div>
+			<p>
+				移動コマンドは、<code>navigate</code> 属性にパスを指定します。
+				どのように移動するかは、<code>args</code> 属性で指定します。
+				デフォルト（指定が無い場合）は“open”とみなされます。
+				また、フォルダの基本移動は“goto”と等価です。
+			</p>
+			<p>
+				移動が発生するたび、<kbd>callback.py</kbd> の <code>Navigate()</code> 関数が呼ばれます。
+				この関数は、修飾キーやフォルダの特性などを考慮し、移動コマンドを修正することが出来ます。
+			</p>
+			<table>
+				<tr>
+<th>args       </th>
+<th>効果</th>
+</tr>
+				<tr>
+<td>goto       </td>
+<td>現在のタブのパスを変更する。</td>
+</tr>
+				<tr>
+<td>goto-always</td>
+<td>現在のタブのパスを変更する。</td>
+</tr>
+				<tr>
+<td>open       </td>
+<td>タブを追加し、そのタブのみを表示する。</td>
+</tr>
+				<tr>
+<td>open-always</td>
+<td>タブを追加し、そのタブのみを表示する。</td>
+</tr>
+				<tr>
+<td>append     </td>
+<td>タブを追加する。フォーカスは変わらない。</td>
+</tr>
+				<tr>
+<td>reserve    </td>
+<td>タブを非表示で追加する。</td>
+</tr>
+				<tr>
+<td>switch     </td>
+<td>タブを追加し、そのタブにフォーカスを移す。</td>
+</tr>
+				<tr>
+<td>replace    </td>
+<td>タブを追加し、そのタブにフォーカスを移し、元のタブを隠す。</td>
+</tr>
+			</table>
+		</div>
+	
+	
+	<h2 id="IDALPOP">コマンドライン</h2>
+		<div>
+			<p>
+				コマンドライン引数は、UNIX風またはDOS風の書式の両方を認識できます。
+				厳密に言えば、<code>avesta.exe [X]option[Y]value</code> を基本形として、
+				オプション開始文字 [X] として “-”（ハイフン）,“/”（スラッシュ）、
+				値区切り文字 [Y] として“=”（イコール）,“:”（コロン）,“ ”（スペース）を使用できます。
+			</p>
+			<h5>利用可能なオプション</h5>
+			<p>デフォルトのフォルダの開き方は“open”です。</p>
+			<table>
+				<tr>
+<th>option     </th>
+<th>効果</th>
+</tr>
+				<tr>
+<td>command    </td>
+<td>続くコマンド名を実行します。</td>
+</tr>
+				<tr>
+<td>link       </td>
+<td>続くショートカットファイルのリンク先を開きます。</td>
+</tr>
+				<tr>
+<td>goto       </td>
+<td>現在のタブのパスを変更する。</td>
+</tr>
+				<tr>
+<td>goto-always</td>
+<td>現在のタブのパスを変更する。</td>
+</tr>
+				<tr>
+<td>open       </td>
+<td>タブを追加し、そのタブのみを表示する。</td>
+</tr>
+				<tr>
+<td>open-always</td>
+<td>タブを追加し、そのタブのみを表示する。</td>
+</tr>
+				<tr>
+<td>append     </td>
+<td>タブを追加する。フォーカスは変わらない。</td>
+</tr>
+				<tr>
+<td>reserve    </td>
+<td>タブを非表示で追加する。</td>
+</tr>
+				<tr>
+<td>switch     </td>
+<td>タブを追加し、そのタブにフォーカスを移す。</td>
+</tr>
+				<tr>
+<td>replace    </td>
+<td>タブを追加し、そのタブにフォーカスを移し、元のタブを隠す。</td>
+</tr>
+			</table>
+			<h5>例</h5>
+			<code>avesta.exe -append C:\ -link C:\memo.txt.lnk -reserve D:\</code>
+			<p>C:\ を追加で開く、C:\memo.txt.lnk のリンク先を追加で開く、D:\ を非表示で開く、を連続して実行します。</p>
+			<code>avesta.exe -command window.maximize</code>
+			<p>ウィンドウを最大化させます。“-command”はコマンドライン型ランチャなどから使うと良いでしょう。</p>
+		</div>
+	
+
+	<h2 id="IDAXROP">仮想パス一覧</h2>
+		<div>
+			<p>
+				Avestaでパスを指定する場合、下記の仮想ルートパスを使用できます。
+				例えば、<kbd>AVESTA/bin/avesta.exe</kbd> を指定すれば、インストールした実際のパスに関係なく、どの環境でもAvesta実行ファイルを指定できます。
+			</p>
+			<p>よく使われる仮想パスを以下に示します。その他のパスに関しては、<a href="path.html">一覧</a>をご覧ください。</p>
+			<table>
+				<tr>
+<th>パス文字列</th>
+<th>仮想フォルダ</th>
+<th>典型的なパス</th>
+</tr>
+				<tr>
+<td class="path">AVESTA</td>
+<td>Avestaルートフォルダ</td>
+<td>（インストールしたフォルダ）</td>
+</tr>
+				<tr>
+<td class="path">CONTROL(s), CONTROLPANEL</td>
+<td>コントロールパネル</td>
+<td>（仮想）</td>
+</tr>
+				<tr>
+<td class="path">DESKTOP</td>
+<td>デスクトップ（仮想）</td>
+<td><kbd>PROFILE\デスクトップ</kbd></td>
+</tr>
+				<tr>
+<td class="path">DRIVE(s), MYCOMPUTER</td>
+<td>マイコンピュータ</td>
+<td>（仮想）</td>
+</tr>
+				<tr>
+<td class="path">FAVORITE(s)</td>
+<td>IEお気に入り</td>
+<td><kbd>PROFILE\Favorites</kbd></td>
+</tr>
+				<tr>
+<td class="path">FONT(s)</td>
+<td>フォント</td>
+<td><kbd>C:\WINDOWS\Fonts</kbd></td>
+</tr>
+				<tr>
+<td class="path">HOME, MYDOCUMENT(s), ~</td>
+<td>マイドキュメント（仮想）</td>
+<td><kbd>PROFILE\My Documents</kbd></td>
+</tr>
+				<tr>
+<td class="path">MYMUSIC</td>
+<td>マイミュージック</td>
+<td><kbd>MYDOCUMENT\My Music</kbd></td>
+</tr>
+				<tr>
+<td class="path">MYPICTURE(s)</td>
+<td>マイピクチャ</td>
+<td><kbd>MYDOCUMENT\My Pictures</kbd></td>
+</tr>
+				<tr>
+<td class="path">MYVIDEO</td>
+<td>マイビデオ</td>
+<td><kbd>MYDOCUMENT\My Videos</kbd></td>
+</tr>
+				<tr>
+<td class="path">NETWORK</td>
+<td>ネットワーク</td>
+<td>（仮想）</td>
+</tr>
+				<tr>
+<td class="path">PRINTER(s)</td>
+<td>プリンタ</td>
+<td>（仮想）</td>
+</tr>
+				<tr>
+<td class="path">PROFILE(s)</td>
+<td>ユーザフォルダ</td>
+<td><kbd>C:\Documents and Settings\≪usr≫</kbd></td>
+</tr>
+				<tr>
+<td class="path">PROGRAM_FILE(s)</td>
+<td>プログラムインストールフォルダ</td>
+<td><kbd>C:\Program Files</kbd></td>
+</tr>
+				<tr>
+<td class="path">RECYCLEBIN, TRASH</td>
+<td>ゴミ箱</td>
+<td>（仮想）</td>
+</tr>
+				<tr>
+<td class="path">SENDTO</td>
+<td>右クリックメニューの「送る」</td>
+<td><kbd>PROFILE\SendTo</kbd></td>
+</tr>
+				<tr>
+<td class="path">STARTMENU</td>
+<td>スタートメニュー</td>
+<td><kbd>PROFILE\スタートメニュー</kbd></td>
+</tr>
+				<tr>
+<td class="path">STARTUP</td>
+<td>スタートアップ</td>
+<td><kbd>STARTMENU\プログラム\スタートアップ</kbd></td>
+</tr>
+				<tr>
+<td class="path">SYSTEM</td>
+<td>Windowsシステムフォルダ</td>
+<td><kbd>C:\WINDOWS\system32</kbd></td>
+</tr>
+				<tr>
+<td class="path">TEMPLATE(s)</td>
+<td>右クリックメニューの「新規作成」</td>
+<td><kbd>PROFILE\Templates</kbd></td>
+</tr>
+				<tr>
+<td class="path">WINDOWS</td>
+<td>Windowsフォルダ</td>
+<td><kbd>C:\WINDOWS</kbd></td>
+</tr>
+			</table>
+		</div>
+	
+	
+	<h2 id="IDAUXOP">コマンド表</h2>
+<div><description>
+			コマンド名は大文字・小文字を区別しません。
+			<a href="command.txt">テキスト版</a>
+		</description></div>
+<table>
+<tr><th>名前</th><th>説明</th></tr>
+<tr>
+<td class="command"><name>Address.Focus</name></td>
+<td><description>アドレスバーにフォーカスを移します</description></td>
+</tr>
+<tr>
+<td class="command"><name>All.Close</name></td>
+<td><description>すべてのフォルダを閉じます</description></td>
+</tr>
+<tr>
+<td class="command"><name>All.Export</name></td>
+<td><description>すべてのフォルダをエクスプローラとして切り離します</description></td>
+</tr>
+<tr>
+<td class="command"><name>All.Refresh</name></td>
+<td><description>すべてのフォルダを最新の情報に更新します</description></td>
+</tr>
+<tr>
+<td class="command"><name>All.Show(true)</name></td>
+<td><description>すべてのフォルダを表示します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Arrange.Auto</name></td>
+<td><description>フォルダを自動的に並べます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Arrange.Horz</name></td>
+<td><description>フォルダを横方向に並べます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Arrange.Vert</name></td>
+<td><description>フォルダを縦方向に並べます</description></td>
+</tr>
+<tr>
+<td class="command"><name>AutoCopy.None</name></td>
+<td><description>ファイルをクリップボードへコピーする際、拡張コピーを行いません。</description></td>
+</tr>
+<tr>
+<td class="command"><name>AutoCopy.Base</name></td>
+<td><description>ファイルをクリップボードへコピーする際、拡張子を除いた名前をコピーします。</description></td>
+</tr>
+<tr>
+<td class="command"><name>AutoCopy.Name</name></td>
+<td><description>ファイルをクリップボードへコピーする際、名前をコピーします。</description></td>
+</tr>
+<tr>
+<td class="command"><name>AutoCopy.Path</name></td>
+<td><description>ファイルをクリップボードへコピーする際、パスをコピーします。</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.AdjustToItem</name></td>
+<td><description>カレントフォルダのカラム幅を項目にあわせます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.AdjustToWindow</name></td>
+<td><description>カレントフォルダのカラム幅をウィンドウにあわせます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.AutoArrange</name></td>
+<td><description>自動整列するか否かを切り替えます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Bury</name></td>
+<td><description>選択項目をゴミ箱へ送らずに削除します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.CheckAll</name></td>
+<td><description>すべての項目をチェックします</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.CheckNone</name></td>
+<td><description>すべてのチェックを解除します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Close</name></td>
+<td><description>現在のフォルダを閉じます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Copy</name></td>
+<td><description>選択項目をコピーします</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Copy.Base</name></td>
+<td><description>選択項目の拡張子を除く名前をクリップボードにコピーします</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Copy.Here</name></td>
+<td><description>選択項目を複製します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Copy.Name</name></td>
+<td><description>選択項目の名前をクリップボードにコピーします</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Copy.Path</name></td>
+<td><description>選択項目のパスをクリップボードにコピーします</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.CopyCheckedTo</name></td>
+<td><description>チェックされた項目を選択中のフォルダの中へコピーします</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.CopyTo</name></td>
+<td><description>選択項目を場所を指定してコピーします</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.CopyToOther</name></td>
+<td><description>選択項目をもう一方のフォルダへコピーします</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Cursor.Down</name></td>
+<td><description>↓</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Cursor.Left</name></td>
+<td><description>←</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Cursor.Right</name></td>
+<td><description>→</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Cursor.Up</name></td>
+<td><description>↑</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Cursor.Home</name></td>
+<td><description>Home</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Cursor.End</name></td>
+<td><description>End</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Cursor.PageUp</name></td>
+<td><description>PageUp</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Cursor.PageDown</name></td>
+<td><description>PageDown</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Cut</name></td>
+<td><description>選択項目を切り取ります</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Delete</name></td>
+<td><description>選択項目をゴミ箱へ送ります</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Export</name></td>
+<td><description>現在のフォルダをエクスプローラとして切り離します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Find</name></td>
+<td><description>検索ウィンドウを開きます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Go.Back</name></td>
+<td><description>戻ります</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Go.Forward</name></td>
+<td><description>進みます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Go.Location</name></td>
+<td><description>場所を指定して移動します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Go.Up</name></td>
+<td><description>上のフォルダへ移動します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Grouping</name></td>
+<td><description>グループ表示を切り替えます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Key.Down</name></td>
+<td><description>↓</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Key.Left</name></td>
+<td><description>←</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Key.Right</name></td>
+<td><description>→</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Key.Up</name></td>
+<td><description>↑</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Key.Home</name></td>
+<td><description>Home</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Key.End</name></td>
+<td><description>End</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Key.PageUp</name></td>
+<td><description>PageUp</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Key.PageDown</name></td>
+<td><description>PageDown</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Key.Space</name></td>
+<td><description>Space</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Key.Enter</name></td>
+<td><description>Enter</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Lock(false)</name></td>
+<td><description>現在のフォルダのロックを解除します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Lock(toggle)</name></td>
+<td><description>現在のフォルダのロック状態を切り替えます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Lock(true)</name></td>
+<td><description>現在のフォルダをロックします</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Menu</name></td>
+<td><description>コンテキストメニューを表示します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Mode.Details</name></td>
+<td><description>詳細</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Mode.Icon</name></td>
+<td><description>アイコン</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Mode.List</name></td>
+<td><description>一覧</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Mode.Thumbnail</name></td>
+<td><description>縮小版</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Mode.Tile</name></td>
+<td><description>並べて表示</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.MoveCheckedTo</name></td>
+<td><description>チェックされた項目を選択中のフォルダの中へ移動します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.MoveTo</name></td>
+<td><description>選択項目を場所を指定して移動します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.MoveToOther</name></td>
+<td><description>選択項目をもう一方のフォルダへ移動します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.New</name></td>
+<td><description>ファイルやフォルダを新規作成します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.NewFolder</name></td>
+<td><description>新しいフォルダを作成します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Paste</name></td>
+<td><description>クリップボードのファイルをカレントフォルダへ貼り付けます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.PasteTo</name></td>
+<td><description>クリップボードのファイルを選択中のフォルダの中へ移動します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.PatternMask</name></td>
+<td><description>パターンマスクを設定します。</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Property</name></td>
+<td><description>選択項目のプロパティを表示します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Refresh</name></td>
+<td><description>現在のフォルダを最新の情報に更新します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Rename</name></td>
+<td><description>選択項目の名前を変更します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Rename.Dialog</name></td>
+<td><description>選択項目の名前を変更するダイアログを表示します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Rename.Paste</name></td>
+<td><description>選択項目の名前をクリップボードのテキストに変更します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.SelectAll</name></td>
+<td><description>すべての項目を選択します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.SelectChecked</name></td>
+<td><description>チェックされた項目を選択します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.SelectNone</name></td>
+<td><description>すべての選択を解除します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.SelectPattern</name></td>
+<td><description>ワイルドカードを指定してファイルを選択します。</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.SelectReverse</name></td>
+<td><description>選択している項目を非選択にし、選択していない項目を選択します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.SelectToFirst</name></td>
+<td><description>現在カーソル上の項目から一番最初の項目までを選択します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.SelectToLast</name></td>
+<td><description>現在カーソル上の項目から一番最後の項目までを選択します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Show(false)</name></td>
+<td><description>現在のフォルダを隠します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.ShowAllFiles</name></td>
+<td><description>隠しファイルも表示するか否かを切り替えます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.SyncDescendants</name></td>
+<td><description>現在の表示設定を下層フォルダにも適用します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.SyncFileDialog</name></td>
+<td><description>他のアプリケーションのファイルダイアログを、現在のフォルダに移動する</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.ToLeft</name></td>
+<td><description>カレントフォルダを左に移動します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.ToRight</name></td>
+<td><description>カレントフォルダを右に移動します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Current.Undo</name></td>
+<td><description>前回の処理を取り消します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Duplicate.Close</name></td>
+<td><description>重複するフォルダを閉じます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Explorer.Clone</name></td>
+<td><description>現在開かれているエクスプローラを取り込みます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Explorer.Import</name></td>
+<td><description>現在開かれているエクスプローラを取り込み、閉じます</description></td>
+</tr>
+<tr>
+<td class="command"><name>File.Load</name></td>
+<td><description>以前保存したフォルダリストを読み込みます</description></td>
+</tr>
+<tr>
+<td class="command"><name>File.MRU</name></td>
+<td><description>最後に閉じられたフォルダを開きます</description></td>
+</tr>
+<tr>
+<td class="command"><name>File.Open</name></td>
+<td><description>パスを指定してフォルダを開きます</description></td>
+</tr>
+<tr>
+<td class="command"><name>File.Save</name></td>
+<td><description>現在開かれているフォルダリストを保存します</description></td>
+</tr>
+<tr>
+<td class="command"><name>FolderOptions.Show</name></td>
+<td><description>フォルダオプションダイアログを表示します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Form.DropMode</name></td>
+<td><description>ウィンドウをドロップモード化します。</description></td>
+</tr>
+<tr>
+<td class="command"><name>Form.Maximize</name></td>
+<td><description>ウィンドウを最大化します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Form.Menu</name></td>
+<td><description>システムメニューを表示します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Form.Move</name></td>
+<td><description>ウィンドウの位置を変更します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Form.Resize</name></td>
+<td><description>ウィンドウの大きさを変更します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Form.Restore</name></td>
+<td><description>ウィンドウを通常の大きさに戻します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Form.Show(false)</name></td>
+<td><description>ウィンドウを最小化します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Form.Show(toggle)</name></td>
+<td><description>ウィンドウを最前面化または最小化します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Form.Show(true)</name></td>
+<td><description>ウィンドウを最前面化します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Header.Focus</name></td>
+<td><description>ヘッダにフォーカスを移します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Hidden.Close</name></td>
+<td><description>非表示のフォルダを閉じます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Hidden.Export</name></td>
+<td><description>非表示のフォルダをエクスプローラとして切り離します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Hidden.Refresh</name></td>
+<td><description>非表示のフォルダを最新の情報に更新します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Keybind.Atok</name></td>
+<td><description>一行入力テキストボックスで、ATOK風のキーバインドを使用します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Keybind.Emacs</name></td>
+<td><description>一行入力テキストボックスで、Emacs風のキーバインドを使用します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Keybind.Normal</name></td>
+<td><description>一行入力テキストボックスで、標準のキーバインドを使用します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Left.Close</name></td>
+<td><description>カレントよりも左側のフォルダを閉じます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Left.Show(false)</name></td>
+<td><description>カレントよりも左側のフォルダを隠します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Left.Show(true)</name></td>
+<td><description>カレントよりも左側のフォルダを表示します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Locked.ToLeft</name></td>
+<td><description>ロック中のタブを左に集めます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Locked.ToRight</name></td>
+<td><description>ロック中のタブを右に集めます</description></td>
+</tr>
+<tr>
+<td class="command"><name>MiddleClick.Disable</name></td>
+<td><description>アイテム上での中クリックを無効にします</description></td>
+</tr>
+<tr>
+<td class="command"><name>MiddleClick.Control</name></td>
+<td><description>アイテム上での中クリックはControlクリックの動作をします</description></td>
+</tr>
+<tr>
+<td class="command"><name>MiddleClick.Shift</name></td>
+<td><description>アイテム上での中クリックはShiftクリックの動作をします</description></td>
+</tr>
+<tr>
+<td class="command"><name>MiddleClick.SingleExecute</name></td>
+<td><description>アイテム上での中クリックした際、クリックしたアイテム以外は開きません</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.AlwaysTop</name></td>
+<td><description>常にウィンドウを手前に表示します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.AlwaysTray</name></td>
+<td><description>常にタスクトレイにアイコンを表示します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.CheckBox</name></td>
+<td><description>チェックボックスを表示します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.CloseToTray</name></td>
+<td><description>「閉じる」代わりにタスクトレイへ格納します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.DnDCopyInterDrive</name></td>
+<td><description>異なるドライブ間のドラッグ＆ドロップのデフォルト動作はコピーになります</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.DistinguishTab</name></td>
+<td><description>同じ文字列のタブを区別できるようにします</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.FullRowSelect</name></td>
+<td><description>詳細表示時に一行選択します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.Font</name></td>
+<td><description>フォントを設定します。</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.GestureOnName</name></td>
+<td><description>「名前」カラム上の左クリックジェスチャを有効します。</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.GridLine</name></td>
+<td><description>詳細表示時にグリッドを描画します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.Insert.Head</name></td>
+<td><description>新規タブは一番左に追加されます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.Insert.Next</name></td>
+<td><description>新規タブはカレントの右に追加されます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.Insert.Prev</name></td>
+<td><description>新規タブはカレントの左に追加されます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.Insert.Tail</name></td>
+<td><description>新規タブは一番右に追加されます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.LazyExecute</name></td>
+<td><description>指定されたアクションが使用できなかった場合、デフォルトのアクションで実行します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.LockClose</name></td>
+<td><description>ロックされたタブも閉じられるようにします</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.LoopCursor</name></td>
+<td><description>選択カーソルを端でループさせます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.OpenDups</name></td>
+<td><description>すでに開かれているフォルダも重複して開きます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.OpenNotify</name></td>
+<td><description>フォルダを新しく開いた際に分かりやすく通知します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.PasteInFolder</name></td>
+<td><description>フォルダを一つ選択した状態の場合、そのフォルダの中へペーストします</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.Python</name></td>
+<td><description>Python拡張を有効にします</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.QuietProgress</name></td>
+<td><description>ファイル操作進捗ポップアップウィンドウが操作の邪魔にならないようにします</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.Reload</name></td>
+<td><description>設定ファイルを読み込み直します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.RenameExtension</name></td>
+<td><description>ファイル名の変更時に、拡張子部分も選択します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.RestoreConditions</name></td>
+<td><description>起動したとき、前回終了時に開かれていたフォルダを復元します。</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.TaskTray</name></td>
+<td><description>最小化時にタスクトレイへ格納します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.Thumbnail.64</name></td>
+<td><description>サムネイルのサイズを64ピクセルに変更します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.Thumbnail.96</name></td>
+<td><description>サムネイルのサイズを96ピクセルに変更します（標準）</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.Thumbnail.128</name></td>
+<td><description>サムネイルのサイズを128ピクセルに変更します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.Thumbnail.192</name></td>
+<td><description>サムネイルのサイズを192ピクセルに変更します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.Thumbnail.256</name></td>
+<td><description>サムネイルのサイズを256ピクセルに変更します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Option.WallPaper</name></td>
+<td><description>壁紙を設定します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Others.Close</name></td>
+<td><description>カレント以外を閉じます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Others.Show(false)</name></td>
+<td><description>カレント以外を隠します</description></td>
+</tr>
+<tr>
+<td class="command"><name>RecycleBin.Empty</name></td>
+<td><description>ごみ箱を空にします</description></td>
+</tr>
+<tr>
+<td class="command"><name>Right.Close</name></td>
+<td><description>カレントよりも右側のフォルダを閉じます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Right.Show(false)</name></td>
+<td><description>カレントよりも右側のフォルダを隠します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Right.Show(true)</name></td>
+<td><description>カレントよりも右側のフォルダを表示します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Shown.AdjustToItem</name></td>
+<td><description>表示中のフォルダのカラム幅を項目にあわせます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Shown.AdjustToWindow</name></td>
+<td><description>表示中のフォルダのカラム幅をウィンドウにあわせます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Shown.Close</name></td>
+<td><description>表示中のフォルダを閉じます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Shown.Export</name></td>
+<td><description>表示中のフォルダをエクスプローラとして切り離します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Shown.Refresh</name></td>
+<td><description>表示中のフォルダを最新の情報に更新します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Shown.ToLeft</name></td>
+<td><description>表示中のタブを左に集めます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Shown.ToRight</name></td>
+<td><description>表示中のタブを右に集めます</description></td>
+</tr>
+<tr>
+<td class="command"><name>System.About</name></td>
+<td><description>バージョン情報を表示します</description></td>
+</tr>
+<tr>
+<td class="command"><name>System.Exit</name></td>
+<td><description>アプリケーションを終了します</description></td>
+</tr>
+<tr>
+<td class="command"><name>System.Restart</name></td>
+<td><description>アプリケーションを再起動します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tab.Focus</name></td>
+<td><description>タブにフォーカスを移します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tab.Next</name></td>
+<td><description>次のタブにフォーカスを移します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tab.Next2</name></td>
+<td><description>次のタブにフォーカスを移します2</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tab.Prev</name></td>
+<td><description>前のタブにフォーカスを移します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tab.Prev2</name></td>
+<td><description>前のタブにフォーカスを移します2</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tab.Sort</name></td>
+<td><description>タブをパスでソートします</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tab[1].Focus</name></td>
+<td><description>第1フォルダにフォーカスを移します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tab[1].Show(toggle)</name></td>
+<td><description>第1フォルダの表示状態を切り替えます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tab[2].Focus</name></td>
+<td><description>第2フォルダにフォーカスを移します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tab[2].Show(toggle)</name></td>
+<td><description>第2フォルダの表示状態を切り替えます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tab[3].Focus</name></td>
+<td><description>第3フォルダにフォーカスを移します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tab[3].Show(toggle)</name></td>
+<td><description>第3フォルダの表示状態を切り替えます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tab[4].Focus</name></td>
+<td><description>第4フォルダにフォーカスを移します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tab[4].Show(toggle)</name></td>
+<td><description>第4フォルダの表示状態を切り替えます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tab[5].Focus</name></td>
+<td><description>第5フォルダにフォーカスを移します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tab[5].Show(toggle)</name></td>
+<td><description>第5フォルダの表示状態を切り替えます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tab[6].Focus</name></td>
+<td><description>第6フォルダにフォーカスを移します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tab[6].Show(toggle)</name></td>
+<td><description>第6フォルダの表示状態を切り替えます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tab[7].Focus</name></td>
+<td><description>第7フォルダにフォーカスを移します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tab[7].Show(toggle)</name></td>
+<td><description>第7フォルダの表示状態を切り替えます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tab[8].Focus</name></td>
+<td><description>第8フォルダにフォーカスを移します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tab[8].Show(toggle)</name></td>
+<td><description>第8フォルダの表示状態を切り替えます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tab[9].Focus</name></td>
+<td><description>第9フォルダにフォーカスを移します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tab[9].Show(toggle)</name></td>
+<td><description>第9フォルダの表示状態を切り替えます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tree.AutoReflect</name></td>
+<td><description>自動的にフォルダをツリーに反映させます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tree.AutoSync</name></td>
+<td><description>自動的にフォルダをツリーに同期させます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tree.Bury</name></td>
+<td><description>選択項目をゴミ箱へ送らずに削除します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tree.Copy</name></td>
+<td><description>選択項目をコピーします</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tree.Copy.Base</name></td>
+<td><description>選択項目の拡張子を除く名前をクリップボードにコピーします</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tree.Copy.Here</name></td>
+<td><description>選択項目を複製します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tree.Copy.Name</name></td>
+<td><description>選択項目の名前をクリップボードにコピーします</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tree.Copy.Path</name></td>
+<td><description>選択項目のパスをクリップボードにコピーします</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tree.CopyTo</name></td>
+<td><description>選択項目を場所を指定してコピーします</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tree.Cut</name></td>
+<td><description>選択項目を切り取ります</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tree.Delete</name></td>
+<td><description>選択項目をゴミ箱へ送ります</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tree.MoveTo</name></td>
+<td><description>選択項目を場所を指定して移動します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tree.Paste</name></td>
+<td><description>クリップボードのファイルを選択中のフォルダへ貼り付けます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tree.Property</name></td>
+<td><description>選択項目のプロパティを表示します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tree.Reflect</name></td>
+<td><description>フォルダをツリーに反映させます</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tree.Refresh</name></td>
+<td><description>ツリーを最新の情報に更新します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tree.Rename</name></td>
+<td><description>選択項目の名前を変更します</description></td>
+</tr>
+<tr>
+<td class="command"><name>Tree.Sync</name></td>
+<td><description>フォルダをツリーに同期させます</description></td>
+</tr>
+</table>
+	
+	<h2 id="IDAEYOP">更新履歴</h2>
+<p><span class="new">新規</span>　<span class="refine">改善</span>　<span class="bugfix">バグ駆除</span>　<span class="internal">内部処理</span>　
+		<a href="history.html">過去の更新履歴</a></p>
+<dl>
+<dt>0.3.1.9</dt>
+<dd><span class="bugfix">◆ </span><description>アイコン用画像がbmp形式の場合に発生しうるバグの修正。（※標準添付はpng形式）</description></dd>
+<dd><span class="bugfix">◆ </span><description>表示設定用の保存ファイルにゴミが混じる可能性があったバグの修正。（※ゴミを読み飛ばすようなので、実質問題にはならなかった）</description></dd>
+<dd><span class="bugfix">◆ </span><description>マニュアル類を更新。</description></dd>
+<dt>0.3.1.8</dt>
+<dd><span class="bugfix">◆ </span><description>アルファ付きアイコンが正しく描画されないバグ<a href="http://lamoo.s53.xrea.com/forum/index.php?all=740">[740]</a>を駆除。</description></dd>
+<dd><span class="bugfix">◆ </span><description>フォント変更時にMigemizeExplorerが正常に動作しないバグ<a href="http://lamoo.s53.xrea.com/forum/index.php?all=722">[722]</a>を駆除。(by s2 氏)</description></dd>
+<dd><span class="bugfix">◆ </span><description>パターンマスクが解除できないバグ<a href="http://lamoo.s53.xrea.com/forum/index.php?all=782">[782]</a>を駆除。</description></dd>
+<dd><span class="bugfix">◆ </span><description>ドロップモード移行時のタスクバーの点滅を抑制。</description></dd>
+<dt>0.3.1.7</dt>
+<dd><span class="new">★ </span><description>フォルダの表示設定ごとにアイコンサイズを変更できるようにした。<a href="http://lamoo.s53.xrea.com/forum/index.php?all=768">[768]</a> profie.ini [Style] Folder* を参照。</description></dd>
+<dd><span class="refine">● </span><description>ロックしたタブを閉じないようにする設定を追加。<a href="http://lamoo.s53.xrea.com/forum/index.php?all=728">[728]</a></description></dd>
+<dd><span class="refine">● </span><description>ドロップモードの動作の改良。位置の記憶、最小化状態からのドロップモード化など。</description></dd>
+<dd><span class="bugfix">◆ </span><description>フォルダの表示設定がリセットされるバグ<a href="http://lamoo.s53.xrea.com/forum/index.php?all=614">[614]</a>を駆除。これに伴い profile.ini {Misc] CompoundSettings を削除。</description></dd>
+<dt>0.3.1.6</dt>
+<dd><span class="new">★ </span><description>Form.DropModeを復活。グローバルキーマップ として Win+Z を割り当て。<a href="http://lamoo.s53.xrea.com/forum/index.php?all=755">[755]</a></description></dd>
+<dd><span class="refine">● </span><description>Current.SyncFileDialog の成功率を高めたつもり。グローバルキーマップ として Win+S を割り当て。</description></dd>
+<dd><span class="bugfix">◆ </span><description>callback.py ExecuteVerb() の folder 引数が正しくないバグを修正。<a href="http://lamoo.s53.xrea.com/forum/index.php?all=762">[762]</a> (by SS氏)</description></dd>
+<dt>0.3.1.5</dt>
+<dd><span class="bugfix">◆ </span><description>GDIリソースリークを修正。<a href="http://lamoo.s53.xrea.com/forum/index.php?all=742">[742]</a> (by SS氏)</description></dd>
+<dd><span class="bugfix">◆ </span><description>オプション＞ファイルリスト＞フォルダの中へペーストする のデフォルト値をOFFに変更 <a href="http://lamoo.s53.xrea.com/forum/index.php?all=738">[738]</a></description></dd>
+<dt>0.3.1.4</dt>
+<dd><span class="refine">● </span><description>「表示マスクの設定」「パターンを指定して選択」にて、大文字小文字を区別しないようになった。また、「; (セミコロン)」で複数のパターンを指定可能になった。<a href="http://lamoo.s53.xrea.com/forum/index.php?all=712">[712]</a> (by zark氏)</description></dd>
+<dd><span class="bugfix">◆ </span><description>Windows XP (SP無し) での動作を改善。<a href="http://lamoo.s53.xrea.com/forum/index.php?all=706">[706]</a> （※ただ、セキュリティのためにも、SPの適用をお勧めします）</description></dd>
+<dd><span class="bugfix">◆ </span><description>フォルダを重複して開かない設定時に、重複して開いている作業状態を復元すると、重複がまとめられてしまうバグを修正。</description></dd>
+<dt>0.3.1.3</dt>
+<dd><span class="refine">● </span><description>一時しのぎとして、profile.ini [Misc] CompoundSettings にて、フォルダの設定を一つの複合ファイルに格納するか、別々に格納するか(0.2.6以前の動作)を指定できるようにした。 複合ファイルのほうが効率はよいが、設定がリセットされるバグが残っている。</description></dd>
+<dd><span class="bugfix">◆ </span><description>拡張子の関連付け実行が正しく行われないバグを修正。<a href="http://lamoo.s53.xrea.com/forum/index.php?all=673">[673]</a></description></dd>
+<dt>0.3.1.2</dt>
+<dd><span class="new">★ </span><description>オプション追加 -- LoopCursor : 選択カーソルを端でループさせます <a href="http://lamoo.s53.xrea.com/forum/index.php?all=618">[618]</a></description></dd>
+<dd><span class="bugfix">◆ </span><description>起動時にタブを一つの開かない場合、キャプションが空になるバグを修正。</description></dd>
+<dt>0.3.1.1</dt>
+<dd><span class="bugfix">◆ </span><description>バーの固定時に非表示のバーを表示してしまうバグを修正 (enbug at 0.3.1.0)</description></dd>
+<dd><span class="bugfix">◆ </span><description>圧縮書庫を関連付けを考慮せずにフォルダとして扱ってしまったバグを修正 (enbug at 0.3.1.0)</description></dd>
+<dd><span class="bugfix">◆ </span><description>Tab.Sortのソート順序が間違っていたバグを修正 <a href="http://lamoo.s53.xrea.com/forum/index.php?all=627">[627]</a></description></dd>
+<dt>0.3.1.0</dt>
+<dd><span class="new">★ </span><description>作業状態として表示マスクの設定が保存されるようになった。(by zark 氏)</description></dd>
+<dd><span class="bugfix">◆ </span><description>ReBarを固定した場合に左端に隙間が残るバグを修正。</description></dd>
+<dd><span class="bugfix">◆ </span><description>表示状態の更新が遅延するバグを修正。（WM_UPDATEUISTATEの扱いが原因）</description></dd>
+<dd><span class="bugfix">◆ </span><description>Form.DropModeを削除。意味づけが難しくなったため。</description></dd>
+<dd><span class="bugfix">◆ </span><description>CIDAのリークを修正。</description></dd>
+<dt>0.3.0.0</dt>
+<dd><span class="new">★ </span><description>ウィンドウ・コンポーネントをカスタマイズできるようになった。usr/form.xml で指定する。</description></dd>
+<dd><span class="new">★ </span><description>ツリーでマウスジェスチャが使えるようになった。ただし、ステータスバーへのジェスチャメッセージの表示は未実装。</description></dd>
+<dd><span class="new">★ </span><description>「ファイルの新規作成」で、拡張子ごとにテンプレートを適用できるようになった。まずShellNewを参照し、登録されていなければTEMPLATESフォルダの中の同じ拡張子のファイルを捜す。</description></dd>
+<dd><span class="new">★ </span><description>フォルダの表示状態は、一つのファイル var/settings.dat に保存するようになった。以前のバージョンの表示設定は全て初期化されるので注意。</description></dd>
+<dd><span class="new">★ </span><description>MRUリストの状態を保存するようにした。</description></dd>
+<dd><span class="new">★ </span><description>“Window”, “Frame” と呼んでいたものを、全て“Form”で統一した。ただし、コマンド名についてはエイリアスを残してある。Keyboard-form.xml のファイル名変更に注意。</description></dd>
+<dd><span class="new">★ </span><description>Option.OpenNotify を追加。フォルダを新しく開いた際に分かりやすく通知する……つもりだったが、微妙。</description></dd>
+<dd><span class="refine">● </span><description>コマンド：Current.Go.Home を削除。代わりに navigate=HOME を使うこと。</description></dd>
+<dd><span class="refine">● </span><description>profile.ini で指定していた幾つかのオプションは、usr/form.xml に移った。</description></dd>
+<dd><span class="bugfix">◆ </span><description>作業状態の保存で、自動的に拡張子 .ave をつけるようにした。</description></dd>
+<dd><span class="bugfix">◆ </span><description>ナビゲート時のサウンドファイルが見つからない場合は、音を鳴らさないようにした。</description></dd>
+<dd><span class="bugfix">◆ </span><description>デスクトップを開いた場合に、アドレスバーに実パスが表示される不具合を修正。</description></dd>
+<dd><span class="internal">▲ </span><description>コンパイラの最適化オプションを変更。/OPT:NOWIN98 /G7</description></dd>
+</dl>
+</body>
+</html>

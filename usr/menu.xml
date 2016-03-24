@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<menu>
+  <menu text="ファイル(_F)">
+    <menu text="フォルダの作成(_F)"   command="Current.NewFolder" image="27"/>
+    <menu text="ファイルの作成(_N)..."  command="Current.New"     image="15"/>
+    <menu/>
+    <menu text="開く(_O)..."      command="File.Open"   image="13"/>
+    <menu text="最近閉じたフォルダ(_R)"  command="File.MRU" image="2"/>
+    <menu text="閉じる(_C)"       command="Current.Close"   image="25">
+      <menu text="カレント(_C)"   command="Current.Close"   image="25"/>
+      <menu text="すべて(_A)"     command="All.Close"       image="40"/>
+      <menu text="左側(_L)"       command="Left.Close"      image="42"/>
+      <menu text="右側(_R)"       command="Right.Close"     image="41"/>
+      <menu text="表示中(_S)"     command="Shown.Close"     image="44"/>
+      <menu text="非表示(_H)"     command="Hidden.Close"    image="43"/>
+      <menu text="他(_O)"         command="Others.Close" />
+      <menu text="重複(_D)"       command="Duplicate.Close" />
+    </menu>
+    <menu text="表示(_W)">
+      <menu text="すべて(_A)"  command="All.Show(true)"/>
+      <menu text="左側(_L)"    command="Left.Show(true)"/>
+      <menu text="右側(_R)"    command="Right.Show(true)"/>
+    </menu>
+    <menu text="隠す(_H)"       command="Current.Show(false)"    image="28">
+      <menu text="カレント(_C)" command="Current.Show(false)"    image="28"/>
+      <menu text="左側(_L)"     command="Left.Show(false)"/>
+      <menu text="右側(_R)"     command="Right.Show(false)"/>
+      <menu text="他(_O)"       command="Others.Show(false)"/>
+    </menu>
+    <menu/>
+    <menu text="作業状態を開く(_L)..."      command="File.Load"/>
+    <menu text="作業状態の保存(_S)..."      command="File.Save"        image="14"/>
+    <menu text="ごみ箱を空にする(_E)...{*}" command="RecycleBin.Empty" image="30"/>
+    <menu/>
+    <menu text="再起動(_R)"     command="System.Restart"/>
+    <menu text="終了(_X)"       command="System.Exit"/>
+  </menu>
+  <menu text="編集(_E)">
+    <menu text="元に戻す(_U)"   command="Current.Undo"   image="1"/>
+    <menu/>
+    <menu text="切り取り(_T)"   command="Current.Cut"    image="3"/>
+    <menu text="コピー(_C)"     command="Current.Copy"   image="4"/>
+    <menu text="貼り付け(_P)"   command="Current.Paste"  image="5"/>
+    <menu text="複製(_U)"       command="Current.Copy.Here"/>
+    <menu text="削除(_D)"       command="Current.Delete" image="6"/>
+    <menu text="完全に削除(_B)" command="Current.Bury"/>
+    <menu/>
+    <menu text="場所を指定して移動(_M)..."   command="Current.MoveTo" image="10"/>
+    <menu text="場所を指定してコピー(_Y)..." command="Current.CopyTo" image="11"/>
+    <menu text="他方へ移動(_M)..."           command="Current.MoveToOther" image="10"/>
+    <menu text="他方へコピー(_Y)..."         command="Current.CopyToOther" image="11"/>
+    <menu/>
+    <menu text="パスをコピー(_T)"               command="Current.Copy.Path"/>
+    <menu text="名前をコピー(_N)"               command="Current.Copy.Name"/>
+    <menu text="拡張子を除いた名前をコピー(_E)" command="Current.Copy.Base"/>
+    <menu text="名前をその場で変更(_I)"         command="Current.Rename"/>
+    <menu text="名前を変更(_R)..."              command="Current.Rename.Dialog"/>
+    <menu text="名前を貼り付け(_A)"             command="Current.Rename.Paste"/>
+    <menu/>
+    <menu text="選択(_S)">
+      <menu text="パターンを指定して選択(_P)"   command="Current.SelectPattern"/>
+      <menu text="チェックされた項目を選択(_S)" command="Current.SelectChecked"/>
+      <menu text="選択項目を反転(_R)"           command="Current.SelectReverse"/>
+      <menu text="すべての項目を選択(_A)"       command="Current.SelectAll"/>
+      <menu text="すべての選択を解除(_N)"       command="Current.SelectNone"/>
+      <menu text="すべての項目をチェック(_C)"   command="Current.CheckAll"/>
+      <menu text="すべてのチェックを解除(_H)"   command="Current.CheckNone"/>
+    </menu>
+  </menu>
+  <menu text="移動(_G)">
+    <menu text="戻る(_B)" command="Current.Go.Back"    image="7"/>
+    <menu text="進む(_F)" command="Current.Go.Forward" image="8"/>
+    <menu text="上へ(_U)" command="Current.Go.Up"      image="9"/>
+    <menu/>
+    <menu text="ホーム(_H)"        navigate="HOME"  image="19"/>
+    <menu text="場所を指定(_L)..." command="Current.Go.Location"/>
+    <menu/>
+    <menu text="フォルダをツリーに同期させる(_S)" command="Tree.Sync"    image="48"/>
+    <menu text="フォルダをツリーに反映する(_R)"   command="Tree.Reflect" image="49"/>
+  </menu>
+  <menu text="表示(_V)">
+    <menu text="縮小版(_H)"     command="Current.Mode.Thumbnail" image="32"/>
+    <menu text="並べて表示(_S)" command="Current.Mode.Tile"      image="33"/>
+    <menu text="アイコン(_N)"   command="Current.Mode.Icon"      image="34"/>
+    <menu text="一覧(_L)"       command="Current.Mode.List"      image="35"/>
+    <menu text="詳細(_D)"       command="Current.Mode.Details"   image="36"/>
+    <menu/>
+    <menu text="ナビゲートロック(_L)"       command="Current.Lock(toggle)" image="29"/>
+    <menu text="隠しファイルも表示する(_F)" command="Current.ShowAllFiles" image="16"/>
+    <menu text="アイコンの自動整列(_A)"     command="Current.AutoArrange"/>
+    <menu text="グループで表示(_G)"         command="Current.Grouping"/>
+    <menu text="表示マスクの設定...(_M)"    command="Current.PatternMask"/>
+    <menu/>
+    <menu text="カレントのカラム幅を項目にあわせる"       command="Current.AdjustToItem" />
+    <menu text="カレントのカラム幅をウィンドウにあわせる" command="Current.AdjustToWindow" />
+    <menu text="表示中のカラム幅を項目にあわせる"         command="Shown.AdjustToItem" />
+    <menu text="表示中のカラム幅をウィンドウにあわせる"   command="Shown.AdjustToWindow" />
+    <menu/>
+    <menu text="表示設定を下層フォルダに適用(_Y)..."     command="Current.SyncDescendants" />
+    <menu text="検索(_F)..."          command="Current.Find" image="20"/>
+    <menu text="最新の情報に更新(_R)" command="Current.Refresh" image="17"/>
+    <menu text="ツリーを更新(_T)"     command="Tree.Refresh"/>
+  </menu>
+  <menu text="ウィンドウ(_W)">
+    <menu text="横に並べる(_H)"      command="Arrange.Horz" image="37"/>
+    <menu text="縦に並べる(_V)"      command="Arrange.Vert" image="38"/>
+    <menu text="自動的に並べる(_A)"  command="Arrange.Auto" image="39"/>
+    <menu/>
+    <menu text="コントロールバー(_C)">
+      <menu text="メニューバー(_M)"    command="Menu.Show(toggle)"/>
+      <menu text="ツールバー(_T)"      command="Tool.Show(toggle)"/>
+      <menu text="リンクバー(_L)"      command="Link.Show(toggle)"/>
+      <menu text="ステータスバー(_S)"  command="Status.Show(toggle)"/>
+      <menu text="ツリーバー(_R)"      command="Tree.Show(toggle)"/>
+      <menu text="プレビュー(_P)"      command="Preview.Show(toggle)"/>
+    </menu>
+    <menu text="タブ(_T)">
+      <menu text="パスでソートする(_S)" command="Tab.Sort"/>
+      <menu text="表示中を左へ(_L)"     command="Shown.ToLeft"/>
+      <menu text="表示中を右へ(_R)"     command="Shown.ToRight"/>
+      <menu text="ロック中を左へ(_E)"   command="Locked.ToLeft"/>
+      <menu text="ロック中を右へ(_I)"   command="Locked.ToRight"/>
+    </menu>
+    <menu text="サムネイルサイズ(_Z)">
+      <menu text="_1: 64"           command="Option.Thumbnail.64"/>
+      <menu text="_2: 96 (標準)"    command="Option.Thumbnail.96"/>
+      <menu text="_3: 128"          command="Option.Thumbnail.128"/>
+      <menu text="_4: 192"          command="Option.Thumbnail.192"/>
+      <menu text="_5: 256"          command="Option.Thumbnail.256"/>
+    </menu>
+    <menu/>
+    <menu text="元のサイズに戻す(_R)" command="Form.Restore"/>
+    <menu text="移動(_M)"             command="Form.Move"/>
+    <menu text="サイズ変更(_S)"       command="Form.Resize"/>
+    <menu text="最小化(_N)"           command="Form.Minimize"/>
+    <menu text="最大化(_X)"           command="Form.Maximize"/>
+  </menu>
+  <menu text="ツール(_T)">
+    <menu text="コマンドプロンプト(_C)"     execute="SYSTEM/cmd.exe" />
+    <menu text="Cygwin _Bash Shell"         execute="AVESTA/opt/BashHere.bat" args="{current}" />
+    <menu text="メモ帳で開く(_M)"           execute="SYSTEM/notepad.exe" args="[selected]"/>
+    <menu text="ペイントで開く(_P)"         execute="SYSTEM/mspaint.exe" args="[selected]"/>
+    <menu/>
+    <menu text="URLの抽出＆コピー(_U)"            execute="AVESTA/opt/ExtractURL.pyw" args="{selected}" />
+    <menu text="ファイル階層をファイルに出力(_T)" execute="AVESTA/opt/dumptree.cmd" />
+    <menu text=".jpeg to .jpg(_J)"                execute="AVESTA/opt/jpeg2jpg.cmd" />
+    <menu text="空フォルダを再帰的に削除(_R)"     execute="AVESTA/opt/rmemptydir.cmd" />
+    <menu/>
+    <menu text="エクスプローラの複製(_L)"           command="Explorer.Clone"/>
+    <menu text="エクスプローラの取り込み(_I)"       command="Explorer.Import"/>
+    <menu text="エクスプローラとして切り離す(_E)"   command="Current.Export"/>
+    <menu text="ファイルダイアログを同期させる(_D)" command="Current.SyncFileDialog"/>
+  </menu>
+  <menu text="オプション(_O)">
+    <menu text="フォルダオプション(_O)..."      command="FolderOptions.Show"/>
+    <menu/>
+    <menu text="設定ファイルフォルダを開く(_U)" navigate="AVESTA/usr" />
+    <menu text="設定ファイルの再読み込み(_R)"   command="Option.Reload"/>
+    <menu/>
+    <menu text="壁紙(_W)..."                      command="Option.WallPaper"/>
+    <menu text="フォント設定(_F)..."              command="Option.Font"/>
+    <menu text="常に手前に表示(_T)"               command="Option.AlwaysTop"/>
+    <menu text="同じ文字列のタブを区別する(_D)"   command="Option.DistinguishTab"/>
+    <menu text="起動時に作業状態を復元(_C)"       command="Option.RestoreConditions"/>
+    <menu text="名前変更時に拡張子を選択する(_X)" command="Option.RenameExtension"/>
+    <menu text="Python拡張(_P)"                   command="Option.Python"/>
+    <menu/>
+    <menu text="ツリー：自動的にリストを同期させる(_S)" command="Tree.AutoSync"/>
+    <menu text="ツリー：自動的にリストを反映する(_A)"   command="Tree.AutoReflect"/>
+    <menu/>
+    <menu text="ファイルリスト(_L)">
+      <menu text="特殊実行失敗時にデフォルト実行する(_E)" command="Option.LazyExecute"/>
+      <menu text="チェックボックス(_C)"                   command="Option.CheckBox"/>
+      <menu text="一行選択(_R)"                           command="Option.FullRowSelect"/>
+      <menu text="カーソルを端でループ(_L)"               command="Option.LoopCursor"/>
+      <menu text="名前カラム上の左ジェスチャを許可(_N)"   command="Option.GestureOnName"/>
+      <menu text="グリッドの表示(_G)"                     command="Option.GridLine"/>
+      <menu text="フォルダを重複して開く(_D)"             command="Option.OpenDups"/>
+      <menu text="フォルダを開くときに通知(_T)"           command="Option.OpenNotify"/>
+      <menu text="フォルダの中へペーストする(_P)"         command="Option.PasteInFolder"/>
+      <menu text="ロックされたタブも閉じる(_L)"           command="Option.LockClose"/>
+    </menu>
+    <menu text="コピー処理(_C)">
+      <menu text="ドライブ間のDnDはコピー(_D)"    command="Option.DnDCopyInterDrive"/>
+      <menu text="邪魔にならない進捗表示(_Q)"     command="Option.QuietProgress"/>
+      <menu/>
+      <menu text="ついでにコピーしない(_N)"               command="AutoCopy.None"/>
+      <menu text="ついでにパスをコピー(_P)"               command="AutoCopy.Path"/>
+      <menu text="ついでに名前をコピー(_N)"               command="AutoCopy.Name"/>
+      <menu text="ついでに拡張子を除いた名前をコピー(_B)" command="AutoCopy.Base"/>
+    </menu>
+    <menu text="テキストボックスのキーバインド(_K)">
+      <menu text="標準(_N)"    command="Keybind.Normal"/>
+      <menu text="ATOK風(_A)"  command="Keybind.Atok"/>
+      <menu text="Emacs風(_E)" command="Keybind.Emacs"/>
+    </menu>
+    <menu text="アイテム上の中クリック(_M)">
+      <menu text="無効(_D)"         command="MiddleClick.Disable"/>
+      <menu text="追加で開く(_A)"   command="MiddleClick.Control"/>
+      <menu text="非表示で開く(_B)" command="MiddleClick.Shift"/>
+      <menu/>
+      <menu text="クリック対象のみ実行(_S)" command="MiddleClick.SingleExecute"/>
+    </menu>
+    <menu text="タブの追加位置(_T)">
+      <menu text="一番左(_L)"         command="Option.Insert.Head"/>
+      <menu text="一番右(_R)"         command="Option.Insert.Tail"/>
+      <menu text="アクティブの左(_P)" command="Option.Insert.Prev"/>
+      <menu text="アクティブの右(_N)" command="Option.Insert.Next"/>
+    </menu>
+    <menu text="タスクトレイ(_Y)">
+      <menu text="最小化時に格納(_T)"     command="Option.TaskTray"/>
+      <menu text="閉じる代わりに格納(_C)" command="Option.CloseToTray"/>
+      <menu text="常に表示(_A)"           command="Option.AlwaysTray"/>
+    </menu>
+  </menu>
+  <menu text="ヘルプ(_H)">
+    <menu text="バージョン情報(_A)..."       command="System.About"/>
+    <menu text="ヘルプを開く(_H)..."         execute="AVESTA/man/index.html" />
+    <menu text="キー操作一覧を表示(_K)..."   execute="AVESTA/man/keyboard.xml" />
+    <menu text="マウス操作一覧を表示(_M)..." execute="AVESTA/man/mouse.xml" />
+    <menu text="既知のバグ／要望(_K)..."     execute="AVESTA/ToDo.txt" />
+    <menu/>
+    <menu text="オンライン：配布サイト(_S)..."         execute="http://lamoo.s53.xrea.com/app/index.html" />
+    <menu text="オンライン：バグ報告／要望提出(_B)..." execute="http://lamoo.s53.xrea.com/forum/index.php" />
+  </menu>
+</menu>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+
+<!--
+  マウスでの操作を指定します。
+  - input
+      以下の文字列の並びを指定します。任意の長さのジェスチャを指定できます。
+      ただし、ジェスチャシーケンスの最初の文字は、マウスボタン系でなければなりません。
+        - W← / E→ / N↑ / S↓ : マウスの動き（左右上下）
+        - 1①左㊧ / 2②右㊨ / 3③中 / 4④ / 5⑤ : マウスの左, 右, 中, 4th, 5th ボタン
+        - U△上㊤ / D▽下㊦ : マウスホイールの上下
+
+      （例）『㊨←㊧→』…… 右ボタンを押すとジャスチャが始まり、
+                             左に動かす⇒左クリック⇒右に動かす の後に右ボタンを離す。
+      （例）『㊥』…… 中ボタンを押して、離す。
+
+      【注意】
+        - 左クリック始動のジェスチャも可能ですが、ドラッグ選択できなくなるのでお勧めしません。
+        - 『㊨』のみのジェスチャは、右クリックメニューが使用できなくなるのでお勧めしません。
+        - 左クリック、右クリック始動の場合のみ、アイテム上の場合はアイテム選択が優先されます。
+          これは、ジェスチャとドラッグが干渉するためです。
+        - 最初に同じボタンが2つ連続する場合は、ダブルクリック始動ジェスチャになります。
+          ただし、トリプルクリック以上には対応していません。
+
+  - command
+      ジェスチャのための右ボタン押下げにてフォルダのフォーカスが変更されるので、
+      Current.* 系のコマンドは、ジェスチャを始めたフォルダが対象になります。
+  -->
+
+<mouse name="folder">
+  <!-- 左ダブルクリック -->
+  <gesture modifier=""  input="11"    command="Current.Go.Up"/>
+  <gesture modifier="C" input="11"    command="Current.Go.Up"/>
+  <gesture modifier="S" input="11"    command="Current.Go.Up"/>
+  <gesture modifier=""  input="11←"  command="Left.Close"/>
+  <gesture modifier=""  input="11→"  command="Right.Close"/>
+  <gesture modifier=""  input="11↓"  command="Shown.Close"/>
+
+  <!-- 右クリック＋ボタン -->
+  <gesture modifier=""  input="21"    command="Current.Go.Up"/>
+  <gesture modifier="C" input="21"    command="Current.Go.Up"/>
+  <gesture modifier="S" input="21"    command="Current.Go.Up"/>
+  <gesture modifier=""  input="2△"   command="Current.Go.Back"/>
+  <gesture modifier="C" input="2△"   command="Current.Go.Back"/>
+  <gesture modifier="S" input="2△"   command="Current.Go.Back"/>
+  <gesture modifier=""  input="2▽"   command="Current.Go.Forward"/>
+  <gesture modifier="C" input="2▽"   command="Current.Go.Forward"/>
+  <gesture modifier="S" input="2▽"   command="Current.Go.Forward"/>
+
+  <!-- 右クリック＋移動 -->
+  <gesture modifier=""  input="2←"   command="Current.Go.Back"/>
+  <gesture modifier="C" input="2←"   command="Current.Go.Back"/>
+  <gesture modifier="S" input="2←"   command="Current.Go.Back"/>
+  <gesture modifier=""  input="2→"   command="Current.Go.Forward"/>
+  <gesture modifier="C" input="2→"   command="Current.Go.Forward"/>
+  <gesture modifier="S" input="2→"   command="Current.Go.Forward"/>
+  <gesture modifier=""  input="2↑"   command="Current.Go.Up"/>
+  <gesture modifier="C" input="2↑"   command="Current.Go.Up"/>
+  <gesture modifier="S" input="2↑"   command="Current.Go.Up"/>
+  <gesture modifier=""  input="2↓"   command="Current.Close"/>
+
+  <!-- 中クリック -->
+  <gesture modifier=""  input="3"     command="Current.Go.Up"/>
+  <gesture modifier="C" input="3"     command="Current.Go.Up"/>
+  <gesture modifier="S" input="3"     command="Current.Go.Up"/>
+  <gesture modifier=""  input="3←"   command="Current.Mode.Details"/>
+  <gesture modifier=""  input="3→"   command="Current.Mode.Thumbnail"/>
+  <gesture modifier=""  input="3↑"   command="Shown.AdjustToItem"/>
+  <gesture modifier=""  input="3↓"   command="Shown.AdjustToWindow"/>
+
+  <!-- 4th/5thクリック -->
+  <gesture modifier=""  input="4"    command="Current.Go.Back"/>
+  <gesture modifier="C" input="4"    command="Current.Go.Back"/>
+  <gesture modifier="S" input="4"    command="Current.Go.Back"/>
+  <gesture modifier=""  input="5"    command="Current.Go.Forward"/>
+  <gesture modifier="C" input="5"    command="Current.Go.Forward"/>
+  <gesture modifier="S" input="5"    command="Current.Go.Forward"/>
+</mouse>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+
+<Display keyboard="keyboard-global.xml">
+  <Form keyboard="keyboard-form.xml" mouse="mouse-form.xml" item="sysmenu.xml">
+    <ReBar id="ReBar">
+      <MenuBar id="Menu" item="menu.xml" icon="menu.png"/>
+      <ToolBar id="Tool" item="tool.xml" icon="tool.png"/>
+      <LinkBar id="Link" item="link.xml" icon="shell:16"/>
+<!--
+      <LinkBar id="Link2" item="link" icon="shell:32"/>
+-->
+    </ReBar>
+
+    <Main>
+      <FolderTree id="Tree" keyboard="keyboard-tree.xml"   mouse="mouse-tree.xml" icon="shell:16"/>
+      <FolderList           keyboard="keyboard-folder.xml" mouse="mouse-folder.xml"/>
+    </Main>
+
+    <StatusBar id="Status" item="status.xml" icon="status.png"/>
+<!--
+    <ReBar id="ReBar2">
+      <StatusBar id="Status" />
+      <ToolBar id="Tool2" item="status.xml" icon="status.png"/>
+    </ReBar>
+-->
+
+    <Preview id="Preview" keyboard="keyboard-preview.xml"/>
+  </Form>
+</Display>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="Shift_JIS" ?>
+<?xml-stylesheet type="text/xsl" href="keyboard.xsl"?>
+
+<!-- modifier := C(control), S(shift), A(alt), W(windows) -->
+
+<!--
+  ウィンドウを開く or 移動系 のコマンドにおいて、
+  修飾キーに Control または Shift が組み合わされている場合は、
+  それぞれ「別ウィンドウで開く」「非表示で開く」の動作が追加されます。
+  例えば、Control+Backspace の場合、
+  「一つ上のフォルダを、別ウィンドウで開く」という動作になります。
+-->
+
+<keyboard name="folder">
+  <bind modifier=""   key="escape" command="Current.SelectNone"/>
+  <bind modifier=""   key="space"  command="Preview.Focus"/>
+  <bind modifier=""   key="delete" command="Current.Delete"/>
+  <bind modifier="S"  key="delete" command="Current.Bury"/>
+  <bind modifier="A"  key="return" command="Current.Property"/>
+<!-- Fn -->
+  <bind modifier=""  key="F2" command="Current.Rename"/>
+  <bind modifier=""  key="F3" command="Current.Find"/>
+  <bind modifier="C" key="F4" command="Current.Close"/>
+  <bind modifier=""  key="F5" command="Current.Refresh"/>
+<!-- TAB -->
+  <bind modifier=""   key="tab"  command="Tab.Next"/>
+  <bind modifier="S"  key="tab"  command="Tab.Prev"/>
+  <bind modifier="C"  key="tab"  command="Tab.Next2"/>
+  <bind modifier="CS" key="tab"  command="Tab.Prev2"/>
+<!-- A -->
+  <bind modifier="C"  key="A" command="Current.SelectAll"/>
+<!-- B -->
+  <bind modifier="S"  key="B" execute="SYSTEM/cmd.exe" />
+  <bind modifier="C"  key="B" execute="SYSTEM/notepad.exe" args="{selected}"/>
+<!-- C -->
+  <bind modifier="C"  key="C" command="Current.Copy"/>
+  <bind modifier="S"  key="C" command="Current.CopyToOther"/>
+  <bind modifier="CS"  key="C">
+    <menu text="_P : パスをコピー"       command="Current.Copy.Path"/>
+    <menu text="_N : 名前をコピー"       command="Current.Copy.Name"/>
+    <menu text="_B : 拡張子以外をコピー" command="Current.Copy.Base"/>
+  </bind>
+<!-- D -->
+  <bind modifier="C"  key="D" command="Current.Delete"/>
+  <bind modifier="CS" key="D" command="Current.Bury"/>
+<!-- E -->
+  <bind modifier="C"  key="E" command="Current.Rename"/>
+  <bind modifier="CS" key="E" command="Current.Rename.Dialog"/>
+<!-- F -->
+  <bind modifier="C"  key="F" command="Current.Find"/>
+<!-- G -->
+<!-- L -->
+  <bind modifier="C"  key="L" command="Current.Lock(toggle)"/>
+<!-- M -->
+  <bind modifier="C"  key="M" command="Current.Menu"/>
+  <bind modifier="S"  key="M" command="Current.Menu"/>
+<!-- N -->
+  <bind modifier="C"  key="N" command="Current.NewFolder"/>
+  <bind modifier="CS" key="N" command="Current.New"/>
+<!-- R -->
+  <bind modifier="C"  key="R" command="Current.Refresh"/>
+<!-- S -->
+  <bind modifier="C"  key="S" command="Current.SelectPattern"/>
+  <bind modifier="S"  key="S" command="Current.SelectChecked"/>
+<!-- T -->
+  <bind modifier="C"  key="T">
+    <menu text="_C : コマンドプロンプト" execute="SYSTEM/cmd.exe" />
+    <menu text="_N : メモ帳"             execute="SYSTEM/notepad.exe" args="{selected}" />
+<!--
+    <menu text="_B : Bash"      execute="AVESTA/opt/BashHere.bat" args="{current}" />
+    <menu text="_I : IrfanView" execute="PROGRAM_FILES/IrfanView/i_view32.exe" args="{selected}"/>
+    <menu text="_Z : ZIP圧縮"   execute="PROGRAM_FILES/noah/noah.exe" args="{selected}"/>
+-->
+  </bind>
+<!-- U -->
+  <bind modifier="C"  key="U" command="Current.Copy.Here"/>
+<!-- V -->
+  <bind modifier="C"  key="V" command="Current.Paste"/>
+  <bind modifier="CS" key="V" command="Current.Rename.Paste"/>
+  <bind modifier="S"  key="V" command="Current.PasteTo"/>
+<!-- X -->
+  <bind modifier="C"  key="X" command="Current.Cut"/>
+  <bind modifier="S"  key="X" command="Current.MoveToOther"/>
+</keyboard>

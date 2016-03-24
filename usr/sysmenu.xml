@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<menu>
+  <menu text="メニューバー(_B)"   command="Menu.Show(toggle)"/>
+  <menu text="ドロップモード(_D)" command="Form.DropMode"/>
+  <!-- この下に、セパレータを挟んで元々のメニューアイテムが続きます。 -->
+</menu>

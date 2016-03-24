@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="Shift_JIS" ?>
+<?xml-stylesheet type="text/xsl" href="keyboard.xsl"?>
+
+<!-- modifier := C(control), S(shift), A(alt), W(windows) -->
+
+<keyboard name="folder">
+  <bind modifier=""  key="space"     command="Current.Cursor.Down"/>
+  <bind modifier="S" key="space"     command="Current.Cursor.Up"/>
+  <bind modifier=""  key="backspace" command="Current.Cursor.Up"/>
+  <bind modifier=""  key="left"      command="Current.Cursor.Left"/>
+  <bind modifier=""  key="down"      command="Current.Cursor.Down"/>
+  <bind modifier=""  key="up"        command="Current.Cursor.Up"/>
+  <bind modifier=""  key="right"     command="Current.Cursor.Right"/>
+  <bind modifier=""  key="home"      command="Current.Cursor.Home"/>
+  <bind modifier=""  key="end"       command="Current.Cursor.End"/>
+  <bind modifier=""  key="pageup"    command="Current.Cursor.PageUp"/>
+  <bind modifier=""  key="pagedown"  command="Current.Cursor.PageDown"/>
+
+  <bind modifier=""   key="delete" command="Current.Delete;Current.Cursor.Down"/>
+  <bind modifier="S"  key="delete" command="Current.Bury;Current.Cursor.Down"/>
+  <bind modifier="A"  key="return" command="Current.Property"/>
+  <bind modifier="C"  key="W" command="Preview.Show(toggle)"/>
+</keyboard>

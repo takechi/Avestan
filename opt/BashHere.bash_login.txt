@@ -1,0 +1,8 @@
+# TODO: append to .bash_login
+
+# BEGIN - BashHere
+if [ ! -z "$BASH_HERE_TARGET_PATH" ]; then
+	cd "$(echo "$BASH_HERE_TARGET_PATH" | tr -d "\"" | cygpath -u --file -)"
+	unset BASH_HERE_TARGET_PATH
+fi
+# END - BashHere

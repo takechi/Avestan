@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<menu>
+  <menu text=""   command="Current.Lock(toggle)" image="29"/>
+  <menu text=""   command="Current.ShowAllFiles" image="16"/>
+  <menu text="整列"     command="Current.AutoArrange"/>
+  <menu text="グループ" command="Current.Grouping"/>
+  <menu/>
+  <menu text="" command="Current.Mode.Thumbnail" image="32"/>
+  <menu text="" command="Current.Mode.Tile"      image="33"/>
+  <menu text="" command="Current.Mode.Icon"      image="34"/>
+  <menu text="" command="Current.Mode.List"      image="35"/>
+  <menu text="" command="Current.Mode.Details"   image="36"/>
+  <menu/>
+  <menu text="1" command="Tab[1].Show(toggle)" />
+  <menu text="2" command="Tab[2].Show(toggle)" />
+  <menu text="3" command="Tab[3].Show(toggle)" />
+  <menu text="4" command="Tab[4].Show(toggle)" />
+  <menu text="5" command="Tab[5].Show(toggle)" />
+  <menu text="6" command="Tab[6].Show(toggle)" />
+  <menu text="7" command="Tab[7].Show(toggle)" />
+  <menu text="8" command="Tab[8].Show(toggle)" />
+  <menu text="9" command="Tab[9].Show(toggle)" />
+</menu>
