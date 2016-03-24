@@ -8,6 +8,18 @@
 //#	define Py_DEBUG
 //#endif
 #include <Python.h>
+#if PY_MAJOR_VERSION >= 3
+#define PyInt_FromLong PyLong_FromLong
+#define PyNumber_Int PyNumber_Long
+#define PyInt_AS_LONG PyLong_AsLong
+#define PyString_FromString PyBytes_FromString
+#define PyString_FromStringAndSize PyBytes_FromStringAndSize
+#define PyString_FromFormatV PyBytes_FromFormatV
+#define PyString_AS_STRING PyBytes_AsString
+#define PyString_GET_SIZE PyBytes_GET_SIZE
+#define PyNumber_InPlaceDivide PyNumber_InPlaceTrueDivide
+#define PyNumber_Divide PyNumber_TrueDivide
+#endif
 #pragma pop_macro("_DEBUG")
 
 #include "mew.hpp"
@@ -596,7 +608,15 @@ namespace mew
 			Module() {}
 			Module(const char* name, PyMethodDef methods[], const char* doc)
 			{
-				assign(Py_InitModule3(const_cast<char*>(name), methods, const_cast<char*>(doc)));
+        #if PY_MAJOR_VERSION >= 3
+          static struct PyModuleDef moduleDef = {
+          PyModuleDef_HEAD_INIT,
+          name, NULL, -1, methods
+        };
+        assign(PyModule_Create(&moduleDef));
+        #else
+        assign(Py_InitModule3(const_cast<char*>(name), methods, const_cast<char*>(doc)));
+        #endif
 			}
 			Object operator [] (const char* name) const
 			{
@@ -666,7 +686,13 @@ namespace mew
 				GetModuleFileNameA(0, program, MAX_PATH);
 				if(more)
 					PathAppendA(program, more);
+        #if PY_MAJOR_VERSION >= 3
+        wchar_t programW[MAX_PATH];
+        mbstowcs(programW, program, strlen(program) + 1);
+        Py_SetProgramName(programW);
+        #else
 				Py_SetProgramName(program);
+        #endif
 				Py_Initialize();
 				m_init = true;
 			}
