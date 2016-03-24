@@ -66,7 +66,7 @@ namespace mew
 		class Object2
 		{
 			typedef typename MostDerivedOnly<TSupports>::Result	TInherits;
-			typedef typename TMixin::Result1< Interface<TInherits, TSupports> >::Result	mixin;
+			typedef typename TMixin::template Result1< Interface<TInherits, TSupports> >::Result	mixin;
 		public:
 			class __declspec(novtable) Result : public TBase, public mixin
 			{
@@ -97,7 +97,7 @@ namespace mew
 		class Object2<Void, TSupports, TMixin>
 		{
 			typedef typename MostDerivedOnly<TSupports>::Result	TInherits;
-			typedef typename TMixin::Result1< Interface<TInherits, TSupports> >::Result	mixin;
+			typedef typename TMixin::template Result1< Interface<TInherits, TSupports> >::Result	mixin;
 		public:
 			// これがルートクラス.
 			class __declspec(novtable) Result : public mixin
@@ -124,14 +124,14 @@ namespace mew
 		class Object2<TBase, Void, TMixin>
 		{
 		public:
-			typedef typename TMixin::Result1<TBase>::Result Result;
+			typedef typename TMixin::template Result1<TBase>::Result Result;
 		};
 
 		template < typename TMixin >
 		class Object2<Void, Void, TMixin>
 		{
 		public:
-			typedef typename TMixin::Result1<Void>::Result Result;
+			typedef typename TMixin::template Result1<Void>::Result Result;
 		};
 
 		//==============================================================================

@@ -40,7 +40,7 @@ namespace mew
 	{
 		template < typename TBase > struct Result1
 		{
-			typedef T0< typename mixin<T1, T2, T3, T4, T5, T6, T7, T8, T9>::Result1<TBase>::Result > Result;
+			typedef T0< typename mixin<T1, T2, T3, T4, T5, T6, T7, T8, T9>::template Result1<TBase>::Result > Result;
 		};
 	};
 
