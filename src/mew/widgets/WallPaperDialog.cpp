@@ -83,12 +83,12 @@ public:
 	}
 	void SetHorzAlign(Target& target, int index)
 	{
-		static const dirs[4] = { DirWest, 0, DirEast, DirMaskWE };
+		static const int dirs[4] = { DirWest, 0, DirEast, DirMaskWE };
 		target.align = ((target.align & DirMaskNS) | dirs[index]);
 	}
 	void SetVertAlign(Target& target, int index)
 	{
-		static const dirs[4] = { DirNorth, 0, DirSouth, DirMaskNS };
+		static const int dirs[4] = { DirNorth, 0, DirSouth, DirMaskNS };
 		target.align = ((target.align & DirMaskWE) | dirs[index]);
 	}
 	Target& GetCurrentTarget()
