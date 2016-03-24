@@ -1,0 +1,416 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="avesta">
+      <UniqueIdentifier>{2f0b9024-cd92-48ad-bb63-bda3b67e119e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mew">
+      <UniqueIdentifier>{05efb2f5-a5aa-45e8-a4bc-ff7a1fa89312}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mew\io">
+      <UniqueIdentifier>{c4d9cbc9-89da-4630-8bff-b2bb0c7482c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mew\ui">
+      <UniqueIdentifier>{98a2a6f7-8922-42c5-9384-afa115f77949}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system">
+      <UniqueIdentifier>{ba62a990-4911-4a59-aa4f-de22f0e0e7c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{5fdda964-5dd6-4889-8d00-557c93dc8a5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\std">
+      <UniqueIdentifier>{ffc61c4e-ddb5-4c1d-b8d8-68d089d74a85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\impl">
+      <UniqueIdentifier>{5e08a510-8bba-4b7f-8200-5e06f53e6a02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\detail">
+      <UniqueIdentifier>{194b58bd-b236-40c0-98ca-cbbcea7ec74b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="avesta-new">
+      <UniqueIdentifier>{dc741a24-f786-44a0-8499-85b2969ea421}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AvestaDialog.cpp">
+      <Filter>avesta</Filter>
+    </ClCompile>
+    <ClCompile Include="callback.cpp">
+      <Filter>avesta</Filter>
+    </ClCompile>
+    <ClCompile Include="ExecuteCommand.cpp">
+      <Filter>avesta</Filter>
+    </ClCompile>
+    <ClCompile Include="FolderList.cpp">
+      <Filter>avesta</Filter>
+    </ClCompile>
+    <ClCompile Include="FolderTree.cpp">
+      <Filter>avesta</Filter>
+    </ClCompile>
+    <ClCompile Include="Globals.cpp">
+      <Filter>avesta</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>avesta</Filter>
+    </ClCompile>
+    <ClCompile Include="NavigateCommand.cpp">
+      <Filter>avesta</Filter>
+    </ClCompile>
+    <ClCompile Include="RenameDialog.cpp">
+      <Filter>avesta</Filter>
+    </ClCompile>
+    <ClCompile Include="ShellStorage.cpp">
+      <Filter>avesta</Filter>
+    </ClCompile>
+    <ClCompile Include="utils.cpp">
+      <Filter>avesta</Filter>
+    </ClCompile>
+    <ClCompile Include="XmlForm.cpp">
+      <Filter>avesta</Filter>
+    </ClCompile>
+    <ClCompile Include="XmlResource.cpp">
+      <Filter>avesta</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\afx.cpp">
+      <Filter>mew</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\command.cpp">
+      <Filter>mew</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\debug.cpp">
+      <Filter>mew</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\dialogs.cpp">
+      <Filter>mew</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\expose.cpp">
+      <Filter>mew</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\gesture.cpp">
+      <Filter>mew</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\imagelist.cpp">
+      <Filter>mew</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\io.cpp">
+      <Filter>mew</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\keymap.cpp">
+      <Filter>mew</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\message.cpp">
+      <Filter>mew</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\messenger.cpp">
+      <Filter>mew</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\registrar.cpp">
+      <Filter>mew</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\string.cpp">
+      <Filter>mew</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\variant.cpp">
+      <Filter>mew</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\version.cpp">
+      <Filter>mew</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\dragdrop.cpp">
+      <Filter>mew\io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\Entry.cpp">
+      <Filter>mew\io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\Folder.cpp">
+      <Filter>mew\io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\widgets\DefaultTreeItem.cpp">
+      <Filter>mew\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\widgets\Display.cpp">
+      <Filter>mew\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\widgets\Form.cpp">
+      <Filter>mew\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\widgets\MenuProvider.cpp">
+      <Filter>mew\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\widgets\Preview.cpp">
+      <Filter>mew\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\widgets\ReBar.cpp">
+      <Filter>mew\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\widgets\ShellFolder.cpp">
+      <Filter>mew\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\widgets\ShellListView.cpp">
+      <Filter>mew\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\widgets\StatusBar.cpp">
+      <Filter>mew\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\widgets\Tab.cpp">
+      <Filter>mew\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\widgets\ToolBar.cpp">
+      <Filter>mew\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\widgets\TreeView.cpp">
+      <Filter>mew\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\widgets\WallPaperDialog.cpp">
+      <Filter>mew\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mew\widgets\WindowImpl.cpp">
+      <Filter>mew\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>system</Filter>
+    </ClCompile>
+    <ClCompile Include="..\avesta\commandline.cpp">
+      <Filter>avesta-new</Filter>
+    </ClCompile>
+    <ClCompile Include="..\avesta\dialog.cpp">
+      <Filter>avesta-new</Filter>
+    </ClCompile>
+    <ClCompile Include="..\avesta\dialog_name.cpp">
+      <Filter>avesta-new</Filter>
+    </ClCompile>
+    <ClCompile Include="..\avesta\dialog_path.cpp">
+      <Filter>avesta-new</Filter>
+    </ClCompile>
+    <ClCompile Include="..\avesta\file.cpp">
+      <Filter>avesta-new</Filter>
+    </ClCompile>
+    <ClCompile Include="..\avesta\fileop.cpp">
+      <Filter>avesta-new</Filter>
+    </ClCompile>
+    <ClCompile Include="..\avesta\itemid.cpp">
+      <Filter>avesta-new</Filter>
+    </ClCompile>
+    <ClCompile Include="..\avesta\registry.cpp">
+      <Filter>avesta-new</Filter>
+    </ClCompile>
+    <ClCompile Include="..\avesta\theme.cpp">
+      <Filter>avesta-new</Filter>
+    </ClCompile>
+    <ClCompile Include="..\avesta\thread.cpp">
+      <Filter>avesta-new</Filter>
+    </ClCompile>
+    <ClCompile Include="..\avesta\window.cpp">
+      <Filter>avesta-new</Filter>
+    </ClCompile>
+    <ClCompile Include="..\avesta\xmlcmd.cpp">
+      <Filter>avesta-new</Filter>
+    </ClCompile>
+    <ClCompile Include="..\avesta\xmlmessage.cpp">
+      <Filter>avesta-new</Filter>
+    </ClCompile>
+    <ClCompile Include="..\avesta\xmlparse.cpp">
+      <Filter>avesta-new</Filter>
+    </ClCompile>
+    <ClCompile Include="..\avesta\xmlreader.cpp">
+      <Filter>avesta-new</Filter>
+    </ClCompile>
+    <ClCompile Include="..\avesta\xmlwriter.cpp">
+      <Filter>avesta-new</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AvestaSDK.hpp">
+      <Filter>avesta</Filter>
+    </ClInclude>
+    <ClInclude Include="command.hpp">
+      <Filter>avesta</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandHandler.hpp">
+      <Filter>avesta</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandList.hpp">
+      <Filter>avesta</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandProvider.hpp">
+      <Filter>avesta</Filter>
+    </ClInclude>
+    <ClInclude Include="FolderList.hpp">
+      <Filter>avesta</Filter>
+    </ClInclude>
+    <ClInclude Include="main.hpp">
+      <Filter>avesta</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskTrayProvider.hpp">
+      <Filter>avesta</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.hpp">
+      <Filter>avesta</Filter>
+    </ClInclude>
+    <ClInclude Include="..\mew\private.h">
+      <Filter>mew</Filter>
+    </ClInclude>
+    <ClInclude Include="..\mew\widgets\MenuProvider.hpp">
+      <Filter>mew\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\mew\widgets\ShellFolder.h">
+      <Filter>mew\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\mew\widgets\ShellNotify.h">
+      <Filter>mew\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\mew\widgets\WindowExtension.h">
+      <Filter>mew\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\mew\widgets\WindowImpl.h">
+      <Filter>mew\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\mew\widgets\WindowMessage.h">
+      <Filter>mew\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>system</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\afx.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\application.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\basic.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\drawing.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\error.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\io.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\math.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\message.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\meta.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\mew.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\object.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\path.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\preprocessor.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\pygmy.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\reference.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\shell.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\signal.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\storage.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\string.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\struct.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\theme.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\thread.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\widgets.client.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\widgets.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\xml.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\std\algorithm.hpp">
+      <Filter>include\std</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\std\array_map.hpp">
+      <Filter>include\std</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\std\array_set.hpp">
+      <Filter>include\std</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\std\buffer.hpp">
+      <Filter>include\std</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\std\deque.hpp">
+      <Filter>include\std</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\std\hash_map.hpp">
+      <Filter>include\std</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\std\list.hpp">
+      <Filter>include\std</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\std\map.hpp">
+      <Filter>include\std</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\std\sequence.hpp">
+      <Filter>include\std</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\std\set.hpp">
+      <Filter>include\std</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\std\str.hpp">
+      <Filter>include\std</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\std\vector.hpp">
+      <Filter>include\std</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\impl\InitUtil.hpp">
+      <Filter>include\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\impl\WTLControls.hpp">
+      <Filter>include\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\impl\WTLSplitter.hpp">
+      <Filter>include\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\detail\headers.hpp">
+      <Filter>include\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\detail\objectimpl.hpp">
+      <Filter>include\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\detail\uuids.hpp">
+      <Filter>include\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\avesta.hpp">
+      <Filter>avesta-new</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="server.rc">
+      <Filter>system</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

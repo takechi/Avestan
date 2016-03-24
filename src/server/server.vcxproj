@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{17FADE80-0D98-4615-A736-748E590DA903}</ProjectGuid>
+    <RootNamespace>server</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>14.0.24730.2</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>../../debug\</OutDir>
+    <IntDir>../../__obj__/$(ProjectName)/$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>../../bin\</OutDir>
+    <IntDir>../../__obj__/$(ProjectName)/$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(OutDir)avesta.dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)avesta.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MinSpace</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat />
+    </ClCompile>
+    <Link>
+      <OutputFile>$(OutDir)avesta.dll</OutputFile>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <NoEntryPoint>false</NoEntryPoint>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\avesta\commandline.cpp" />
+    <ClCompile Include="..\avesta\dialog.cpp" />
+    <ClCompile Include="..\avesta\dialog_name.cpp" />
+    <ClCompile Include="..\avesta\dialog_path.cpp" />
+    <ClCompile Include="..\avesta\file.cpp" />
+    <ClCompile Include="..\avesta\fileop.cpp" />
+    <ClCompile Include="..\avesta\itemid.cpp" />
+    <ClCompile Include="..\avesta\registry.cpp" />
+    <ClCompile Include="..\avesta\theme.cpp" />
+    <ClCompile Include="..\avesta\thread.cpp" />
+    <ClCompile Include="..\avesta\window.cpp" />
+    <ClCompile Include="..\avesta\xmlcmd.cpp" />
+    <ClCompile Include="..\avesta\xmlmessage.cpp" />
+    <ClCompile Include="..\avesta\xmlparse.cpp" />
+    <ClCompile Include="..\avesta\xmlreader.cpp" />
+    <ClCompile Include="..\avesta\xmlwriter.cpp" />
+    <ClCompile Include="..\mew\afx.cpp" />
+    <ClCompile Include="..\mew\command.cpp" />
+    <ClCompile Include="..\mew\debug.cpp" />
+    <ClCompile Include="..\mew\dialogs.cpp" />
+    <ClCompile Include="..\mew\dragdrop.cpp" />
+    <ClCompile Include="..\mew\Entry.cpp" />
+    <ClCompile Include="..\mew\expose.cpp" />
+    <ClCompile Include="..\mew\Folder.cpp" />
+    <ClCompile Include="..\mew\gesture.cpp" />
+    <ClCompile Include="..\mew\imagelist.cpp" />
+    <ClCompile Include="..\mew\io.cpp" />
+    <ClCompile Include="..\mew\keymap.cpp" />
+    <ClCompile Include="..\mew\message.cpp" />
+    <ClCompile Include="..\mew\messenger.cpp" />
+    <ClCompile Include="..\mew\registrar.cpp" />
+    <ClCompile Include="..\mew\string.cpp" />
+    <ClCompile Include="..\mew\variant.cpp" />
+    <ClCompile Include="..\mew\version.cpp" />
+    <ClCompile Include="..\mew\widgets\DefaultTreeItem.cpp" />
+    <ClCompile Include="..\mew\widgets\Display.cpp" />
+    <ClCompile Include="..\mew\widgets\Form.cpp" />
+    <ClCompile Include="..\mew\widgets\MenuProvider.cpp" />
+    <ClCompile Include="..\mew\widgets\Preview.cpp" />
+    <ClCompile Include="..\mew\widgets\ReBar.cpp" />
+    <ClCompile Include="..\mew\widgets\ShellFolder.cpp" />
+    <ClCompile Include="..\mew\widgets\ShellListView.cpp" />
+    <ClCompile Include="..\mew\widgets\StatusBar.cpp" />
+    <ClCompile Include="..\mew\widgets\Tab.cpp" />
+    <ClCompile Include="..\mew\widgets\ToolBar.cpp" />
+    <ClCompile Include="..\mew\widgets\TreeView.cpp" />
+    <ClCompile Include="..\mew\widgets\WallPaperDialog.cpp" />
+    <ClCompile Include="..\mew\widgets\WindowImpl.cpp" />
+    <ClCompile Include="AvestaDialog.cpp" />
+    <ClCompile Include="callback.cpp" />
+    <ClCompile Include="ExecuteCommand.cpp" />
+    <ClCompile Include="FolderList.cpp" />
+    <ClCompile Include="FolderTree.cpp" />
+    <ClCompile Include="Globals.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="NavigateCommand.cpp" />
+    <ClCompile Include="RenameDialog.cpp" />
+    <ClCompile Include="ShellStorage.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="utils.cpp" />
+    <ClCompile Include="XmlForm.cpp" />
+    <ClCompile Include="XmlResource.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\afx.hpp" />
+    <ClInclude Include="..\include\application.hpp" />
+    <ClInclude Include="..\include\avesta.hpp" />
+    <ClInclude Include="..\include\basic.hpp" />
+    <ClInclude Include="..\include\detail\headers.hpp" />
+    <ClInclude Include="..\include\detail\objectimpl.hpp" />
+    <ClInclude Include="..\include\detail\uuids.hpp" />
+    <ClInclude Include="..\include\drawing.hpp" />
+    <ClInclude Include="..\include\error.hpp" />
+    <ClInclude Include="..\include\impl\InitUtil.hpp" />
+    <ClInclude Include="..\include\impl\WTLControls.hpp" />
+    <ClInclude Include="..\include\impl\WTLSplitter.hpp" />
+    <ClInclude Include="..\include\io.hpp" />
+    <ClInclude Include="..\include\math.hpp" />
+    <ClInclude Include="..\include\message.hpp" />
+    <ClInclude Include="..\include\meta.hpp" />
+    <ClInclude Include="..\include\mew.hpp" />
+    <ClInclude Include="..\include\object.hpp" />
+    <ClInclude Include="..\include\path.hpp" />
+    <ClInclude Include="..\include\preprocessor.hpp" />
+    <ClInclude Include="..\include\pygmy.hpp" />
+    <ClInclude Include="..\include\reference.hpp" />
+    <ClInclude Include="..\include\shell.hpp" />
+    <ClInclude Include="..\include\signal.hpp" />
+    <ClInclude Include="..\include\std\algorithm.hpp" />
+    <ClInclude Include="..\include\std\array_map.hpp" />
+    <ClInclude Include="..\include\std\array_set.hpp" />
+    <ClInclude Include="..\include\std\buffer.hpp" />
+    <ClInclude Include="..\include\std\deque.hpp" />
+    <ClInclude Include="..\include\std\hash_map.hpp" />
+    <ClInclude Include="..\include\std\list.hpp" />
+    <ClInclude Include="..\include\std\map.hpp" />
+    <ClInclude Include="..\include\std\sequence.hpp" />
+    <ClInclude Include="..\include\std\set.hpp" />
+    <ClInclude Include="..\include\std\str.hpp" />
+    <ClInclude Include="..\include\std\vector.hpp" />
+    <ClInclude Include="..\include\storage.hpp" />
+    <ClInclude Include="..\include\string.hpp" />
+    <ClInclude Include="..\include\struct.hpp" />
+    <ClInclude Include="..\include\theme.hpp" />
+    <ClInclude Include="..\include\thread.hpp" />
+    <ClInclude Include="..\include\widgets.client.hpp" />
+    <ClInclude Include="..\include\widgets.hpp" />
+    <ClInclude Include="..\include\xml.hpp" />
+    <ClInclude Include="..\mew\private.h" />
+    <ClInclude Include="..\mew\widgets\MenuProvider.hpp" />
+    <ClInclude Include="..\mew\widgets\ShellFolder.h" />
+    <ClInclude Include="..\mew\widgets\ShellNotify.h" />
+    <ClInclude Include="..\mew\widgets\WindowExtension.h" />
+    <ClInclude Include="..\mew\widgets\WindowImpl.h" />
+    <ClInclude Include="..\mew\widgets\WindowMessage.h" />
+    <ClInclude Include="AvestaSDK.hpp" />
+    <ClInclude Include="command.hpp" />
+    <ClInclude Include="CommandHandler.hpp" />
+    <ClInclude Include="CommandList.hpp" />
+    <ClInclude Include="CommandProvider.hpp" />
+    <ClInclude Include="FolderList.hpp" />
+    <ClInclude Include="main.hpp" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TaskTrayProvider.hpp" />
+    <ClInclude Include="utils.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="server.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
