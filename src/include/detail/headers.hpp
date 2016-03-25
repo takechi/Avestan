@@ -14,6 +14,7 @@
 
 #ifndef _WINDOWS_
 
+/*
 #define WINVER			0x0501
 
 #if WINVER > 0x0500
@@ -25,6 +26,7 @@
 #	define _WIN32_WINNT		0x0500
 #	define _WIN32_IE		0x0501
 #endif
+*/
 
 #define _ATL_ALL_WARNINGS
 #define _ATL_NO_OPENGL
@@ -42,10 +44,11 @@
 //==============================================================================
 // check compile options
 
+/*
 #if _WIN32_WINDOWS < 0x0500
 #	error _WIN32_WINDOWS must be 0x0500 or lator.
 #endif
-
+*/
 #ifndef _MT
 #	error マルチスレッド設定でビルドする必要があります。
 #endif

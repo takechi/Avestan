@@ -538,7 +538,7 @@ ITEMIDLIST* afx::ILFromShared(HANDLE hMem, DWORD pid)
 	{
 		if(!IsBadReadPtr(pidlShared, 1))
 			pidl = ILClone(pidlShared);
-		SHUnlockShared(pidlShared);
+		afx::SHUnlockShared(pidlShared);
 		SHFreeShared(hMem, pid);
 	}
 	return pidl;
