@@ -787,7 +787,7 @@ private:
 
 		if(m_tree)
 		{	// tree
-			//HandleEvent(cast<ISignal>(m_tree->Root), EventInvoke, &Main::OnOpenEntry);
+			HandleEvent(cast<ISignal>(m_tree->Root), EventInvoke, &Main::OnOpenEntry);
 			HandleEvent(m_tree, EventItemFocus, &Main::OnTreeItemFocus);
 		}
 

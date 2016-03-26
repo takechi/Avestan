@@ -411,7 +411,7 @@ public:
 	{
 		__super::DoCreate(parent, NULL, DirNone, MEW_WS_TREE, MEW_WS_EX_TREE);
 		ImmAssociateContext(m_hWnd, null);
-		//this->Root = ref<ITreeItem>(__uuidof(FolderMenu));
+		this->set_Root(ref<ITreeItem>(__uuidof(FolderMenu)));
 	}
 	void Update(bool sync = false)
 	{
