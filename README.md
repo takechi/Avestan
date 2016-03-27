@@ -20,6 +20,6 @@ a fork of Avesta ( http://lamoo.s53.xrea.com/ )
 * **どんなバグがあるか分からないので、ご利用は自己責任で。**
 
 ### ライセンス
-* Avesta License : version 1.0 に従います（licence.txt 参照）。
-* 変更者は TAKECHI Kohei (https://github.com/takechi/)。
-* 変更内容は https://github.com/takechi/Avestan を参照。
+* Avesta License : version 1.0 ( https://github.com/takechi/Avestan/blob/master/licence.txt )。
+* 変更者は TAKECHI Kohei ( https://github.com/takechi/ )。
+* 変更内容は https://github.com/takechi/Avestan/commits/master の通り。
