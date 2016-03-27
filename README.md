@@ -18,3 +18,8 @@ a fork of Avesta ( http://lamoo.s53.xrea.com/ )
 ## 注意
 * とりあえずコンパイルが通り、エラーなく起動できるようにしただけ。
 * **どんなバグがあるか分からないので、ご利用は自己責任で。**
+
+### ライセンス
+* Avesta License : version 1.0 に従います（licence.txt 参照）。
+* 変更者は TAKECHI Kohei (https://github.com/takechi/)。
+* 変更内容は https://github.com/takechi/Avestan を参照。
