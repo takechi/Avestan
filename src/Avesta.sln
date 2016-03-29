@@ -14,20 +14,34 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pygmy", "pygmy\pygmy.vcxpro
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{17FADE80-0D98-4612-A736-748E590DA903}.Debug|x64.ActiveCfg = Debug|x64
+		{17FADE80-0D98-4612-A736-748E590DA903}.Debug|x64.Build.0 = Debug|x64
 		{17FADE80-0D98-4612-A736-748E590DA903}.Debug|x86.ActiveCfg = Debug|Win32
 		{17FADE80-0D98-4612-A736-748E590DA903}.Debug|x86.Build.0 = Debug|Win32
+		{17FADE80-0D98-4612-A736-748E590DA903}.Release|x64.ActiveCfg = Release|x64
+		{17FADE80-0D98-4612-A736-748E590DA903}.Release|x64.Build.0 = Release|x64
 		{17FADE80-0D98-4612-A736-748E590DA903}.Release|x86.ActiveCfg = Release|Win32
 		{17FADE80-0D98-4612-A736-748E590DA903}.Release|x86.Build.0 = Release|Win32
+		{17FADE80-0D98-4615-A736-748E590DA903}.Debug|x64.ActiveCfg = Debug|x64
+		{17FADE80-0D98-4615-A736-748E590DA903}.Debug|x64.Build.0 = Debug|x64
 		{17FADE80-0D98-4615-A736-748E590DA903}.Debug|x86.ActiveCfg = Debug|Win32
 		{17FADE80-0D98-4615-A736-748E590DA903}.Debug|x86.Build.0 = Debug|Win32
+		{17FADE80-0D98-4615-A736-748E590DA903}.Release|x64.ActiveCfg = Release|x64
+		{17FADE80-0D98-4615-A736-748E590DA903}.Release|x64.Build.0 = Release|x64
 		{17FADE80-0D98-4615-A736-748E590DA903}.Release|x86.ActiveCfg = Release|Win32
 		{17FADE80-0D98-4615-A736-748E590DA903}.Release|x86.Build.0 = Release|Win32
+		{F6F27C46-E32A-4293-84C9-845D0A3C9909}.Debug|x64.ActiveCfg = Debug|x64
+		{F6F27C46-E32A-4293-84C9-845D0A3C9909}.Debug|x64.Build.0 = Debug|x64
 		{F6F27C46-E32A-4293-84C9-845D0A3C9909}.Debug|x86.ActiveCfg = Debug|Win32
 		{F6F27C46-E32A-4293-84C9-845D0A3C9909}.Debug|x86.Build.0 = Debug|Win32
+		{F6F27C46-E32A-4293-84C9-845D0A3C9909}.Release|x64.ActiveCfg = Release|x64
+		{F6F27C46-E32A-4293-84C9-845D0A3C9909}.Release|x64.Build.0 = Release|x64
 		{F6F27C46-E32A-4293-84C9-845D0A3C9909}.Release|x86.ActiveCfg = Release|Win32
 		{F6F27C46-E32A-4293-84C9-845D0A3C9909}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
