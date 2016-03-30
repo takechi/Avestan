@@ -1963,7 +1963,7 @@ public: // IDropTarget
 				menu.AppendMenu(MF_STRING, NaviAppend	, _T("追加で開く(&A)"));
 				menu.AppendMenu(MF_STRING, NaviReserve	, _T("非表示で開く(&H)"));
 				menu.AppendMenu(MF_SEPARATOR);
-				menu.AppendMenu(MF_STRING, 0U, _T("キャンセル"));
+				menu.AppendMenu(MF_STRING, static_cast<UINT_PTR>(0), _T("キャンセル"));
 				menu.SetMenuDefaultItem(0, MF_BYPOSITION);
 				UINT cmd = menu.TrackPopupMenu(TPM_RIGHTBUTTON | TPM_RETURNCMD, pt.x, pt.y, m_form->Handle, null);
 				if(cmd != 0)

@@ -141,6 +141,13 @@ namespace mew
 		bool operator == (INT_PTR index) const	{ return value == index; }
 		bool operator == (const T* p)    const	{ return value == (INT_PTR)p; }
 		bool operator ! () const				{ return value == 0; }
+
+    #ifdef _WIN64
+    IndexOr(int index) : value(static_cast<INT_PTR>(index)) { ASSERT(is_index()); }
+    IndexOr(size_t index) : value(static_cast<INT_PTR>(index)) { ASSERT(is_index()); }
+    IndexOr(UINT index) : value(static_cast<INT_PTR>(index)) { ASSERT(is_index()); }
+    bool operator == (int index) const { return value == static_cast<INT_PTR>(index); }
+    #endif
 	};
 
 	/// 4‚Â‚Ì•¶Žš‚Å•\‚³‚ê‚½Ž¯•ÊŽq.

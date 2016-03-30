@@ -39,7 +39,7 @@ void Dialog::OnDispose()
 	}
 }
 
-BOOL CALLBACK Dialog::DlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK Dialog::DlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	if(msg == WM_INITDIALOG)
 	{

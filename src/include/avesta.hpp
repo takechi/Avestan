@@ -186,6 +186,6 @@ namespace avesta
 		void	OnDispose();
 
 	private:
-		static BOOL CALLBACK DlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+		static INT_PTR CALLBACK DlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	};
 }

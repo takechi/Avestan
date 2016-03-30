@@ -84,7 +84,7 @@ namespace mew
 		{
 			if(m_capacity >= capacity)
 				return;
-			m_capacity = math::max(16U, capacity, m_capacity*2);
+			m_capacity = math::max(static_cast<size_t>(16), capacity, m_capacity*2);
 			Reallocate(m_capacity);
 		}
 		void clear() throw()

@@ -171,7 +171,7 @@ protected:
 private:
 	HRESULT ReCreateViewWindow(IShellFolder* pShellFolder, bool reload);
 	HRESULT GetViewFlags(DWORD* dw);
-    HRESULT IncludeObject(IShellView* pShellView, const ITEMIDLIST* pidl);
+    HRESULT IncludeObject(IShellView* pShellView, const __unaligned ITEMIDLIST* pidl);
 	HRESULT GetViewStateStream(DWORD grfMode, IStream** ppStream);
 	bool PreTranslateMessage(MSG* msg);
 	void UpdateBackground();

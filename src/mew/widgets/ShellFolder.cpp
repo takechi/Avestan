@@ -412,7 +412,7 @@ public: // ICommDlgBrowser
 //#undef caseTrace
 		return m_Owner.OnStateChange(pShellView, uChange); 
 	}
-	STDMETHODIMP IncludeObject(IShellView* pShellView, const ITEMIDLIST* pidl)
+	STDMETHODIMP IncludeObject(IShellView* pShellView, const __unaligned ITEMIDLIST* pidl)
 	{	// 表示ファイルのフィルタリング。
 		// S_OK: show, S_FALSE: hide
 		return m_Owner.IncludeObject(pShellView, pidl);
@@ -472,7 +472,7 @@ public: // IShellBrowser
 		return E_NOTIMPL;
 	}
 	STDMETHODIMP QueryActiveShellView(IShellView** ppShellView)	{ return m_Owner.m_pShellView.copyto(ppShellView); }
-	STDMETHODIMP BrowseObject(const ITEMIDLIST* pidl, UINT wFlags)	{ return E_NOTIMPL; }
+	STDMETHODIMP BrowseObject(const __unaligned ITEMIDLIST* pidl, UINT wFlags)	{ return E_NOTIMPL; }
 };
 
 //==============================================================================
@@ -1255,7 +1255,7 @@ HRESULT Shell::GetViewFlags(DWORD* dw)
 	return S_OK;
 }
 
-HRESULT Shell::IncludeObject(IShellView* pShellView, const ITEMIDLIST* pidl)
+HRESULT Shell::IncludeObject(IShellView* pShellView, const __unaligned ITEMIDLIST* pidl)
 {
 	// 隠しファイルを隠すは、GetViewFlags()だけでは効果が無いため、ここで個別にフィルタリングする
 	if(!m_pCurrentFolder || !m_pCurrentEntry)

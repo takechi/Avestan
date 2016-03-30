@@ -354,9 +354,11 @@ namespace mew
 
 namespace mew
 {
+  #ifndef _WIN64
 	STATIC_ASSERT(sizeof(FourCC)  == 4);  // == sizeof(INT32)
 	STATIC_ASSERT(sizeof(Guid)    == 16); // == sizeof(GUID)
 	STATIC_ASSERT(sizeof(variant) == 12); // XXX: 8ƒoƒCƒg‹«ŠE‚É•À‚Ô‚æ‚¤‚É‚·‚×‚«?
+  #endif
 
 	template <> class ToString<FourCC>
 	{
