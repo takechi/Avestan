@@ -9,11 +9,12 @@ a fork of Avesta ( http://lamoo.s53.xrea.com/ )
 * Visual Studio Community 2015
   * VS Express だと、ATL がないので（そのままでは）ビルドできない。
 * MSXML 4.0
-* Python 3.5 (32bit)
+* Python 3.x
+ * 検証環境は Python 3.5
 
 ## ビルド方法
-* pygmy プロジェクトで Python.h のインクルードパス、python35.lib のライブラリパスだけ変更すればビルドできるはず。
-  * Python 3.5 (32bit) を C:\Python\Python35-32 にインストールしている場合はこの変更も不要。
+* pygmy プロジェクトで Python.h のインクルードパス、python3x.lib のライブラリパスだけ変更すればビルドできるはず。
+  * Python 3.5 (32|64)bit を C:\Python\Python35-(32|64) にインストールしている場合はこの変更も不要。
 
 ## 注意
 * とりあえずコンパイルが通り、エラーなく起動できるようにしただけ。
