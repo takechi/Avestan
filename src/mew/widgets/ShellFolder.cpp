@@ -1213,7 +1213,15 @@ HRESULT Shell::GoAbsolute(IEntry* path, GoType go)
 	OnDirectoryChanged(resolved, go);
 	OnListViewModeChanged();
 
-	return S_OK;
+  // 先頭のフォルダ/ファイルにフォーカスを合わせる.	
+	each<IEntry> i = resolved->EnumChildren(true);
+	if(i.next()){
+		ITEMIDLIST* child = ILCreateChild(resolved->ID, i->ID);
+		Select(child, SVSI_FOCUSED | SVSI_ENSUREVISIBLE);
+		ILFree(child);
+	}
+
+  return S_OK;
 }
 HRESULT Shell::EndContextMenu(IContextMenu* pMenu, UINT cmd)
 {
