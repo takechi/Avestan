@@ -243,3 +243,8 @@ debug/
 var/config.xml
 var/settings.dat
 var/default.ave
+
+bin64/
+debug64/
+var/settings64.dat
+var/default64.ave

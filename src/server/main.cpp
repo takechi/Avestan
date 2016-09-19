@@ -145,8 +145,13 @@ public:
 		theAvesta = null;
 	}
 	static string GetConfigPath()		{ return RelativePath(_T("var\\config.xml")); }
-	static string GetStoragePath()		{ return RelativePath(_T("var\\settings.dat")); }
-	static string GetDefaultSaveName()	{ return RelativePath(_T("var\\default.ave")); }
+  #ifdef _M_X64
+	static string GetStoragePath() { return RelativePath(_T("var\\settings64.dat")); }
+	static string GetDefaultSaveName() { return RelativePath(_T("var\\default64.ave")); }
+  #else
+	static string GetStoragePath() { return RelativePath(_T("var\\settings.dat")); }
+	static string GetDefaultSaveName() { return RelativePath(_T("var\\default.ave")); }
+  #endif
 	static Direction GetDock(message& msg, PCSTR name, Direction defaultValue)
 	{
 		int dock = msg[name];
