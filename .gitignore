@@ -235,7 +235,8 @@ _Pvt_Extensions
 # FAKE - F# Make
 .fake/
 
-
+# Visual Studio 2015 Update2
+*.VC.db
 
 bin/
 debug/
