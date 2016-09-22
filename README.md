@@ -11,11 +11,12 @@ a fork of Avesta ( http://lamoo.s53.xrea.com/ )
 * MSXML 4.0
 
 ## ビルド方法
-* sln ファイルを開いて F5 でビルドできるはず。
+* src/Avesta.sln を開いて F5 でビルドできるはず。
 
 
 ### スクリプト拡張
-python によるスクリプト拡張を利用する場合は Python 3.5 が必要。
+python によるスクリプト拡張を利用する場合は、Python 3.5 のインストールと、
+sln 内の pygmy プロジェクトのビルドが必要。
 
 
 ## 注意
