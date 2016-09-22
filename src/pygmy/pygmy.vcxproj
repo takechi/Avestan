@@ -69,21 +69,25 @@
     <OutDir>../../debug\</OutDir>
     <IntDir>../../__obj__/$(ProjectName)/$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
+    <TargetExt>.pyd</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>../../debug64\</OutDir>
     <IntDir>../../__obj__64/$(ProjectName)/$(Configuration)\</IntDir>
+    <TargetExt>.pyd</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>../../bin\</OutDir>
     <IntDir>../../__obj__/$(ProjectName)/$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetExt>.pyd</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>../../bin64\</OutDir>
     <IntDir>../../__obj__64/$(ProjectName)/$(Configuration)\</IntDir>
+    <TargetExt>.pyd</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -103,7 +107,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
+      <OutputFile>$(OutDir)$(ProjectName)$(TargetExt)</OutputFile>
       <ModuleDefinitionFile>pygmy.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
@@ -130,7 +134,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
+      <OutputFile>$(OutDir)$(ProjectName)$(TargetExt)</OutputFile>
       <ModuleDefinitionFile>pygmy.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
@@ -160,7 +164,7 @@
       <DebugInformationFormat />
     </ClCompile>
     <Link>
-      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
+      <OutputFile>$(OutDir)$(ProjectName)$(TargetExt)</OutputFile>
       <ModuleDefinitionFile>pygmy.def</ModuleDefinitionFile>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -193,7 +197,7 @@
       </DebugInformationFormat>
     </ClCompile>
     <Link>
-      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
+      <OutputFile>$(OutDir)$(ProjectName)$(TargetExt)</OutputFile>
       <ModuleDefinitionFile>pygmy.def</ModuleDefinitionFile>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>

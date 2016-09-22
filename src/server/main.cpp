@@ -243,9 +243,9 @@ public:
 		if(m_booleans[BoolPython])
 		{
 			// チェックのためのロード
-			if(HINSTANCE hPython = LoadLibrary(_T("python24")))
+			if(HINSTANCE hPython = LoadLibrary(_T("python35")))
 			{
-				thePygmy = LoadLibrary(_T("pygmy"));
+				thePygmy = LoadLibrary(_T("pygmy.pyd"));
 				m_callback.create(__uuidof(PythonCallback));
 				// pygmy側でロードしているため、チェック用の参照を解放する
 				::FreeLibrary(hPython);
@@ -253,7 +253,7 @@ public:
 			else
 			{
 				PCTSTR errormsg =
-					_T("python24.dll が見つからないため、スクリプト拡張が使用できません。\n")
+					_T("python35.dll が見つからないため、スクリプト拡張が使用できません。\n")
 					_T("スクリプト拡張を使うためには、python をインストールしてください。\n\n")
 					_T("次回起動時に、もう一度 python の有無を確認しますか？\n")
 					_T("「いいえ」の場合には、python 拡張を無効にします。");

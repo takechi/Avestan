@@ -16,7 +16,7 @@
 #define PyString_FromStringAndSize PyBytes_FromStringAndSize
 #define PyString_FromFormatV PyBytes_FromFormatV
 #define PyString_AS_STRING PyBytes_AsString
-#define PyString_GET_SIZE PyBytes_GET_SIZE
+#define PyString_GET_SIZE PyBytes_Size
 #define PyNumber_InPlaceDivide PyNumber_InPlaceTrueDivide
 #define PyNumber_Divide PyNumber_TrueDivide
 #endif

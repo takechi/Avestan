@@ -244,7 +244,8 @@ var/config.xml
 var/settings.dat
 var/default.ave
 
-bin64/
+bin64/*
+!bin64/callback.py
 debug64/
 var/settings64.dat
 var/default64.ave

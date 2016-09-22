@@ -249,7 +249,7 @@ namespace
 				Py_RETURN_NONE;
 			}
 		}
-		return NULL;
+		return Py_None;
 	}
 
 	// def GetFreeBytes(path)
@@ -271,7 +271,7 @@ namespace
 			return pygmy::Long(uFreeBytes).detach();
 		}
 		// ‚¾‚ß‚ÛB
-		return NULL;
+		return Py_None;
 	}
 
 	// def GetDriveLetter(path)
@@ -293,34 +293,34 @@ namespace
 			return PyUnicode_FromUnicode(buffer, wcslen(buffer));
 		}
 		// ‚¾‚ß‚ÛB
-		return NULL;
+		return Py_None;
 	}
 
 	// def GetTotalCount()
 	static PyObject* GetTotalCount(PyObject* self, PyObject* args)
 	{
-		if(!StatusTextParam::view) return NULL;
+		if(!StatusTextParam::view) return Py_None;
 		return pygmy::Int(StatusTextParam::view->Count).detach();
 	}
 
 	// def GetTotalBytes()
 	static PyObject* GetTotalBytes(PyObject* self, PyObject* args)
 	{
-		if(!StatusTextParam::view) return NULL;
+		if(!StatusTextParam::view) return Py_None;
 		return pygmy::Long(ave::GetTotalBytes(StatusTextParam::view)).detach();
 	}
 
 	// def GetSelectedCount()
 	static PyObject* GetSelectedCount(PyObject* self, PyObject* args)
 	{
-		if(!StatusTextParam::view) return NULL;
+		if(!StatusTextParam::view) return Py_None;
 		return pygmy::Int(StatusTextParam::view->SelectedCount).detach();
 	}
 
 	// def GetSelectedBytes()
 	static PyObject* GetSelectedBytes(PyObject* self, PyObject* args)
 	{
-		if(!StatusTextParam::view) return NULL;
+		if(!StatusTextParam::view) return Py_None;
 		return pygmy::Long(ave::GetSelectedBytes(StatusTextParam::view)).detach();
 	}
 
@@ -382,3 +382,45 @@ extern "C" __declspec(dllexport) void APIENTRY initpygmy()
 	module.add("SWITCH"		, NaviSwitch);
 	module.add("REPLACE"	, NaviReplace);
 }
+
+
+#if PY_MAJOR_VERSION >= 3
+static struct PyModuleDef moduledef = {
+	PyModuleDef_HEAD_INIT,
+	"pygmy",
+	NULL,
+	-1,
+	pygmy_functions,
+	NULL,
+	NULL,
+	NULL,
+	NULL
+};
+
+extern "C" __declspec(dllexport) PyMODINIT_FUNC PyInit_pygmy()
+{
+	pygmy::Module module;
+	module.attach(PyModule_Create(&moduledef));
+	module.add("LEFT", MouseButtonLeft);
+	module.add("RIGHT", MouseButtonRight);
+	module.add("MIDDLE", MouseButtonMiddle);
+	module.add("X1", MouseButtonX1);
+	module.add("X2", MouseButtonX2);
+	module.add("CONTROL", ModifierControl);
+	module.add("SHIFT", ModifierShift);
+	module.add("ALT", ModifierAlt);
+	module.add("WINDOWS", ModifierWindows);
+	//
+	module.add("CANCEL", NaviCancel);
+	module.add("GOTO", NaviGoto);
+	module.add("GOTO_ALWAYS", NaviGotoAlways);
+	module.add("OPEN", NaviOpen);
+	module.add("OPEN_ALWAYS", NaviOpenAlways);
+	module.add("APPEND", NaviAppend);
+	module.add("RESERVE", NaviReserve);
+	module.add("SWITCH", NaviSwitch);
+	module.add("REPLACE", NaviReplace);
+	return module;
+}
+
+#endif
