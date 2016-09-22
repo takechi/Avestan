@@ -242,18 +242,25 @@ public:
 		// Python
 		if(m_booleans[BoolPython])
 		{
+			bool isPythonAvailable = false;
 			// チェックのためのロード
 			if(HINSTANCE hPython = LoadLibrary(_T("python35")))
 			{
 				thePygmy = LoadLibrary(_T("pygmy.pyd"));
-				m_callback.create(__uuidof(PythonCallback));
-				// pygmy側でロードしているため、チェック用の参照を解放する
-				::FreeLibrary(hPython);
+				if(thePygmy)
+				{
+					m_callback.create(__uuidof(PythonCallback));
+					// pygmy側でロードしているため、チェック用の参照を解放する
+					::FreeLibrary(hPython);
+					isPythonAvailable = true;
+				}
 			}
-			else
+			
+			if(!isPythonAvailable)
 			{
 				PCTSTR errormsg =
-					_T("python35.dll が見つからないため、スクリプト拡張が使用できません。\n")
+					_T("python35.dll または pygmy.pyd が見つからないため、スクリプト拡張が\n")
+					_T("使用できません。\n")
 					_T("スクリプト拡張を使うためには、python をインストールしてください。\n\n")
 					_T("次回起動時に、もう一度 python の有無を確認しますか？\n")
 					_T("「いいえ」の場合には、python 拡張を無効にします。");
