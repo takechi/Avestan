@@ -8,7 +8,9 @@
 #define PP_QUOTE_0(text)	#text
 
 /// ê√ìIîzóÒÇÃí∑Ç≥
-#define lengthof(ar)		(sizeof(ar)/sizeof(ar[0]))
+//#define lengthof(ar)		(sizeof(ar)/sizeof(ar[0]))
+template<typename T, std::size_t N>
+constexpr std::size_t lengthof(const T(&ar)[N]) { return N; }
 
 /// òAåã.
 #define PP_CAT(a, b)	PP_CAT_OO((a, b))

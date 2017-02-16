@@ -221,6 +221,7 @@
     <menu text="既知のバグ／要望(_K)..."     execute="AVESTA/ToDo.txt" />
     <menu/>
     <menu text="オンライン：配布サイト(_S)..."         execute="http://lamoo.s53.xrea.com/app/index.html" />
-    <menu text="オンライン：バグ報告／要望提出(_B)..." execute="http://lamoo.s53.xrea.com/forum/index.php" />
+    <!-- <menu text="オンライン：バグ報告／要望提出(_B)..." execute="http://lamoo.s53.xrea.com/forum/index.php" /> -->
+    <menu text="オンライン：改変版配布サイト(_C)..."   execute="https://github.com/takechi/Avestan" />
   </menu>
 </menu>

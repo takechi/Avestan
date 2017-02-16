@@ -103,6 +103,7 @@ namespace
 			PCTSTR version = m_Version.QueryValue(_T("FileVersion"));
 			PCTSTR author  = m_Version.QueryValue(_T("LegalCopyright"));
 			PCTSTR comment = m_Version.QueryValue(_T("Comments"));
+      PCTSTR changer = m_Version.QueryValue(_T("ChangedBy"));
 			// name & author
 			TCHAR ver[1024] = { 0 };
 			for(int i = 0, j = 0; version[i]; ++i)
@@ -126,6 +127,9 @@ namespace
 			SetDlgItemText(IDC_ABOUTURL, comment);
 			m_link.SubclassWindow(GetDlgItem(IDC_ABOUTURL));
 			m_link.SetHyperLink(comment);
+			// changed by
+			wsprintf(buffer, _T("(changed by %s)"), changer);
+			SetDlgItemText(IDC_CHANGERTEXT, buffer);
 			// icon
 			HICON hIconLarge = null;
 			//string path = m_Version.GetPath();

@@ -94,6 +94,7 @@ BEGIN
             VALUE "OriginalFilename", "avesta.exe"
             VALUE "ProductName", "Avesta"
             VALUE "ProductVersion", "0, 3, 1, 0"
+            VALUE "ChangedBy", "takechi@github"
         END
     END
     BLOCK "VarFileInfo"

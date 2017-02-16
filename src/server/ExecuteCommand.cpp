@@ -332,6 +332,7 @@ namespace
 	bool PathIsNonFile(PCWSTR path)
 	{
 		if(str::compare(path, L"http://", 7) == 0) return true;
+		if(str::compare(path, L"https://", 8) == 0) return true;
 		if(str::compare(path, L"ftp://" , 6) == 0) return true;
 		return false;
 	}

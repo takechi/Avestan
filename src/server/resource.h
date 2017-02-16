@@ -112,6 +112,7 @@
 #define IDC_WALL_PREVIEW                1022
 #define IDC_ABOUTURL                    1029
 #define IDC_REPLACE_EDIT                1031
+#define IDC_CHANGERTEXT                 1032
 
 // Next default values for new objects
 // 

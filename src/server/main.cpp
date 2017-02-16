@@ -243,7 +243,7 @@ public:
 		if(m_booleans[BoolPython])
 		{
 			// チェックのためのロード
-			if(HINSTANCE hPython = LoadLibrary(_T("python35")))
+			if(HINSTANCE hPython = LoadLibrary(_T("python36")))
 			{
 				thePygmy = LoadLibrary(_T("pygmy.pyd"));
 				if(thePygmy)
@@ -253,25 +253,24 @@ public:
 					::FreeLibrary(hPython);
 				}
 			}
-		}
-		if(!m_callback)
-		{
-			PCTSTR errormsg =
-				_T("python35.dll または pygmy.pyd が見つからないため、スクリプト拡張が\n")
-				_T("使用できません。\n")
-				_T("スクリプト拡張を使うためには、python をインストールしてください。\n\n")
-				_T("次回起動時に、もう一度 python の有無を確認しますか？\n")
-				_T("「いいえ」の場合には、python 拡張を無効にします。");
-			switch (::MessageBox(NULL, errormsg, _T("Avesta"), MB_YESNO | MB_ICONINFORMATION)) {
-			case IDYES:
-				m_booleans[BoolPython] = true;
-				break;
-			case IDNO:
-				m_booleans[BoolPython] = false;
-				break;
+			if(!m_callback)
+			{
+				PCTSTR errormsg =
+					_T("python36.dll または pygmy.pyd が見つからないため、スクリプト拡張が\n")
+					_T("使用できません。\n")
+					_T("スクリプト拡張を使うためには、python をインストールしてください。\n\n")
+					_T("次回起動時に、もう一度 python の有無を確認しますか？\n")
+					_T("「いいえ」の場合には、python 拡張を無効にします。");
+				switch (::MessageBox(NULL, errormsg, _T("Avesta"), MB_YESNO | MB_ICONINFORMATION)) {
+				case IDYES:
+					m_booleans[BoolPython] = true;
+					break;
+				case IDNO:
+					m_booleans[BoolPython] = false;
+					break;
+				}
+				m_callback.create(__uuidof(DefaultCallback));
 			}
-
-			m_callback.create(__uuidof(DefaultCallback));
 		}
 		// 
 		try

@@ -13,7 +13,7 @@ a fork of Avesta ( http://lamoo.s53.xrea.com/ )
 * src/Avesta.sln を開いて F5 でビルドできるはず。
 
 ### スクリプト拡張
-python によるスクリプト拡張を利用する場合は、Python 3.5 のインストールと、
+python によるスクリプト拡張を利用する場合は、Python 3.6 のインストールと、
 sln 内の pygmy プロジェクトのビルドが必要。
 
 ## ToDo
