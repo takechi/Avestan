@@ -4,6 +4,8 @@ a fork of Avesta ( http://lamoo.s53.xrea.com/ )
 タブ型ファイラ Avesta 0.3.1.9 (avesta-0.3.1.9src.zip) を Visual Studio Community 2015 で
 ビルドできるようにしたもの。
 
+実行ファイルは [release](https://github.com/takechi/Avestan/releases) にあります。
+
 ## ビルドに必要なもの
 * Visual Studio Community 2015
   * VS Express だと、ATL がないので（そのままでは）ビルドできない。
