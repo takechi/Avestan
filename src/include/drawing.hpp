@@ -13,8 +13,8 @@ namespace mew
 		// インタフェース
 
 		/// 
-		[ uuid("0779F971-F896-41A9-88E6-1C66978ECE65") ]
-		__interface IImageList2 : IImageList
+		__interface
+		__declspec(uuid("0779F971-F896-41A9-88E6-1C66978ECE65")) IImageList2 : IImageList
 		{
 			HIMAGELIST get_Normal() throw();
 			HIMAGELIST get_Disabled() throw();

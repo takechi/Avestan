@@ -81,8 +81,8 @@ namespace avesta
 	//==============================================================================
 	// コマンドライン.
 
-	[ uuid("7756E3FD-567D-4011-950F-4FC5F3AE75D4") ]
-	__interface ICommandLine : IUnknown
+	__interface
+	__declspec(uuid("7756E3FD-567D-4011-950F-4FC5F3AE75D4")) ICommandLine : IUnknown
 	{
 		bool Next(PWSTR* option, PWSTR* value);
 		void Reset();

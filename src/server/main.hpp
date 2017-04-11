@@ -180,8 +180,8 @@ extern Avesta* theAvesta;
 //==============================================================================
 // avesta interface
 
-[ uuid("8770FE4B-0DEB-434E-9D3F-38C1E012031B") ]
-__interface ICallback : IDisposable
+__interface
+__declspec(uuid("8770FE4B-0DEB-434E-9D3F-38C1E012031B")) ICallback : IDisposable
 {
 	string Caption(const string& name, const string& path);
 	string StatusText(const string& text, IShellListView* view);
