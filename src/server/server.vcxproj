@@ -70,21 +70,25 @@
     <OutDir>../../debug\</OutDir>
     <IntDir>../../__obj__/$(ProjectName)/$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>avesta</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>../../debug64\</OutDir>
     <IntDir>../../__obj__64/$(ProjectName)/$(Configuration)\</IntDir>
+    <TargetName>avesta</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>../../bin\</OutDir>
     <IntDir>../../__obj__/$(ProjectName)/$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>avesta</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>../../bin64\</OutDir>
     <IntDir>../../__obj__64/$(ProjectName)/$(Configuration)\</IntDir>
+    <TargetName>avesta</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
