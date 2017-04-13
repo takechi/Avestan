@@ -397,7 +397,7 @@ static struct PyModuleDef moduledef = {
 	NULL
 };
 
-extern "C" __declspec(dllexport) PyMODINIT_FUNC PyInit_pygmy()
+PyMODINIT_FUNC PyInit_pygmy()
 {
 	pygmy::Module module;
 	module.attach(PyModule_Create(&moduledef));
