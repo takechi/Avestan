@@ -38,7 +38,7 @@ namespace
 
 	struct IDListCompare
 	{
-		bool operator () (const ITEMIDLIST* lhs, const ITEMIDLIST* rhs) const
+		bool operator () (LPCITEMIDLIST lhs, const LPCITEMIDLIST rhs) const
 		{
 			return afx::ILCompare(lhs, rhs) < 0;
 		}
@@ -83,7 +83,7 @@ namespace
 		UrlCreateFromPath(path.str(), url, &len, 0);
 		return string(url);
 	}
-	static string ExtractID(const ITEMIDLIST* pidl)
+	static string ExtractID(LPCITEMIDLIST pidl)
 	{
 		TRESPASS();
 		return null;
@@ -97,7 +97,7 @@ namespace mew { namespace io {
 class Entry : public Root< implements<IEntry, ISerializable> >
 {
 private:
-	ITEMIDLIST*			m_pidl;
+	LPITEMIDLIST			m_pidl;
 	string				m_name;
 	string				m_path;
 	int					m_image;
@@ -124,11 +124,11 @@ private:
 		if(m_image == NOIMAGE)	m_image = info.iIcon;
 		if(!m_name)				m_name  = info.szDisplayName;
 	}
-	void UpdateAttribute(IShellFolder* pParentHint = null, const ITEMIDLIST* pLeafHint = null)
+	void UpdateAttribute(IShellFolder* pParentHint = null, LPCITEMIDLIST pLeafHint = null)
 	{
 		if(m_isAttrValid)
 			return;
-		const ITEMIDLIST* pidl = get_ID();
+		LPCITEMIDLIST pidl = get_ID();
 		if(afx::ILIsRoot(pidl))
 		{
 			m_attrs = SFGAO_FOLDER;
@@ -136,7 +136,7 @@ private:
 		else
 		{
 			ref<IShellFolder> parent(pParentHint);
-			const ITEMIDLIST* leaf(pLeafHint);
+			LPCITEMIDLIST leaf(pLeafHint);
 			if(!parent)
 				afx::ILGetParentFolder(pidl, &parent, &leaf);
 			if(!parent)
@@ -150,14 +150,14 @@ private:
 	{
 		m_attrs = dwAttr;
 	}
-	void UpdateFolder(IShellFolder* pParentHint = null, const ITEMIDLIST* pLeafHint = null)
+	void UpdateFolder(IShellFolder* pParentHint = null, LPCITEMIDLIST pLeafHint = null)
 	{
 		if(m_isAttrValid)
 		{
 			if(!(m_attrs & SFGAO_FOLDER) || m_folder)
 				return;
 		}
-		const ITEMIDLIST* pidl = get_ID();
+		LPCITEMIDLIST pidl = get_ID();
 		if(afx::ILIsRoot(pidl))
 		{
 			m_attrs = SFGAO_FOLDER;
@@ -167,7 +167,7 @@ private:
 		else
 		{
 			ref<IShellFolder> parent(pParentHint);
-			const ITEMIDLIST* leaf(pLeafHint);
+			LPCITEMIDLIST leaf(pLeafHint);
 			if(!parent)
 				afx::ILGetParentFolder(pidl, &parent, &leaf);
 			if(!parent)
@@ -193,32 +193,32 @@ private:
 	}
 
 private:
-	Entry(ITEMIDLIST* pidl, IShellFolder* parent, const ITEMIDLIST* leaf) :
+	Entry(LPITEMIDLIST pidl, IShellFolder* parent, LPCITEMIDLIST leaf) :
 		m_pidl(pidl), m_attrs(0), m_image(NOIMAGE), m_isAttrValid(false)
 	{
 		// SHBindToParent()はコストがかかるので、親がわかっているうちに情報を得ておく
 		if(parent && leaf)
 			UpdateAttribute(parent, leaf);
 	}
-	Entry(ITEMIDLIST* pidl, DWORD attrs) :
+	Entry(LPITEMIDLIST pidl, DWORD attrs) :
 		m_pidl(pidl), m_attrs(attrs), m_image(NOIMAGE), m_isAttrValid(true)
 	{
 	}
 
 	static CriticalSection	csEntryPool;
-	typedef std::map<const ITEMIDLIST*, Entry*, IDListCompare> Pool;
+	typedef std::map<LPCITEMIDLIST, Entry*, IDListCompare> Pool;
 	static Pool& GetPool()
 	{
 		static Pool pool;
 		return pool;
 	}
-	static void RemoveFromPool(const ITEMIDLIST* pidl)
+	static void RemoveFromPool(LPCITEMIDLIST pidl)
 	{
 		AutoLock lock(csEntryPool);
 		Pool& pool = GetPool();
 		pool.erase(pidl);
 	}
-	static void ReplacePool(const ITEMIDLIST* prev, const ITEMIDLIST* next, Entry* entry)
+	static void ReplacePool(LPCITEMIDLIST prev, LPCITEMIDLIST next, Entry* entry)
 	{
 		AutoLock lock(csEntryPool);
 		Pool& pool = GetPool();
@@ -239,10 +239,10 @@ private:
 			return E_POINTER;
 		if(afx::ILIsRoot(get_ID()))
 			return E_FAIL;
-		ITEMIDLIST* pidl = ILClone(get_ID());
+		LPITEMIDLIST pidl = ILClone(get_ID());
 		while(--level > 0 && SUCCEEDED(ILRemoveLastID(pidl))) {}
 		ref<IShellFolder> pParentFolder;
-		ITEMIDLIST* leaf;
+		LPITEMIDLIST leaf;
 		HRESULT hr = afx::ILGetParentFolder(pidl, &pParentFolder, (const ITEMIDLIST**)&leaf);
 		if(FAILED(hr) || leaf->mkid.cb == 0)
 		{
@@ -263,7 +263,7 @@ private:
 	{
 		if(!m_path)
 		{
-			const ITEMIDLIST* pidl = get_ID();
+			LPCITEMIDLIST pidl = get_ID();
 			TCHAR path[MAX_PATH];
 			if SUCCEEDED(afx::ILGetPath(pidl, path))
 				m_path = path;
@@ -280,7 +280,7 @@ private:
 	}
 
 public:
-	static Entry* NewEntry(ITEMIDLIST* pidl, IShellFolder* parent = null, const ITEMIDLIST* leaf = null)
+	static Entry* NewEntry(LPITEMIDLIST pidl, IShellFolder* parent = null, LPCITEMIDLIST leaf = null)
 	{
 		ASSERT(pidl);
 		AutoLock lock(csEntryPool);
@@ -301,7 +301,7 @@ public:
 		}
 		return entry;
 	}
-	static Entry* NewEntry(ITEMIDLIST* pidl, DWORD attrs)
+	static Entry* NewEntry(LPITEMIDLIST pidl, DWORD attrs)
 	{
 		ASSERT(pidl);
 		AutoLock lock(csEntryPool);
@@ -337,13 +337,13 @@ public:
 		WCHAR path2[MAX_PATH];
 		afx::PathNormalize(path2, path);
 		DWORD attrs = SFGAO_FOLDER;
-		if(ITEMIDLIST* pidl = afx::ILFromPath(path2, &attrs))
+		if(LPITEMIDLIST pidl = afx::ILFromPath(path2, &attrs))
 			return Entry::NewEntry(pidl, attrs);
 		throw IOError(string::format(L"$1 は無効なパスです", path), STG_E_PATHNOTFOUND);
 	}
 	static Entry* CreateEntryFromCSIDL(int csidl, PCWSTR path, PCWSTR next)
 	{
-		ITEMIDLIST* pidl = null;
+		LPITEMIDLIST pidl = null;
 		if(FAILED(SHGetFolderLocation(null, csidl, null, 0, &pidl)) || !pidl) // SUCCEEDED なのに null を返すことがある！
 			throw IOError(string::format(_T("特殊フォルダ $1 (CSIDL=$2) を取得できません"), path, csidl), STG_E_PATHNOTFOUND);
 		if(!*next)
@@ -386,7 +386,7 @@ public:
 	{
 		if(!arg)
 		{
-			ITEMIDLIST* pidl = null;
+			LPITEMIDLIST pidl = null;
 			SHGetFolderLocation(null, CSIDL_DESKTOP, 0, 0, &pidl);
 			ASSERT(pidl);
 			return Entry::NewEntry(pidl);
@@ -409,7 +409,7 @@ public:
 		}
 		else
 		{
-			ITEMIDLIST* pidl = null;
+			LPITEMIDLIST pidl = null;
 			Stream stream(__uuidof(io::Reader), arg);
 			HRESULT hr = ILLoadFromStreamEx(stream, &pidl);
 			if FAILED(hr)
@@ -427,7 +427,7 @@ public: // ISerializable
 	}
 
 public: // IEntry
-	const ITEMIDLIST* get_ID() throw()	{ return m_pidl; }
+	LPCITEMIDLIST get_ID() throw()	{ return m_pidl; }
 	int get_Image()
 	{
 		if(m_image == NOIMAGE)
@@ -456,7 +456,7 @@ public: // IEntry
 			{
 				ref<IEntry> parentEntry;
 				ref<IShellFolder> parentFolder;
-				const ITEMIDLIST* pidl = ILFindLastID(get_ID());
+				LPCITEMIDLIST pidl = ILFindLastID(get_ID());
 				HRESULT hr;
 				if(SUCCEEDED(hr = QueryObject(&parentEntry, IDList_Parent))
 				&& SUCCEEDED(hr = parentEntry->QueryObject(&parentFolder))
@@ -491,12 +491,12 @@ public: // IEntry
 		if FAILED(hr = GetFolder(&folder))
 			return hr;
 		DWORD attrs = SFGAO_FOLDER;
-		ITEMIDLIST* leaf;
+		LPITEMIDLIST leaf;
 		WCHAR path2[MAX_PATH];
 		afx::PathNormalize(path2, relpath);
 		if FAILED(hr = folder->ParseDisplayName(null, null, path2, null, &leaf, &attrs))
 			return hr;
-		ITEMIDLIST* pidl = ILCombine(get_ID(), leaf);
+		LPITEMIDLIST pidl = ILCombine(get_ID(), leaf);
 		ILFree(leaf);
 		ref<Entry> entry;
 		entry.attach(Entry::NewEntry(pidl, attrs));
@@ -576,10 +576,10 @@ public: // IEntry
 	{
 		HRESULT hr;
 		ref<IShellFolder> parent;
-		const ITEMIDLIST* leaf = null;
+		LPCITEMIDLIST leaf = null;
 		if FAILED(hr = afx::ILGetParentFolder(get_ID(), &parent, &leaf))
 			return hr;
-		ITEMIDLIST* pidl = null;
+		LPITEMIDLIST pidl = null;
 		if FAILED(hr = parent->SetNameOf(hwnd, leaf, name, SHGDN_FOREDITING, &pidl))
 			return hr;
 		ASSERT(pidl);
@@ -615,11 +615,11 @@ public: // IEntry
 		typedef Enumerator<IEntry>	EnumEntry;
 		ref<EnumEntry> e;
 		e.attach(new EnumEntry());
-		const ITEMIDLIST* parent = get_ID();
-		ITEMIDLIST* leaf;
+		LPCITEMIDLIST parent = get_ID();
+		LPITEMIDLIST leaf;
 		while(pEnum->Next(1, &leaf, NULL) == S_OK)
 		{
-			ITEMIDLIST* pidl = ILCombine(parent, leaf);
+			LPITEMIDLIST pidl = ILCombine(parent, leaf);
 			e->push_back(ref<IEntry>::from(NewEntry(pidl, folder, leaf)));
 		}
 		std::sort(e->begin(), e->end(), EntryCompare(folder));
@@ -637,7 +637,7 @@ private:
 	string				m_AliasName;
 
 public:
-	EntryAlias(ITEMIDLIST* pidl, const string& name) : m_AliasName(name)
+	EntryAlias(LPITEMIDLIST pidl, const string& name) : m_AliasName(name)
 	{
 		m_pInner.attach(Entry::NewEntry(pidl));
 	}
@@ -682,7 +682,7 @@ public: // IEntry
 		m_AliasName = name;
 		return S_OK;
 	}
-	const ITEMIDLIST* get_ID()	{ return m_pInner->get_ID(); }
+	LPCITEMIDLIST get_ID()	{ return m_pInner->get_ID(); }
 	int get_Image()			{ return m_pInner->get_Image(); }
 	bool IsFolder()			{ return m_pInner->IsFolder(); }
 	HRESULT QueryObject(REFINTF ppObject, IndexOrIDList relpath = 0)
@@ -770,8 +770,8 @@ public:
 	
 public: // IEntryList
 	size_t get_Count()					{ return afx::CIDAGetCount(m_pCIDA); }
-	const ITEMIDLIST*	get_Parent()	{ return afx::CIDAGetParent(m_pCIDA); }
-	const ITEMIDLIST*	get_Leaf(size_t index)
+	LPCITEMIDLIST	get_Parent()	{ return afx::CIDAGetParent(m_pCIDA); }
+	LPCITEMIDLIST	get_Leaf(size_t index)
 	{
 		if(index >= get_Count())
 			return null;
@@ -780,7 +780,7 @@ public: // IEntryList
 	const CIDA* GetCIDA()			{ return m_pCIDA; }
 	HRESULT GetAt(IEntry** ppShellItem, size_t index)
 	{
-		const ITEMIDLIST* leaf = this->Leaf[index];
+		LPCITEMIDLIST leaf = this->Leaf[index];
 		if(!leaf)
 			return E_INVALIDARG;
 		Entry* entry = Entry::NewEntry(ILCombine(this->Parent, leaf));
@@ -819,7 +819,7 @@ HRESULT Entry::ResolveLink(REFINTF ppObject)
 	HRESULT hr;
     if FAILED(hr = ::CoCreateInstance(CLSID_ShellLink, null, CLSCTX_INPROC, IID_IShellLink, (void**)&link))
 		return hr;
-	ITEMIDLIST* pidl = null;
+	LPITEMIDLIST pidl = null;
 	if(SUCCEEDED(hr = cast<IPersistFile>(link)->Load(get_Path().str(), STGM_READ))
 	&& SUCCEEDED(hr = link->Resolve(null, SLR_NOLINKINFO | SLR_NO_UI | SLR_NOUPDATE | SLR_NOSEARCH | SLR_NOTRACK))
 	&& (hr = link->GetIDList(&pidl)) == S_OK) // ← SUCCEEDED ではなく、S_OK を使う必要あり
@@ -835,7 +835,7 @@ HRESULT Entry::ResolveLink(REFINTF ppObject)
 } }
 
 //HRESULT CreateEntry(IEntry** pp, STRING src, PathFrom from = None);
-HRESULT mew::io::CreateEntry(IEntry** ppEntry, const ITEMIDLIST* pidl, PathFrom from)
+HRESULT mew::io::CreateEntry(IEntry** ppEntry, LPCITEMIDLIST pidl, PathFrom from)
 {
 	if(!ppEntry)
 		return E_POINTER;

@@ -412,7 +412,7 @@ public: // ICommDlgBrowser
 //#undef caseTrace
 		return m_Owner.OnStateChange(pShellView, uChange); 
 	}
-	STDMETHODIMP IncludeObject(IShellView* pShellView, const __unaligned ITEMIDLIST* pidl)
+	STDMETHODIMP IncludeObject(IShellView* pShellView, LPCITEMIDLIST pidl)
 	{	// 表示ファイルのフィルタリング。
 		// S_OK: show, S_FALSE: hide
 		return m_Owner.IncludeObject(pShellView, pidl);
@@ -472,7 +472,7 @@ public: // IShellBrowser
 		return E_NOTIMPL;
 	}
 	STDMETHODIMP QueryActiveShellView(IShellView** ppShellView)	{ return m_Owner.m_pShellView.copyto(ppShellView); }
-	STDMETHODIMP BrowseObject(const __unaligned ITEMIDLIST* pidl, UINT wFlags)	{ return E_NOTIMPL; }
+	STDMETHODIMP BrowseObject(LPCITEMIDLIST pidl, UINT wFlags)	{ return E_NOTIMPL; }
 };
 
 //==============================================================================
@@ -607,7 +607,7 @@ BOOL Shell::ProcessShellMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 			{
 				if(ref<IFolderView> pFolderView = cast(m_pShellView))
 				{
-					ITEMIDLIST* pidl = null;
+					LPITEMIDLIST pidl = null;
 					Point ptItem;
 					if(SUCCEEDED(pFolderView->Item(index, &pidl)) && SUCCEEDED(pFolderView->GetItemPosition(pidl, &ptItem)))
 					{
@@ -822,7 +822,7 @@ HRESULT Shell::SetStatusByUnknown(IUnknown* unk, Status status, bool unique)
 	if(!folder)
 		return E_UNEXPECTED;
 	bool newLeaf = false;
-	ITEMIDLIST* leaf = null;
+	LPITEMIDLIST leaf = null;
 	ref<IEntry> entry = cast(unk);
 	if(entry)
 	{
@@ -852,7 +852,7 @@ HRESULT Shell::SetStatusByUnknown(IUnknown* unk, Status status, bool unique)
 		ILFree(leaf);
 	return hr;
 }
-HRESULT Shell::SetStatusByIDList(const ITEMIDLIST* leaf, Status status, bool unique)
+HRESULT Shell::SetStatusByIDList(LPCITEMIDLIST leaf, Status status, bool unique)
 {
 	if(!leaf)
 		return E_POINTER;
@@ -866,7 +866,7 @@ HRESULT Shell::SetStatusByIDList(const ITEMIDLIST* leaf, Status status, bool uni
 		return E_INVALIDARG;
 	}
 }
-HRESULT Shell::Select(const ITEMIDLIST* leaf, UINT svsi)
+HRESULT Shell::Select(LPCITEMIDLIST leaf, UINT svsi)
 {
 	if(!m_pShellView)
 		return E_UNEXPECTED;
@@ -940,7 +940,7 @@ HRESULT Shell::GetAt(REFINTF pp, size_t index)
 {
 	if(ref<IFolderView> folder = cast(m_pShellView))
 	{
-		ITEMIDLIST* pidl;
+		LPITEMIDLIST pidl;
 		HRESULT hr = folder->Item(index, &pidl);
 		if FAILED(hr)
 			return hr;
@@ -1076,7 +1076,7 @@ HRESULT Shell::GoUp(size_t step, bool selectPrev)
 	// 以前いたフォルダにカーソルを合わせる.
 	if(selectPrev)
 	{
-		if(ITEMIDLIST* prev = ILCloneFirst((ITEMIDLIST*)(((BYTE*)current->ID) + ILGetSize(parent->ID) - 2)))
+		if(LPITEMIDLIST prev = ILCloneFirst((LPITEMIDLIST)(((BYTE*)current->ID) + ILGetSize(parent->ID) - 2)))
 		{
 			Select(prev, SVSI_FOCUSED | SVSI_SELECT | SVSI_ENSUREVISIBLE);
 			ILFree(prev);
@@ -1085,12 +1085,12 @@ HRESULT Shell::GoUp(size_t step, bool selectPrev)
 	return S_OK;
 }
 // parent 相対の child のIDリストを返す. 親子関係が間違っている場合の動作は未定義. 
-static const ITEMIDLIST* ILFindRelative(const ITEMIDLIST* parent, const ITEMIDLIST* child)
+static LPCITEMIDLIST ILFindRelative(LPCITEMIDLIST parent, LPCITEMIDLIST child)
 {
 	size_t size = ILGetSize(parent) - 2; // ターミネータの分だけ-2する
-	return (const ITEMIDLIST* )(((BYTE*)child) + size);
+	return (LPCITEMIDLIST)(((BYTE*)child) + size);
 }
-static ITEMIDLIST* ILCreateChild(const ITEMIDLIST* parent, const ITEMIDLIST* child)
+static LPITEMIDLIST ILCreateChild(LPCITEMIDLIST parent, LPCITEMIDLIST child)
 {
 	return ILCloneFirst(ILFindRelative(parent, child));
 }
@@ -1111,7 +1111,7 @@ HRESULT Shell::GoBack(size_t step, bool selectPrev)
 	// 以前いたフォルダにカーソルを合わせる.
 	if(selectPrev && ILIsParent(next->ID, prev->ID, false))
 	{
-		ITEMIDLIST* child = ILCreateChild(next->ID, prev->ID);
+		LPITEMIDLIST child = ILCreateChild(next->ID, prev->ID);
 		Select(child, SVSI_FOCUSED | SVSI_SELECT | SVSI_ENSUREVISIBLE);
 		ILFree(child);
 	}
@@ -1134,7 +1134,7 @@ HRESULT Shell::GoForward(size_t step, bool selectPrev)
 	// 以前いたフォルダにカーソルを合わせる.
 	if(selectPrev && ILIsParent(next->ID, prev->ID, false))
 	{
-		ITEMIDLIST* child = ILCreateChild(next->ID, prev->ID);
+		LPITEMIDLIST child = ILCreateChild(next->ID, prev->ID);
 		Select(child, SVSI_FOCUSED | SVSI_SELECT | SVSI_ENSUREVISIBLE);
 		ILFree(child);
 	}
@@ -1216,7 +1216,7 @@ HRESULT Shell::GoAbsolute(IEntry* path, GoType go)
   // 先頭のフォルダ/ファイルにフォーカスを合わせる.	
 	each<IEntry> i = resolved->EnumChildren(true);
 	if(i.next()){
-		ITEMIDLIST* child = ILCreateChild(resolved->ID, i->ID);
+		LPITEMIDLIST child = ILCreateChild(resolved->ID, i->ID);
 		Select(child, SVSI_FOCUSED | SVSI_ENSUREVISIBLE);
 		ILFree(child);
 	}
@@ -1263,7 +1263,7 @@ HRESULT Shell::GetViewFlags(DWORD* dw)
 	return S_OK;
 }
 
-HRESULT Shell::IncludeObject(IShellView* pShellView, const __unaligned ITEMIDLIST* pidl)
+HRESULT Shell::IncludeObject(IShellView* pShellView, LPCITEMIDLIST pidl)
 {
 	// 隠しファイルを隠すは、GetViewFlags()だけでは効果が無いため、ここで個別にフィルタリングする
 	if(!m_pCurrentFolder || !m_pCurrentEntry)
@@ -1298,7 +1298,7 @@ HRESULT Shell::IncludeObject(IShellView* pShellView, const __unaligned ITEMIDLIS
 	{	// なぜか失敗することがある。仕方ないので、Win32API経由で。
 		HRESULT result = S_OK;
 		// SHGetRealIDL(m_pCurrentFolder, pidl, &fullpath)　も失敗するので、自前で連結することにする.
-		ITEMIDLIST* fullpath = ILCombine(m_pCurrentEntry->ID, pidl);
+		LPITEMIDLIST fullpath = ILCombine(m_pCurrentEntry->ID, pidl);
 		TCHAR path[MAX_PATH];
 		if SUCCEEDED(afx::ILGetPath(fullpath, path))
 		{

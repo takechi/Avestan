@@ -143,6 +143,7 @@ namespace mew
 		bool operator ! () const				{ return value == 0; }
 
     #ifdef _WIN64
+    IndexOr(__unaligned T* p) : value((INT_PTR)p)	{ ASSERT(is_ptr()); }
     IndexOr(int index) : value(static_cast<INT_PTR>(index)) { ASSERT(is_index()); }
     IndexOr(size_t index) : value(static_cast<INT_PTR>(index)) { ASSERT(is_index()); }
     IndexOr(UINT index) : value(static_cast<INT_PTR>(index)) { ASSERT(is_index()); }

@@ -217,10 +217,10 @@ namespace afx
 	HIMAGELIST ExpGetImageList(int size);
 	HRESULT ExpGetImageList(int size, IImageList** ppImageList);
 	int		ExpGetImageIndex(LPCTSTR path);
-	int		ExpGetImageIndex(const ITEMIDLIST* pidl);
+	int		ExpGetImageIndex(LPCITEMIDLIST pidl);
 	int		ExpGetImageIndex(int csidl);
 	int		ExpGetImageIndexForFolder();
-	HRESULT ExpEnumExplorers(HRESULT (*fnEnum)(HWND hExplorer, const ITEMIDLIST* pidl, LPARAM lParam), LPARAM lParam);
+	HRESULT ExpEnumExplorers(HRESULT (*fnEnum)(HWND hExplorer, LPCITEMIDLIST pidl, LPARAM lParam), LPARAM lParam);
 	bool    ExpEnableGroup(IShellView* pShellView, bool enable);
 	DWORD   ExpGetThumbnailSize();
 	HRESULT ExpSetThumbnailSize(DWORD dwSize);
@@ -248,24 +248,24 @@ namespace afx
 	// HRESULT ILLoadFromStream(IStream *pstm, ITEMIDLIST* *pidl);
 	// HRESULT ILSaveToStream(IStream * pstm, const ITEMIDLIST* pidl);
 
-	inline bool ILIsRoot(const ITEMIDLIST* pidl)	{ return pidl->mkid.cb == 0; }
-	inline HRESULT ILGetPath(const ITEMIDLIST* pidl, CHAR path[MAX_PATH])	{ return SHGetPathFromIDListA(pidl, path) ? S_OK : E_FAIL; }
-	inline HRESULT ILGetPath(const ITEMIDLIST* pidl, WCHAR path[MAX_PATH])	{ return SHGetPathFromIDListW(pidl, path) ? S_OK : E_FAIL; }
-	ITEMIDLIST* ILFromPath(PCWSTR path, DWORD* pdwAttr);
-	ITEMIDLIST* ILFromShared(HANDLE hMem, DWORD dwProcId);
-	ITEMIDLIST* ILFromExplorer(HWND hwndExplorer);
+	inline bool ILIsRoot(LPCITEMIDLIST pidl)	{ return pidl->mkid.cb == 0; }
+	inline HRESULT ILGetPath(LPCITEMIDLIST pidl, CHAR path[MAX_PATH])	{ return SHGetPathFromIDListA(pidl, path) ? S_OK : E_FAIL; }
+	inline HRESULT ILGetPath(LPCITEMIDLIST pidl, WCHAR path[MAX_PATH])	{ return SHGetPathFromIDListW(pidl, path) ? S_OK : E_FAIL; }
+	LPITEMIDLIST ILFromPath(PCWSTR path, DWORD* pdwAttr);
+	LPITEMIDLIST ILFromShared(HANDLE hMem, DWORD dwProcId);
+	LPITEMIDLIST ILFromExplorer(HWND hwndExplorer);
 
 	/// 親シェルフォルダの取得.
-	inline HRESULT ILGetParentFolder(const ITEMIDLIST* pidl, IShellFolder** ppParent, const ITEMIDLIST** ppRelative = NULL)
+	inline HRESULT ILGetParentFolder(LPCITEMIDLIST pidl, IShellFolder** ppParent, LPCITEMIDLIST* ppRelative = NULL)
 	{
 		return SHBindToParent(pidl, IID_IShellFolder, (void**)ppParent, ppRelative);
 	}
 
 	/// 自分自身のシェルフォルダの取得.
-	HRESULT ILGetSelfFolder(const ITEMIDLIST* pidl, IShellFolder** ppFolder);
+	HRESULT ILGetSelfFolder(LPCITEMIDLIST pidl, IShellFolder** ppFolder);
 
 	/// ITEMIDLIST を比較し、-1, 0, +1 のいづれかを返す.
-	inline int ILCompare(const ITEMIDLIST* lhs, const ITEMIDLIST* rhs)
+	inline int ILCompare(LPCITEMIDLIST lhs, LPCITEMIDLIST rhs)
 	{
 		if(lhs == rhs)	return  0;
 		if(!lhs)		return -1;
@@ -278,12 +278,12 @@ namespace afx
 	}
 
 	/// SHGetFileInfo の IDList バージョン.
-	inline DWORD_PTR ILGetFileInfo(const ITEMIDLIST* pidl, SHFILEINFO* info, DWORD flags, DWORD dwFileAttr = 0)
+	inline DWORD_PTR ILGetFileInfo(LPCITEMIDLIST pidl, SHFILEINFO* info, DWORD flags, DWORD dwFileAttr = 0)
 	{
 		return ::SHGetFileInfo((PCWSTR)pidl, dwFileAttr, info, sizeof(SHFILEINFO), flags | SHGFI_PIDL);
 	}
 
-	HRESULT ILGetDisplayName(IShellFolder* folder, const ITEMIDLIST* leaf, DWORD shgdn, WCHAR name[], size_t bufsize);
+	HRESULT ILGetDisplayName(IShellFolder* folder, LPCITEMIDLIST leaf, DWORD shgdn, WCHAR name[], size_t bufsize);
 
 	//==============================================================================
 	// CIDA 関数.
@@ -293,23 +293,23 @@ namespace afx
 		ASSERT(pCIDA);
 		return pCIDA->cidl;
 	}
-	inline const ITEMIDLIST* CIDAGetParent(const CIDA* pCIDA)
+	inline LPCITEMIDLIST CIDAGetParent(const CIDA* pCIDA)
 	{
 		ASSERT(pCIDA);
-		return (const ITEMIDLIST*)(((BYTE*)pCIDA) + pCIDA->aoffset[0]);
+		return (LPCITEMIDLIST)(((BYTE*)pCIDA) + pCIDA->aoffset[0]);
 	}
-	inline const ITEMIDLIST* CIDAGetAt(const CIDA* pCIDA, size_t index)
+	inline LPCITEMIDLIST CIDAGetAt(const CIDA* pCIDA, size_t index)
 	{
 		ASSERT(pCIDA);
 		ASSERT(index < CIDAGetCount(pCIDA));
-		return (const ITEMIDLIST*)(((BYTE*)pCIDA) + pCIDA->aoffset[index+1]);
+		return (LPCITEMIDLIST)(((BYTE*)pCIDA) + pCIDA->aoffset[index+1]);
 	}
 	inline size_t CIDAGetSize(const CIDA* pCIDA)
 	{
 		ASSERT(pCIDA);
 		return pCIDA->aoffset[pCIDA->cidl] + ILGetSize(CIDAGetAt(pCIDA, CIDAGetCount(pCIDA)-1));
 	}
-	HGLOBAL CIDAFromSingleIDList(const ITEMIDLIST* pidl);
+	HGLOBAL CIDAFromSingleIDList(LPCITEMIDLIST pidl);
 	HGLOBAL CIDAToHDROP(const CIDA* pCIDA);	///< CIDAをHDROPに変換.
 	HGLOBAL CIDAToTextA(const CIDA* pCIDA);	///< CIDAをMBCSに変換.
 	HGLOBAL CIDAToTextW(const CIDA* pCIDA);	///< CIDAをWCSに変換.

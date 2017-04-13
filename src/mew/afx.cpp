@@ -486,9 +486,9 @@ HRESULT afx::SHResolveLink(PCWSTR shortcut, PWSTR resolved)
 //==============================================================================
 // ITEMIDLIST ä÷êî.
 
-ITEMIDLIST* afx::ILFromPath(PCWSTR path, DWORD* pdwAttr)
+LPITEMIDLIST afx::ILFromPath(PCWSTR path, DWORD* pdwAttr)
 {
-	ITEMIDLIST* pidl = 0;
+	LPITEMIDLIST pidl = 0;
 	DWORD dwReserved = (pdwAttr ? *pdwAttr : 0);
     SHILCreateFromPath(path, &pidl, pdwAttr);
 	if(pidl)
@@ -515,7 +515,7 @@ ITEMIDLIST* afx::ILFromPath(PCWSTR path, DWORD* pdwAttr)
 			}
 			else
 			{
-				const ITEMIDLIST* leaf = NULL;
+				LPCITEMIDLIST leaf = NULL;
 				CComPtr<IShellFolder> parent;
 				if SUCCEEDED(afx::ILGetParentFolder(pidl, &parent, &leaf))
 				{
@@ -531,10 +531,10 @@ ITEMIDLIST* afx::ILFromPath(PCWSTR path, DWORD* pdwAttr)
 	}
 	return pidl;
 }
-ITEMIDLIST* afx::ILFromShared(HANDLE hMem, DWORD pid)
+LPITEMIDLIST afx::ILFromShared(HANDLE hMem, DWORD pid)
 {
-	ITEMIDLIST* pidl = NULL;
-	if(ITEMIDLIST* pidlShared = (ITEMIDLIST*)SHLockShared(hMem, pid))
+	LPITEMIDLIST pidl = NULL;
+	if(LPITEMIDLIST pidlShared = (LPITEMIDLIST)SHLockShared(hMem, pid))
 	{
 		if(!IsBadReadPtr(pidlShared, 1))
 			pidl = ILClone(pidlShared);
@@ -543,18 +543,18 @@ ITEMIDLIST* afx::ILFromShared(HANDLE hMem, DWORD pid)
 	}
 	return pidl;
 }
-ITEMIDLIST* afx::ILFromExplorer(HWND hwnd)
+LPITEMIDLIST afx::ILFromExplorer(HWND hwnd)
 {
 	DWORD pid = GetCurrentProcessId();
 	HANDLE hMem = (HANDLE)SendMessage(hwnd, WM_USER+12, pid, 0);
 	return ILFromShared(hMem, pid);
 }
-HRESULT afx::ILGetSelfFolder(const ITEMIDLIST* pidl, IShellFolder** ppFolder)
+HRESULT afx::ILGetSelfFolder(LPCITEMIDLIST pidl, IShellFolder** ppFolder)
 {
 	HRESULT hr;
 	if(ILIsRoot(pidl))
 		return SHGetDesktopFolder(ppFolder);
-	const ITEMIDLIST* leaf;
+	LPCITEMIDLIST leaf;
 	CComPtr<IShellFolder> pParent;
 	if FAILED(hr = afx::ILGetParentFolder(pidl, &pParent, &leaf))
 		return hr;
@@ -564,9 +564,9 @@ HRESULT afx::ILGetSelfFolder(const ITEMIDLIST* pidl, IShellFolder** ppFolder)
 //==============================================================================
 // CIDA ä÷êî.
 
-HGLOBAL afx::CIDAFromSingleIDList(const ITEMIDLIST* pidl)
+HGLOBAL afx::CIDAFromSingleIDList(LPCITEMIDLIST pidl)
 {
-	const ITEMIDLIST* leaf = ILFindLastID(pidl);
+	LPCITEMIDLIST leaf = ILFindLastID(pidl);
 	if(!leaf)
 		return NULL;
 	size_t pidlSize   = ILGetSize(pidl);
@@ -780,7 +780,7 @@ int afx::ExpGetImageIndex(PCWSTR path)
 	return file.iIcon;
 }
 
-int afx::ExpGetImageIndex(const ITEMIDLIST* pidl)
+int afx::ExpGetImageIndex(LPCITEMIDLIST pidl)
 {
 	SHFILEINFO  file;
 	if(!afx::ILGetFileInfo(pidl, &file, SHGFI_SYSICONINDEX | SHGFI_SMALLICON))
@@ -790,7 +790,7 @@ int afx::ExpGetImageIndex(const ITEMIDLIST* pidl)
 
 int afx::ExpGetImageIndex(int csidl)
 {
-	ITEMIDLIST* pidl = null;
+	LPITEMIDLIST pidl = null;
 	if FAILED(SHGetSpecialFolderLocation(null, csidl, &pidl))
 		return 0;
 	int ret = ExpGetImageIndex(pidl);
@@ -819,7 +819,7 @@ namespace
 	}
 	struct SHEnumExplorersParam
 	{
-		HRESULT (*fnEnum)(HWND hExplorer, const ITEMIDLIST* pidl, LPARAM lParam);
+		HRESULT (*fnEnum)(HWND hExplorer, LPCITEMIDLIST pidl, LPARAM lParam);
 		LPARAM lParam;
 		HRESULT hr;
 	};
@@ -831,7 +831,7 @@ namespace
 			return true;
 		if(!IsExplorer(hwnd))
 			return true;
-		ITEMIDLIST* pidl = afx::ILFromExplorer(hwnd);
+		LPITEMIDLIST pidl = afx::ILFromExplorer(hwnd);
 		if(!pidl)
 			return true;
 		param->hr = param->fnEnum(hwnd, pidl, param->lParam);
@@ -840,7 +840,7 @@ namespace
 	}
 }
 
-HRESULT afx::ExpEnumExplorers(HRESULT (*fnEnum)(HWND hExplorer, const ITEMIDLIST* pidl, LPARAM lParam), LPARAM lParam)
+HRESULT afx::ExpEnumExplorers(HRESULT (*fnEnum)(HWND hExplorer, LPCITEMIDLIST pidl, LPARAM lParam), LPARAM lParam)
 {
 	ASSERT(fnEnum);
 	SHEnumExplorersParam param = { fnEnum, lParam, S_OK };
@@ -1574,7 +1574,7 @@ bool afx::ComboBoxEx_IsAutoCompleting(HWND hwndComboBoxEx)
 }
 
 
-HRESULT afx::ILGetDisplayName(IShellFolder* folder, const ITEMIDLIST* leaf, DWORD shgdn, WCHAR name[], size_t bufsize)
+HRESULT afx::ILGetDisplayName(IShellFolder* folder, LPCITEMIDLIST leaf, DWORD shgdn, WCHAR name[], size_t bufsize)
 {
 	STRRET strret = { 0 };
 	HRESULT hr = folder->GetDisplayNameOf(leaf, shgdn, &strret);

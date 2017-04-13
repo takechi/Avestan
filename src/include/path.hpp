@@ -68,12 +68,12 @@ namespace mew
 #ifndef DOXYGEN
 			string get_Name()	{ return GetName(NAME); }
 			string get_Path()	{ return GetName(PATH); }
-			virtual const ITEMIDLIST* get_ID() = 0;
+			virtual LPCITEMIDLIST get_ID() = 0;
 			virtual int get_Image() = 0;
 #endif
 			__declspec(property(get=get_Name )) string Name;
 			__declspec(property(get=get_Path )) string Path;
-			__declspec(property(get=get_ID   )) const ITEMIDLIST* ID;	///< シェルIDリスト.
+			__declspec(property(get=get_ID   )) LPCITEMIDLIST ID;	///< シェルIDリスト.
 			__declspec(property(get=get_Image)) int Image;			///< イメージリストインデクス.
 
 			/// エントリの名前を取得する.
@@ -130,8 +130,8 @@ namespace mew
 		string	CreatePath(STRING src, PathFrom from = None);
 
 		HRESULT	CreateEntry(IEntry** pp, STRING src, PathFrom from = None);
-		HRESULT	CreateEntry(IEntry** pp, const ITEMIDLIST* src, PathFrom from = None);
-		ref<IEntry> CreateEntry(const ITEMIDLIST* src, PathFrom from = None);
+		HRESULT	CreateEntry(IEntry** pp, LPCITEMIDLIST src, PathFrom from = None);
+		ref<IEntry> CreateEntry(LPCITEMIDLIST src, PathFrom from = None);
 		ref<IEntry> CreateEntry(STRING src, PathFrom from = None);
 
 	//HICON	LoadIcon(PCWSTR filename, int index, int w, int h);

@@ -479,7 +479,7 @@ public: // IDragSource
 		medium.hGlobal = hGlobal;
 		return SetData(&fmt, &medium, true);
 	}
-	HRESULT AddIDList(const ITEMIDLIST* pIDList)
+	HRESULT AddIDList(LPCITEMIDLIST pIDList)
 	{
 		HGLOBAL hGlobal = afx::CIDAFromSingleIDList(pIDList);
 		HRESULT hr = AddGlobalData(CF_SHELLIDLIST, hGlobal);

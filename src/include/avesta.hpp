@@ -74,7 +74,7 @@ namespace avesta
 	//==============================================================================
 	// Path and ITEMIDLIST.
 
-	HRESULT	ILExecute(const ITEMIDLIST* pidl, PCWSTR verb = NULL, PCWSTR args = null, PCWSTR dir = null, HWND hwnd = null);
+	HRESULT	ILExecute(LPCITEMIDLIST pidl, PCWSTR verb = NULL, PCWSTR args = null, PCWSTR dir = null, HWND hwnd = null);
 	HRESULT	PathExecute(PCWSTR path, PCWSTR verb = null, PCWSTR args = null, PCWSTR dir = null, HWND hwnd = null);
 //	HRESULT	UrlDownload(PCWSTR url);
 

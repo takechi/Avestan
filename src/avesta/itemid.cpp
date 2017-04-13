@@ -120,13 +120,13 @@ namespace
 		return HresultFromShellExecute(hInstance, path, verb, hwnd);
 	}
 
-	HRESULT DoILExecute(const ITEMIDLIST* pidl, PCWSTR path, PCWSTR verb, PCWSTR args, PCWSTR dir, HWND hwnd)
+	HRESULT DoILExecute(LPCITEMIDLIST pidl, PCWSTR path, PCWSTR verb, PCWSTR args, PCWSTR dir, HWND hwnd)
 	{
 		SHELLEXECUTEINFO info = { sizeof(SHELLEXECUTEINFO), SEE_MASK_IDLIST, ::GetAncestor(hwnd, GA_ROOTOWNER) };
 		if(!hwnd)
 			info.fMask |= SEE_MASK_FLAG_NO_UI;
 		info.nShow = SW_SHOWNORMAL;
-		info.lpIDList = (ITEMIDLIST*)pidl;
+		info.lpIDList = (LPITEMIDLIST)pidl;
 		info.lpDirectory = dir;
 		info.lpVerb = verb;
 		info.lpParameters = args;
@@ -143,7 +143,7 @@ namespace
 	}
 }
 
-HRESULT avesta::ILExecute(const ITEMIDLIST* pidl, PCWSTR verb, PCWSTR args, PCWSTR dir, HWND hwnd)
+HRESULT avesta::ILExecute(LPCITEMIDLIST pidl, PCWSTR verb, PCWSTR args, PCWSTR dir, HWND hwnd)
 {
 	if(!pidl)
 		return E_INVALIDARG;

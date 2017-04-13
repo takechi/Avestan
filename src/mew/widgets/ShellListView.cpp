@@ -585,7 +585,7 @@ public: // msg map
 		}
 		return afx::SHPopupContextMenu(menu, popup, ptScreen);
 	}
-	void AddPath(const ITEMIDLIST* pidl, string text)
+	void AddPath(LPCITEMIDLIST pidl, string text)
 	{
 		int count = m_Address.GetCount();
 		SHFILEINFO info;
@@ -696,7 +696,7 @@ public: // msg map
 	{
 		if(m_Address.GetCount() == 1)
 		{
-			ITEMIDLIST* pidl = ILClone(GetCurrentEntry()->ID);
+			LPITEMIDLIST pidl = ILClone(GetCurrentEntry()->ID);
 			while(ILRemoveLastID(pidl))
 			{
 				SHFILEINFO info;

@@ -372,7 +372,7 @@ namespace
 		bool			close;
 		Navigation	navigate;
 	};
-	static HRESULT EnumShellWindow(HWND hwnd, const ITEMIDLIST* pidl, LPARAM lParam)
+	static HRESULT EnumShellWindow(HWND hwnd, LPCITEMIDLIST pidl, LPARAM lParam)
 	{
 		ref<IEntry> folder;
 		if(SUCCEEDED(CreateEntry(&folder, pidl)) && folder->IsFolder())

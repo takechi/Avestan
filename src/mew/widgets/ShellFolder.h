@@ -117,7 +117,7 @@ public:
 
 	HRESULT SetStatusByIndex(int index, Status status, bool unique = false);
 	HRESULT SetStatusByUnknown(IUnknown* unk, Status status, bool unique = false);
-	HRESULT SetStatusByIDList(const ITEMIDLIST* leaf, Status status, bool unique = false);
+	HRESULT SetStatusByIDList(LPCITEMIDLIST leaf, Status status, bool unique = false);
 
 	HRESULT Cut()		{ return MimicKeyDown('X', ModifierControl); }
 	HRESULT Copy()		{ return MimicKeyDown('C', ModifierControl); }
@@ -125,7 +125,7 @@ public:
 	HRESULT Delete()	{ return MimicKeyDown(VK_DELETE, 0); }
 	HRESULT Bury()		{ return MimicKeyDown(VK_DELETE, ModifierShift); }
 	HRESULT Undo()		{ return MimicKeyDown('Z', ModifierControl); }
-	HRESULT Select(const ITEMIDLIST* leaf, UINT svsi);
+	HRESULT Select(LPCITEMIDLIST leaf, UINT svsi);
 	HRESULT SelectAll();
 //	HRESULT SelectAll()	{ return MimicKeyDown('A', ModifierControl); }
 	HRESULT SelectNone();
@@ -171,7 +171,7 @@ protected:
 private:
 	HRESULT ReCreateViewWindow(IShellFolder* pShellFolder, bool reload);
 	HRESULT GetViewFlags(DWORD* dw);
-    HRESULT IncludeObject(IShellView* pShellView, const __unaligned ITEMIDLIST* pidl);
+    HRESULT IncludeObject(IShellView* pShellView, LPCITEMIDLIST pidl);
 	HRESULT GetViewStateStream(DWORD grfMode, IStream** ppStream);
 	bool PreTranslateMessage(MSG* msg);
 	void UpdateBackground();

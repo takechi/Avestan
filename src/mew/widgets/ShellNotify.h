@@ -170,7 +170,7 @@ public:
 		::SHChangeNotification_Unlock(hLock);
 		return 0;
 	}
-	void HandleShellChangeNotify(LONG lEvent, const ITEMIDLIST* pidl1, const ITEMIDLIST* pidl2)
+	void HandleShellChangeNotify(LONG lEvent, LPCITEMIDLIST pidl1, LPCITEMIDLIST pidl2)
 	{
 	}
 };

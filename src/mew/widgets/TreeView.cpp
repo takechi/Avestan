@@ -320,7 +320,7 @@ public: // override
 			}
 		}
 	}
-	HRESULT ExpandAndFocus(const ITEMIDLIST* pidl)
+	HRESULT ExpandAndFocus(LPCITEMIDLIST pidl)
 	{
 		SuppressRedraw redraw(m_hWnd);
 		HRESULT hr = E_FAIL;
@@ -340,7 +340,7 @@ public: // override
 		}
 		return hr;
 	}
-	HRESULT ExpandAndFocus(const ITEMIDLIST* pidl, HTREEITEM hTreeItem)
+	HRESULT ExpandAndFocus(LPCITEMIDLIST pidl, HTREEITEM hTreeItem)
 	{
 		ASSERT(pidl);
 		Expand(hTreeItem);
@@ -348,7 +348,7 @@ public: // override
 		{
 			if(IFolder* folder = GetItemData(hItem))
 			{
-				const ITEMIDLIST* itemIDL = folder->Entry->ID;
+				LPCITEMIDLIST itemIDL = folder->Entry->ID;
 				if(ILIsEqual(itemIDL, pidl))
 				{
 					SelectItem(hItem);

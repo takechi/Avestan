@@ -21,13 +21,13 @@ namespace mew
 		{
 #ifndef DOXYGEN
 			size_t get_Count();
-			const ITEMIDLIST*	get_Parent();
-			const ITEMIDLIST*	get_Leaf(size_t index);
+			LPCITEMIDLIST	get_Parent();
+			LPCITEMIDLIST	get_Leaf(size_t index);
 #endif // DOXYGEN
 
 			__declspec(property(get=get_Count )) size_t Count;
-			__declspec(property(get=get_Parent)) const ITEMIDLIST* Parent;
-			__declspec(property(get=get_Leaf  )) const ITEMIDLIST* Leaf[];
+			__declspec(property(get=get_Parent)) LPCITEMIDLIST Parent;
+			__declspec(property(get=get_Leaf  )) LPCITEMIDLIST Leaf[];
 
 			const CIDA*	GetCIDA();
 			HRESULT		GetAt(IEntry** ppShellItem, size_t index);
@@ -78,7 +78,7 @@ namespace mew
 			/// グローバルハンドルを追加する.
 			HRESULT AddGlobalData(CLIPFORMAT cfFormat, HGLOBAL hGlobal);
 			/// ひとつのIDListを追加する.
-			HRESULT AddIDList(const ITEMIDLIST* pIDList);
+			HRESULT AddIDList(LPCITEMIDLIST pIDList);
 			/// IDList配列を追加する.
 			HRESULT AddIDList(const CIDA* pCIDA);
 			/// テキストを追加する.
