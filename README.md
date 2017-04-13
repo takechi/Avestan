@@ -1,17 +1,20 @@
 # Avestan
 a fork of Avesta ( http://lamoo.s53.xrea.com/ )
 
-タブ型ファイラ Avesta 0.3.1.9 (avesta-0.3.1.9src.zip) を Visual Studio Community 2015 で
+タブ型ファイラ Avesta 0.3.1.9 (avesta-0.3.1.9src.zip) を Visual Studio Community 2017 で
 ビルドできるようにしたもの。
 
-実行ファイルは [release](https://github.com/takechi/Avestan/releases) にあります。
+## 実行ファイル
+上の [release](https://github.com/takechi/Avestan/releases) にあります。
 
-## ビルドに必要なもの
-* Visual Studio Community 2015
+
+## ビルド
+### 必要なもの
+* Visual Studio Community 2017
   * VS Express だと、ATL がないので（そのままでは）ビルドできない。
 * MSXML 4.0
 
-## ビルド方法
+### ビルド方法
 * src/Avesta.sln を開いて F5 でビルドできるはず。
 
 ### スクリプト拡張
