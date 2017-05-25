@@ -49,7 +49,7 @@ private:
 
 	struct GestureKeyLess
 	{
-		typedef GestureKey	first_argument_type;
+		using first_argument_type = GestureKey;
 
 		template < typename LHS, typename RHS >
 		bool operator () (const LHS& lhs, const RHS& rhs) const
@@ -68,7 +68,7 @@ private:
 	};
 
 private:
-	typedef mew::array_map< GestureKey, ref<ICommand>, GestureKeyLess > GestureMap;
+	using GestureMap = mew::array_map< GestureKey, ref<ICommand>, GestureKeyLess >;
 	GestureMap	m_GestureMap;
 
 public:

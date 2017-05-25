@@ -178,7 +178,7 @@ public:
 		if(pp.iid == __uuidof(IEnumUnknown))
 		{
 			size_t count = GetItemCount();
-			typedef Enumerator<IWindow> EnumWindow;
+			using EnumWindow = Enumerator<IWindow>;
 			ref<EnumWindow> e;
 			e.attach(new EnumWindow());
 			for(size_t i = 0; i < count; ++i)

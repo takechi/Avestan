@@ -14,7 +14,7 @@ const int DEFAULT_SETTING_EXPIRE = 7*24*60*60;
 class ShellStorage : public Root< implements<IShellStorage, ISerializable> >
 {
 private:
-	typedef BufferT<BYTE>	Buffer;
+	using Buffer = BufferT<BYTE>;
 	struct Value
 	{
 		time_t	time;
@@ -30,7 +30,7 @@ private:
 			return stream << v.time << v.buffer;
 		}
 	};
-	typedef io::StorageT<string, Value>	Storage;
+	using Storage = io::StorageT<string, Value>;
 
 	class ShellStream : public Root< implements<IStream, ISequentialStream>, mixin<io::StreamImpl, mew::DynamicLife> >
 	{

@@ -4,7 +4,7 @@
 __interface IShellFolder;
 __interface IShellView;
 struct _IDA;
-typedef _IDA CIDA;
+using CIDA = _IDA;
 struct __declspec(uuid("000214F1-0000-0000-C000-000000000046")) ICommDlgBrowser;
 struct __declspec(uuid("10339516-2894-11d2-9039-00C04F8EEB3E")) ICommDlgBrowser2;
 struct __declspec(uuid("000214E4-0000-0000-C000-000000000046")) IContextMenu;

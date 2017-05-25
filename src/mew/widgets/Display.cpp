@@ -166,8 +166,8 @@ private:
 		}
 	};
 
-	typedef std::list<MenuData>	MenuStack;
-	typedef std::list<HookHandler>	Hooks;
+	using MenuStack =std::list<MenuData>;
+	using Hooks = std::list<HookHandler>;
 
 public:
 	static Display* theDisplay;

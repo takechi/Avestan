@@ -39,7 +39,7 @@ namespace mew
 		private:
 			const X& m_obj;
 		public:
-			typedef const X&	argument_type;
+			using argument_type = const X&;
 			ToStringDefault(argument_type obj) : m_obj(obj)	{}
 			operator PCWSTR () const	{ return static_cast<PCWSTR>(m_obj); }
 		};
@@ -49,7 +49,7 @@ namespace mew
 		private:
 			ref_base<IString> m_str;
 		public:
-			typedef IUnknown*	argument_type;
+			using argument_type =IUnknown*;
 			ToStringDefault(argument_type value) throw()
 			{
 				ObjectToString(&m_str, value);
@@ -61,7 +61,7 @@ namespace mew
 	/// •¶Žš—ñ‚Ö‚Ì•ÏŠ·.
 	template < class X > class ToString
 	{
-		typedef mew::detail::ToStringDefault<typename meta::If< meta::Convertable<X, IUnknown*>::value, IUnknown*, X>::Result>	Detail;
+		using Detail = mew::detail::ToStringDefault<typename meta::If< meta::Convertable<X, IUnknown*>::value, IUnknown*, X>::Result>;
 		Detail m_str;
 	public:
 		ToString(typename Detail::argument_type obj) : m_str(obj) {}
@@ -71,15 +71,15 @@ namespace mew
 	/// •¶Žš—ñ.
 	template <> class ref<IString> : public ref_base<IString>
 	{
-		typedef ref_base<IString> super;
+		using super = ref_base<IString>;
 
 	public:
-		typedef PCWSTR			const_iterator;
-		typedef PCWSTR			const_pointer;
-		typedef const WCHAR&	const_reference;
-		typedef size_t			size_type;
-		typedef ptrdiff_t		difference_type;
-		typedef WCHAR			value_type;
+		using const_iterator = PCWSTR;
+		using const_pointer =  PCWSTR;
+		using const_reference =const WCHAR&;
+		using size_type = size_t;
+		using difference_type = ptrdiff_t;
+		using value_type = WCHAR;
 		//const_reverse_iterator
 		static const size_type npos = (size_type)-1;
 

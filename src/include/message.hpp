@@ -33,11 +33,11 @@ namespace mew
 
 	class function;
 	template < typename T > struct VariantType;
-	template < typename T > struct VariantResult	{ typedef T	Result; };
+	template < typename T > struct VariantResult	{ using Result = T; };
 
 	//==============================================================================
 
-	typedef FourCC	TypeCode;
+	using TypeCode = FourCC;
 
 	/// variant.
 	class variant
@@ -59,23 +59,23 @@ namespace mew
 		template < typename T > struct Get_<T, true>
 		{
 			enum { Code = VariantType<T>::Code };
-			typedef typename VariantResult<T>::Result		Result;
+			using Result = typename VariantResult<T>::Result;
 			static Result get(const variant* self)	{ Result result; self->ToPOD(Code, &result, sizeof(result)); return result; }
 		};
 		template < typename T > struct Set_<T, true>
 		{
 			enum { Code = VariantType<T>::Code };
-			typedef typename meta::TypeOf<T>::param_type	param_type;
+			using param_type = typename meta::TypeOf<T>::param_type;
 			static void set(variant* self, param_type v)	{ self->FromPOD(Code, &v, sizeof(v)); }
 		};
 		template < typename T > struct Get_<T, false>
 		{
-			typedef typename VariantResult<T>::Result		Result;
+			using Result = typename VariantResult<T>::Result;
 			static Result get(const variant* self)	{ Result result; self->ToUnknown(&result); return result; }
 		};
 		template < typename T > struct Set_<T, false>
 		{
-			typedef typename meta::TypeOf<T>::param_type	param_type;
+			using param_type = typename meta::TypeOf<T>::param_type;
 			static void set(variant* self, param_type v)	{ self->FromUnknown(v); }
 		};
 		template < typename T > struct Get : Get_<T, IsPOD<T>::value>	{};
@@ -154,7 +154,7 @@ namespace mew
 	//==============================================================================
 	// インタフェース定義.
 
-	typedef FourCC EventCode;
+	using EventCode = FourCC;
 
 	/// メッセージ.
 	/// @see ref<IMessage>
@@ -185,7 +185,7 @@ namespace mew
 	template <> class ref<IMessage> : public ref_base<IMessage>
 	{
 	private:
-		typedef ref_base<IMessage>	super;
+		using super = ref_base<IMessage>;
 
 		template < typename Owner >
 		class proxy
@@ -274,9 +274,9 @@ namespace mew
 	class function
 	{
 	public:
-		typedef HRESULT (*static_function)(message);
-		template < class TClass > struct instance_function_t { typedef HRESULT (TClass::*Result)(message); };
-		typedef instance_function_t<IUnknown>::Result instance_function;
+		using static_function = HRESULT (*)(message);
+		template < class TClass > using instance_function_t = HRESULT(TClass::*)(message);
+		using instance_function = instance_function_t<IUnknown>;
 
 	private:
 		ref<IUnknown> m_target;
@@ -302,7 +302,7 @@ namespace mew
 			__if_exists(T::__primary__)
 			{
 				m_target = static_cast<typename T::__primary__*>(p);
-				typedef typename instance_function_t<T::__primary__>::Result method;
+				using method = typename instance_function_t<T::__primary__>;
 				m_fnInstance = static_cast<instance_function>( static_cast<method>(m) );
 			}
 			__if_not_exists(T::__primary__)
@@ -422,7 +422,7 @@ namespace mew
 
 	//==============================================================================
 
-	template < typename T > struct VariantResult< T* >			{ typedef ref<T>		Result; };
-	template < typename T > struct VariantResult< ref<T> >		{ typedef ref<T>		Result; };
-	template < typename T > struct VariantResult< ref_base<T> >	{ typedef ref_base<T>	Result; };
+	template < typename T > struct VariantResult< T* >			{ using Result = ref<T>; };
+	template < typename T > struct VariantResult< ref<T> >		{ using Result = ref<T>; };
+	template < typename T > struct VariantResult< ref_base<T> >	{ using Result = ref_base<T>; };
 }

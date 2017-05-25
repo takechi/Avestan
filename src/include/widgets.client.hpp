@@ -11,7 +11,7 @@ namespace mew
 	{
 		class CWindowEx : public ATL::CWindow
 		{
-			typedef ATL::CWindow super;
+			using super = ATL::CWindow;
 		public:
 			CWindowEx()	{}
 			CWindowEx(HWND hWnd) : super(hWnd)	{}

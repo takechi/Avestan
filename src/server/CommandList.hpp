@@ -51,7 +51,7 @@ public:
 
 protected:
 	UINT32	m_TimeStamp;
-	typedef std::deque< ref<CommandEntry> >	Entries;
+	using Entries = std::deque< ref<CommandEntry> >;
 	Entries	m_queue;
 
 public:

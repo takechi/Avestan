@@ -27,8 +27,8 @@ namespace WTLEX
 	class CTypedList : public TBase
 	{
 	public:
-		typedef TParam	ParamType;
-		typedef CTypedItem<TParam, LVITEM>	Item;
+		using ParamType = TParam;
+		using Item = CTypedItem<TParam, LVITEM>;
 
 	private:
 		INT32	m_SelectedColumn;
@@ -102,7 +102,7 @@ namespace WTLEX
 	class __declspec(novtable) CTypedListImpl : public CWindowImplEx<TFinal, CTypedList<TParam, TClient>, TWinTraits >
 	{
 	public:
-		typedef TParam	ParamType;
+		using ParamType = TParam;
 
 		bool m_SortedAscending;
 
@@ -259,8 +259,8 @@ namespace WTLEX
 	class CTypedTree : public TBase
 	{
 	public:
-		typedef TParam	ParamType;
-		typedef CTypedItem<TParam, TVITEM>	Item;
+		using ParamType = TParam;
+		using Item = CTypedItem<TParam, TVITEM>;
 
 		struct Notify
 		{
@@ -331,9 +331,9 @@ namespace WTLEX
 	class __declspec(novtable) CTypedTreeImpl : public CWindowImplEx<TFinal, CTypedTree<TParam, TClient>, TWinTraits >
 	{
 	public: // overridable
-		typedef typename CTypedTree<TParam, TClient>::ParamType	ParamType;
-		typedef typename CTypedTree<TParam, TClient>::Item		Item;
-		typedef typename CTypedTree<TParam, TClient>::Notify	Notify;
+		using ParamType = typename CTypedTree<TParam, TClient>::ParamType;
+		using Item = typename CTypedTree<TParam, TClient>::Item;
+		using Notify = typename CTypedTree<TParam, TClient>::Notify;
 
 		void OnInsertItem(HTREEITEM hItem, ParamType param)	{}
 		void OnDeleteItem(HTREEITEM hItem, ParamType param)	{}
@@ -549,8 +549,8 @@ namespace WTLEX
 	class CTypedTab : public TBase
 	{
 	public:
-		typedef TParam	ParamType;
-		typedef CTypedItem<TParam, TCITEM>	Item;
+		using ParamType = TParam;
+		using Item = CTypedItem<TParam, TCITEM>;
 
 	public:
 		int SetCurSel(int index, bool notify)
@@ -599,7 +599,7 @@ namespace WTLEX
 	class __declspec(novtable) CTypedTabImpl : public CWindowImplEx<TFinal, CTypedTab<TParam, TClient>, TWinTraits >
 	{
 	public:
-		typedef TParam	ParamType;
+		using ParamType = TParam;
 
 	public: // overridable
 		void OnSelChange(int index);

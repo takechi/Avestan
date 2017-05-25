@@ -100,7 +100,7 @@ namespace mew
 					return stream << v.value;
 				}
 			};
-			typedef std::map<K, Mapped>	Map;
+			using Map = std::map<K, Mapped>;
 
 		private:
 			Map	m_map;

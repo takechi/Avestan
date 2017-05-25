@@ -16,8 +16,8 @@ class __declspec(uuid("50E61566-66FC-448C-8760-7B6B09511C5D")) Message;
 class Message : public Root< implements<IMessage, ISerializable> >
 {
 private:
-	typedef std::allocator< std::pair<GUID, variant> >		VariantAlloc;
-	typedef std::map<Guid, variant, std::less<Guid>, VariantAlloc>	VariantMap;
+	using VariantAlloc = std::allocator< std::pair<GUID, variant> >;
+	using VariantMap = std::map<Guid, variant, std::less<Guid>, VariantAlloc>;
 
 private:
 	VariantMap m_vars;

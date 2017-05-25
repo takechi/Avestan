@@ -14,7 +14,7 @@ using namespace drawing;
 
 namespace
 {
-	typedef WindowImplBase	PreviewBase;
+	using PreviewBase = WindowImplBase;
 
 	const DWORD MEW_WS_PREVIEW    = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 	const DWORD MEW_WS_EX_PREVIEW = WS_EX_OVERLAPPEDWINDOW | WS_EX_TOOLWINDOW;
@@ -239,7 +239,7 @@ namespace
 		}
 	};
 
-	typedef Drawable* (*LoaderProc)(PCWSTR filename);
+	using LoaderProc = Drawable*(*)(PCWSTR);
 	static const struct Loader
 	{
 		PCWSTR extension;

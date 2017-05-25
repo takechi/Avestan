@@ -108,7 +108,7 @@ namespace avesta
 	class Thread
 	{
 	public:
-		typedef unsigned (__stdcall *Routine)(void* args);
+		using Routine = unsigned int(__stdcall *)(void*);
 		static HANDLE	New(Routine fn, void* args = null);
 		static int		Run(Routine fn, void* args = null);
 		static int		Loop(HWND hwnd);

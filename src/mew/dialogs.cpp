@@ -34,7 +34,7 @@ namespace
 	// ダイアログをセンタリングするため.
 	class FileDlg : public CFileDialogImpl<FileDlg>
 	{
-		typedef CFileDialogImpl<FileDlg> super;
+		using super = CFileDialogImpl<FileDlg>;
 	public:
 		FileDlg(BOOL bOpenFileDialog, // TRUE for FileOpen, FALSE for FileSaveAs
 			PCTSTR lpszDefExt = NULL,
@@ -177,7 +177,7 @@ namespace
 {
 	class FontDlg : public WTL::CFontDialogImpl<FontDlg>
 	{
-		typedef WTL::CFontDialogImpl<FontDlg> super;
+		using super = WTL::CFontDialogImpl<FontDlg>;
 		string		m_caption;
 		function	m_apply;
 		LOGFONT		m_prev;

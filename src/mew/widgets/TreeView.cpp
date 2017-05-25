@@ -23,7 +23,7 @@ template < class TFinal, class TParam, class TList >
 class __declspec(novtable) TreeViewBase : public WindowImpl < CTypedTreeImpl< TFinal, TParam*, CTreeViewCtrlT<WindowImplBase> >, TList >
 {
 protected:
-	typedef TParam* ParamType;
+	using ParamType = TParam*;
 	ref<TParam>	m_root;
 	ref<IImageList>	m_image;
 

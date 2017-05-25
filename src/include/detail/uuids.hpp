@@ -3,8 +3,8 @@
 
 #include <functional>
 
-typedef float	REAL32;
-typedef double	REAL64;
+using REAL32 = float;
+using REAL64 = double;
 
 namespace avesta
 {
@@ -34,9 +34,9 @@ namespace avesta
 	fn(SIZE)	fn(POINT)	fn(RECT)	\
 	fn(bool)	PP_EXPAND_NUMERIC(fn)
 
-	template < typename T > struct type2clsid { typedef T Result; };
+	template < typename T > struct type2clsid { using Result = T; };
 #define PP_TYPE2CLSID(n)	\
-	template <> struct type2clsid<n> { typedef CLSID_##n Result; };
+	template <> struct type2clsid<n> { using Result = CLSID_##n; };
 	PP_EXPAND_INTRINSIC( PP_TYPE2CLSID )
 #undef PP_TYPE2CLSID
 }

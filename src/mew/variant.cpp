@@ -191,7 +191,7 @@ namespace
 	/// Size
 	inline static void ConvertPOD(TypeCode from, const variant::Union& var, Size& result) throw(...)
 	{
-		typedef Size TResult;
+		using TResult = Size;
 		switch(from)
 		{
 		case TypeNull:
@@ -212,7 +212,7 @@ namespace
 	/// Point
 	inline static void ConvertPOD(TypeCode from, const variant::Union& var, Point& result) throw(...)
 	{
-		typedef Point TResult;
+		using TResult = Point;
 		switch(from)
 		{
 		case TypeNull:
@@ -233,7 +233,7 @@ namespace
 	/// Rect
 	inline static void ConvertPOD(TypeCode from, const variant::Union& var, Rect& result) throw(...)
 	{
-		typedef Rect TResult;
+		using TResult = Rect;
 		switch(from)
 		{
 		case TypeNull:
@@ -256,7 +256,7 @@ namespace
 	/// Color
 	inline static void ConvertPOD(TypeCode from, const variant::Union& var, Color& result) throw(...)
 	{
-		typedef Color TResult;
+		using TResult = Color;
 		switch(from)
 		{
 		case TypeNull:

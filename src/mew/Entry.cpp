@@ -206,7 +206,7 @@ private:
 	}
 
 	static CriticalSection	csEntryPool;
-	typedef std::map<LPCITEMIDLIST, Entry*, IDListCompare> Pool;
+	using Pool = std::map<LPCITEMIDLIST, Entry*, IDListCompare>;
 	static Pool& GetPool()
 	{
 		static Pool pool;
@@ -612,7 +612,7 @@ public: // IEntry
 		if FAILED(hr = folder->EnumObjects(NULL, flags, &pEnum))
 			return null;
 
-		typedef Enumerator<IEntry>	EnumEntry;
+		using EnumEntry = Enumerator<IEntry>;
 		ref<EnumEntry> e;
 		e.attach(new EnumEntry());
 		LPCITEMIDLIST parent = get_ID();

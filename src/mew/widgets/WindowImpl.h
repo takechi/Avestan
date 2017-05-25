@@ -173,7 +173,7 @@ protected:
 template < class TAtlWindow, class TImplements, class TMixin = mixin<WindowMessageSource> >
 class __declspec(novtable) WindowImpl : public Root<TImplements, TMixin>, public TAtlWindow
 {
-	typedef TAtlWindow super;
+	using super = TAtlWindow;
 
 private:
 	HWND Create(HWND hParent);

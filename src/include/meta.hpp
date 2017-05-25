@@ -23,10 +23,10 @@ namespace mew
 				is_pointer		= 0, ///< ポインタか否か.
 				is_reference	= 0, ///< 参照か否か.
 			};
-			typedef 	  T		value_type;
-			typedef 	  T*	pointer_type;
-			typedef 	  T&	reference_type;
-			typedef const T&	param_type;
+			using value_type = T;
+			using pointer_type = T*;
+			using reference_type = T&;
+			using param_type = const T&;
 		};
 		template < typename	T > struct TypeOf<T*>
 		{
@@ -35,10 +35,10 @@ namespace mew
 				is_pointer		= 1,
 				is_reference	= 0,
 			};
-			typedef T	value_type;
-			typedef T*	pointer_type;
-			typedef T&	reference_type;
-			typedef T*	param_type;
+			using value_type = T;
+			using pointer_type = T*;
+			using reference_type = T&;
+			using param_type = T*;
 		};
 		template < typename	T > struct TypeOf<T&>
 		{
@@ -47,16 +47,16 @@ namespace mew
 				is_pointer		= 0,
 				is_reference	= 1,
 			};
-			typedef T	value_type;
-			typedef T*	pointer_type;
-			typedef T&	reference_type;
-			typedef T&	param_type;
+			using value_type = T;
+			using pointer_type = T*;
+			using reference_type = T&;
+			using param_type = T&;
 		};
 
 		//==============================================================================
 		///	bool If<value, Then, Else>::Result = (if value then	Then else Else).
-		template < bool	exp, typename Then, typename Else > struct If					 { typedef Then	Result;	};
-		template < /*false*/ typename Then, typename Else > struct If<false, Then, Else> { typedef Else	Result;	};
+		template < bool	exp, typename Then, typename Else > struct If					 { using Result = Then;	};
+		template < /*false*/ typename Then, typename Else > struct If<false, Then, Else> { using Result = Else;	};
 
 		//==============================================================================
 		///	bool Equals<T1, T2>::value = (T1 ==	T2).
@@ -105,8 +105,8 @@ namespace mew
 		template < class H, class T >
 		struct Typelist
 		{
-			typedef H Head;
-			typedef T Tail;
+			using Head = H;
+			using Tail = T;
 		};
 
 		//==============================================================================
@@ -118,8 +118,8 @@ namespace mew
 		//==============================================================================
 
 		template < class TList, unsigned int index>  struct At;
-		template < class H, class T >                struct At<Typelist<H, T>, 0> { typedef H Result; };
-		template < class H, class T, unsigned int i> struct At<Typelist<H, T>, i> { typedef typename At<T, i-1>::Result Result; };
+		template < class H, class T >                struct At<Typelist<H, T>, 0> { using Result = H; };
+		template < class H, class T, unsigned int i> struct At<Typelist<H, T>, i> { using Result = typename At<T, i-1>::Result; };
 
 		//==============================================================================
 
@@ -138,76 +138,73 @@ namespace mew
 		//==============================================================================
 
 		template < class TList, class X >     struct Append;
-		template <>	                          struct Append<Void, Void>				{ typedef Void Result; };
-		template < class X >                  struct Append<Void, X>				{ typedef Typelist<X, Void> Result; };
-		template < class H, class T >         struct Append<Void, Typelist<H, T> >	{ typedef Typelist<H, T> Result; };
-		template < class H, class T, class X> struct Append<Typelist<H, T>, X>		{ typedef Typelist<H, typename Append<T, X>::Result> Result; };
+		template <>	                          struct Append<Void, Void>				{ using Result = Void; };
+		template < class X >                  struct Append<Void, X>				{ using  Result = Typelist<X, Void>; };
+		template < class H, class T >         struct Append<Void, Typelist<H, T> >	{ using Result = Typelist<H, T>; };
+		template < class H, class T, class X> struct Append<Typelist<H, T>, X>		{ using Result = Typelist<H, typename Append<T, X>::Result>; };
 		
 		//==============================================================================
 
 		template < class TList, class X >      struct Erase;
-		template < class X >                   struct Erase<Void, X>				{ typedef Void Result; };
-		template < class X, class T>           struct Erase<Typelist<X, T>, X>		{ typedef T Result; };
-		template < class H, class T, class X > struct Erase<Typelist<H, T>, X>		{ typedef Typelist<H, typename Erase<T, X>::Result> Result; };
+		template < class X >                   struct Erase<Void, X>				{ using Result = Void; };
+		template < class X, class T>           struct Erase<Typelist<X, T>, X>		{ using Result = T; };
+		template < class H, class T, class X > struct Erase<Typelist<H, T>, X>		{ using Result = Typelist<H, typename Erase<T, X>::Result>; };
 
 		//==============================================================================
 
 		template < class TList, class X >      struct EraseAll;
-		template < class X >                   struct EraseAll<Void, X>				{ typedef Void Result; };
-		template < class X, class T >          struct EraseAll<Typelist<X, T>, X>	{ typedef typename EraseAll<T, X>::Result Result; };
-		template < class H, class T, class X > struct EraseAll<Typelist<H, T>, X>	{ typedef Typelist<H, typename EraseAll<T, X>::Result> Result; };
+		template < class X >                   struct EraseAll<Void, X>				{ using Result = Void; };
+		template < class X, class T >          struct EraseAll<Typelist<X, T>, X>	{ using Result = typename EraseAll<T, X>::Result; };
+		template < class H, class T, class X > struct EraseAll<Typelist<H, T>, X>	{ using Result = Typelist<H, typename EraseAll<T, X>::Result>; };
 
 		//==============================================================================
 
 		template < class TList >      struct NoDuplicates;
-		template <>                   struct NoDuplicates<Void>			{ typedef Void Result; };
-		template < class H, class T > struct NoDuplicates< Typelist<H, T> >	{ typedef Typelist<H, typename Erase<typename NoDuplicates<T>::Result, H>::Result> Result; };
+		template <>                   struct NoDuplicates<Void>			{ using Result = Void; };
+		template < class H, class T > struct NoDuplicates< Typelist<H, T> >	{ using Result = Typelist<H, typename Erase<typename NoDuplicates<T>::Result, H>::Result>; };
 
 		//==============================================================================
 
 		template < class TList, class X, class Y >      struct Replace;
-		template < class X, class Y >                   struct Replace<Void, X, Y>				{ typedef Void Result; };
-		template < class X, class T, class Y >          struct Replace<Typelist<X, T>, X, Y>	{ typedef Typelist<Y, T> Result; };
-		template < class H, class T, class X, class Y > struct Replace<Typelist<H, T>, X, Y>	{ typedef Typelist<H, typename Replace<T, X, Y>::Result> Result; };
+		template < class X, class Y >                   struct Replace<Void, X, Y>				{ using Result = Void; };
+		template < class X, class T, class Y >          struct Replace<Typelist<X, T>, X, Y>	{ using Result = Typelist<Y, T>; };
+		template < class H, class T, class X, class Y > struct Replace<Typelist<H, T>, X, Y>	{ using Result = Typelist<H, typename Replace<T, X, Y>::Result>; };
 
 		//==============================================================================
 
 		template < class TList, class X, class Y >      struct ReplaceAll;
-		template < class X, class Y >                   struct ReplaceAll<Void, X, Y>			{ typedef Void Result; };
-		template < class X, class T, class Y >          struct ReplaceAll<Typelist<X, T>, X, Y>	{ typedef Typelist<Y, typename ReplaceAll<T, X, Y>::Result> Result; };
-		template < class H, class T, class X, class Y > struct ReplaceAll<Typelist<H, T>, X, Y>	{ typedef Typelist<H, typename ReplaceAll<T, X, Y>::Result> Result; };
+		template < class X, class Y >                   struct ReplaceAll<Void, X, Y>			{ using Result = Void; };
+		template < class X, class T, class Y >          struct ReplaceAll<Typelist<X, T>, X, Y>	{ using Result = Typelist<Y, typename ReplaceAll<T, X, Y>::Result>; };
+		template < class H, class T, class X, class Y > struct ReplaceAll<Typelist<H, T>, X, Y>	{ using Result = Typelist<H, typename ReplaceAll<T, X, Y>::Result>; };
 
 		//==============================================================================
 
 		template < class TList >      struct Reverse;
-		template <>                   struct Reverse< Void >			{ typedef Void Result; };
-		template < class H, class T > struct Reverse< Typelist<H, T> >	{ typedef typename Append<typename Reverse<T>::Result, H>::Result Result; };
+		template <>                   struct Reverse< Void >			{ using Result = Void; };
+		template < class H, class T > struct Reverse< Typelist<H, T> >	{ using Result = typename Append<typename Reverse<T>::Result, H>::Result; };
 
 		//==============================================================================
 
 		template < class TList, class X >         struct MostDerived;
-		template < class T >                      struct MostDerived<Void, T> { typedef T Result; };
+		template < class T >                      struct MostDerived<Void, T> { using Result = T; };
 		template < class H, class Tail, class T > struct MostDerived<Typelist<H, Tail>, T>
 		{
 		private:
-			typedef typename MostDerived<Tail, T>::Result Candidate;
+			using Candidate = typename MostDerived<Tail, T>::Result;
 		public:
-			typedef typename If< SuperSubclass<Candidate,H>::value, H, Candidate>::Result Result;
+			using Result = typename If< SuperSubclass<Candidate,H>::value, H, Candidate>::Result;
 		};
 
 		//==============================================================================
 
 		template < class TList >      struct DerivedToFront;
-		template <>                   struct DerivedToFront<Void> { typedef Void Result; };
+		template <>                   struct DerivedToFront<Void> { using Result = Void; };
 		template < class H, class T > struct DerivedToFront< Typelist<H, T> >
 		{
 		private:
-			typedef typename MostDerived<T, H>::Result TheMostDerived;
+			using TheMostDerived = typename MostDerived<T, H>::Result;
 		public:
-			typedef Typelist<
-				TheMostDerived,
-				typename DerivedToFront<typename Replace<T, TheMostDerived, H>::Result>::Result
-			> Result;
+			using  Result = Typelist<TheMostDerived, typename DerivedToFront<typename Replace<T, TheMostDerived, H>::Result>::Result>;
 		};
 		
 		//==============================================================================
@@ -216,16 +213,16 @@ namespace mew
 		template < class TList, class Status, template <class Status, class T> class Pred >
 		struct Fold
 		{
-			typedef typename Fold<
+			using Result = typename Fold<
 				typename TList::Tail, // 残り
 				typename Pred<Status, typename TList::Head>::Result, // Head	の結果
 				Pred
-			>::Result Result;
+			>::Result;
 		};
 		template < class Status, template <class, class> class Pred >
 		struct Fold<Void, Status, Pred>
 		{
-			typedef Status Result;
+			using Result = Status;
 		};
 
 		//==============================================================================
@@ -233,11 +230,11 @@ namespace mew
 		template < class TList, class T >
 		struct RemoveIfNotMostDerived
 		{
-			typedef typename If<
+			using Result = typename If<
 				Equals<T, typename MostDerived<TList, T>::Result>::value,
 				TList,
 				typename Erase<TList, T>::Result
-			>::Result Result;
+			>::Result;
 		};
 
 		//==============================================================================
@@ -245,7 +242,7 @@ namespace mew
 		template < class TList >
 		struct MostDerivedOnly
 		{
-			typedef typename Fold<TList, TList, RemoveIfNotMostDerived>::Result	Result;
+			using Result = typename Fold<TList, TList, RemoveIfNotMostDerived>::Result;
 		};
 
 		//==============================================================================
@@ -254,8 +251,8 @@ namespace mew
 		template < class TList >
 		struct __declspec(novtable)	Inherits : TList::Head, Inherits<typename TList::Tail>
 		{
-			typedef typename TList::Head	Head;
-			typedef typename TList::Tail	Tail;
+			using Head = typename TList::Head;
+			using Tail = typename TList::Tail;
 		};
 		template < class H >
 		struct __declspec(novtable)	Inherits< Typelist<H, Void> > : H
@@ -278,7 +275,7 @@ namespace mew
 		{
 			///	TLhsの中からTRhsに含まれる型を取り除く.
 			///	TRhsには含まれるが、TLhsに含まれない型についてはなにもしない.
-			typedef typename Fold<TRhs, TLhs, Erase>::Result Result;
+			using Result = typename Fold<TRhs, TLhs, Erase>::Result;
 		};
 
 		//==============================================================================
@@ -287,10 +284,10 @@ namespace mew
 		struct Intersection
 		{
 		private:
-			typedef typename NoDuplicates<TLhs>::Result	UniqueLeft;
+			using UniqueLeft = typename NoDuplicates<TLhs>::Result;
 		public:
 			///	TLhsとTRhsの両方に含まれる型を得る.
-			typedef typename Subtract<UniqueLeft, typename Subtract<UniqueLeft, TRhs>::Result>::Result Result;
+			using Result = typename Subtract<UniqueLeft, typename Subtract<UniqueLeft, TRhs>::Result>::Result;
 		};
 
 		//==============================================================================
@@ -299,7 +296,7 @@ namespace mew
 		struct Union
 		{
 			///	TLhsの末尾にTRhsを連結し、重複を取り除く.
-			typedef typename NoDuplicates<typename Fold<TLhs, TRhs, Append>::Result>::Result Result;
+			using Result = typename NoDuplicates<typename Fold<TLhs, TRhs, Append>::Result>::Result;
 		};
 
 		//排他的和集合

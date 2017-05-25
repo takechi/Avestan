@@ -38,12 +38,12 @@ private:
 		void clear() throw()							{ m_function.clear(); msg.clear(); }
 		bool empty() const throw()						{ return !m_function; }
 	};
-	typedef std::multimap<EventCode, Closure>	Map;
-	typedef Map::iterator						iterator;
-	typedef std::pair<iterator, iterator>		range_type;
+	using Map = std::multimap<EventCode, Closure>;
+	using iterator = Map::iterator;
+	using range_type = std::pair<iterator, iterator>;
 	struct value_type : public std::pair<EventCode, Closure>
 	{
-		typedef std::pair<EventCode, Closure> super;
+		using super = std::pair<EventCode, Closure>;
 		value_type(const function& fn, EventCode code, const message& msg) : super(code, Closure(fn, msg)) {}
 	};
 

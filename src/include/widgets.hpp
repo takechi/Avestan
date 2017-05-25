@@ -317,7 +317,7 @@ namespace mew
 		/// ディスプレイ.
 		interface __declspec(novtable) IDisplay : IWindow
 		{
-			typedef LRESULT (__stdcall *WNDPROCEX)(void* self, HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+			using WNDPROCEX = LRESULT (__stdcall *)(void* self, HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 			virtual UINT PopupMenu(HMENU hMenu, UINT tpm, int x, int y, HWND hOwner, const RECT* rcExclude) throw() = 0;
 			virtual size_t GetMenuDepth() throw() = 0;

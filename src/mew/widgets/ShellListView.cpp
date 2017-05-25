@@ -145,9 +145,9 @@ public:
 	}
 
 private:
-	typedef CComboBoxExT<CWindowEx>					AddressBar;
-	typedef CContainedWindowT< CEditT<CWindowEx> >		EditBox;
-	typedef CContainedWindowT< CComboBoxT<CWindowEx> >	ComboBox;
+	using AddressBar =CComboBoxExT<CWindowEx>;
+	using EditBox = CContainedWindowT< CEditT<CWindowEx> >;
+	using ComboBox = CContainedWindowT< CComboBoxT<CWindowEx> >;
 
 	AddressBar			m_Address;
 	ComboBox			m_ComboBox;

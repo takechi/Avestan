@@ -17,12 +17,12 @@ namespace mew
 	> 
 	struct implements
 	{
-		typedef meta::Typelist<T0, typename implements<T1, T2, T3, T4, T5, T6, T7, T8, T9>::Result > Result;
+		using Result = meta::Typelist<T0, typename implements<T1, T2, T3, T4, T5, T6, T7, T8, T9>::Result >;
 	};
 
 	template <> struct implements < PP_CSV0(10, meta::Void) >
 	{
-		typedef meta::Void	Result;
+		using Result = meta::Void;
 	};
 
 	//==============================================================================
@@ -40,7 +40,7 @@ namespace mew
 	{
 		template < typename TBase > struct Result1
 		{
-			typedef T0< typename mixin<T1, T2, T3, T4, T5, T6, T7, T8, T9>::template Result1<TBase>::Result > Result;
+			using Result = T0< typename mixin<T1, T2, T3, T4, T5, T6, T7, T8, T9>::template Result1<TBase>::Result >;
 		};
 	};
 
@@ -48,7 +48,7 @@ namespace mew
 	{
 		template < typename TBase > struct Result1
 		{
-			typedef TBase Result;
+			using Result = TBase;
 		};
 	};
 }

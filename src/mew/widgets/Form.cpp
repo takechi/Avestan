@@ -51,7 +51,7 @@ namespace
 			if(IsIconic() || !Visible)
 				return;
 			Size border = final.GetBorder();
-			typedef mew::array_set< ref<IWindow>, false, CompareDockStyle > Views;
+			using Views = mew::array_set< ref<IWindow>, false, CompareDockStyle >;
 			Views views;
 			for(CWindowEx w = GetWindow(GW_CHILD); w; w = w.GetWindow(GW_HWNDNEXT))
 			{

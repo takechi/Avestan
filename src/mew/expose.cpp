@@ -27,7 +27,7 @@ private:
 		Rect	bounds;
 		UINT8	hotkey;
 	};
-	typedef std::vector<Component> Components;
+	using Components = std::vector<Component>;
 	Components	m_Components;
 	CWindowEx	m_wndParent;
 	DWORD	m_Alpha;

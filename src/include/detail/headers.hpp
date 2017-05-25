@@ -128,5 +128,5 @@ const bool IS_UNICODE_CHARSET	= false;
 #define __FILE_W__     WIDEN(__FILE__)
 #define __FUNCTION_W__ WIDEN(__FUNCTION__)
 
-typedef float	REAL32;	///< 32bit•‚“®¬”.
-typedef double	REAL64;	///< 64bit•‚“®¬”.
+using REAL32 = float;	///< 32bit•‚“®¬”.
+using REAL64 = double;	///< 64bit•‚“®¬”.

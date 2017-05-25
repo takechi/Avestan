@@ -410,7 +410,7 @@ public: // IList
 		if(pp.iid == __uuidof(IEnumUnknown))
 		{
 			ReBarBandInfo band(RBBIM_STYLE | RBBIM_CHILD);
-			typedef Enumerator<IWindow> EnumWindow;
+			using EnumWindow = Enumerator<IWindow>;
 			ref<EnumWindow> e;
 			e.attach(new EnumWindow());
 			for(int i = 0; GetBandInfo(i, &band); i++)
@@ -454,7 +454,7 @@ public: // IPersistMessage
 		if(message archive = msg["bands"])
 		{
 			// すでに追加されたバンドを並び替えるよりも、新しく追加したほうが楽なので。
-			typedef std::vector<ReBarBandInfo> Bands;
+			using Bands = std::vector<ReBarBandInfo>;
 			Bands bands;
 			ReBarBandInfo band(RBBIM_SIZE | RBBIM_STYLE | RBBIM_CHILD | RBBIM_CHILDSIZE);
 			for(int i = 0; GetBandInfo(i, &band); i++)
@@ -534,7 +534,7 @@ private:
 		// スタイルの変更だけでは、左側の隙間を調整してくれない。
 		// そのため、いったん削除し、その後で追加しなおす。
 		int count = GetBandCount();
-		typedef std::vector<ReBarBandInfo> Bands;
+		using Bands = std::vector<ReBarBandInfo>;
 		Bands bands;
 		for(int i = 0; i < count; i++)
 		{

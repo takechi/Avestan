@@ -142,7 +142,7 @@ namespace mew {
 class Commands : public Root< implements<ICommands> >
 {
 private:
-	typedef std::map<string, ref<ICommand>, Command::Compare> Map;
+	using Map = std::map<string, ref<ICommand>, Command::Compare>;
 	Map m_map;
 
 public: // Object

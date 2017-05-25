@@ -45,7 +45,7 @@ namespace mew
 		//==============================================================================
 		// インタフェース定義.
 
-		typedef IndexOr<const ITEMIDLIST>	IndexOrIDList;
+		using IndexOrIDList = IndexOr<const ITEMIDLIST>;
 
 		/// シェルエントリ(ITEMIDLIST).
 		interface __declspec(novtable) IEntry : IUnknown

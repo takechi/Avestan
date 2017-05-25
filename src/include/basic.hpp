@@ -131,7 +131,7 @@ __interface IImageList : IUnknown
 #ifndef __IDataObject_INTERFACE_DEFINED__
 #define __IDataObject_INTERFACE_DEFINED__
 
-typedef enum tagDATADIR {DATADIR_GET = 1, DATADIR_SET = 2} DATADIR;
+using DATADIR = enum tagDATADIR {DATADIR_GET = 1, DATADIR_SET = 2};
 
 /// IDataObject.
 __interface __declspec(uuid("0000010e-0000-0000-C000-000000000046") IDataObject : IUnknown

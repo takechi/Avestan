@@ -58,7 +58,7 @@ namespace mew
 		/// Pen.
 		template < bool t_bManaged > class PenT : public CPenT<t_bManaged>
 		{
-			typedef CPenT<t_bManaged>	super;
+			using super = CPenT<t_bManaged>;
 		public:
 			PenT() : super()	{}
 			PenT(HPEN hPen) : super(hPen)	{}
@@ -67,14 +67,14 @@ namespace mew
 				CreatePen(nPenStyle, nWidth, crColor);
 			}
 		};
-		typedef PenT<true>	Pen;
-		typedef PenT<false>	PenHandle;
+		using Pen = PenT<true>;
+		using PenHandle = PenT<false>;
 
 		//==============================================================================
 		/// Brush.
 		template < bool t_bManaged > class BrushT : public CBrushT<t_bManaged>
 		{
-			typedef CBrushT<t_bManaged>	super;
+			using super = CBrushT<t_bManaged>;
 		public:
 			BrushT() : super()	{}
 			BrushT(HBRUSH hBrush) : super(hBrush)	{}
@@ -83,14 +83,14 @@ namespace mew
 				CreateSolidBrush(crColor);
 			}
 		};
-		typedef BrushT<true>	Brush;
-		typedef BrushT<false>	BrushHandle;
+		using Brush = BrushT<true>;
+		using BrushHandle = BrushT<false>;
 
 		//==============================================================================
 		/// DC.
 		template < bool t_bManaged > class DCT : public CDCT<t_bManaged>
 		{
-			typedef CDCT<t_bManaged> super;
+			using super = CDCT<t_bManaged>;
 		public:
 			DCT() : super()	{}
 			DCT(HDC hDC) : super(hDC)	{}
@@ -131,7 +131,7 @@ namespace mew
 				return sz;
 			}
 		};
-		typedef DCT<true>	DC;
-		typedef DCT<false>	DCHandle;
+		using DC = DCT<true>;
+		using DCHandle = DCT<false>;
 	}
 }

@@ -13,8 +13,8 @@ namespace mew
         template <class Value, class C>
         class AssocVectorCompare : public C
         {
-            typedef std::pair<typename C::first_argument_type, Value>	Data;
-            typedef typename C::first_argument_type						first_argument_type;
+            using Data = std::pair<typename C::first_argument_type, Value>;
+            using first_argument_type = typename C::first_argument_type;
 
         public:
             AssocVectorCompare()
@@ -62,26 +62,26 @@ namespace mew
         : private std::vector< std::pair<K, V>, A >
         , private detail::AssocVectorCompare<V, C>
     {
-        typedef std::vector<std::pair<K, V>, A> Base;
-        typedef detail::AssocVectorCompare<V, C> MyCompare;
+        using Base = std::vector<std::pair<K, V>, A>;
+        using MyCompare = detail::AssocVectorCompare<V, C>;
 
     public:
-        typedef K key_type;
-        typedef V mapped_type;
-        typedef typename Base::value_type value_type;
+        using key_type = K;
+        using mapped_type = V ;
+        using value_type = typename Base::value_type;
 
-        typedef C key_compare;
-        typedef A allocator_type;
-        typedef typename A::reference reference;
-        typedef typename A::const_reference const_reference;
-        typedef typename Base::iterator iterator;
-        typedef typename Base::const_iterator const_iterator;
-        typedef typename Base::size_type size_type;
-        typedef typename Base::difference_type difference_type;
-        typedef typename A::pointer pointer;
-        typedef typename A::const_pointer const_pointer;
-        typedef typename Base::reverse_iterator reverse_iterator;
-        typedef typename Base::const_reverse_iterator const_reverse_iterator;
+        using key_compare = C;
+        using allocator_type = A;
+        using reference = typename A::reference;
+        using const_reference = typename A::const_reference;
+        using iterator = typename Base::iterator;
+        using const_iterator = typename Base::const_iterator;
+        using size_type = typename Base::size_type;
+        using difference_type = typename Base::difference_type;
+        using pointer = typename A::pointer;
+        using const_pointer = typename A::const_pointer;
+        using reverse_iterator = typename Base::reverse_iterator;
+        using const_reverse_iterator = typename Base::const_reverse_iterator;
 
         class value_compare
             : public std::binary_function<value_type, value_type, bool>

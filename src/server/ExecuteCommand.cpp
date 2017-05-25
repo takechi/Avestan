@@ -9,7 +9,7 @@
 
 namespace
 {
-	typedef std::vector<string>	StringVector;
+	using StringVector = std::vector<string>;
 
 	enum ExecuteType
 	{
@@ -215,7 +215,7 @@ namespace
 	class ExecuteEachCommand : public ExecuteCommandBase
 	{
 	private:
-		typedef ExecuteCommandBase super;
+		using super = ExecuteCommandBase;
 	public:
 		ExecuteEachCommand(string path, ExecuteType type, PCWSTR args, PCWSTR le, PCWSTR rs) : super(path, type, args, le, rs) {}
 		void Invoke()
@@ -245,7 +245,7 @@ namespace
 	class ExecuteAllCommand : public ExecuteCommandBase
 	{
 	private:
-		typedef ExecuteCommandBase super;
+		using super = ExecuteCommandBase;
 	public:
 		ExecuteAllCommand(string path, ExecuteType type, PCWSTR args, PCWSTR le, PCWSTR rs) : super(path, type, args, le, rs) {}
 		void Invoke()

@@ -9,7 +9,7 @@ namespace
 {
 	class PathDlg : public Dialog
 	{
-		typedef std::vector<string>	MRUList;
+		using MRUList = std::vector<string>;
 
 	public:
 		TCHAR		m_path[MAX_PATH];

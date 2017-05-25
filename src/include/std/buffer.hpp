@@ -9,7 +9,7 @@ namespace mew
 	template < class T, class TAlloc = ATL::CCRTAllocator >
 	class BufferT : public CHeapPtr<T, TAlloc>
 	{
-		typedef CHeapPtr<T, TAlloc> super;
+		using super = CHeapPtr<T, TAlloc>;
 	private:
 		size_t	m_length;
 		size_t	m_capacity;
@@ -113,7 +113,7 @@ namespace mew
 	template < class T, class TAlloc = ATL::CCRTAllocator >
 	class StringBufferT : public BufferT<T, TAlloc>
 	{
-		typedef BufferT<T, TAlloc> super;
+		using super = BufferT<T, TAlloc>;
 	public:
 		const T* str() const	{ return empty() ? 0 : data(); }
 		using super::append;
@@ -146,5 +146,5 @@ namespace mew
 		StringBufferT& operator << (const T* str)	{ append(str); return *this; }
 		StringBufferT& operator << (T c)			{ append(c); return *this; }
 	};
-	typedef StringBufferT<TCHAR>	StringBuffer;
+	using StringBuffer = StringBufferT<TCHAR>;
 }

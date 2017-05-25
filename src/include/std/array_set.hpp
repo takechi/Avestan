@@ -16,26 +16,26 @@ namespace mew
 	class array_set
 	{
 	public:
-		typedef array_set<T,Unique,Pred,Alloc> self_type;
-		typedef std::vector<T,Alloc>		Cont;
-		typedef typename Cont::allocator_type	allocator_type;
-		typedef typename Cont::size_type		size_type;
-		typedef typename Cont::difference_type	difference_type;
-		typedef typename Cont::reference		reference;
-		typedef typename Cont::const_reference	const_reference;
-		typedef typename Cont::value_type		value_type;
-		typedef T								key_type;
-		typedef typename Cont::iterator			iterator;
-		typedef typename Cont::const_iterator	const_iterator;
-		typedef Pred								key_compare;
-		typedef Pred								value_compare;
+		using self_type = array_set<T,Unique,Pred,Alloc>;
+		using Cont = std::vector<T,Alloc>;
+		using allocator_type = typename Cont::allocator_type;
+		using size_type = typename Cont::size_type;
+		using difference_type = typename Cont::difference_type;
+		using reference = typename Cont::reference;
+		using const_reference = typename Cont::const_reference;
+		using value_type = typename Cont::value_type;
+		using key_type = T;
+		using iterator = typename Cont::iterator;
+		using const_iterator = typename Cont::const_iterator;
+		using key_compare = Pred;
+		using value_compare = Pred;
 
-		typedef typename Cont::const_reverse_iterator	const_reverse_iterator;
-		typedef typename Cont::reverse_iterator			reverse_iterator;
+		using const_reverse_iterator = typename Cont::const_reverse_iterator;
+		using reverse_iterator = typename Cont::reverse_iterator;
 
-		typedef std::pair<iterator, iterator>				Pairii_;
-		typedef std::pair<const_iterator, const_iterator>	Paircc_;
-		typedef std::pair<iterator, bool>					Pairib_;
+		using Pairii_ = std::pair<iterator, iterator>;
+		using Paircc_ = std::pair<const_iterator, const_iterator>;
+		using Pairib_ = std::pair<iterator, bool>;
 
 	public:
 		explicit array_set(const Pred& pred = Pred(),const Alloc& al = Alloc())

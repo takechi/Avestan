@@ -15,7 +15,7 @@ namespace mew { namespace ui {
 class KeymapTable : public Root< implements<IKeymapTable, IKeymap> >
 {
 private: // variables
-	typedef mew::array_map< DWORD, ref<ICommand> > Binds;
+	using Binds = mew::array_map< DWORD, ref<ICommand> >;
 	Binds	m_Binds;
 
 	inline static DWORD MakeKey(WORD mod, WORD vkey) { return (DWORD)mod << 16 | (DWORD)vkey; }

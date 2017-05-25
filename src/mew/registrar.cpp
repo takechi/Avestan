@@ -13,7 +13,7 @@ inline bool operator < (REFGUID lhs, REFGUID rhs)
 
 namespace
 {
-	typedef stdext::hash_map<CLSID, FactoryProc> Registrar;
+	using Registrar = stdext::hash_map<CLSID, FactoryProc>;
 	// 他のグローバル変数の初期化ルーチンから呼ばれるても良いように、
 	// 関数ないスタティックにして構築順序を制御する必要がある。
 	Registrar& GetRegistrar()

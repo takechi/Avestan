@@ -15,7 +15,7 @@ namespace
 {
 	// wchar_t* を unsigned short* としてインポートしてしまうので、
 	// USHORT* ⇔ PWSTR のキャストを多用することになる。
-	typedef unsigned short* XMLSTR;
+	using XMLSTR = unsigned short*;
 	STATIC_ASSERT(sizeof(unsigned short) == sizeof(wchar_t));
 
 	class AttributesImpl : public XMLAttributes

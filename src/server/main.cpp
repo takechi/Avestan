@@ -1613,7 +1613,7 @@ private: // Commands
 	{
 		size_t size;
 		stream >> size;
-		typedef std::vector< EntryAndStatus > Entries;
+		using Entries = std::vector< EntryAndStatus >;
 		Entries entries;
 		entries.reserve(size);
 		for(size_t i = 0; i < size; ++i)
@@ -1679,7 +1679,7 @@ private: // Commands
 	/// @return 保存したフォルダの個数. エラーの場合は負数.
 	HRESULT DoSave(string filename, string& error)
 	{
-		typedef std::vector< EntryAndStatus > Entries;
+		using Entries =std::vector< EntryAndStatus >;
 		Entries entries;
 		entries.reserve(10);
 		for(each<IShellListView> i = EnumFolders(StatusNone); i.next();)

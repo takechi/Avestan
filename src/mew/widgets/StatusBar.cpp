@@ -7,7 +7,7 @@
 
 namespace
 {
-	typedef CStatusBar< CStatusBarCtrlT<WindowImplBase> >	StatusBarBase;
+	using StatusBarBase = CStatusBar< CStatusBarCtrlT<WindowImplBase> >;
 }
 
 //==============================================================================

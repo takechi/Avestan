@@ -84,7 +84,7 @@ inline static int RunAvesta(PWSTR args, INT sw)
 	HINSTANCE hDllAvesta = ::LoadLibrary(DLLPATH);
 	if(hDllAvesta)
 	{
-		typedef int (*AvestaMain)(PCWSTR args, INT sw, PWSTR* newAvesta);
+		using AvestaMain =  int (*)(PCWSTR args, INT sw, PWSTR* newAvesta);
 		if(AvestaMain fnMain = (AvestaMain)::GetProcAddress(hDllAvesta, "AvestaMain"))
 			ret = fnMain(args, sw, &newAvesta);
 		else

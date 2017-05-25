@@ -24,8 +24,8 @@ namespace mew
 	struct Tuple
 	{
 		enum { Dimension = N };
-		typedef TFinal	out_t;
-		typedef Tuple	in_t;
+		using out_t =TFinal;
+		using in_t = Tuple;
 
 		Tuple() { STATIC_ASSERT(sizeof(TFinal) == sizeof(INT32) * N); }
 

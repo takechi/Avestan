@@ -11,16 +11,16 @@ const PCTSTR SHSTR_MENU_GO     = _T("ˆÚ“®(&G)");
 namespace mew { namespace ui {
 
 class ShellBrowser;
-typedef WTL::CListViewCtrlT<CWindowEx>			ListCtrl;
-typedef WTL::CHeaderCtrlT<CWindowEx>			HeaderCtrl;
+using ListCtrl = WTL::CListViewCtrlT<CWindowEx>;
+using HeaderCtrl = WTL::CHeaderCtrlT<CWindowEx>;
 
 class Shell : public WindowImplBase
 {
 private:
 	friend class ShellBrowser;
-	typedef ATL::CContainedWindowT<CWindowEx>		CContainedShell;
-	typedef ATL::CContainedWindowT<ListCtrl>	CContainedList;
-	typedef ATL::CContainedWindowT<HeaderCtrl>	CContainedHeader;
+	using CContainedShell = ATL::CContainedWindowT<CWindowEx>;
+	using CContainedList = ATL::CContainedWindowT<ListCtrl>;
+	using CContainedHeader = ATL::CContainedWindowT<HeaderCtrl>;
 
 	class History
 	{

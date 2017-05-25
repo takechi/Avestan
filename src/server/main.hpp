@@ -223,7 +223,7 @@ struct Template
 	bool			visible;
 };
 
-typedef std::vector<Template>	Templates;
+using Templates = std::vector<Template>;
 
 ref<IKeymap>	XmlLoadKeymap  (string xmlfile, ICommands* commands, IXMLReader* sax);
 ref<IGesture>	XmlLoadGesture (string xmlfile, ICommands* commands, IXMLReader* sax);

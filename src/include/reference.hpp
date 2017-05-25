@@ -60,10 +60,10 @@ PP_REPEAT(10, MEW_PP_NEW)
 #pragma warning( default : 4610 )
 
 	public:
-		typedef T*		pointer_in;
-		typedef T&		reference_in;
-		typedef thunk*	pointer_out;
-		typedef thunk&	reference_out;
+		using pointer_in = T*;
+		using reference_in = T&;
+		using pointer_out = thunk*;
+		using reference_out = thunk&;
 
 	protected:
 		T*	m_ptr;
@@ -139,7 +139,7 @@ PP_REPEAT(10, MEW_PP_NEW)
 	template < typename T > class ref : public ref_base<T>
 	{
 	private:
-		typedef ref_base<T>	super;
+		using super = ref_base<T>;
 	public:
 		ref() throw()	{}
 		ref(const Null&) throw()	{}
@@ -197,7 +197,7 @@ PP_REPEAT(10, MEW_PP_NEW)
 	template < typename T > class each : public ref<T>
 	{
 	private:
-		typedef ref_base<T>	super;
+		using super = ref_base<T>;
 		ref<IEnumUnknown> m_enum;
 	public:
 		each(IEnumUnknown* e) throw() : m_enum(e)	{}
@@ -227,7 +227,7 @@ PP_REPEAT(10, MEW_PP_NEW)
 	{
 		// TODO: TSequence がランダムアクセス可能でない場合への対応.
 	public:
-		typedef TSequence	sequence;
+		using sequence = TSequence;
 
 	protected:
 		const sequence&	m_range;
@@ -313,7 +313,7 @@ PP_REPEAT(10, MEW_PP_NEW)
 	template < typename TSequence >
 	class EnumUnknown : public EnumUnknownBase<TSequence>
 	{
-		typedef EnumUnknownBase<TSequence> super;
+		using super = EnumUnknownBase<TSequence>;
 	protected:
 		ref<IUnknown>	m_owner;
 
@@ -344,15 +344,15 @@ PP_REPEAT(10, MEW_PP_NEW)
 	class array
 	{
 	public:
-		typedef typename ref<T>::pointer_out			pointer_out;
-		typedef typename ref<T>::pointer_in				pointer_in;
-		typedef TAlloc<pointer_in>						allocator_type;
-		typedef TSequence<pointer_in,  allocator_type>	sequence;
-		typedef typename sequence::value_type			value_type;
-		typedef typename sequence::size_type			size_type;
-		typedef typename sequence::iterator				iterator;
-		typedef typename sequence::const_iterator		const_iterator;
-		typedef EnumUnknown<sequence>					enum_type;
+		using pointer_out = typename ref<T>::pointer_out;
+		using pointer_in  = typename ref<T>::pointer_in;
+		using allocator_type = TAlloc<pointer_in>;
+		using sequence = TSequence<pointer_in,  allocator_type>;
+		using value_type = typename sequence::value_type;
+		using size_type = typename sequence::size_type;
+		using iterator = typename sequence::iterator;
+		using const_iterator = typename sequence::const_iterator;
+		using enum_type = EnumUnknown<sequence>;
 
 	protected:
 		sequence m_items;
@@ -488,7 +488,7 @@ PP_REPEAT(10, MEW_PP_NEW)
 	>
 	class Enumerator : public array<T, TSequence, TAlloc>, public EnumUnknownBase<typename array<T, TSequence, TAlloc>::sequence>
 	{
-		typedef EnumUnknownBase<typename array<T, TSequence, TAlloc>::sequence> enum_type;
+		using enum_type = EnumUnknownBase<typename array<T, TSequence, TAlloc>::sequence>;
 	public:
 		Enumerator() : enum_type(m_items, 0)			{}
 		HRESULT __stdcall Clone(IEnumUnknown** ppEnum)	{ return enumerate(this).copyto(ppEnum); }

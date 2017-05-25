@@ -30,7 +30,7 @@ namespace mew
 	/// @see IStream
 	template <> class ref<IStream> : public ref_base<IStream>
 	{
-		typedef ref_base<IStream> super;
+		using super = ref_base<IStream>;
 
 	public:
 		Stream() throw() {}

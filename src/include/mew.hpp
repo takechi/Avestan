@@ -25,9 +25,9 @@ namespace mew
 	__interface __declspec(uuid("8BC045E4-1A58-4712-ADF3-D4595DBE079E")) IMessage;
 
 	template < class T > class ref;
-	typedef ref<IString>	string;		///< 文字列. 実際には参照だが、immutable のため値型だと考えても構わない.
-	typedef ref<IMessage>	message;	///< メッセージ.
-	typedef ref<IStream>	Stream;		///< ストリーム.
+	using string = ref<IString>;		///< 文字列. 実際には参照だが、immutable のため値型だと考えても構わない.
+	using message = ref<IMessage>;	///< メッセージ.
+	using Stream = ref<IStream>;		///< ストリーム.
 
 	//==============================================================================
 	// デバッグ支援.
@@ -244,7 +244,7 @@ namespace mew
 	//==============================================================================
 	// 関数.
 
-	typedef void (*FactoryProc)(REFINTF ppInterface, IUnknown* arg);
+	using FactoryProc = void(*)(REFINTF, IUnknown*);
 
 	/// オブジェクトを生成する.
 	MEW_API void CreateInstance(

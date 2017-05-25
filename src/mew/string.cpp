@@ -88,7 +88,7 @@ namespace mew
 	class String : public Root< implements<IString, ISerializable> >
 	{
 	public:
-		typedef VariableLengthBuffer<String, WCHAR>	Buffer;
+		using Buffer = VariableLengthBuffer<String, WCHAR>;
 
 	private:
 		size_t	m_length;

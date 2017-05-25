@@ -60,7 +60,7 @@ namespace
 			size_t	index;
 			char name[256];
 		};
-		typedef std::map<const void*, info> Objects;
+		using Objects = std::map<const void*, info>;
 		Objects m_objects;
 	public:
 		MemoryLeadCheck() : index(0)

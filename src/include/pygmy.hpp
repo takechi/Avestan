@@ -35,13 +35,13 @@ namespace mew
 		template < typename T > struct StringTraits;
 		template < typename T, typename Traits = ValueTraits<T>  > class ValueObject;
 		template < typename T, typename Traits = StringTraits<T> > class StringObject;
-		typedef ValueObject<bool>		Bool;
-		typedef ValueObject<int>		Int;
-		typedef ValueObject<__int64>	Long;
-		typedef ValueObject<double>		Real;
-		typedef StringObject<char>		StringA;
-		typedef StringObject<wchar_t>	StringW;
-		typedef StringObject<TCHAR>		string;
+		using Bool = ValueObject<bool>;
+		using Int = ValueObject<int>;
+		using Long = ValueObject<__int64>;
+		using Real = ValueObject<double>;
+		using StringA = StringObject<char>;
+		using StringW = StringObject<wchar_t>;
+		using string = StringObject<TCHAR>;
 
 		//============================================================================================================
 
@@ -308,8 +308,8 @@ namespace mew
 		template < typename T, typename Traits > class ValueObject : public Object
 		{
 		public:
-			typedef T		value_type;
-			typedef Traits	traits;
+			using value_type = T;
+			using traits = Traits;
 		public:
 
 		public:
@@ -359,9 +359,9 @@ namespace mew
 		template < typename T, typename Traits > class StringObject : public Object
 		{
 		public:
-			typedef T			value_type;
-			typedef const T*	const_pointer;
-			typedef Traits		traits;
+			using value_type = T;
+			using const_pointer = const T*;
+			using traits = Traits;
 		public:
 			static StringObject format(const_pointer fmt, ...)
 			{
