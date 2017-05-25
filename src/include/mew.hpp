@@ -73,12 +73,8 @@ PP_REPEAT_FROM_1(10, MEW_PP_TRACE)
 //==============================================================================
 // STATIC_ASSERT
 
-template < bool x > struct STATIC_ASSERTION_FAILURE;
-template <> struct STATIC_ASSERTION_FAILURE<true>{};
-template < int x > struct STATIC_ASSERT_TEST{};
-/// コンパイル時のアサーション : Boostからのパクリ
-#define STATIC_ASSERT(exp)				typedef STATIC_ASSERT_TEST < sizeof(STATIC_ASSERTION_FAILURE<(bool)(exp)>) > __STATIC_ASSERT_TYPEDEF__
-#define STATIC_ASSERT_MSG(exp, msg)		typedef STATIC_ASSERT_TEST<1> __ERROR__##msg; typedef STATIC_ASSERT_TEST < sizeof(STATIC_ASSERTION_FAILURE<(bool)(exp)>) > __ERROR__##msg
+#define STATIC_ASSERT(exp) static_assert(exp, "")
+#define STATIC_ASSERT_MSG(exp, msg) static_assert(exp, msg)
 
 namespace mew
 {
