@@ -1213,7 +1213,6 @@ HRESULT Shell::GoAbsolute(IEntry* path, GoType go)
 	OnDirectoryChanged(resolved, go);
 	OnListViewModeChanged();
 
-	/*
 	// 先頭のフォルダ/ファイルにフォーカスを合わせる.
 	each<IEntry> i = resolved->EnumChildren(true);
 	if(i.next()){
@@ -1221,7 +1220,8 @@ HRESULT Shell::GoAbsolute(IEntry* path, GoType go)
 		Select(child, SVSI_FOCUSED | SVSI_ENSUREVISIBLE);
 		ILFree(child);
 	}
-	*/
+
+  m_wndList.SetRedraw(true);
 
 	return S_OK;
 }
