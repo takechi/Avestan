@@ -116,6 +116,9 @@
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>C:\Python\Python36-32\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <BuildLog>
+      <Path>$(ProjectDir)$(IntDir)$(MSBuildProjectName).log</Path>
+    </BuildLog>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -142,6 +145,9 @@
       <ImportLibrary>$(OutDir)$(ProjectName).lib</ImportLibrary>
       <AdditionalLibraryDirectories>C:\Python\Python36-64\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <BuildLog>
+      <Path>$(ProjectDir)$(IntDir)$(MSBuildProjectName).log</Path>
+    </BuildLog>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -174,6 +180,9 @@
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>C:\Python\Python36-32\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <BuildLog>
+      <Path>$(ProjectDir)$(IntDir)$(MSBuildProjectName).log</Path>
+    </BuildLog>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -206,6 +215,9 @@
       <ImportLibrary>$(OutDir)$(ProjectName).lib</ImportLibrary>
       <AdditionalLibraryDirectories>C:\Python\Python36-64\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <BuildLog>
+      <Path>$(ProjectDir)$(IntDir)$(MSBuildProjectName).log</Path>
+    </BuildLog>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
