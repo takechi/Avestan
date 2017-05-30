@@ -29,6 +29,18 @@ enum ShellInternalMessage
 //==============================================================================
 
 namespace mew { namespace ui {
+  #define USE_ADHOC_FIX_FOR_SHELLBROWSER_LISTVIEW_DETAILS
+  #if defined(USE_ADHOC_FIX_FOR_SHELLBROWSER_LISTVIEW_DETAILS)
+  VOID CALLBACK setViewModeDetailsTimerProc(HWND hwndList, UINT, UINT_PTR idEvent, DWORD) {
+    ::KillTimer(hwndList, idEvent);
+    POINT pt;
+    ListView_GetOrigin(hwndList, &pt);
+    if (pt.y < 0) {
+      ListView_SetView(hwndList, LV_VIEW_SMALLICON);
+      ListView_SetView(hwndList, LV_VIEW_DETAILS);
+    }
+  }
+  #endif
 
 using namespace mew::io;
 
@@ -1372,6 +1384,11 @@ bool Shell::get_AutoArrange() const
 	if(m_pShellView)
 		m_pShellView->GetCurrentInfo(&pThis->m_FolderSettings);
 	pThis->m_AutoArrange = !!(m_FolderSettings.fFlags & FWF_AUTOARRANGE);
+  #if defined(USE_ADHOC_FIX_FOR_SHELLBROWSER_LISTVIEW_DETAILS)
+   if (get_Style() == ListStyle::ListStyleDetails) {
+    ::SetTimer(m_wndList, 256, 1, setViewModeDetailsTimerProc);
+   }
+  #endif
 	return pThis->m_AutoArrange;
 }
 HRESULT Shell::set_AutoArrange(bool value)
