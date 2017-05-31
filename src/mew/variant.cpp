@@ -167,7 +167,7 @@ namespace
 	}
 
 	/// bool
-	template <> inline static void ConvertPOD<bool>(TypeCode from, const variant::Union& var, bool& result) throw(...)
+	template <> inline void ConvertPOD<bool>(TypeCode from, const variant::Union& var, bool& result) throw(...)
 	{
 #define NOT_ZERO(type_t)	{ result = (*(type_t*)var.buffer != 0); return; }
 		switch(from)
