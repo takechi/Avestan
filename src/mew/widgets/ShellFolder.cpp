@@ -676,7 +676,7 @@ HRESULT Shell::MimicKeyDown(UINT vkey, UINT mods)
 	if(!m_pShellView)
 		return E_UNEXPECTED;
 	afx::SetModifierState(vkey, mods);
-	MSG msg = { m_wndList, WM_KEYDOWN, vkey, MapVirtualKey(vkey, 0) | 1 };
+	MSG msg = { m_wndList, WM_KEYDOWN, vkey, static_cast<LPARAM>(MapVirtualKey(vkey, 0) | 1) };
 	HRESULT hr = m_pShellView->TranslateAccelerator(&msg);
 	if(hr == S_FALSE)
 	{	// 処理されないので、ListViewにKEYDOWNを送ってエミュレート
