@@ -308,7 +308,7 @@ public: // msg map
 					{
 						if(IsKeyPressed(VK_CONTROL))
 						{
-							NMHEADER notify = { header, header.GetDlgCtrlID(), HDN_DIVIDERDBLCLICK, hr, 0 };
+							NMHEADER notify = { header, static_cast<UINT_PTR>(header.GetDlgCtrlID()), HDN_DIVIDERDBLCLICK, hr, 0 };
 							list.SendMessage(WM_NOTIFY, notify.hdr.idFrom, (LPARAM)&notify);
 						}
 						else

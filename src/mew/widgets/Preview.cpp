@@ -420,7 +420,7 @@ public: // msg map
 	LRESULT OnMouseWheel(UINT, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 	{
 		int wheel = GET_WHEEL_DELTA_WPARAM(wParam);
-		MSG msg = { m_hWnd, WM_KEYDOWN, (wheel < 0 ? VK_DOWN : VK_UP), 0 };
+		MSG msg = { m_hWnd, WM_KEYDOWN, static_cast<WPARAM>(wheel < 0 ? VK_DOWN : VK_UP), 0 };
 		m_Extensions.ProcessKeymap(this, &msg);
 		return 0;
 	}

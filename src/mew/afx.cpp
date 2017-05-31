@@ -1461,7 +1461,7 @@ HRESULT afx::ListView_AdjustToItems(HWND hwndListView)
 	const int columns = Header_GetItemCount(hwndHeader);
 	for(int i = 0; i < columns; ++i)
 	{
-		NMHEADER notify = { hwndHeader, ::GetDlgCtrlID(hwndHeader), HDN_DIVIDERDBLCLICK, i, 0 };
+		NMHEADER notify = { hwndHeader, static_cast<UINT_PTR>(::GetDlgCtrlID(hwndHeader)), HDN_DIVIDERDBLCLICK, i, 0 };
 		::SendMessage(hwndListView, WM_NOTIFY, notify.hdr.idFrom, (LPARAM)&notify);
 	}
 	return S_OK;
@@ -1514,7 +1514,7 @@ HRESULT afx::ListView_SetSortKey(HWND hwndListView, int column, bool ascending)
 		return E_INVALIDARG;
 	for(int i = 0; i < 10; ++i) // 変なことが起こって無限ループになるのを防ぐため。
 	{
-		NMLISTVIEW notify = { hwndListView, ::GetDlgCtrlID(hwndListView), LVN_COLUMNCLICK, -1, column };
+		NMLISTVIEW notify = { hwndListView, static_cast<UINT_PTR>(::GetDlgCtrlID(hwndListView)), LVN_COLUMNCLICK, -1, column };
 		::SendMessage(hwndOwner, WM_NOTIFY, notify.hdr.idFrom, (LPARAM)&notify);
 		int c; bool a;
 		if(SUCCEEDED(ListView_GetSortKey(hwndListView, &c, &a)) && c == column && a == ascending)
