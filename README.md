@@ -21,9 +21,6 @@ a fork of Avesta ( http://lamoo.s53.xrea.com/ )
 python によるスクリプト拡張を利用する場合は、Python 3.6 のインストールと、
 sln 内の pygmy プロジェクトのビルドが必要。
 
-## ToDo
-* キーボード操作で空のディレクトリに移動すると ListView からフォーカスが外れる現象の対応。
-
 ## ライセンス
 * Avesta License : version 1.0 ( https://github.com/takechi/Avestan/blob/master/licence.txt )。
 * 変更者は TAKECHI Kohei ( https://github.com/takechi/ )。
