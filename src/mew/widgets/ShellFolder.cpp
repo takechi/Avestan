@@ -31,6 +31,8 @@ enum ShellInternalMessage
 namespace mew { namespace ui {
   #define USE_ADHOC_FIX_FOR_SHELLBROWSER_LISTVIEW_DETAILS
   #if defined(USE_ADHOC_FIX_FOR_SHELLBROWSER_LISTVIEW_DETAILS)
+  constexpr UINT_PTR IDEvent_ListView_Details = 1;
+  constexpr UINT Elapse_ListView_Details = 50;
   VOID CALLBACK setViewModeDetailsTimerProc(HWND hwndList, UINT, UINT_PTR idEvent, DWORD) {
     ::KillTimer(hwndList, idEvent);
     POINT pt;
@@ -1225,13 +1227,11 @@ HRESULT Shell::GoAbsolute(IEntry* path, GoType go)
 	OnDirectoryChanged(resolved, go);
 	OnListViewModeChanged();
 
-	// 先頭のフォルダ/ファイルにフォーカスを合わせる.
-	each<IEntry> i = resolved->EnumChildren(true);
-	if(i.next()){
-		LPITEMIDLIST child = ILCreateChild(resolved->ID, i->ID);
-		Select(child, SVSI_FOCUSED | SVSI_ENSUREVISIBLE);
-		ILFree(child);
-	}
+  m_wndList.SetFocus();
+
+  #if defined(USE_ADHOC_FIX_FOR_SHELLBROWSER_LISTVIEW_DETAILS)
+  if (get_Style() == ListStyleDetails) { ::SetTimer(m_wndList, IDEvent_ListView_Details, Elapse_ListView_Details, setViewModeDetailsTimerProc); }
+  #endif
 
   m_wndList.SetRedraw(true);
 
@@ -1385,9 +1385,7 @@ bool Shell::get_AutoArrange() const
 		m_pShellView->GetCurrentInfo(&pThis->m_FolderSettings);
 	pThis->m_AutoArrange = !!(m_FolderSettings.fFlags & FWF_AUTOARRANGE);
   #if defined(USE_ADHOC_FIX_FOR_SHELLBROWSER_LISTVIEW_DETAILS)
-   if (get_Style() == ListStyle::ListStyleDetails) {
-    ::SetTimer(m_wndList, 256, 1, setViewModeDetailsTimerProc);
-   }
+  if (get_Style() == ListStyleDetails) { ::SetTimer(m_wndList, IDEvent_ListView_Details, Elapse_ListView_Details, setViewModeDetailsTimerProc); }
   #endif
 	return pThis->m_AutoArrange;
 }
