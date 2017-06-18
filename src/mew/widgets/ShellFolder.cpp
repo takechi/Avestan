@@ -529,6 +529,10 @@ HRESULT Shell::SaveViewState()
 	if(!m_pShellView)
 		return E_UNEXPECTED;
 	m_pShellView->GetCurrentInfo(&m_FolderSettings);
+
+	m_pViewStateStream.clear();
+	GetViewStateStream(STGM_WRITE, &m_pViewStateStream);
+
 	return m_pShellView->SaveViewState();
 }
 HRESULT Shell::UpdateShellState()
