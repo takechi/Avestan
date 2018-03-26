@@ -5,7 +5,7 @@
 
 #pragma warning(push)
 #pragma warning(disable: 4458)
-  #include <gdiplus.h>
+#  include <gdiplus.h>
 #pragma warning(pop)
 #include "string.hpp"
 #include "io.hpp"

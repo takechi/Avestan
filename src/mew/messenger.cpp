@@ -24,11 +24,11 @@ private:
 		{
 			ASSERT(m_function);
 		}
-		HRESULT fire(const message& msg)
+		HRESULT fire(const message& msg_)
 		{
 			if(empty())
 				return S_FALSE;
-			HRESULT hr = m_function(msg);
+			HRESULT hr = m_function(msg_);
 			if FAILED(hr)
 				clear();
 			return hr;

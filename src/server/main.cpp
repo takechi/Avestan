@@ -664,14 +664,14 @@ public: // Avesta
 				break;
 			case NaviReplace:
 			{
-				ref<IWindow> current;
-				m_tab->GetContents(&current, FOCUSED);
+				ref<IWindow> current_;
+				m_tab->GetContents(&current_, FOCUSED);
 				m_tab->SetStatus(view, SELECTED);
 				m_tab->SetStatus(view, FOCUSED);
-				if(current)
+				if(current_)
 				{
-					m_tab->SetStatus(current, UNCHECKED);
-					m_tab->SetStatus(current, UNSELECTED);
+					m_tab->SetStatus(current_, UNCHECKED);
+					m_tab->SetStatus(current_, UNSELECTED);
 				}
 				break;
 			}
@@ -1148,9 +1148,9 @@ public: // event handlers
 				string path = entry->Path;
 				if(!!path)
 				{
-					TCHAR msg[1024];
-					wsprintf(msg, _T("キャッシュを更新するため、\"%s\" 以下のすべての Thumbs.db ファイルを消去します。\n\nよろしいですか？"), path.str());
-					if(QuestionBox(m_form, msg, MB_OKCANCEL) == IDOK)
+					TCHAR msg_[1024];
+					wsprintf(msg_, _T("キャッシュを更新するため、\"%s\" 以下のすべての Thumbs.db ファイルを消去します。\n\nよろしいですか？"), path.str());
+					if(QuestionBox(m_form, msg_, MB_OKCANCEL) == IDOK)
 					{
 						CWaitCursor wait;
 						RecursiveDelete(path.str(), _T("Thumbs.db"));

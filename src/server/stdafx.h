@@ -26,7 +26,10 @@
 #include <shlobj.h>
 #include <shlwapi.h>
 #include <shellapi.h>
-#include <gdiplus.h>
+#pragma warning(push)
+#pragma warning(disable: 4458)
+#  include <gdiplus.h>
+#pragma warning(pop)
 
 namespace WTL
 {

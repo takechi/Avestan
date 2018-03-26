@@ -1151,11 +1151,11 @@ static bool ProcessMouseGesture(HWND hwnd, const MSG* msg)
 
 	while(desc.gesture)
 	{
-		MSG msg;
-		if(!::GetMessage(&msg, NULL, 0, 0)) 
+		MSG msg_;
+		if(!::GetMessage(&msg_, NULL, 0, 0))
 		{	// WM_QUIT
 			EndGesture(desc);
-			PostQuitMessage(msg.wParam);
+			PostQuitMessage(msg_.wParam);
 			return false;
 		}
 		if(::GetCapture() != desc.owner)
@@ -1163,24 +1163,24 @@ static bool ProcessMouseGesture(HWND hwnd, const MSG* msg)
 			EndGesture(desc);
 			break;
 		}
-		switch(msg.message)
+		switch(msg_.message)
 		{
 		case WM_MOUSEMOVE:
-			OnGestureMouseMove(desc, msg.wParam, msg.lParam);
+			OnGestureMouseMove(desc, msg_.wParam, msg_.lParam);
 			break;
 		case WM_LBUTTONUP:
 		case WM_RBUTTONUP:
 		case WM_MBUTTONUP:
 		case WM_XBUTTONUP:
-			if(MessageToGesture(&msg) == start)
-				OnGestureUp(desc, &msg);
+			if(MessageToGesture(&msg_) == start)
+				OnGestureUp(desc, &msg_);
 			break;
 		case WM_LBUTTONDOWN:
 		case WM_RBUTTONDOWN:
 		case WM_MBUTTONDOWN:
 		case WM_XBUTTONDOWN:
 		case WM_MOUSEWHEEL:
-			OnGestureButton(desc, MessageToGesture(&msg));
+			OnGestureButton(desc, MessageToGesture(&msg_));
 			break;
 		case WM_LBUTTONDBLCLK:
 		case WM_RBUTTONDBLCLK:
@@ -1191,11 +1191,11 @@ static bool ProcessMouseGesture(HWND hwnd, const MSG* msg)
 		case WM_SYSKEYDOWN:
 		case WM_KEYUP:
 		case WM_SYSKEYUP:
-			OnGestureKey(desc, msg.wParam, msg.lParam);
+			OnGestureKey(desc, msg_.wParam, msg_.lParam);
 			break;
 		default:
-			::TranslateMessage(&msg);
-			::DispatchMessage(&msg);
+			::TranslateMessage(&msg_);
+			::DispatchMessage(&msg_);
 		}
 	}
 	return true;

@@ -465,14 +465,14 @@ public: // IPersistMessage
 			for(size_t i = 0; i < size; i++)
 			{
 				DeleteBand(0);
-				if(message msg = archive[i])
+				if(message msg_ = archive[i])
 				{
-					string name = msg["name"];
+					string name = msg_["name"];
 					if(!name)
 						break;
-					UINT32 width     = msg["width"]     | BAND_WIDTH_MIN;
-					bool   linebreak = msg["linebreak"] | true;
-					bool   visible   = msg["visible"]   | true;
+					UINT32 width     = msg_["width"]     | BAND_WIDTH_MIN;
+					bool   linebreak = msg_["linebreak"] | true;
+					bool   visible   = msg_["visible"]   | true;
 					for(size_t j = 0; j < size; j++)
 					{
 						TCHAR wndName[MAX_PATH];
@@ -515,12 +515,12 @@ public: // IPersistMessage
 		{
 			TCHAR name[MAX_PATH];
 			::GetWindowText(band.hwndChild, name, MAX_PATH);
-			message msg;
-			msg["name"]      = name;
-			msg["width"]     = (UINT32)band.cx;
-			msg["linebreak"] = band.Break;
-			msg["visible"]   = band.Visible;
-			archive[i] = msg;
+			message msg_;
+			msg_["name"]      = name;
+			msg_["width"]     = (UINT32)band.cx;
+			msg_["linebreak"] = band.Break;
+			msg_["visible"]   = band.Visible;
+			archive[i] = msg_;
 		}
 		msg["bands"]   = archive;
 		msg["bkfile"]  = this->WallPaperFile;
