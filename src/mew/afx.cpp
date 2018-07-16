@@ -545,6 +545,7 @@ LPITEMIDLIST afx::ILFromShared(HANDLE hMem, DWORD pid)
 }
 LPITEMIDLIST afx::ILFromExplorer(HWND hwnd)
 {
+	LPITEMIDLIST pIDL = nullptr;
 	IShellWindows * psw;
 	if (!SUCCEEDED(CoCreateInstance(CLSID_ShellWindows, NULL, CLSCTX_LOCAL_SERVER, IID_PPV_ARGS(&psw)))) { return nullptr; }
 	long swCount = 0;
@@ -552,29 +553,32 @@ LPITEMIDLIST afx::ILFromExplorer(HWND hwnd)
 	for (long i = 0; i < swCount; ++i) {
 		IDispatch * pdisp;
 		psw->Item(CComVariant(i), &pdisp);
+		if (pdisp == NULL) { continue; }
 		IShellBrowser * psb;
-		if (!SUCCEEDED(IUnknown_QueryService(pdisp, SID_SShellBrowser, IID_PPV_ARGS(&psb)))) { continue; }
-		CComQIPtr<IWebBrowser2> pwb(pdisp);
-		if (pwb == NULL) { continue; }
-		HWND wbhwnd;
-		pwb->get_HWND((SHANDLE_PTR *)& wbhwnd);
-		if (wbhwnd == hwnd) {
-			OLECHAR * path;
-			pwb->get_LocationURL(&path); // 特殊フォルダは上手く取得できないらしい。とりあえず保留
+		if (SUCCEEDED(IUnknown_QueryService(pdisp, SID_SShellBrowser, IID_PPV_ARGS(&psb)))) {
+			CComQIPtr<IWebBrowser2> pwb(pdisp);
+			if (pwb == NULL) { continue; }
+			HWND wbhwnd;
+			pwb->get_HWND((SHANDLE_PTR *)& wbhwnd);
+			if (wbhwnd == hwnd) {
+				OLECHAR * path;
+				pwb->get_LocationURL(&path); // 特殊フォルダは上手く取得できないらしい。とりあえず保留
 
-			LPITEMIDLIST pIDL;
-			LPSHELLFOLDER pDesktopFolder;
-			if (::SHGetDesktopFolder(&pDesktopFolder) != NOERROR) { pIDL = nullptr; }
-
-			ULONG chEaten;
-			ULONG dwAttributes;
-			if (!SUCCEEDED(pDesktopFolder->ParseDisplayName(NULL, NULL, path, &chEaten, &pIDL, &dwAttributes))) { pIDL = nullptr; }
-			pDesktopFolder->Release();
-			return pIDL;
+				LPSHELLFOLDER pDesktopFolder;
+				if (SUCCEEDED(::SHGetDesktopFolder(&pDesktopFolder))) {
+					ULONG chEaten;
+					ULONG dwAttributes;
+					pDesktopFolder->ParseDisplayName(NULL, NULL, path, &chEaten, &pIDL, &dwAttributes);
+					pDesktopFolder->Release();
+				}
+			}
+			pwb.Release();
 		}
+		pdisp->Release();
 	}
+	psw->Release();
 
-	return nullptr;
+	return pIDL;
 }
 HRESULT afx::ILGetSelfFolder(LPCITEMIDLIST pidl, IShellFolder** ppFolder)
 {
