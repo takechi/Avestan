@@ -562,7 +562,7 @@ LPITEMIDLIST afx::ILFromExplorer(HWND hwnd)
 			pwb->get_HWND((SHANDLE_PTR *)& wbhwnd);
 			if (wbhwnd == hwnd) {
 				OLECHAR * path;
-				pwb->get_LocationURL(&path); // 特殊フォルダは上手く取得できないらしい。とりあえず保留
+				pwb->get_LocationURL(&path); // 特殊フォルダは上手く取得できないらしい。とりあえず保留。
 
 				LPSHELLFOLDER pDesktopFolder;
 				if (SUCCEEDED(::SHGetDesktopFolder(&pDesktopFolder))) {
@@ -575,6 +575,7 @@ LPITEMIDLIST afx::ILFromExplorer(HWND hwnd)
 			pwb.Release();
 		}
 		pdisp->Release();
+		if (pIDL != nullptr) { break; }
 	}
 	psw->Release();
 
