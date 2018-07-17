@@ -561,15 +561,16 @@ LPITEMIDLIST afx::ILFromExplorer(HWND hwnd)
 			HWND wbhwnd;
 			pwb->get_HWND((SHANDLE_PTR *)& wbhwnd);
 			if (wbhwnd == hwnd) {
-				OLECHAR * path;
-				pwb->get_LocationURL(&path); // 特殊フォルダは上手く取得できないらしい。とりあえず保留。
-
-				LPSHELLFOLDER pDesktopFolder;
-				if (SUCCEEDED(::SHGetDesktopFolder(&pDesktopFolder))) {
-					ULONG chEaten;
-					ULONG dwAttributes;
-					pDesktopFolder->ParseDisplayName(NULL, NULL, path, &chEaten, &pIDL, &dwAttributes);
-					pDesktopFolder->Release();
+				BSTR path;
+				pwb->get_LocationURL(&path);
+				if (SysStringByteLen(path) != 0) { // 特殊フォルダではない
+					LPSHELLFOLDER pDesktopFolder;
+					if (SUCCEEDED(::SHGetDesktopFolder(&pDesktopFolder))) {
+						ULONG chEaten;
+						ULONG dwAttributes;
+						pDesktopFolder->ParseDisplayName(NULL, NULL, path, &chEaten, &pIDL, &dwAttributes);
+						pDesktopFolder->Release();
+					}
 				}
 			}
 			pwb.Release();
