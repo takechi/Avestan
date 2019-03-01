@@ -272,6 +272,10 @@ public:
 				m_callback.create(__uuidof(DefaultCallback));
 			}
 		}
+		else
+		{
+			m_callback.create(__uuidof(DefaultCallback));
+		}
 		// 
 		try
 		{
