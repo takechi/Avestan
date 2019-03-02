@@ -4,11 +4,11 @@ a fork of Avesta ( http://lamoo.s53.xrea.com/ )
 タブ型ファイラ Avesta 0.3.1.9 (avesta-0.3.1.9src.zip) を Visual Studio Community 2017 で
 ビルドできるようにしたもの。
 
-## 実行ファイル
+## 実行ファイルのダウンロード
 上の [release](https://github.com/takechi/Avestan/releases) にあります。
 
 
-## ビルド
+## ソースからビルド
 ### 必要なもの
 * Visual Studio Community 2017
   * VS Express だと、ATL がないので（そのままでは）ビルドできない。
@@ -18,7 +18,7 @@ a fork of Avesta ( http://lamoo.s53.xrea.com/ )
 * src/Avesta.sln を開いて F5 でビルドできるはず。
 
 ### スクリプト拡張
-python によるスクリプト拡張を利用する場合は、Python 3.6 のインストールと、
+python によるスクリプト拡張を利用する場合は、Python 3.7 のインストールと、
 sln 内の pygmy プロジェクトのビルドが必要。
 
 ## ライセンス
