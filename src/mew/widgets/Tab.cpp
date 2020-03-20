@@ -57,7 +57,7 @@ namespace
 			RECT rcUnderline = { rcHeader.left, rcHeader.bottom, rcHeader.right, rcHeader.bottom + HEADER_UNDERLINE };
 			theme::TabDrawHeader(dc, rcHeader);
 			dc.FillSolidRect(&rcHeader, m_ColorBkgnd);
-			dc.FillSolidRect(&rcUnderline, m_ColorActiveTab);
+			dc.FillSolidRect(&rcUnderline, m_ColorBkgnd);
 		}
 		void CompactPath(HDC hDC, PTSTR buffer, INT32 minWidth, INT32 maxWidth)
 		{
@@ -158,7 +158,7 @@ public:
 		m_DraggingTab = -1;
 		m_DragSwap = false;
 		m_RButtonDown = false;
-		__super::DoCreate(parent, NULL, DirNone, WS_CONTROL | CCS_NOLAYOUT | TBSTYLE_FLAT | TBSTYLE_LIST | TBSTYLE_CUSTOMERASE, WS_EX_CONTROLPARENT);
+		__super::DoCreate(parent, NULL, DirNone, WS_CONTROL | CCS_NOLAYOUT | TBSTYLE_FLAT | TBSTYLE_LIST | TBSTYLE_CUSTOMERASE | TBSTYLE_WRAPABLE, WS_EX_CONTROLPARENT);
 		ImmAssociateContext(m_hWnd, null);
 	}
 	void HandleDestroy()
@@ -426,10 +426,12 @@ public:
 	void GetHeaderAndClient(RECT& rcHeader, RECT& rcClient) const
 	{
 		GetItemRect(0, &rcHeader);
+		const int buttonHeigt = rcHeader.bottom - rcHeader.top;
 		GetClientRect(&rcClient);
 		rcHeader.left  = rcClient.left;
 		rcHeader.right = rcClient.right;
 		rcHeader.top   = rcClient.top;
+		rcHeader.bottom += buttonHeigt * (GetRows() - 1);
 		rcClient.top   = rcHeader.bottom;
 		m_look.ResizeRects(rcHeader, rcClient);
 	}
