@@ -1,7 +1,7 @@
 // xmlreader.cpp
 
 #include "stdafx.h"
-#import <msxml4.dll> raw_interfaces_only
+#import <msxml6.dll> raw_interfaces_only
 #include "../mew/private.h"
 #include "xml.hpp"
 
