@@ -243,7 +243,7 @@ public:
 		if(m_booleans[BoolPython])
 		{
 			// チェックのためのロード
-			if(HINSTANCE hPython = LoadLibrary(_T("python37")))
+			if(HINSTANCE hPython = LoadLibrary(_T("python38")))
 			{
 				thePygmy = LoadLibrary(_T("pygmy.pyd"));
 				if(thePygmy)
@@ -256,7 +256,7 @@ public:
 			if(!m_callback)
 			{
 				PCTSTR errormsg =
-					_T("python37.dll または pygmy.pyd が見つからないため、スクリプト拡張が\n")
+					_T("python38.dll または pygmy.pyd が見つからないため、スクリプト拡張が\n")
 					_T("使用できません。\n")
 					_T("スクリプト拡張を使うためには、python をインストールしてください。\n\n")
 					_T("次回起動時に、もう一度 python の有無を確認しますか？\n")
