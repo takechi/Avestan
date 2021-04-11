@@ -105,6 +105,54 @@ add_library(server SHARED
   ${SOURCE_DIR}/avesta/xmlparse.cpp
   ${SOURCE_DIR}/avesta/xmlreader.cpp
   ${SOURCE_DIR}/avesta/xmlwriter.cpp
+
+
+  ${SOURCE_DIR}/include/afx.hpp
+  ${SOURCE_DIR}/include/application.hpp
+  ${SOURCE_DIR}/include/avesta.hpp
+  ${SOURCE_DIR}/include/basic.hpp
+  ${SOURCE_DIR}/include/drawing.hpp
+  ${SOURCE_DIR}/include/error.hpp
+  ${SOURCE_DIR}/include/io.hpp
+  ${SOURCE_DIR}/include/math.hpp
+  ${SOURCE_DIR}/include/message.hpp
+  ${SOURCE_DIR}/include/meta.hpp
+  ${SOURCE_DIR}/include/mew.hpp
+  ${SOURCE_DIR}/include/object.hpp
+  ${SOURCE_DIR}/include/path.hpp
+  ${SOURCE_DIR}/include/preprocessor.hpp
+  ${SOURCE_DIR}/include/reference.hpp
+  ${SOURCE_DIR}/include/shell.hpp
+  ${SOURCE_DIR}/include/signal.hpp
+  ${SOURCE_DIR}/include/storage.hpp
+  ${SOURCE_DIR}/include/string.hpp
+  ${SOURCE_DIR}/include/struct.hpp
+  ${SOURCE_DIR}/include/theme.hpp
+  ${SOURCE_DIR}/include/thread.hpp
+  ${SOURCE_DIR}/include/widgets.client.hpp
+  ${SOURCE_DIR}/include/widgets.hpp
+  ${SOURCE_DIR}/include/xml.hpp
+
+  ${SOURCE_DIR}/include/detail/headers.hpp
+  ${SOURCE_DIR}/include/detail/objectimpl.hpp
+  ${SOURCE_DIR}/include/detail/uuids.hpp
+
+  ${SOURCE_DIR}/include/impl/InitUtil.hpp
+  ${SOURCE_DIR}/include/impl/WTLControls.hpp
+  ${SOURCE_DIR}/include/impl/WTLSplitter.hpp
+
+  ${SOURCE_DIR}/include/std/algorithm.hpp
+  ${SOURCE_DIR}/include/std/array_map.hpp
+  ${SOURCE_DIR}/include/std/array_set.hpp
+  ${SOURCE_DIR}/include/std/buffer.hpp
+  ${SOURCE_DIR}/include/std/deque.hpp
+  ${SOURCE_DIR}/include/std/hash_map.hpp
+  ${SOURCE_DIR}/include/std/list.hpp
+  ${SOURCE_DIR}/include/std/map.hpp
+  ${SOURCE_DIR}/include/std/sequence.hpp
+  ${SOURCE_DIR}/include/std/set.hpp
+  ${SOURCE_DIR}/include/std/str.hpp
+  ${SOURCE_DIR}/include/std/vector.hpp
   )
 target_include_directories(server PRIVATE
   ${SOURCE_DIR}/server
@@ -126,6 +174,8 @@ add_library(pygmy SHARED
   ${SOURCE_DIR}/pygmy/pygmy.hpp
   ${SOURCE_DIR}/pygmy/stdafx.cpp
   ${SOURCE_DIR}/pygmy/stdafx.h
+
+  ${SOURCE_DIR}/include/pygmy.hpp
   )
 target_include_directories(pygmy PRIVATE
   ${SOURCE_DIR}/include
@@ -139,12 +189,12 @@ target_compile_definitions(pygmy PRIVATE
   
 find_package (Python COMPONENTS Development)
 if(Python_FOUND)
-target_include_directories(pygmy PRIVATE
-  ${Python_INCLUDE_DIRS}
-  )
-target_link_libraries(pygmy PRIVATE
-  ${Python_LIBRARIES}
-  )
+  target_include_directories(pygmy PRIVATE
+    ${Python_INCLUDE_DIRS}
+    )
+  target_link_libraries(pygmy PRIVATE
+    ${Python_LIBRARIES}
+    )
 endif()
 
 set_target_properties(pygmy PROPERTIES OUTPUT_NAME "pygmy"
@@ -168,3 +218,27 @@ add_dependencies(pygmy server)
 if(Python_FOUND)
   add_dependencies(client pygmy)
 endif()
+
+
+add_library(clipboard SHARED
+  ${SOURCE_DIR}/tools-clipboard/main.cpp
+  ${SOURCE_DIR}/tools-clipboard/stdafx.cpp
+  ${SOURCE_DIR}/tools-clipboard/clipboard.def
+  ${SOURCE_DIR}/tools-clipboard/stdafx.h
+  )
+target_include_directories(clipboard PRIVATE
+  ${SOURCE_DIR}/pygmy
+  ${SOURCE_DIR}/include
+  )
+if(Python_FOUND)
+  target_include_directories(clipboard PRIVATE
+    ${Python_INCLUDE_DIRS}
+    )
+  target_link_libraries(clipboard PRIVATE
+    ${Python_LIBRARIES}
+    )
+endif()
+set_target_properties(clipboard
+    PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_BINARY_DIR}/opt
+)

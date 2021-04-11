@@ -6,6 +6,5 @@
 #define _CRT_NON_CONFORMING_SWPRINTFS
 
 #include "mew.hpp"
-#include <shlobj.h>
 #include <shellapi.h>
-
+#include <shlobj.h>

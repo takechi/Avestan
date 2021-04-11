@@ -16,35 +16,40 @@
 #include "mew.hpp"
 
 #undef ATLASSERT
-#define ATLASSERT	ASSERT
+#define ATLASSERT ASSERT
 
 #ifndef _DEBUG
-#	define m_bModal	true
+#define m_bModal true
 #endif
 
 #include <atlwin.h>
+#include <shellapi.h>
 #include <shlobj.h>
 #include <shlwapi.h>
-#include <shellapi.h>
 #pragma warning(push)
-#pragma warning(disable: 4458)
-#  include <gdiplus.h>
+#pragma warning(disable : 4458)
+#include <gdiplus.h>
 #pragma warning(pop)
 
-namespace WTL
-{
+namespace WTL {
 #undef max
 #undef min
-	template < typename T > inline T max(T a, T b)	{ return a > b ? a : b; }
-	template < typename T > inline T min(T a, T b)	{ return a < b ? a : b; }
+template <typename T>
+inline T max(T a, T b) {
+  return a > b ? a : b;
 }
+template <typename T>
+inline T min(T a, T b) {
+  return a < b ? a : b;
+}
+}  // namespace WTL
 
 #include <atlapp.h>
-#include <atluser.h>
 #include <atlctrls.h>
 #include <atlctrlw.h>
 #include <atlctrlx.h>
 #include <atldlgs.h>
+#include <atluser.h>
 
-#include "std/vector.hpp"
 #include "std/algorithm.hpp"
+#include "std/vector.hpp"

@@ -1,9 +1,9 @@
 // private.h
 #pragma once
 
-#include "string.hpp"
 #include "error.hpp"
 #include "object.hpp"
+#include "string.hpp"
 
 using namespace mew;
 using namespace mew::exceptions;
