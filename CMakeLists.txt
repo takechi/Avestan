@@ -174,8 +174,6 @@ add_library(pygmy SHARED
   ${SOURCE_DIR}/pygmy/pygmy.hpp
   ${SOURCE_DIR}/pygmy/stdafx.cpp
   ${SOURCE_DIR}/pygmy/stdafx.h
-
-  ${SOURCE_DIR}/include/pygmy.hpp
   )
 target_include_directories(pygmy PRIVATE
   ${SOURCE_DIR}/include
