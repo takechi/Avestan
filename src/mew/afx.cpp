@@ -29,7 +29,7 @@ namespace {
 
 // この関数は排他制御を行わなくて良い。
 // 無駄にはなるが、どうせ同じポインタが取れるので。
-static bool DynamicLoadVoidPtr(void** fn, PCWSTR module, PCSTR name, int index) throw() {
+static bool DynamicLoadVoidPtr(void** fn, PCWSTR module, PCSTR name, int64_t index) throw() {
   ASSERT(fn);
   if (*fn == INVALID_FUNCTION_POINTER) return false;
   if (*fn) return true;
@@ -43,7 +43,7 @@ static bool DynamicLoadVoidPtr(void** fn, PCWSTR module, PCSTR name, int index) 
 }
 
 template <typename T>
-inline bool DynamicLoad(T** fn, PCWSTR module, PCSTR name, int index) throw() {
+inline bool DynamicLoad(T** fn, PCWSTR module, PCSTR name, int64_t index) throw() {
   return DynamicLoadVoidPtr((void**)fn, module, name, index);
 }
 }  // namespace
@@ -411,7 +411,7 @@ LPITEMIDLIST afx::ILFromPath(PCWSTR path, DWORD* pdwAttr) {
   // format is ":mem:pid"
   PCWSTR nextColon = str::find(path + 1, L':');
   if (!nextColon) return NULL;
-  HANDLE hMem = (HANDLE)str::atoi(path + 1);
+  HANDLE hMem = (HANDLE)str::atoi64(path + 1);
   DWORD pid = (DWORD)str::atoi(nextColon + 1);
   pidl = ILFromShared(hMem, pid);
   if (pidl) {
