@@ -308,12 +308,9 @@ class __declspec(novtable) ToolBarBase : public CTypedToolBar<LPARAM, CToolBarCt
 
   void GetSystemSettings() {
     BOOL bRet;
-    // get Windows version
-    OSVERSIONINFO ovi = {sizeof(OSVERSIONINFO)};
-    ::GetVersionEx(&ovi);
 
     // query keyboard cues mode (Windows 2000 or later)
-    if (ovi.dwMajorVersion >= 5) {
+    if (IsWindowsVistaOrGreater()) {
       BOOL bRetVal = true;
       bRet = ::SystemParametersInfo(SPI_GETKEYBOARDCUES, 0, &bRetVal, 0);
       m_bUseKeyboardCues = (bRet && !bRetVal);
