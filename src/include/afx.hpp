@@ -51,7 +51,7 @@ void BroadcastMessage(UINT uMsg, DWORD dwThreadID = ::GetCurrentThreadId());
 
 inline mew::string GetName(HWND hwnd) {
   int length = ::GetWindowTextLength(hwnd);
-  TCHAR* name = (TCHAR*)alloca((length + 1) * sizeof(TCHAR));
+  TCHAR* name = (TCHAR*)_malloca((length + 1) * sizeof(TCHAR));
   int done = ::GetWindowText(hwnd, name, length + 1);
   return mew::string(name, done);
 }
