@@ -38,7 +38,6 @@ add_library(server SHARED
   ${SOURCE_DIR}/server/server.vcproj
   ${SOURCE_DIR}/server/server.vcxproj
   ${SOURCE_DIR}/server/server.vcxproj.filters
-  ${SOURCE_DIR}/server/server.vcxproj.user
   ${SOURCE_DIR}/server/ShellStorage.cpp
   ${SOURCE_DIR}/server/stdafx.cpp
   ${SOURCE_DIR}/server/stdafx.h
