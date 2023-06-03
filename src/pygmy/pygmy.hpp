@@ -672,14 +672,13 @@ class Host {
     char program[MAX_PATH];
     GetModuleFileNameA(0, program, MAX_PATH);
     if (more) PathAppendA(program, more);
-#if PY_MAJOR_VERSION >= 3
+    PyConfig config;
+    PyConfig_InitPythonConfig(&config);
+    config.isolated = 1;
     wchar_t programW[MAX_PATH];
     mbstowcs(programW, program, strlen(program) + 1);
-    Py_SetProgramName(programW);
-#else
-    Py_SetProgramName(program);
-#endif
-    Py_Initialize();
+    config.program_name = programW;
+    Py_InitializeFromConfig(&config);
     m_init = true;
   }
   void Terminate() {
