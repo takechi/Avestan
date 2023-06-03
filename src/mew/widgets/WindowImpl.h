@@ -13,8 +13,6 @@ namespace ATL {}
 using namespace ATL;
 namespace WTL {}
 using namespace WTL;
-namespace WTLEX {}
-using namespace WTLEX;
 
 #pragma warning(disable : 4065)
 
@@ -50,7 +48,9 @@ struct QueryGestureStruct {
   const Gesture* gesture;
 };
 
-inline bool QueryDropTargetInWindow(HWND hWnd, IDropTarget** ppDropTarget, POINT ptScreen) { return SendMessage(hWnd, MEW_QUERY_DROP, (WPARAM)ppDropTarget, MAKELPARAM(ptScreen.x, ptScreen.y)) != 0; }
+inline bool QueryDropTargetInWindow(HWND hWnd, IDropTarget** ppDropTarget, POINT ptScreen) {
+  return SendMessage(hWnd, MEW_QUERY_DROP, (WPARAM)ppDropTarget, MAKELPARAM(ptScreen.x, ptScreen.y)) != 0;
+}
 
 bool ResizeToDefault(IWindow* window);
 
@@ -124,7 +124,8 @@ class WindowMessageSource : public SignalImpl<DynamicLife<TBase> > {
     const IID* piid = (const IID*)wParam;
     void** ppObject = (void**)lParam;
 #ifdef _DEBUG
-    if (IsBadReadPtr(piid, sizeof(GUID)) || IsBadWritePtr(ppObject, sizeof(void**))) {  // 間違って呼ばれる可能性があるので、防御は完璧に…
+    if (IsBadReadPtr(piid, sizeof(GUID)) ||
+        IsBadWritePtr(ppObject, sizeof(void**))) {  // 間違って呼ばれる可能性があるので、防御は完璧に…
       __debugbreak();
       return E_POINTER;
     }
@@ -156,7 +157,8 @@ class __declspec(novtable) WindowImpl : public Root<TImplements, TMixin>, public
 
  public:  // overridable
   /// コンストラクタの直後に呼ばれ、ウィンドウを作成する.
-  void DoCreate(CWindowEx parent, ATL::_U_RECT rect = rcDefault, Direction dock = DirNone, DWORD dwStyle = 0, DWORD dwExStyle = 0) {
+  void DoCreate(CWindowEx parent, ATL::_U_RECT rect = rcDefault, Direction dock = DirNone, DWORD dwStyle = 0,
+                DWORD dwExStyle = 0) {
     m_Dock = dock;
     __super::Create(parent, rect, NULL, dwStyle, dwExStyle);
   }
@@ -171,7 +173,9 @@ class __declspec(novtable) WindowImpl : public Root<TImplements, TMixin>, public
   ///
   void HandleUpdateLayout() {}
   ///
-  bool HandleQueryGesture(IGesture** pp, Point ptScreen, size_t length, const Gesture gesture[]) { return m_Extensions.ProcessQueryGesture(pp); }
+  bool HandleQueryGesture(IGesture** pp, Point ptScreen, size_t length, const Gesture gesture[]) {
+    return m_Extensions.ProcessQueryGesture(pp);
+  }
   ///
   bool HandleQueryDrop(IDropTarget** pp, LPARAM lParam) { return m_Extensions.ProcessQueryDrop(pp); }
 
@@ -273,13 +277,17 @@ class __declspec(novtable) WindowImpl : public Root<TImplements, TMixin>, public
 
   virtual BEGIN_MSG_MAP_(HandleWindowMessage) CHAIN_MSG_MAP_TO(super::ProcessWindowMessage)
       // self
-      MESSAGE_HANDLER(WM_DESTROY, OnDestroy) MESSAGE_HANDLER(WM_SHOWWINDOW, OnShowWindow) MESSAGE_HANDLER(MEW_ECHO_UPDATE, OnUpdateLayout)
+      MESSAGE_HANDLER(WM_DESTROY, OnDestroy) MESSAGE_HANDLER(WM_SHOWWINDOW, OnShowWindow)
+          MESSAGE_HANDLER(MEW_ECHO_UPDATE, OnUpdateLayout)
       // base window
-      MESSAGE_HANDLER(WM_FORWARDMSG, OnForwardMsg) MESSAGE_HANDLER(WM_COPYDATA, OnCopyData) MESSAGE_HANDLER(WM_SETTINGCHANGE, OnSettingChange)
+      MESSAGE_HANDLER(WM_FORWARDMSG, OnForwardMsg) MESSAGE_HANDLER(WM_COPYDATA, OnCopyData)
+          MESSAGE_HANDLER(WM_SETTINGCHANGE, OnSettingChange)
       // msg source
-      MESSAGE_HANDLER(MEW_ECHO_COPYDATA, OnCopyDataEcho) MESSAGE_HANDLER(WM_CLOSE, OnClose) MESSAGE_HANDLER(WM_ENDSESSION, OnEndSession) MESSAGE_HANDLER(WM_SETTEXT, OnSetText) MESSAGE_HANDLER(WM_SIZE, OnSize)
+      MESSAGE_HANDLER(MEW_ECHO_COPYDATA, OnCopyDataEcho) MESSAGE_HANDLER(WM_CLOSE, OnClose)
+          MESSAGE_HANDLER(WM_ENDSESSION, OnEndSession) MESSAGE_HANDLER(WM_SETTEXT, OnSetText) MESSAGE_HANDLER(WM_SIZE, OnSize)
       // query
-      MESSAGE_HANDLER(MEW_QUERY_INTERFACE, OnQueryInterface) MESSAGE_HANDLER(MEW_QUERY_GESTURE, OnQueryGesture) MESSAGE_HANDLER(MEW_QUERY_DROP, OnQueryDrop)
+      MESSAGE_HANDLER(MEW_QUERY_INTERFACE, OnQueryInterface) MESSAGE_HANDLER(MEW_QUERY_GESTURE, OnQueryGesture)
+          MESSAGE_HANDLER(MEW_QUERY_DROP, OnQueryDrop)
       //
       DEFAULT_REFLECTION_HANDLER() REFLECT_NOTIFICATIONS() END_MSG_MAP()
 
@@ -355,11 +363,12 @@ class __declspec(novtable) WindowImpl : public Root<TImplements, TMixin>, public
   }
   LRESULT OnUpdateLayout(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     MSG msg;
-    if (!::PeekMessage(&msg, m_hWnd, MEW_ECHO_UPDATE, MEW_ECHO_UPDATE, PM_NOREMOVE)) {  // メッセージキューにこれ以上MEW_ECHO_UPDATEが無い場合のみ処理する。
+    if (!::PeekMessage(&msg, m_hWnd, MEW_ECHO_UPDATE, MEW_ECHO_UPDATE,
+                       PM_NOREMOVE)) {  // メッセージキューにこれ以上MEW_ECHO_UPDATEが無い場合のみ処理する。
       // 複数回レイアウト更新された場合に、無駄に再配置するのを防ぐ.
       final.HandleUpdateLayout();
     } else if (msg.hwnd != m_hWnd) {  // 自分の子供ウィンドウのメッセージも見つけてしまうので、特別処理
-      PostMessage(MEW_ECHO_UPDATE);   // 最後にもう一度自分を通知して欲しい
+      PostMessage(MEW_ECHO_UPDATE);  // 最後にもう一度自分を通知して欲しい
     }
     return 0;
   }
@@ -367,14 +376,20 @@ class __declspec(novtable) WindowImpl : public Root<TImplements, TMixin>, public
     QueryGestureStruct* param = (QueryGestureStruct*)lParam;
     return final.HandleQueryGesture(param->ppGesture, param->ptScreen, param->length, param->gesture);
   }
-  LRESULT OnQueryDrop(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) { return final.HandleQueryDrop((IDropTarget**)wParam, lParam); }
+  LRESULT OnQueryDrop(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    return final.HandleQueryDrop((IDropTarget**)wParam, lParam);
+  }
   LRESULT OnSettingChange(UINT, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     Update();
     bHandled = false;
     return 0;
   }
-  LRESULT OnForwardMsg(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) { return __super::OnForwardMsg(this, uMsg, wParam, lParam, bHandled); }
-  LRESULT OnCopyData(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) { return __super::OnCopyData(this, uMsg, wParam, lParam, bHandled); }
+  LRESULT OnForwardMsg(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    return __super::OnForwardMsg(this, uMsg, wParam, lParam, bHandled);
+  }
+  LRESULT OnCopyData(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    return __super::OnCopyData(this, uMsg, wParam, lParam, bHandled);
+  }
 };
 
 //==============================================================================

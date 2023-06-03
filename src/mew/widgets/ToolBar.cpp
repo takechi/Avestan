@@ -20,7 +20,8 @@ namespace {
 const int ID_FIRST_ITEM = 100;
 const int BTNOFF = 1;  // なぜかツールバーの一つ目のボタンは動作がおかしいので、ダミーを追加する
 
-class __declspec(novtable) ToolBarBase : public CTypedToolBar<LPARAM, CToolBarCtrlT<WindowImplBase> >, public MenuProvider {
+class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CToolBarCtrlT<WindowImplBase> >,
+                                         public MenuProvider {
  protected:
   static const int ID_MSGMAP_PARENT = 2;
 
@@ -648,7 +649,7 @@ class ToolBarImpl : public WindowImpl<CWindowImplEx<TFinal, ToolBarBase>, implem
   }
   // bool SupportsEvent(EventCode code) const throw()
   //{
-  // if(__super::SupportsEvent(code)) 
+  // if(__super::SupportsEvent(code))
   //   return true;
   // switch(code) {
   //   default:

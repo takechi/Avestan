@@ -135,7 +135,7 @@ namespace mew {
 namespace ui {
 
 class ReBar
-    : public WallPaperImpl<WindowImpl<CWindowImplEx<ReBar, CReBar<CReBarCtrlT<WindowImplBase> > >,
+    : public WallPaperImpl<WindowImpl<CWindowImplEx<ReBar, WTLEX::CReBar<CReBarCtrlT<WindowImplBase> > >,
                                       implements<IList, IWindow, ISignal, IDisposable, IWallPaper, IPersistMessage> > > {
  private:
   static const int BAND_WIDTH_MIN = 0;

@@ -11,7 +11,7 @@
 
 #include "../server/main.hpp"  // もうぐちゃぐちゃ……
 
-//#define ENABLE_DEFAULT_KEYMAP
+// #define ENABLE_DEFAULT_KEYMAP
 
 using namespace mew::drawing;
 
@@ -94,9 +94,9 @@ class TabCtrlLook {
 namespace mew {
 namespace ui {
 
-class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, CTypedToolBar<HWND, CToolBarCtrlT<WindowImplBase> > >,
+class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<HWND, CToolBarCtrlT<WindowImplBase> > >,
                                    implements<ITabPanel, IList, IWindow, ISignal, IDisposable, IDropTarget> >,
-                 public CSplitter<TabPanel> {
+                 public WTLEX::CSplitter<TabPanel> {
  private:
   int m_SerialNumber;    ///< すべてのボタンが異なるコマンド値を持つために
   CWindowEx m_wndFocus;  ///< フォーカスを持っている子供ウィンドウ.

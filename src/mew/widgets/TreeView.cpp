@@ -22,7 +22,7 @@ const DWORD MEW_WS_EX_TREE = WS_EX_CLIENTEDGE;
 
 template <class TFinal, class TParam, class TList>
 class __declspec(novtable) TreeViewBase
-    : public WindowImpl<CTypedTreeImpl<TFinal, TParam*, CTreeViewCtrlT<WindowImplBase> >, TList> {
+    : public WindowImpl<WTLEX::CTypedTreeImpl<TFinal, TParam*, CTreeViewCtrlT<WindowImplBase> >, TList> {
  protected:
   using ParamType = TParam*;
   ref<TParam> m_root;

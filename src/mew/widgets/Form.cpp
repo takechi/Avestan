@@ -116,7 +116,7 @@ namespace ui {
 
 //==============================================================================
 
-class DockPanel : public DockBase<DockPanel, implements<IWindow, ISignal, IDisposable> >, public CSplitter<DockPanel> {
+class DockPanel : public DockBase<DockPanel, implements<IWindow, ISignal, IDisposable> >, public WTLEX::CSplitter<DockPanel> {
  public:
   void DoCreate(CWindowEx parent) { __super::DoCreate(parent); }
   Size GetBorder() const { return m_Border; }

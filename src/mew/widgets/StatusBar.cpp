@@ -6,7 +6,7 @@
 #include "impl/WTLControls.hpp"
 
 namespace {
-using StatusBarBase = CStatusBar<CStatusBarCtrlT<WindowImplBase> >;
+using StatusBarBase = WTLEX::CStatusBar<CStatusBarCtrlT<WindowImplBase> >;
 }
 
 //==============================================================================
