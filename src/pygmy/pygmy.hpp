@@ -8,7 +8,6 @@
 // #define Py_DEBUG
 // #endif
 #include <Python.h>
-#if PY_MAJOR_VERSION >= 3
 #define PyInt_FromLong PyLong_FromLong
 #define PyNumber_Int PyNumber_Long
 #define PyInt_AS_LONG PyLong_AsLong
@@ -19,7 +18,7 @@
 #define PyString_GET_SIZE PyBytes_Size
 #define PyNumber_InPlaceDivide PyNumber_InPlaceTrueDivide
 #define PyNumber_Divide PyNumber_TrueDivide
-#endif
+
 #pragma pop_macro("_DEBUG")
 
 #include "mew.hpp"
@@ -610,12 +609,8 @@ class Module : public Object {
   }
   Module() {}
   Module(const char* name, PyMethodDef methods[], const char* doc) {
-#if PY_MAJOR_VERSION >= 3
     static struct PyModuleDef moduleDef = {PyModuleDef_HEAD_INIT, name, NULL, -1, methods};
     assign(PyModule_Create(&moduleDef));
-#else
-    assign(Py_InitModule3(const_cast<char*>(name), methods, const_cast<char*>(doc)));
-#endif
   }
   Object operator[](const char* name) const {
     if (!m_self) return null;

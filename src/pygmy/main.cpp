@@ -319,7 +319,6 @@ extern "C" __declspec(dllexport) void APIENTRY initpygmy() {
   module.add("REPLACE", NaviReplace);
 }
 
-#if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef moduledef = {PyModuleDef_HEAD_INIT, "pygmy", NULL, -1, pygmy_functions, NULL, NULL, NULL, NULL};
 
 PyMODINIT_FUNC PyInit_pygmy() {
@@ -346,5 +345,3 @@ PyMODINIT_FUNC PyInit_pygmy() {
   module.add("REPLACE", NaviReplace);
   return module;
 }
-
-#endif
