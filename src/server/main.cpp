@@ -208,7 +208,7 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
     // Python
     if (m_booleans[BoolPython]) {
       // チェックのためのロード
-      if (HINSTANCE hPython = LoadLibrary(_T("python39"))) {
+      if (HINSTANCE hPython = LoadLibrary(_T("python311"))) {
         thePygmy = LoadLibrary(_T("pygmy.pyd"));
         if (thePygmy) {
           m_callback.create(__uuidof(PythonCallback));
@@ -218,7 +218,7 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
       }
       if (!m_callback) {
         PCTSTR errormsg =
-            _T("python39.dll または pygmy.pyd ")
+            _T("python311.dll または pygmy.pyd ")
             _T("が見つからないため、スクリプト拡張が\n")
             _T("使用できません。\n")
             _T("スクリプト拡張を使うためには、python ")
