@@ -4,9 +4,9 @@
 
 #pragma push_macro("_DEBUG")
 #undef _DEBUG
-//#ifdef _DEBUG
-//#define Py_DEBUG
-//#endif
+// #ifdef _DEBUG
+// #define Py_DEBUG
+// #endif
 #include <Python.h>
 #if PY_MAJOR_VERSION >= 3
 #define PyInt_FromLong PyLong_FromLong
@@ -637,7 +637,7 @@ class Module : public Object {
   /// __name__.
   const char* name() const { return PyModule_GetName(m_self); }
   /// __file__.
-  const char* file() const { return PyModule_GetFilename(m_self); }
+  const char* file() const { return PyString_AS_STRING(PyModule_GetFilenameObject(m_self)); }
   ///
   bool add(const char* name, PyObject* object) {
     if (PyModule_AddObject(m_self, const_cast<char*>(name), object) == -1) return false;
