@@ -127,7 +127,7 @@ struct StringTraits<wchar_t> {
       return NULL;
   }
   static const wchar_t* str(PyObject* obj) { return obj ? reinterpret_cast<wchar_t*>(PyUnicode_2BYTE_DATA(obj)) : NULL; }
-  static size_t length(PyObject* obj) { return obj ? PyUnicode_GET_SIZE(obj) : 0; }
+  static size_t length(PyObject* obj) { return obj ? PyUnicode_GET_LENGTH(obj) : 0; }
   static bool empty(PyObject* obj) { return length(obj) == 0; }
 };
 
