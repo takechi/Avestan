@@ -118,7 +118,7 @@ target_compile_definitions(pygmy PRIVATE
   -D_UNICODE
   )
   
-find_package (Python COMPONENTS Development)
+find_package (Python 3.11 COMPONENTS Development)
 if(Python_FOUND)
   target_include_directories(pygmy PRIVATE
     ${Python_INCLUDE_DIRS}

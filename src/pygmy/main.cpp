@@ -230,14 +230,14 @@ static PyObject* GetDriveLetter(PyObject* self, PyObject* args) {
   if (PWSTR wcs = ParseTupleForStringW(args)) {
     WCHAR buffer[MAX_PATH];
     ave::GetDriveLetter(wcs, buffer);
-    return PyUnicode_FromUnicode(buffer, wcslen(buffer));
+    return PyUnicode_FromWideChar(buffer, wcslen(buffer));
   }
   // é∏îsÇµÇΩÇÃÇ≈ÅAstringÇ≈éÊìæÇµÇƒÇ›ÇÈ
   PyErr_Clear();
   if (PCSTR str = ParseTupleForStringA(args)) {
     WCHAR buffer[MAX_PATH];
     ave::GetDriveLetter(ATL::CA2W(str), buffer);
-    return PyUnicode_FromUnicode(buffer, wcslen(buffer));
+    return PyUnicode_FromWideChar(buffer, wcslen(buffer));
   }
   // ÇæÇﬂÇ€ÅB
   return Py_None;

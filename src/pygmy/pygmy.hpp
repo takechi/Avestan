@@ -106,13 +106,13 @@ struct StringTraits<char> {
 };
 template <>
 struct StringTraits<wchar_t> {
-  static PyObject* create(const wchar_t* value) { return PyUnicode_FromUnicode(value, value ? (int)wcslen(value) : 0); }
-  static PyObject* create(const wchar_t* value, size_t length) { return PyUnicode_FromUnicode(value, (int)length); }
+  static PyObject* create(const wchar_t* value) { return PyUnicode_FromWideChar(value, value ? (int)wcslen(value) : 0); }
+  static PyObject* create(const wchar_t* value, size_t length) { return PyUnicode_FromWideChar(value, (int)length); }
   static PyObject* format(const wchar_t* fmt, va_list args) {
     const size_t buflen = 1024;
     wchar_t buffer[buflen];
     int len = _vsnwprintf(buffer, buflen, fmt, args);
-    return PyUnicode_FromUnicode(buffer, len);
+    return PyUnicode_FromWideChar(buffer, len);
   }
   static PyObject* from(PyObject* obj) {
     if (!obj)
