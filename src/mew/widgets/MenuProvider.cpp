@@ -10,8 +10,6 @@
 using namespace mew::drawing;
 
 namespace {
-using namespace WTL;
-
 const UINT ID_DEFAULT_MENU_ITEM = 0x0FFF;
 static WORD ID_MENU_COMMAND = 0x1000;
 inline static WORD GetNextMenuID() {

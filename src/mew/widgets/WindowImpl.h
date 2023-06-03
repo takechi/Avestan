@@ -9,11 +9,6 @@
 #include "WindowExtension.h"
 #include "thread.hpp"
 
-namespace ATL {}
-using namespace ATL;
-namespace WTL {}
-using namespace WTL;
-
 #pragma warning(disable : 4065)
 
 const UINT WS_CONTROL = WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
