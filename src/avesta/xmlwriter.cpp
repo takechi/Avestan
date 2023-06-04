@@ -4,21 +4,18 @@
 #include "../mew/private.h"
 #include "xml.hpp"
 
-using namespace mew;
-using namespace mew::xml;
-
-Stream& operator<<(Stream& stream, const char* v) {
+mew::Stream& operator<<(mew::Stream& stream, const char* v) {
   stream.write(v, strlen(v));
   return stream;
 }
 
-Stream& operator<<(Stream& stream, const wchar_t* v) {
+mew::Stream& operator<<(mew::Stream& stream, const wchar_t* v) {
   ATL::CW2A w(v);
   stream.write(w, strlen(w));
   return stream;
 }
 
-Stream& operator<<(Stream& stream, char c) {
+mew::Stream& operator<<(mew::Stream& stream, char c) {
   stream.write(&c, 1);
   return stream;
 }
@@ -130,7 +127,7 @@ class XMLWriter : public Root<implements<IXMLWriter> > {
   }
 };
 
+AVESTA_EXPORT(XMLWriter)
+
 }  // namespace xml
 }  // namespace mew
-
-AVESTA_EXPORT(XMLWriter)

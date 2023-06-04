@@ -3,10 +3,8 @@
 #include "stdafx.h"
 #include "../server/main.hpp"
 
-using namespace avesta;
-
 namespace {
-class NameDlg : public Dialog {
+class NameDlg : public avesta::Dialog {
  public:
   mew::string m_path;
   TCHAR m_name[MAX_PATH];

@@ -4,10 +4,6 @@
 #include "../private.h"
 #include "widgets.hpp"
 
-using namespace mew::ui;
-
-//==============================================================================
-
 namespace mew {
 namespace ui {
 
@@ -67,7 +63,7 @@ class DefaultTreeItem : public Root<implements<ITreeItem, IEditableTreeItem> > {
   }
 };
 
+AVESTA_EXPORT(DefaultTreeItem)
+
 }  // namespace ui
 }  // namespace mew
-
-AVESTA_EXPORT(DefaultTreeItem)

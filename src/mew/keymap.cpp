@@ -5,11 +5,6 @@
 #include "object.hpp"
 #include "std/array_map.hpp"
 
-using namespace mew;
-using namespace mew::ui;
-
-//==============================================================================
-
 namespace mew {
 namespace ui {
 
@@ -28,7 +23,9 @@ class KeymapTable : public Root<implements<IKeymapTable, IKeymap> > {
   HRESULT OnKeyDown(IWindow* window, UINT16 modifiers, UINT8 vkey) {
     ref<ICommand> command;
     HRESULT hr;
-    if FAILED (hr = GetBind(modifiers, vkey, &command)) return hr;
+    if FAILED (hr = GetBind(modifiers, vkey, &command)) {
+      return hr;
+    }
     command->Invoke();
     return S_OK;
   }
@@ -36,30 +33,38 @@ class KeymapTable : public Root<implements<IKeymapTable, IKeymap> > {
  public:  // IKeymapTable
   size_t get_Count() { return m_Binds.size(); }
   HRESULT GetBind(size_t index, UINT16* modifiers, UINT8* vkey, REFINTF pp) {
-    if (index >= m_Binds.size()) return E_INVALIDARG;
+    if (index >= m_Binds.size()) {
+      return E_INVALIDARG;
+    }
     Binds::const_iterator i = m_Binds.at(index);
-    if (modifiers) *modifiers = HIWORD(i->first);
-    if (vkey) *vkey = (UINT8)LOWORD(i->first);
+    if (modifiers) {
+      *modifiers = HIWORD(i->first);
+    }
+    if (vkey) {
+      *vkey = (UINT8)LOWORD(i->first);
+    }
     return (pp.pp) ? i->second->QueryInterface(pp) : S_OK;
   }
   HRESULT GetBind(UINT16 modifiers, UINT8 vkey, REFINTF ppCommand) {
     DWORD key = MakeKey(modifiers, vkey);
     Binds::const_iterator i = m_Binds.find(key);
-    if (i == m_Binds.end()) return E_FAIL;
+    if (i == m_Binds.end()) {
+      return E_FAIL;
+    }
     return i->second.copyto(ppCommand);
   }
   HRESULT SetBind(UINT16 modifiers, UINT8 vkey, ICommand* pCommand) {
     DWORD key = MakeKey(modifiers, vkey);
-    if (!pCommand)
+    if (!pCommand) {
       return m_Binds.erase(key) > 0 ? S_OK : E_FAIL;
-    else {
+    } else {
       m_Binds[key] = pCommand;
       return S_OK;
     }
   }
 };
 
+AVESTA_EXPORT(KeymapTable)
+
 }  // namespace ui
 }  // namespace mew
-
-AVESTA_EXPORT(KeymapTable)

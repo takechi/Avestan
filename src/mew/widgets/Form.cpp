@@ -9,10 +9,7 @@
 #include "shell.hpp"
 #include "drawing.hpp"
 
-using namespace mew::drawing;
 static bool ProcessMouseGesture(HWND hwnd, const MSG* msg);
-
-//==============================================================================
 
 namespace {
 template <class TFinal, class TList>
@@ -790,10 +787,11 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
               default:
                 TRESPASS();
             }
-            if (first)
+            if (first) {
               first = false;
-            else
+            } else {
               stream.write(L"\r\n", 2 * sizeof(WCHAR));
+            }
             stream.write(start, len * sizeof(WCHAR));
           }
           stream.write(L"\0", sizeof(WCHAR));

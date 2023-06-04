@@ -8,8 +8,6 @@
 
 #include "../mew/widgets/MenuProvider.hpp"
 
-using namespace mew::algorithm;
-
 namespace {
 // item
 const PCWSTR ITEM_NODE = L"menu";

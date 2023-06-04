@@ -7,13 +7,9 @@
 #include "widgets.client.hpp"
 #include "thread.hpp"
 
-using namespace mew::ui;
-
-//==============================================================================
-
 template <>
-struct mew::Event<EventOtherFocus> {
-  static void event(mew::message& msg, IDisplay* from, HWND hwnd) {
+struct mew::Event<mew::ui::EventOtherFocus> {
+  static void event(mew::message& msg, mew::ui::IDisplay* from, HWND hwnd) {
     msg["from"] = from;
     msg["hwnd"] = (INT_PTR)hwnd;
   }
@@ -32,23 +28,41 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
    private:
     static UINT ToMOD(UINT mods) {
       UINT ret = 0;
-      if (mods & ModifierControl) ret |= MOD_CONTROL;
-      if (mods & ModifierShift) ret |= MOD_SHIFT;
-      if (mods & ModifierAlt) ret |= MOD_ALT;
-      if (mods & ModifierWindows) ret |= MOD_WIN;
+      if (mods & ModifierControl) {
+        ret |= MOD_CONTROL;
+      }
+      if (mods & ModifierShift) {
+        ret |= MOD_SHIFT;
+      }
+      if (mods & ModifierAlt) {
+        ret |= MOD_ALT;
+      }
+      if (mods & ModifierWindows) {
+        ret |= MOD_WIN;
+      }
       return ret;
     }
     static UINT16 FromMOD(UINT mods) {
       UINT16 ret = 0;
-      if (mods & MOD_CONTROL) ret |= ModifierControl;
-      if (mods & MOD_SHIFT) ret |= ModifierShift;
-      if (mods & MOD_ALT) ret |= ModifierAlt;
-      if (mods & MOD_WIN) ret |= ModifierWindows;
+      if (mods & MOD_CONTROL) {
+        ret |= ModifierControl;
+      }
+      if (mods & MOD_SHIFT) {
+        ret |= ModifierShift;
+      }
+      if (mods & MOD_ALT) {
+        ret |= ModifierAlt;
+      }
+      if (mods & MOD_WIN) {
+        ret |= ModifierWindows;
+      }
       return ret;
     }
 
    public:
-    bool ProcessKeymap(IWindow* self, LPARAM lParam) { return m_keymap && SUCCEEDED(m_keymap->OnKeyDown(self, FromMOD(LOWORD(lParam)), (UINT8)HIWORD(lParam))); }
+    bool ProcessKeymap(IWindow* self, LPARAM lParam) {
+      return m_keymap && SUCCEEDED(m_keymap->OnKeyDown(self, FromMOD(LOWORD(lParam)), (UINT8)HIWORD(lParam)));
+    }
     void Dispose() {
       if (m_keymap) {
         // ASSERT(m_hotkeys.size() == m_keymap->Count);
@@ -73,7 +87,9 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
       if (which == __uuidof(IKeymap)) {
         Dispose();
         m_keymap = cast(what);
-        if (!m_keymap) return E_INVALIDARG;
+        if (!m_keymap) {
+          return E_INVALIDARG;
+        }
 
         size_t count = m_keymap->Count;
         TCHAR module[MAX_PATH];
@@ -111,15 +127,20 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
     size_t GetDepth() const throw() { return m_stack.size(); }
     void Push(HWND hwndMenu) throw() { m_stack.push_back(hwndMenu); }
     void Pop(HWND hwndMenu) throw() {
-      if (!m_stack.empty() && m_stack.back() == hwndMenu) m_stack.pop_back();
+      if (!m_stack.empty() && m_stack.back() == hwndMenu) {
+        m_stack.pop_back();
+      }
     }
     CWindowEx GetAt(int index) const throw() {
-      if (m_stack.empty()) return NULL;
+      if (m_stack.empty()) {
+        return NULL;
+      }
       size_t i = (size_t)index;
-      if (i >= m_stack.size())
+      if (i >= m_stack.size()) {
         return m_stack.back();
-      else
+      } else {
         return m_stack[i];
+      }
     }
   };
 
@@ -131,7 +152,9 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
 
     HookHandler(void* s, WNDPROCEX w) : self(s), wndproc(w) {}
 
-    friend bool operator==(const HookHandler& lhs, const HookHandler& rhs) { return lhs.self == rhs.self && lhs.wndproc == rhs.wndproc; }
+    friend bool operator==(const HookHandler& lhs, const HookHandler& rhs) {
+      return lhs.self == rhs.self && lhs.wndproc == rhs.wndproc;
+    }
   };
 
   using MenuStack = std::list<MenuData>;
@@ -204,16 +227,22 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
     return ret;
   }
   size_t GetMenuDepth() throw() {
-    if (m_menuStack.empty()) return 0;
+    if (m_menuStack.empty()) {
+      return 0;
+    }
     return m_menuStack.back().GetDepth();
   }
   HWND GetMenu(int index = -1) throw() {
-    if (m_menuStack.empty()) return 0;
+    if (m_menuStack.empty()) {
+      return 0;
+    }
     return m_menuStack.back().GetAt(index);
   }
   void RegisterMessageHook(void* self, WNDPROCEX wndproc) {
     ASSERT(wndproc);
-    if (wndproc) m_hooks.push_back(HookHandler(self, wndproc));
+    if (wndproc) {
+      m_hooks.push_back(HookHandler(self, wndproc));
+    }
   }
   void UnregisterMessageHook(void* self, WNDPROCEX wndproc) { m_hooks.remove(HookHandler(self, wndproc)); }
 
@@ -227,7 +256,9 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
  private:  // CBT hook thunk.
   static LRESULT CALLBACK HookCBT(int nCode, WPARAM wParam, LPARAM lParam) {
     Display* self = static_cast<Display*>(ui::GetThread());
-    if (!self) return 0;
+    if (!self) {
+      return 0;
+    }
     HHOOK hHookNext = self->m_hHookCBT;
     self->OnHookCBT(nCode, wParam, lParam);
     return CallNextHookEx(hHookNext, nCode, wParam, lParam);
@@ -235,10 +266,14 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
   void OnHookCBT(int nCode, WPARAM wParam, LPARAM lParam) {
     switch (nCode) {
       case HCBT_CREATEWND:
-        if (!m_menuStack.empty() && afx::IsMenu((HWND)wParam)) m_menuStack.back().Push((HWND)wParam);
+        if (!m_menuStack.empty() && afx::IsMenu((HWND)wParam)) {
+          m_menuStack.back().Push((HWND)wParam);
+        }
         break;
       case HCBT_DESTROYWND:
-        if (!m_menuStack.empty() && afx::IsMenu((HWND)wParam)) m_menuStack.back().Pop((HWND)wParam);
+        if (!m_menuStack.empty() && afx::IsMenu((HWND)wParam)) {
+          m_menuStack.back().Pop((HWND)wParam);
+        }
         break;
       case HCBT_SETFOCUS:
         OnHookCBT_SetFocus((HWND)wParam);
@@ -252,7 +287,9 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
     }
   }
   void OnHookCBT_SetFocus(HWND hwnd) {
-    if (!m_msgr || !hwnd) return;
+    if (!m_msgr || !hwnd) {
+      return;
+    }
     DWORD pid = ::GetCurrentProcessId();
     DWORD tid = ::GetCurrentThreadId();
     DWORD t, p;
@@ -265,7 +302,9 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
  private:  // MSG hook thunk.
   static LRESULT CALLBACK HookMSG(int nCode, WPARAM wParam, LPARAM lParam) {
     Display* self = static_cast<Display*>(ui::GetThread());
-    if (!self) return 0;
+    if (!self) {
+      return 0;
+    }
     HHOOK hHookNext = self->m_hHookMSG;
     MSG* msg = (MSG*)lParam;
     if (nCode == HC_ACTION && wParam == PM_REMOVE) {
@@ -337,7 +376,9 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
     }
   }
   bool OnHookMSG(MSG& msg) {
-    if (m_quitRequested) return false;
+    if (m_quitRequested) {
+      return false;
+    }
     // CommandBar
     switch (msg.message) {
       case WM_MOUSEMOVE:
@@ -369,10 +410,11 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
     // WM_MOUSEWHEELのマウス位置はスクリーン座標系なので、修正する必要なし.
     POINT pt = {GET_XY_LPARAM(msg.lParam)};
     HWND hWnd = ::WindowFromPoint(pt);
-    if (hWnd && ::GetWindowThreadProcessId(hWnd, NULL) == ::GetCurrentThreadId() && IsWindowEnabled(hWnd))
+    if (hWnd && ::GetWindowThreadProcessId(hWnd, NULL) == ::GetCurrentThreadId() && IsWindowEnabled(hWnd)) {
       m_wndLastWheel = msg.hwnd = hWnd;
-    else if (m_wndLastWheel)
+    } else if (m_wndLastWheel) {
       msg.hwnd = m_wndLastWheel;
+    }
   }
   /// ユーザ入力系のメッセージを転送する.
   bool ForwardMessage(MSG& msg) const {
@@ -395,7 +437,6 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
 
  public:  // IWindow
   HRESULT Send(message msg) {
-    using namespace mew::ui;
     switch (msg.code) {
       case CommandClose:
         this->Close();
@@ -412,12 +453,20 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
     if (sync) {
       PostMessage(0, WM_UPDATEUISTATE, 0, 0);
       while (true) {
-        if (!afx::PumpMessage()) OnQuitRequested();
-        if (m_quitRequested) break;
-        if (!UpdateUIStateIfNeeded()) WaitMessage();
+        if (!afx::PumpMessage()) {
+          OnQuitRequested();
+        }
+        if (m_quitRequested) {
+          break;
+        }
+        if (!UpdateUIStateIfNeeded()) {
+          WaitMessage();
+        }
       }
     } else {
-      if (!afx::PumpMessage()) OnQuitRequested();
+      if (!afx::PumpMessage()) {
+        OnQuitRequested();
+      }
     }
   }
   void Close(bool sync = false) {
@@ -432,13 +481,13 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
 
 Display* Display::theDisplay;
 
-}  // namespace ui
-}  // namespace mew
-
 AVESTA_EXPORT(Display)
 
-IDisplay* mew::ui::GetThread(DWORD dwThreadID) {
+IDisplay* GetThread(DWORD dwThreadID) {
   ASSERT(Display::theDisplay);
   // TODO: Get Display from TLS
   return Display::theDisplay;
 }
+
+}  // namespace ui
+}  // namespace mew

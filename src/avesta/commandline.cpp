@@ -4,8 +4,6 @@
 #include "avesta.hpp"
 #include "object.hpp"
 
-using namespace avesta;
-
 //==============================================================================
 
 namespace {
@@ -97,9 +95,11 @@ class CommandLine : public mew::Root<mew::implements<avesta::ICommandLine> > {
 
 //==============================================================================
 
-mew::ref<ICommandLine> avesta::ParseCommandLine(PCWSTR args) {
+namespace avesta{
+mew::ref<ICommandLine> ParseCommandLine(PCWSTR args) {
   if (mew::str::empty(args)) {
     return mew::null;
   }
   return mew::objnew<CommandLine>(args);
+}
 }

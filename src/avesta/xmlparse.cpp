@@ -4,9 +4,8 @@
 #include "../server/main.hpp"
 #include "std/algorithm.hpp"
 
-using namespace mew::algorithm;
-
 namespace {
+
 const PCWSTR ATTR_MODIFIER = L"modifier";
 const PCWSTR ATTR_TEXT = L"text";
 const PCWSTR ATTR_IMAGE = L"image";
@@ -79,7 +78,7 @@ UINT8 avesta::XmlAttrKey(mew::xml::XMLAttributes& attr) {
   if (mew::string key = attr[ATTR_KEY]) {
     const VirtualKey* begin = VIRTUALKEYS;
     const VirtualKey* end = begin + lengthof(VIRTUALKEYS);
-    const VirtualKey* found = binary_search(begin, end, key.str());
+    const VirtualKey* found = mew::algorithm::binary_search(begin, end, key.str());
     return (found == end) ? 0 : found->vkey;
   }
   return 0;
@@ -170,7 +169,7 @@ static const struct NameToCLSID {
 REFCLSID avesta::ToCLSID(const mew::string& value) {
   const NameToCLSID* begin = CLSIDs;
   const NameToCLSID* end = begin + lengthof(CLSIDs);
-  const NameToCLSID* found = binary_search(begin, end, value);
+  const NameToCLSID* found = mew::algorithm::binary_search(begin, end, value);
   return (found == end) ? GUID_NULL : found->clsid;
 }
 

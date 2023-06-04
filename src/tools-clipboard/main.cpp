@@ -3,29 +3,30 @@
 #include "stdafx.h"
 #include "std/str.hpp"
 
-using namespace mew;
-
-//==============================================================================
-
 namespace {
+
 inline PWSTR ParseTupleForSingleUnicode(PyObject* args) {
   PWSTR wcs = NULL;
-  if (PyArg_ParseTuple(args, "u", &wcs))
+  if (PyArg_ParseTuple(args, "u", &wcs)) {
     return wcs;
-  else
+  } else {
     return NULL;
+  }
 }
 
 inline PSTR ParseTupleForSingleString(PyObject* args) {
   PSTR str = NULL;
-  if (PyArg_ParseTuple(args, "s", &str))
+  if (PyArg_ParseTuple(args, "s", &str)) {
     return str;
-  else
+  } else {
     return NULL;
+  }
 }
 
 inline bool SetClipboard(HGLOBAL hMem, int format) {
-  if (!::OpenClipboard(NULL)) return false;
+  if (!::OpenClipboard(NULL)) {
+    return false;
+  }
   ::EmptyClipboard();
   ::SetClipboardData(format, hMem);
   ::CloseClipboard();
@@ -45,7 +46,7 @@ struct CF<wchar_t> {
 
 template <typename Ch>
 static void CopyTextToClipboard(const Ch* text) {
-  size_t len = str::length(text);
+  size_t len = mew::str::length(text);
   size_t sz = sizeof(Ch) * (len + 1);
   HGLOBAL hGlobal = ::GlobalAlloc(GMEM_MOVEABLE, sz);
   void* p = ::GlobalLock(hGlobal);
@@ -71,15 +72,19 @@ static PyObject* copy(PyObject* self, PyObject* args) {
 }
 
 static PyObject* paste(PyObject* self, PyObject* args) {
-  if (!::OpenClipboard(NULL)) return NULL;
-  pygmy::StringW result;
+  if (!::OpenClipboard(NULL)) {
+    return NULL;
+  }
+  mew::pygmy::StringW result;
   if (HGLOBAL hText = ::GetClipboardData(CF_UNICODETEXT)) {
     PCWSTR data = (PCWSTR)::GlobalLock(hText);
-    result = pygmy::StringW(data);
+    result = mew::pygmy::StringW(data);
     ::GlobalUnlock(hText);
   }
   ::CloseClipboard();
-  if (result) return result.detach();
+  if (result) {
+    return result.detach();
+  }
   // ÇæÇﬂÇ€ÅB
   return NULL;
 }
@@ -87,4 +92,6 @@ static PyObject* paste(PyObject* self, PyObject* args) {
 static PyMethodDef functions[] = {{"copy", copy, METH_VARARGS}, {"paste", paste, METH_NOARGS}, {NULL, NULL}};
 }  // namespace
 
-extern "C" __declspec(dllexport) void APIENTRY initclipboard() { pygmy::Module module("clipboard", functions, "clipboard"); }
+extern "C" __declspec(dllexport) void APIENTRY initclipboard() {
+  mew::pygmy::Module module("clipboard", functions, "clipboard");
+}

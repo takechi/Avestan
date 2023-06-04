@@ -6,13 +6,10 @@
 #include "shell.hpp"
 #include "signal.hpp"
 
-using namespace mew::ui;
-using namespace mew::io;
-
 namespace {
 static mew::string STRING_EMPTY(_T("ÅiÇ»ÇµÅj"));
 
-class EmptyMenu : public mew::Root<mew::implements<ITreeItem>, mew::mixin<mew::StaticLife> > {
+class EmptyMenu : public mew::Root<mew::implements<mew::ui::ITreeItem>, mew::mixin<mew::StaticLife> > {
  public:  // ITreeItem
   mew::string get_Name() { return STRING_EMPTY; }
   mew::ref<mew::ICommand> get_Command() { return mew::null; }
@@ -25,9 +22,9 @@ class EmptyMenu : public mew::Root<mew::implements<ITreeItem>, mew::mixin<mew::S
 
 static EmptyMenu theEmptyMenu;
 
-class ShellMenuBase : public mew::Root<mew::implements<IFolder, ITreeItem, mew::ICommand> > {
+class ShellMenuBase : public mew::Root<mew::implements<mew::io::IFolder, mew::ui::ITreeItem, mew::ICommand> > {
  private:
-  mew::ref<IEntry> m_pEntry;
+  mew::ref<mew::io::IEntry> m_pEntry;
   mew::ref<IUnknown> m_ArgForEntry;
 
  protected:
@@ -37,7 +34,7 @@ class ShellMenuBase : public mew::Root<mew::implements<IFolder, ITreeItem, mew::
 
  protected:
   ShellMenuBase() : m_Level(0) {}
-  void InitWithEntry(IEntry* entry) {
+  void InitWithEntry(mew::io::IEntry* entry) {
     ASSERT(!m_pEntry);
     ASSERT(!m_ArgForEntry);
     ASSERT(entry);
@@ -46,7 +43,7 @@ class ShellMenuBase : public mew::Root<mew::implements<IFolder, ITreeItem, mew::
   void InitWithArg(IUnknown* arg) {
     ASSERT(!m_pEntry);
     ASSERT(!m_ArgForEntry);
-    if (mew::ref<IEntry> entry = mew::cast(arg)) {  // arg is IEntry
+    if (mew::ref<mew::io::IEntry> entry = mew::cast(arg)) {  // arg is IEntry
       InitWithEntry(entry);
     } else if (arg) {  // some arg
       m_ArgForEntry = arg;
@@ -54,7 +51,7 @@ class ShellMenuBase : public mew::Root<mew::implements<IFolder, ITreeItem, mew::
       m_pEntry.create(__uuidof(mew::io::Entry));  // desktop;
     }
   }
-  virtual FolderMenu* GetRoot() const throw() = 0;
+  virtual mew::io::FolderMenu* GetRoot() const throw() = 0;
   virtual void InitSubMenu() {
     if (!m_Children.empty()) {
       return;
@@ -71,7 +68,7 @@ class ShellMenuBase : public mew::Root<mew::implements<IFolder, ITreeItem, mew::
   }
 
  public:  // IFolder
-  IEntry* get_Entry() {
+  mew::io::IEntry* get_Entry() {
     if (!m_pEntry && m_ArgForEntry) {
       try {
         mew::ref<IUnknown> arg = m_ArgForEntry;
@@ -87,7 +84,7 @@ class ShellMenuBase : public mew::Root<mew::implements<IFolder, ITreeItem, mew::
  public:  // ITreeItem
   mew::string get_Name() {
     if (!m_Name) {
-      if (IEntry* entry = get_Entry()) {
+      if (mew::io::IEntry* entry = get_Entry()) {
         mew::string name = entry->Name;
         PCTSTR namestr = name.str();
         if (afx::PathIsRegistory(namestr)) {
@@ -101,7 +98,7 @@ class ShellMenuBase : public mew::Root<mew::implements<IFolder, ITreeItem, mew::
   }
   mew::ref<mew::ICommand> get_Command() { return this; }
   int get_Image() {
-    if (IEntry* entry = get_Entry()) {
+    if (mew::io::IEntry* entry = get_Entry()) {
       return entry->Image;
     } else {
       return -2;
@@ -129,8 +126,8 @@ class ShellMenuBase : public mew::Root<mew::implements<IFolder, ITreeItem, mew::
 
  public:  // ICommand
   mew::string get_Description() {
-    if (IEntry* entry = get_Entry()) {
-      return entry->GetName(IEntry::PATH_OR_NAME);
+    if (mew::io::IEntry* entry = get_Entry()) {
+      return entry->GetName(mew::io::IEntry::PATH_OR_NAME);
     } else if (m_ArgForEntry) {
       mew::string s;
       ObjectToString(&s, m_ArgForEntry);
@@ -140,7 +137,7 @@ class ShellMenuBase : public mew::Root<mew::implements<IFolder, ITreeItem, mew::
     }
   }
   UINT32 QueryState(IUnknown* owner) {
-    if (IEntry* entry = get_Entry()) {
+    if (mew::io::IEntry* entry = get_Entry()) {
       if (entry->Exists()) {
         return mew::ENABLED;
       }
@@ -151,10 +148,10 @@ class ShellMenuBase : public mew::Root<mew::implements<IFolder, ITreeItem, mew::
 
 class SubMenu : public ShellMenuBase {
  private:
-  FolderMenu* m_pRoot;
+  mew::io::FolderMenu* m_pRoot;
 
  public:
-  SubMenu(IEntry* entry, FolderMenu* root, int depth) : m_pRoot(root) {
+  SubMenu(mew::io::IEntry* entry, mew::io::FolderMenu* root, int depth) : m_pRoot(root) {
     InitWithEntry(entry);
     m_Level = depth;
   }
@@ -166,7 +163,7 @@ class SubMenu : public ShellMenuBase {
   void set_IncludeFiles(bool value) { TRESPASS(); }
   int get_Depth();
   void set_Depth(int depth) { TRESPASS(); }
-  virtual FolderMenu* GetRoot() const throw() { return m_pRoot; }
+  virtual mew::io::FolderMenu* GetRoot() const throw() { return m_pRoot; }
 };
 }  // namespace
 
@@ -239,11 +236,11 @@ void ShellMenuBase::AddSubMenu() {
   if (!CheckDepth()) {
     return;
   }
-  if (IEntry* e = get_Entry()) {
+  if (mew::io::IEntry* e = get_Entry()) {
     CWaitCursor wait;
-    mew::ref<IEntry> entry;
+    mew::ref<mew::io::IEntry> entry;
     e->GetLinked(&entry);
-    for (mew::each<IEntry> i = entry->EnumChildren(GetRoot()->IncludeFiles); i.next();) {
+    for (mew::each<mew::io::IEntry> i = entry->EnumChildren(GetRoot()->IncludeFiles); i.next();) {
       SubMenu* sub = new SubMenu(i, GetRoot(), m_Level + 1);
       m_Children.push_back(sub);
       sub->Release();
@@ -254,7 +251,7 @@ void ShellMenuBase::AddSubMenu() {
   }
 }
 void ShellMenuBase::Invoke() {
-  if (IEntry* entry = get_Entry()) {
+  if (mew::io::IEntry* entry = get_Entry()) {
     if (mew::function fn = GetRoot()->GetMessenger()->Invoke(mew::EventInvoke)) {
       mew::message args;
       args["from"] = (ICommand*)this;
@@ -269,8 +266,8 @@ bool ShellMenuBase::CheckDepth() const {
 }
 bool ShellMenuBase::HasChildren() {
   if (CheckDepth()) {
-    if (IEntry* e = get_Entry()) {
-      mew::ref<IEntry> entry;
+    if (mew::io::IEntry* e = get_Entry()) {
+      mew::ref<mew::io::IEntry> entry;
       e->GetLinked(&entry);
       if (entry->IsFolder()) {  // is folder
         return m_Children.size() != 1 || !objcmp(m_Children[0], &theEmptyMenu);

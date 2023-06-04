@@ -7,10 +7,10 @@
 
 #pragma comment(lib, "version.lib")
 
-using namespace mew::io;
-
-//======================================================================
 // Version
+
+namespace mew {
+namespace io {
 
 Version::Version() : m_VersionInfo(null) {}
 Version::~Version() { Close(); }
@@ -49,6 +49,11 @@ PCTSTR Version::QueryValue(PCTSTR what) {
   TCHAR query[256];
   wsprintf(query, _T("\\StringFileInfo\\%04x%04x\\%s"), m_Language, m_CodePage, what);
   BOOL res = ::VerQueryValue(m_VersionInfo, query, (void**)&value, &size);
-  if (!res) return null;
+  if (!res) {
+    return null;
+  }
   return value;
 }
+
+}  // namespace io
+}  // namespace mew

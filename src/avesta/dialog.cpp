@@ -3,9 +3,7 @@
 #include "stdafx.h"
 #include "avesta.hpp"
 
-using namespace avesta;
-
-//==============================================================================
+namespace avesta {
 
 Dialog::Dialog() : m_hwndToolTip(NULL) {}
 
@@ -40,8 +38,6 @@ INT_PTR CALLBACK Dialog::DlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPar
   return FALSE;
 }
 
-//==============================================================================
-
 HWND Dialog::GetItem(UINT nID) const { return ::GetDlgItem(m_hwnd, nID); }
 
 int Dialog::GetText(UINT nID, PTSTR text, int nMaxCount) const { return ::GetDlgItemText(m_hwnd, nID, text, nMaxCount); }
@@ -68,3 +64,5 @@ void Dialog::SetTip(UINT nID, PCTSTR text) {
   ASSERT(::IsWindow(m_hwndToolTip));
   VERIFY(SendMessage(m_hwndToolTip, TTM_ADDTOOL, 0, (LPARAM)&tip));
 }
+
+}  // namespace avesta

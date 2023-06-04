@@ -6,10 +6,6 @@
 #include "std/buffer.hpp"
 #include "io.hpp"
 
-using namespace avesta;
-
-//================================================================================
-
 namespace {
 bool ChoiceBetter(LPTSTR bestfile, PCWSTR candidate) {
   bool better = false;
@@ -76,31 +72,8 @@ HRESULT FileNewNull(PCWSTR path) {
   ::CloseHandle(hFile);
   return S_OK;
 }
-}  // namespace
 
-HRESULT avesta::FileNew(PCWSTR path) {
-  PCWSTR ext = PathFindExtension(path);
-  if (*ext == _T('.')) {
-    TCHAR templates[MAX_PATH];
-    SHGetSpecialFolderPath(NULL, templates, CSIDL_TEMPLATES, FALSE);
-    PathAddBackslash(templates);
-    // まずは単純ShellNewエントリを参照する。
-    if SUCCEEDED (FileNewShell(path, ext, templates)) {
-      return S_OK;
-    }
-    // 次にCSIDL_TEMPLATESフォルダの同じ拡張子を捜す
-    if SUCCEEDED (FileNewTemplate(path, ext, templates)) {
-      return S_OK;
-    }
-  }
-  // テンプレートファイルが無い
-  return FileNewNull(path);
-}
-
-//==============================================================================
-
-namespace {
-HRESULT DoFileOperation(PCWSTR src, PCWSTR dst, WORD fo, FILEOP_FLAGS flags, HWND hwnd = GetForm()) {
+HRESULT DoFileOperation(PCWSTR src, PCWSTR dst, WORD fo, FILEOP_FLAGS flags, HWND hwnd = avesta::GetForm()) {
   SHFILEOPSTRUCT op = {hwnd};
   op.wFunc = fo;
   op.pFrom = src;
@@ -111,26 +84,7 @@ HRESULT DoFileOperation(PCWSTR src, PCWSTR dst, WORD fo, FILEOP_FLAGS flags, HWN
   }
   return op.fAnyOperationsAborted ? S_FALSE : S_OK;
 }
-}  // namespace
 
-HRESULT avesta::FileDup(PCWSTR src, PCWSTR dst) { return DoFileOperation(src, dst, FO_COPY, FOF_ALLOWUNDO); }
-
-HRESULT avesta::FileMove(PCWSTR src, PCWSTR dst) { return DoFileOperation(src, dst, FO_MOVE, FOF_ALLOWUNDO); }
-
-HRESULT avesta::FileDelete(PCWSTR src) { return DoFileOperation(src, nullptr, FO_DELETE, FOF_WANTNUKEWARNING | FOF_ALLOWUNDO); }
-
-HRESULT avesta::FileBury(PCWSTR src) { return DoFileOperation(src, nullptr, FO_DELETE, FOF_WANTNUKEWARNING); }
-
-HRESULT avesta::FileRename(PCWSTR src, PCWSTR dst) {
-  if (lstrcmp(src, dst) == 0) {  // 同じ名前なので変更する必要が無い
-    return true;
-  }
-  return DoFileOperation(src, dst, FO_RENAME, FOF_FILESONLY | FOF_ALLOWUNDO);
-}
-
-//================================================================================
-
-namespace {
 static bool IsCopy() {
   static const UINT CF_PREFERREDDROPEFFECT = RegisterClipboardFormat(CFSTR_PREFERREDDROPEFFECT);
   HGLOBAL hDropEffect = ::GetClipboardData(CF_PREFERREDDROPEFFECT);
@@ -166,7 +120,7 @@ HRESULT FileCutOrCopy(PCTSTR srcSingle, DWORD dwDropEffect) {
   GlobalUnlock(hDropEffect);
 
   // クリップボードにデーターをセット
-  HWND hwnd = GetForm();
+  HWND hwnd = avesta::GetForm();
   UINT CF_PREFERREDDROPEFFECT = RegisterClipboardFormat(CFSTR_PREFERREDDROPEFFECT);
   if (!::OpenClipboard(hwnd)) {
     ::GlobalFree(hDrop);
@@ -181,7 +135,43 @@ HRESULT FileCutOrCopy(PCTSTR srcSingle, DWORD dwDropEffect) {
 }
 }  // namespace
 
-HRESULT avesta::FilePaste(PCTSTR dst) {
+namespace avesta {
+
+HRESULT FileNew(PCWSTR path) {
+  PCWSTR ext = PathFindExtension(path);
+  if (*ext == _T('.')) {
+    TCHAR templates[MAX_PATH];
+    SHGetSpecialFolderPath(NULL, templates, CSIDL_TEMPLATES, FALSE);
+    PathAddBackslash(templates);
+    // まずは単純ShellNewエントリを参照する。
+    if SUCCEEDED (FileNewShell(path, ext, templates)) {
+      return S_OK;
+    }
+    // 次にCSIDL_TEMPLATESフォルダの同じ拡張子を捜す
+    if SUCCEEDED (FileNewTemplate(path, ext, templates)) {
+      return S_OK;
+    }
+  }
+  // テンプレートファイルが無い
+  return FileNewNull(path);
+}
+
+HRESULT FileDup(PCWSTR src, PCWSTR dst) { return DoFileOperation(src, dst, FO_COPY, FOF_ALLOWUNDO); }
+
+HRESULT FileMove(PCWSTR src, PCWSTR dst) { return DoFileOperation(src, dst, FO_MOVE, FOF_ALLOWUNDO); }
+
+HRESULT FileDelete(PCWSTR src) { return DoFileOperation(src, nullptr, FO_DELETE, FOF_WANTNUKEWARNING | FOF_ALLOWUNDO); }
+
+HRESULT FileBury(PCWSTR src) { return DoFileOperation(src, nullptr, FO_DELETE, FOF_WANTNUKEWARNING); }
+
+HRESULT FileRename(PCWSTR src, PCWSTR dst) {
+  if (lstrcmp(src, dst) == 0) {  // 同じ名前なので変更する必要が無い
+    return true;
+  }
+  return DoFileOperation(src, dst, FO_RENAME, FOF_FILESONLY | FOF_ALLOWUNDO);
+}
+
+HRESULT FilePaste(PCTSTR dst) {
   HWND hwnd = GetForm();
   if (::IsClipboardFormatAvailable(CF_HDROP) && ::PathIsDirectory(dst) && ::OpenClipboard(hwnd)) {
     if (HDROP hDrop = (HDROP)::GetClipboardData(CF_HDROP)) {
@@ -211,11 +201,11 @@ HRESULT avesta::FilePaste(PCTSTR dst) {
   return AtlHresultFromLastError();
 }
 
-HRESULT avesta::FileCut(PCWSTR src) { return FileCutOrCopy(src, DROPEFFECT_MOVE); }
+HRESULT FileCut(PCWSTR src) { return FileCutOrCopy(src, DROPEFFECT_MOVE); }
 
-HRESULT avesta::FileCopy(PCWSTR src) { return FileCutOrCopy(src, DROPEFFECT_COPY | DROPEFFECT_LINK); }
+HRESULT FileCopy(PCWSTR src) { return FileCutOrCopy(src, DROPEFFECT_COPY | DROPEFFECT_LINK); }
 
-//================================================================================
+}  // namespace avesta
 
 #ifdef AVESTA_PYTHON_INTERFACE
 

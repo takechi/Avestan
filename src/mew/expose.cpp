@@ -7,11 +7,6 @@
 #include "drawing.hpp"
 #include "std/vector.hpp"
 
-using namespace mew::ui;
-using namespace mew::drawing;
-
-//==============================================================================
-
 namespace mew {
 namespace ui {
 
@@ -51,9 +46,15 @@ class Expose : public Root<implements<IExpose> >, public CWindowImpl<Expose, CWi
 
  private:
   void ReCreateBitmap(CWindowEx parent, RECT* prcWindow) {
-    if (m_bmpActive) m_bmpActive.DeleteObject();
-    if (m_bmpInactive) m_bmpInactive.DeleteObject();
-    if (m_bmpBack) m_bmpBack.DeleteObject();
+    if (m_bmpActive) {
+      m_bmpActive.DeleteObject();
+    }
+    if (m_bmpInactive) {
+      m_bmpInactive.DeleteObject();
+    }
+    if (m_bmpBack) {
+      m_bmpBack.DeleteObject();
+    }
 
     Rect rcClient;
     parent.GetWindowRect(prcWindow);
@@ -112,14 +113,18 @@ class Expose : public Root<implements<IExpose> >, public CWindowImpl<Expose, CWi
       dwTransitionTime = 1000 * 10;
     }
 
-    if (m_Selected < 0) m_Selected = 0;
+    if (m_Selected < 0) {
+      m_Selected = 0;
+    }
 
     m_wndParent.Attach(hwndParent);
     RECT rcWindow;
     ReCreateBitmap(m_wndParent, &rcWindow);
     DWORD dwStyle = (m_wndParent.GetStyle()) & ~(WS_MAXIMIZE | WS_MAXIMIZEBOX | WS_MINIMIZEBOX);
     DWORD dwExStyle = m_wndParent.GetExStyle() & ~(WS_EX_LAYERED);
-    if (dwTransitionTime == 0) dwTransitionTime = 1;
+    if (dwTransitionTime == 0) {
+      dwTransitionTime = 1;
+    }
     m_Status = StatusLoop;
 
     m_Alpha = 0;
@@ -146,7 +151,9 @@ class Expose : public Root<implements<IExpose> >, public CWindowImpl<Expose, CWi
         ::TranslateMessage(&msg);
         ::DispatchMessage(&msg);
       }
-      if (m_Status != StatusLoop || !IsWindow()) break;
+      if (m_Status != StatusLoop || !IsWindow()) {
+        break;
+      }
       // fade-in
       if (m_Alpha != 255) {
         DWORD dwTime = GetTickCount();
@@ -162,22 +169,26 @@ class Expose : public Root<implements<IExpose> >, public CWindowImpl<Expose, CWi
       }
     }
     //
-    if (m_Status == StatusOK)
+    if (m_Status == StatusOK) {
       return GetCurrentID();
-    else
+    } else {
       return E_FAIL;
+    }
   }
   int GetComponentCount() const { return (int)m_Components.size(); }
   bool IsValidIndex(int index) const { return 0 <= index && index < GetComponentCount(); }
   int GetCurrentID() const {
-    if (!IsValidIndex(m_Selected))
+    if (!IsValidIndex(m_Selected)) {
       return -1;
-    else
+    } else {
       return m_Components[m_Selected].id;
+    }
   }
   int HitTest(int x, int y) const {
     for (int i = 0; i < GetComponentCount(); ++i) {
-      if (m_Components[i].bounds.contains(x, y)) return i;
+      if (m_Components[i].bounds.contains(x, y)) {
+        return i;
+      }
     }
     return -1;
   }
@@ -246,7 +257,9 @@ class Expose : public Root<implements<IExpose> >, public CWindowImpl<Expose, CWi
   }
   LRESULT OnClose(UINT uMsg, WPARAM, LPARAM, BOOL& bHandled) {
     // WM_CLOSE 中の GetParent() は失敗するらしい
-    if (m_wndParent.IsWindow()) m_wndParent.EnableWindow(true);
+    if (m_wndParent.IsWindow()) {
+      m_wndParent.EnableWindow(true);
+    }
     m_wndParent.Detach();
     bHandled = false;
     return 0;
@@ -283,28 +296,36 @@ class Expose : public Root<implements<IExpose> >, public CWindowImpl<Expose, CWi
         Invalidate();
       }
     }
-    if (!InClientArea(lParam) && 0 == (GET_KEYSTATE_WPARAM(wParam) & MouseButtonMask))
+    if (!InClientArea(lParam) && 0 == (GET_KEYSTATE_WPARAM(wParam) & MouseButtonMask)) {
       ReleaseCapture();
-    else if (GetCapture() != m_hWnd)
+    } else if (GetCapture() != m_hWnd) {
       SetCapture();
+    }
     return 0;
   }
   LRESULT OnLButtonUp(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-    if (GetCapture() != m_hWnd) return 0;
+    if (GetCapture() != m_hWnd) {
+      return 0;
+    }
     int index = HitTest(GET_XY_LPARAM(lParam));
     if (index >= 0) {
       m_Selected = index;
       ExitExpose(true);
     }
-    if (!InClientArea(lParam) && 0 == (GET_KEYSTATE_WPARAM(wParam) & MouseButtonMask)) ReleaseCapture();
+    if (!InClientArea(lParam) && 0 == (GET_KEYSTATE_WPARAM(wParam) & MouseButtonMask)) {
+      ReleaseCapture();
+    }
     return 0;
   }
   LRESULT OnRButtonUp(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-    if (GetCapture() != m_hWnd) return 0;
-    if (InClientArea(lParam))
+    if (GetCapture() != m_hWnd) {
+      return 0;
+    }
+    if (InClientArea(lParam)) {
       ExitExpose(false);
-    else if (0 == (GET_KEYSTATE_WPARAM(wParam) & MouseButtonMask))
+    } else if (0 == (GET_KEYSTATE_WPARAM(wParam) & MouseButtonMask)) {
       ReleaseCapture();
+    }
     return 0;
   }
   LRESULT OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
@@ -433,7 +454,7 @@ class Expose : public Root<implements<IExpose> >, public CWindowImpl<Expose, CWi
         } else {  // 同じIDだが、カーソル上ではない
           COLORREF colorWindow = GetSysColor(COLOR_WINDOW);
           pen.CreatePen(PS_SOLID, math::max(10, fontSizePixel / 10), colorWindow);
-          textColor = BlendRGB(GetSysColor(COLOR_BTNTEXT), colorWindow, 50);
+          textColor = mew::drawing::BlendRGB(GetSysColor(COLOR_BTNTEXT), colorWindow, 50);
         }
       } else {  // 非アクティブ
         pen.CreatePen(PS_SOLID, math::max(10, fontSizePixel / 10), GetSysColor(COLOR_BTNTEXT));
@@ -485,9 +506,7 @@ class Expose : public Root<implements<IExpose> >, public CWindowImpl<Expose, CWi
   }
 };
 
+AVESTA_EXPORT(Expose)
+
 }  // namespace ui
 }  // namespace mew
-
-//==============================================================================
-
-AVESTA_EXPORT(Expose)

@@ -8,8 +8,6 @@
 namespace mew {
 namespace ui {
 
-using namespace algorithm;
-
 class WallPaperDialog : public Root<implements<IWallPaperDialog> >, public CDialogImpl<WallPaperDialog> {
  private:
   HWND m_hParent;
@@ -81,10 +79,11 @@ class WallPaperDialog : public Root<implements<IWallPaperDialog> >, public CDial
   }
   Target& GetCurrentTarget() {
     size_t index = SendDlgItemMessage(IDC_WALL_TARGET, CB_GETCURSEL, 0, 0);
-    if (index < m_targets.size())
+    if (index < m_targets.size()) {
       return m_targets[index];
-    else
+    } else {
       return m_targets.front();
+    }
   }
 
   void AddToCombo(const Target& target) {
@@ -93,7 +92,7 @@ class WallPaperDialog : public Root<implements<IWallPaperDialog> >, public CDial
   LRESULT OnInitDialog(UINT, WPARAM, LPARAM, BOOL& bHandled) {
     bHandled = false;
     CenterWindow();
-    for_all(m_targets, mem_fun(this, &WallPaperDialog::AddToCombo));
+    algorithm::for_all(m_targets, algorithm::mem_fun(this, &WallPaperDialog::AddToCombo));
     m_LastSel = 0;
     SendDlgItemMessage(IDC_WALL_TARGET, CB_SETCURSEL, 0, 0);
     UpdateControls();
@@ -125,7 +124,7 @@ class WallPaperDialog : public Root<implements<IWallPaperDialog> >, public CDial
   void DoApply() {
     Target& target = GetCurrentTarget();
     UpdateTarget(target);
-    for_all(m_targets, Apply);
+    algorithm::for_all(m_targets, Apply);
   }
   LRESULT OnCancel(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL&) {
     EndDialog(IDCANCEL);
@@ -167,7 +166,9 @@ class WallPaperDialog : public Root<implements<IWallPaperDialog> >, public CDial
   }
 
   HRESULT AddTarget(IWallPaper* p, string name) {
-    if (!p) return E_INVALIDARG;
+    if (!p) {
+      return E_INVALIDARG;
+    }
     Target target;
     target.object = p;
     target.name = name;
@@ -179,7 +180,9 @@ class WallPaperDialog : public Root<implements<IWallPaperDialog> >, public CDial
   void RemoveAll() { m_targets.clear(); }
   HRESULT Go() {
     ref<IUnknown> addref(this);
-    if (m_targets.empty()) return E_UNEXPECTED;
+    if (m_targets.empty()) {
+      return E_UNEXPECTED;
+    }
     return DoModal(m_hParent) == IDOK ? S_OK : S_FALSE;
   }
 };

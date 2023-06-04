@@ -47,8 +47,6 @@ struct Event<mew::ui::EventStatusText> {
 namespace mew {
 namespace ui {
 
-using namespace io;
-
 class ShellListView
     : public WindowImpl<CWindowImplEx<ShellListView, Shell>, implements<IShellListView, IListView, IList, IWindow, ISignal,
                                                                         IDisposable, IGesture, IWallPaper, IDropTarget> >,
@@ -56,11 +54,15 @@ class ShellListView
  public:
   void QueryMouseGesture(IGesture** pp, Point ptScreen, size_t length, const Gesture gesture[]) {
     // アイテム上でなければジェスチャを受け入れる
-    if (!__super::HandleQueryGesture(pp, ptScreen, length, gesture)) QueryInterface(pp);
+    if (!__super::HandleQueryGesture(pp, ptScreen, length, gesture)) {
+      QueryInterface(pp);
+    }
   }
   bool HandleQueryGesture(IGesture** pp, Point ptScreen, size_t length, const Gesture gesture[]) {
     ListCtrl list = this->ListView;
-    if (!list) return true;  // no list => no gesture
+    if (!list) {
+      return true;  // no list => no gesture
+    }
     switch (gesture[0]) {
       case GestureButtonLeft:
       case GestureButtonRight:
@@ -78,18 +80,24 @@ class ShellListView
     // アイテム上なら無効
     LVHITTESTINFO hit = {ptScreen, 0, -1, 0};
     list.ScreenToClient(&hit.pt);
-    if (list.HitTest(&hit) >= 0 && (hit.flags & (LVHT_ONITEMICON | LVHT_ONITEMLABEL))) return true;  // on item => no gesture
+    if (list.HitTest(&hit) >= 0 && (hit.flags & (LVHT_ONITEMICON | LVHT_ONITEMLABEL))) {
+      return true;  // on item => no gesture
+    }
     if (gesture[0] == GestureButtonLeft) {
       HeaderCtrl header = list.GetHeader();
       if (header && header.IsWindowVisible()) {
-        if (afx::GetClientArea(header).contains(hit.pt.x, hit.pt.y)) return true;  // on header
+        if (afx::GetClientArea(header).contains(hit.pt.x, hit.pt.y)) {
+          return true;  // on header
+        }
         if (!theAvesta->GestureOnName) {
           RECT rcName, rcHeader, rcView;
           header.GetItemRect(0, &rcName);
           header.GetWindowRect(&rcHeader);
           ShellView.GetWindowRect(&rcView);
           hit.pt.x += rcView.left - rcHeader.left;
-          if (rcName.left < hit.pt.x && hit.pt.x < rcName.right) return true;  // on name column
+          if (rcName.left < hit.pt.x && hit.pt.x < rcName.right) {
+            return true;  // on name column
+          }
         }
       }
     }
@@ -147,7 +155,9 @@ class ShellListView
     ShellListView() : m_ComboBox(NULL, this, 1), m_EditBox(NULL, this, 2), m_EditBoxAutoComplete(false) {}
     void DoCreate(CWindowEx parent) { __super::DoCreate(parent); }
     bool SupportsEvent(EventCode code) const throw() {
-      if (__super::SupportsEvent(code)) return true;
+      if (__super::SupportsEvent(code)) {
+        return true;
+      }
       switch (code) {
         // case EventListViewExecute:
         // case EventListViewContext:
@@ -199,7 +209,9 @@ class ShellListView
       __super::Update(sync);
     }
     HRESULT Send(message msg) {
-      if (!m_hWnd) return E_FAIL;
+      if (!m_hWnd) {
+        return E_FAIL;
+      }
       switch (msg.code) {
         case CommandKeyUp:
           MimicKeyDown(VK_UP, 0);
@@ -357,8 +369,8 @@ class ShellListView
       return S_OK;
     }
     void PasteEx() {
-      ref<IEntryList> entries;
-      ref<IEntry> item;
+      ref<io::IEntryList> entries;
+      ref<io::IEntry> item;
       if (theAvesta->PasteInFolder && get_SelectedCount() == 1 && SUCCEEDED(GetContents(&entries, SELECTED)) &&
           SUCCEEDED(entries->GetAt(&item, 0)) && item->IsFolder()) {
         if (string path = item->Path) {
@@ -368,7 +380,7 @@ class ShellListView
       }
       Paste();
     }
-    void AsyncGoAbsolute(IEntry * entry, GoType go) {
+    void AsyncGoAbsolute(io::IEntry * entry, GoType go) {
       entry->AddRef();
       PostMessage(WM_ASYNC_GOABSOLUTE, (WPARAM)go, (LPARAM)entry);
     }
@@ -378,7 +390,7 @@ class ShellListView
     }
     LRESULT OnAsyncGoAbsolute(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&) {
       SHEndMonitor();
-      IEntry* entry = (IEntry*)lParam;
+      io::IEntry* entry = (io::IEntry*)lParam;
       GoType go = (GoType)wParam;
       GoAbsolute(entry, go);
       entry->Release();
@@ -414,13 +426,17 @@ class ShellListView
       __super::HandleDestroy();
     }
     bool IsSpecialContextMenu() {
-      if (IsKeyPressed(VK_CONTROL) || IsKeyPressed(VK_LBUTTON) || IsKeyPressed(VK_RBUTTON)) return true;
+      if (IsKeyPressed(VK_CONTROL) || IsKeyPressed(VK_LBUTTON) || IsKeyPressed(VK_RBUTTON)) {
+        return true;
+      }
       return false;
     }
     LRESULT OnContextMenu(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled) {
       ListCtrl list = this->ListView;
       ASSERT(list);
-      if (!list) return 0;
+      if (!list) {
+        return 0;
+      }
       // もう一度デフォルトのコンテキストメニューに戻す
       //__super::DefaultContextMenu(wParam, lParam);
       Point ptScreen(GET_XY_LPARAM(lParam));
@@ -490,10 +506,11 @@ class ShellListView
         for (int i = 0; i < count; ++i) {
           TCHAR text[MAX_PATH];
           if (popup.GetMenuString(i, text, MAX_PATH, MF_BYPOSITION) > 0) {
-            if (str::equals(text, _T("送る(&N)")))
+            if (str::equals(text, _T("送る(&N)"))) {
               indexSendTo = i;
-            else if (str::equals(text, _T("プログラムから開く(&H)")))
+            } else if (str::equals(text, _T("プログラムから開く(&H)"))) {
               indexOpenWith = i;
+            }
           }
         }
         if (indexSendTo != -1) {
@@ -513,10 +530,10 @@ class ShellListView
         ID_FOLDER_GO = 100,
       };
       // 選択中のアイテムがサブフォルダ持ちのフォルダか否かを調べる。
-      ref<IEntryList> entries;
-      ref<IEntry> focus;
+      ref<io::IEntryList> entries;
+      ref<io::IEntry> focus;
       if (SUCCEEDED(Shell::GetContents(&entries, FOCUSED)) && SUCCEEDED(entries->GetAt(&focus, 0))) {
-        ref<IEntry> resolved;
+        ref<io::IEntry> resolved;
         focus->GetLinked(&resolved);
         if (focus->IsFolder()) {  // フォルダ
           popup.InsertMenu(0, MF_BYPOSITION, ID_FOLDER_GO, SHSTR_MENU_GO);
@@ -581,17 +598,17 @@ class ShellListView
       return 0;
     }
     LRESULT OnComboLRButtonDown(UINT, WPARAM, LPARAM lParam, BOOL & bHandled) {
-      IEntry* entry = GetCurrentEntry();
+      io::IEntry* entry = GetCurrentEntry();
       if (entry) {
         Point ptClient(GET_XY_LPARAM(lParam));
         Point ptScreen = ptClient;
         m_ComboBox.ClientToScreen(&ptScreen);
         if (HitTestComboIcon(ptScreen)) {
           if (m_ComboBox.DragDetect(ptClient)) {
-            ref<IDragSource> source(__uuidof(DragSource));
+            ref<io::IDragSource> source(__uuidof(io::DragSource));
             source->AddIDList(entry->ID);
             // TODO: 絵が出ません。
-            source->DoDragDrop(DropEffectCopy | DropEffectMove | DropEffectLink);
+            source->DoDragDrop(io::DropEffectCopy | io::DropEffectMove | io::DropEffectLink);
             // source->DoDragDrop(DropEffectLink);
           }
           // デフォルトでは「エディットにフォーカスを移す」
@@ -671,11 +688,12 @@ class ShellListView
       NMCBEENDEDIT* edit = (NMCBEENDEDIT*)nm;
       if (edit->iWhy == CBENF_RETURN && GetCurrentEntry()->Path != edit->szText) {
         try {
-          ref<IEntry> entry(__uuidof(Entry), string(edit->szText));
-          if (entry->IsFolder())
+          ref<io::IEntry> entry(__uuidof(io::Entry), string(edit->szText));
+          if (entry->IsFolder()) {
             Go(entry);
-          else
+          } else {
             avesta::ILExecute(entry->ID, null, null, null, m_hWnd);
+          }
         } catch (mew::exceptions::Error& e) {
           MessageBox(e.Message.str(), NULL, MB_OK | MB_ICONERROR);
         }
@@ -687,7 +705,9 @@ class ShellListView
     void HandleUpdateLayout() {
       Rect rcClient;
       GetClientRect(&rcClient);
-      if (rcClient.empty()) return;
+      if (rcClient.empty()) {
+        return;
+      }
       Rect rcEdit;
       m_Address.GetWindowRect(&rcEdit);
       rcEdit.left = rcClient.left;
@@ -696,21 +716,25 @@ class ShellListView
       rcEdit.top = 0;
       rcClient.top = rcEdit.bottom;
       m_Address.MoveWindow(&rcEdit);
-      if (CWindowEx w = this->ShellView) w.MoveWindow(&rcClient);
+      if (CWindowEx w = this->ShellView) {
+        w.MoveWindow(&rcClient);
+      }
     }
     HRESULT GetExtension(REFGUID which, REFINTF what) {
-      if (which == __uuidof(IShellStorage))
+      if (which == __uuidof(IShellStorage)) {
         return m_pStorage.copyto(what);
-      else
+      } else {
         return __super::GetExtension(which, what);
+      }
     }
     HRESULT SetExtension(REFGUID which, IUnknown * what) {
-      if (which == __uuidof(IShellStorage))
+      if (which == __uuidof(IShellStorage)) {
         return m_pStorage = cast(what), S_OK;
-      else
+      } else {
         return __super::SetExtension(which, what);
+      }
     }
-    HRESULT Go(IEntry * folder) { return Shell::GoAbsolute(folder); }
+    HRESULT Go(io::IEntry * folder) { return Shell::GoAbsolute(folder); }
     HRESULT Go(Direction dir, int level = 1) {
       switch (dir) {
         case DirNorth:
@@ -734,7 +758,9 @@ class ShellListView
       ASSERT(item.is_index());
       ASSERT(!index);
       ListCtrl list = this->ListView;
-      if (!list) return E_UNEXPECTED;
+      if (!list) {
+        return E_UNEXPECTED;
+      }
       int i = item.as_index();
       if (status) {
         *status = 0;
@@ -752,10 +778,11 @@ class ShellListView
       return S_OK;
     }
     HRESULT SetStatus(IndexOr<IUnknown> item, Status status, bool unique = false) {
-      if (item.is_index())
+      if (item.is_index()) {
         return SetStatusByIndex(item, status, unique);
-      else
+      } else {
         return SetStatusByUnknown(item, status, unique);
+      }
     }
 
     ListStyle get_Style() { return Shell::get_Style(); }
@@ -780,21 +807,24 @@ class ShellListView
       m_PatternMask = value;
       Shell::Refresh();
       if (m_pCurrentEntry) {
-        string address = FormatAddress(m_pCurrentEntry->GetName(IEntry::PATH_OR_NAME));
+        string address = FormatAddress(m_pCurrentEntry->GetName(io::IEntry::PATH_OR_NAME));
         COMBOBOXEXITEM item = {CBEIF_TEXT, 0, (PWSTR)address.str()};
         m_Address.SetItem(&item);
         m_Address.SetCurSel(0);
       }
     }
     string FormatAddress(string PathOrName) const {
-      if (!m_PatternMask) return PathOrName;
+      if (!m_PatternMask) {
+        return PathOrName;
+      }
       return string::format(L"$1 | $2", PathOrName, m_PatternMask);
     }
     HRESULT GetFolder(REFINTF ppFolder) {
-      if (ppFolder.iid == __uuidof(IShellFolder))
+      if (ppFolder.iid == __uuidof(IShellFolder)) {
         return objcpy(GetCurrentFolder(), ppFolder);
-      else
+      } else {
         return objcpy(GetCurrentEntry(), ppFolder);
+      }
     }
     string GetLastStatusText() { return m_StatusText; }
     HRESULT SelectChecked() { return Shell::SelectChecked(); }
@@ -807,7 +837,9 @@ class ShellListView
           break;
         case 1:
           m_ListFont = (HFONT)wParam;
-          if (ListView) ListView.SetFont(m_ListFont);
+          if (ListView) {
+            ListView.SetFont(m_ListFont);
+          }
           break;
       }
       Update();
@@ -838,10 +870,11 @@ class ShellListView
     bool OnListWheel(WPARAM wParam, LPARAM lParam) {
       if (wParam & MK_SHIFT) {  // Shiftが押されたままだと、別ウィンドウで開いてしまうので……
         afx::SetModifierState(0, 0);
-        if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
+        if (GET_WHEEL_DELTA_WPARAM(wParam) > 0) {
           GoUp();
-        else
+        } else {
           GoBack();
+        }
         afx::RestoreModifierState(0);
         return true;
       } else if (wParam & MK_CONTROL) {  // もしShift or Control が押されている場合は、通常のスクロールを行わない
@@ -861,29 +894,34 @@ class ShellListView
       return !cancel;
     }
     void OnDirectoryChanged(io::IEntry * entry, GoType go) {
-      ref<IEntry> parent;
+      ref<io::IEntry> parent;
       if SUCCEEDED (entry->GetParent(&parent)) {
         SHChangeNotifyEntry shEntry = {parent->ID};
         SHBeginMonitor(1, &shEntry, m_hWnd, MEW_NM_SHELL, SHCNE_RENAMEFOLDER | SHCNE_RMDIR | SHCNE_DRIVEREMOVED);
       }
       InvokeEvent<EventFolderChange>(this, entry);
-      for (int i = m_Address.GetCount(); i > 0; --i) m_Address.DeleteItem(0);
+      for (int i = m_Address.GetCount(); i > 0; --i) {
+        m_Address.DeleteItem(0);
+      }
       string path = (afx::ILIsRoot(entry->ID) ? null : entry->Path);
       string name = entry->Name;
       AddPath(entry->ID, FormatAddress(!path ? name : path));
       m_Address.SetCurSel(0);
       string title;
-      if (!path || lstrcmpi(io::PathFindLeaf(path), name.str()) != 0)
+      if (!path || lstrcmpi(io::PathFindLeaf(path), name.str()) != 0) {
         title = name;
-      else
+      } else {
         title = path;
+      }
       this->Name = title;
       HandleUpdateLayout();
     }
     void OnDefaultExecute(io::IEntry * entry) {
       message reply = InvokeEvent<EventExecuteEntry>(this, entry);
       bool cancel = reply["cancel"] | false;
-      if (!cancel) avesta::ILExecute(entry->ID, null, null, null, m_hWnd);
+      if (!cancel) {
+        avesta::ILExecute(entry->ID, null, null, null, m_hWnd);
+      }
     }
     HRESULT OnStateChange(IShellView * pShellView, ULONG uChange) {
       if (!this->ShellView.IsWindow()) {  // 破棄後に送られてくることがあるっぽい
@@ -895,7 +933,7 @@ class ShellListView
     }
     HRESULT OnQueryStream(DWORD grfMode, IStream * *ppStream) {
       if (m_pStorage) {
-        if (IEntry* folder = GetCurrentEntry()) {
+        if (io::IEntry* folder = GetCurrentEntry()) {
           return m_pStorage->QueryStream(ppStream, folder, (grfMode & 0x03) != STGM_READ);
         }
       }
@@ -907,7 +945,7 @@ class ShellListView
       switch (wParam) {
         case DBT_DEVNODES_CHANGED:  // デバイス構成が変化した ← こっちが送られてくることが多いみたい
         case DBT_DEVICEREMOVECOMPLETE:  // デバイスが取り出された
-          if (IEntry* entry =
+          if (io::IEntry* entry =
                   GetCurrentEntry()) {  // 何が起こったのかを調べてもいいけど、Exists() を見るのが一番簡単なので、とりあえず。
             if (!entry->Exists()) {
               TRACE(_T("info: $1 : エントリが削除されたため、自動的に閉じます"), Name);
@@ -923,7 +961,7 @@ class ShellListView
     }
 
     LRESULT OnSHChangeNotify(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL & /*bHandled*/) {
-      IEntry* entry = GetCurrentEntry();
+      io::IEntry* entry = GetCurrentEntry();
       if (!entry) PostMessage(WM_CLOSE);
 
       MSG msg;
@@ -943,14 +981,14 @@ class ShellListView
       } else if (lEvent & SHCNE_RENAMEFOLDER) {
         if (ILIsEqual(entry->ID, pidls[0])) {
           try {
-            ref<IEntry> moveto;
+            ref<io::IEntry> moveto;
             // いったんパスに変換しないと、不正なITEMIDLISTになってしまう？
             TCHAR dstpath[MAX_PATH] = _T("");
             if SUCCEEDED (afx::ILGetPath(pidls[1], dstpath)) {
-              moveto.create(__uuidof(Entry), string(dstpath));
+              moveto.create(__uuidof(io::Entry), string(dstpath));
             } else {  // パスが取得できない＝仮想フォルダ？
               // 失敗するかもしれないが、QueryObject()を使って処理してみる。
-              ref<IEntry> root(__uuidof(Entry));
+              ref<io::IEntry> root(__uuidof(io::Entry));
               root->QueryObject(&moveto, pidls[1]);
             }
             if (moveto) {
@@ -978,9 +1016,11 @@ class ShellListView
 
    private:  // IDropTarget
     ref<IDropTarget> QueryFolderDropTarget() const {
-      if (IEntry* entry = Shell::GetCurrentEntry()) {
+      if (io::IEntry* entry = Shell::GetCurrentEntry()) {
         ref<IDropTarget> pDropTarget;
-        if SUCCEEDED (entry->QueryObject(&pDropTarget)) return pDropTarget;
+        if SUCCEEDED (entry->QueryObject(&pDropTarget)) {
+          return pDropTarget;
+        }
       }
       TRACE(_T("warning: @ShellListView : DropTargetを取得できません"));
       return null;

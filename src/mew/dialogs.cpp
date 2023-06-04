@@ -7,9 +7,6 @@
 #include "private.h"
 #include "std/buffer.hpp"
 
-using namespace mew::ui;
-
-//==============================================================================
 // File
 
 namespace {

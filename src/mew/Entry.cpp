@@ -7,14 +7,9 @@
 #include "std/map.hpp"
 #include "shell.hpp"
 
-// using namespace mew::io;
-
 namespace {
-//==============================================================================
 
 const int NOIMAGE = -0xFFFF;
-
-//==============================================================================
 
 struct EntryCompare {
   EntryCompare(IShellFolder* p) : parent(p) {}
@@ -763,11 +758,8 @@ HRESULT Entry::ResolveLink(REFINTF ppObject) {
   }
 }
 
-}  // namespace io
-}  // namespace mew
-
 // HRESULT CreateEntry(IEntry** pp, STRING src, PathFrom from = None);
-HRESULT mew::io::CreateEntry(IEntry** ppEntry, LPCITEMIDLIST pidl, PathFrom from) {
+HRESULT CreateEntry(IEntry** ppEntry, LPCITEMIDLIST pidl, PathFrom from) {
   if (!ppEntry) {
     return E_POINTER;
   }
@@ -784,8 +776,6 @@ HRESULT mew::io::CreateEntry(IEntry** ppEntry, LPCITEMIDLIST pidl, PathFrom from
 // HRESULT CIDACreate(IEntryList** pp, IDataObject* data);
 // HRESULT CIDACreate(IEntryList** pp, HWND hwndListView, IShellView* pShellView, INT svgio);
 
-namespace mew {
-namespace io {
 AVESTA_EXPORT(Entry)
 AVESTA_EXPORT(EntryList)
 }  // namespace io

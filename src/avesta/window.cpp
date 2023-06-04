@@ -4,27 +4,8 @@
 #include "avesta.hpp"
 #include "afx.hpp"
 
-using namespace avesta;
-
-//==============================================================================
-
-HRESULT avesta::WindowClose(HWND hwnd) {
-  ::PostMessage(hwnd, WM_CLOSE, 0, 0);
-  return S_OK;
-}
-
-HRESULT avesta::WindowSetFocus(HWND hwnd) {
-  if (!::IsWindowEnabled(hwnd)) {
-    return S_FALSE;
-  }
-  afx::SetVisible(hwnd, true);
-  ::SetFocus(hwnd);
-  return S_OK;
-}
-
-//==============================================================================
-
 namespace {
+
 static const UINT_PTR SubclassID = 0x12345678;
 
 bool HasStyle(HWND hwnd, DWORD dwStyle) { return 0 != (::GetWindowLong(hwnd, GWL_STYLE) & dwStyle); }
@@ -33,7 +14,37 @@ enum {
   FLAG_DYING = 1 << 0,
   FLAG_LAYOUT = 1 << 1,
 };
+
+struct BroadcastParam {
+  UINT msg;
+  WPARAM wParam;
+  LPARAM lParam;
+  INT count;
+};
+
+BOOL CALLBACK BroadcastProc(HWND hwnd, LPARAM lParam) {
+  BroadcastParam* m = (BroadcastParam*)lParam;
+  ::PostMessage(hwnd, m->msg, m->wParam, m->lParam);
+  m->count++;
+  return TRUE;
+}
 }  // namespace
+
+namespace avesta {
+
+HRESULT WindowClose(HWND hwnd) {
+  ::PostMessage(hwnd, WM_CLOSE, 0, 0);
+  return S_OK;
+}
+
+HRESULT WindowSetFocus(HWND hwnd) {
+  if (!::IsWindowEnabled(hwnd)) {
+    return S_FALSE;
+  }
+  afx::SetVisible(hwnd, true);
+  ::SetFocus(hwnd);
+  return S_OK;
+}
 
 Window::Window() : m_hwnd(nullptr), m_flags(0) {}
 
@@ -201,22 +212,6 @@ LRESULT CALLBACK Window::StartupProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
   return ::DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
-namespace {
-struct BroadcastParam {
-  UINT msg;
-  WPARAM wParam;
-  LPARAM lParam;
-  INT count;
-};
-
-BOOL CALLBACK BroadcastProc(HWND hwnd, LPARAM lParam) {
-  BroadcastParam* m = (BroadcastParam*)lParam;
-  ::PostMessage(hwnd, m->msg, m->wParam, m->lParam);
-  m->count++;
-  return TRUE;
-}
-}  // namespace
-
 int Window::Broadcast(UINT msg, WPARAM wParam, LPARAM lParam) {
   struct Param {
     UINT msg;
@@ -248,3 +243,5 @@ bool Window::Filter(MSG& msg) {
   }
   return false;
 }
+
+}  // namespace avesta

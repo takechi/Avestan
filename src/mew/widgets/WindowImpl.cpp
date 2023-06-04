@@ -13,9 +13,13 @@ BOOL CWindowEx::ModifyClassStyle(DWORD dwRemove, DWORD dwAdd, UINT nFlags) throw
   ASSERT(::IsWindow(hWnd));
   DWORD dwStyle = ::GetClassLong(hWnd, GCL_STYLE);
   DWORD dwNewStyle = (dwStyle & ~dwRemove) | dwAdd;
-  if (dwStyle == dwNewStyle) return false;
+  if (dwStyle == dwNewStyle) {
+    return false;
+  }
   ::SetClassLong(hWnd, GCL_STYLE, dwNewStyle);
-  if (nFlags != 0) ::SetWindowPos(hWnd, NULL, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE | nFlags);
+  if (nFlags != 0) {
+    ::SetWindowPos(hWnd, NULL, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE | nFlags);
+  }
   return true;
 }
 
@@ -29,7 +33,9 @@ bool CWindowEx::DragDetect(POINT pt) {
     PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE);
     if (msg.message == WM_MOUSEMOVE) {
       if (msg.hwnd == m_hWnd) {
-        if ((msg.wParam & MouseButtonMask) == 0) return false;
+        if ((msg.wParam & MouseButtonMask) == 0) {
+          return false;
+        }
         Point cursor(GET_XY_LPARAM(msg.lParam));
         if (!PtInRect(&rc, cursor)) {
           ::ReleaseCapture();
@@ -66,7 +72,6 @@ void CWindowEx::SendMessageToDescendants(UINT msg, WPARAM wParam, LPARAM lParam,
 //==============================================================================
 
 HRESULT WindowImplBase::Send(mew::ui::IWindow* self, const message& msg) const {
-  using namespace mew::ui;
   switch (msg.code) {
     case CommandClose:
       self->Close(msg["sync"] | false);
@@ -102,8 +107,12 @@ void WindowImplBase::set_Dock(Direction value) {
 }
 LRESULT WindowImplBase::OnForwardMsg(IWindow* self, UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
   MSG* msg = (MSG*)lParam;
-  if (m_Extensions.ProcessKeymap(self, msg)) return true;
-  if (HWND hParent = afx::GetParentOrOwner(m_hWnd)) return ::SendMessage(hParent, uMsg, wParam, lParam);
+  if (m_Extensions.ProcessKeymap(self, msg)) {
+    return true;
+  }
+  if (HWND hParent = afx::GetParentOrOwner(m_hWnd)) {
+    return ::SendMessage(hParent, uMsg, wParam, lParam);
+  }
   bHandled = false;
   return 0;
 }
@@ -113,7 +122,9 @@ LRESULT WindowImplBase::OnCopyData(IWindow* self, UINT, WPARAM wParam, LPARAM lP
   if (data->dwData == 'STRW') {
     // XXX: ––”ö‚ÌNULL•¶Žš‚ðŠÜ‚ñ‚Å‚µ‚Ü‚¤‚©‚àB
     string text((PCWSTR)data->lpData, data->cbData / sizeof(WCHAR));
-    if (text) PostMessage(MEW_ECHO_COPYDATA, 0, (LPARAM)text.detach());
+    if (text) {
+      PostMessage(MEW_ECHO_COPYDATA, 0, (LPARAM)text.detach());
+    }
     return true;
   } else {
     return false;

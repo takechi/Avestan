@@ -8,18 +8,7 @@
 
 #pragma comment(lib, "uxtheme")
 
-using namespace mew;
-using namespace mew::ui;
-using namespace mew::drawing;
-using namespace avesta;
-
-/*
-CloseThemeData
-DrawThemeEdge
-DrawThemeParentBackground
-DrawThemeText
-*/
-
+namespace avesta {
 Theme::Theme() : m_hTheme(null) {}
 
 Theme::~Theme() { Dispose(); }
@@ -87,7 +76,9 @@ BF_BOTTOMRIGHT
 */
 void Theme::Edge(HDC hDC, int part, int state, const RECT* rc, UINT uEdge, UINT uFlags, RECT* pContentRect) {
   if (m_hTheme) {
-    if (pContentRect) uFlags |= BF_ADJUST;
+    if (pContentRect) {
+      uFlags |= BF_ADJUST;
+    }
     HRESULT hr = DrawThemeEdge(m_hTheme, hDC, part, state, rc, uEdge, uFlags, pContentRect);
     hr;
   } else {
@@ -101,7 +92,7 @@ void Theme::Text(HDC hDC, int part, int state, const RECT* rc, PCWSTR text, DWOR
   } else {
   }
 }
-
+}  // namespace avesta
 /*
         enum WidgetScheme
         {
@@ -175,10 +166,10 @@ COLORREF mew::theme::DotNetInactiveTextColor() {
 // Tab
 
 void mew::theme::TabDrawHeader(HDC hDC, RECT& rc) {
-  DCHandle dc(hDC);
+  mew::drawing::DCHandle dc(hDC);
   rc.bottom -= 1;
   dc.FrameRect(&rc, ::GetSysColorBrush(COLOR_3DSHADOW));
-  Pen pen(::GetSysColor(COLOR_3DHILIGHT));
+  mew::drawing::Pen pen(::GetSysColor(COLOR_3DHILIGHT));
   CPenHandle penOld = dc.SelectPen(pen);
   dc.MoveTo(rc.left + 1, rc.bottom - 2);
   dc.LineTo(rc.left + 1, rc.top + 1);
@@ -195,36 +186,39 @@ void mew::theme::TabDrawHeader(HDC hDC, RECT& rc) {
 
 void mew::theme::TabDrawItem(HDC hDC, RECT bounds, PCWSTR text, DWORD status, HFONT hFontNormal, HFONT hFontBold,
                              COLORREF clrActiveTab, COLORREF clrActiveText, COLORREF clrInactiveText) {
-  DCHandle dc(hDC);
+  mew::drawing::DCHandle dc(hDC);
   if (status & CHECKED) {
     bounds.right -= 1;
     bounds.bottom += 1;
 
     dc.FillSolidRect(&bounds, clrActiveTab);
 
-    Pen penHilight(::GetSysColor(COLOR_BTNHIGHLIGHT));
-    Pen penText(clrActiveText);
+    mew::drawing::Pen penHilight(::GetSysColor(COLOR_BTNHIGHLIGHT));
+    mew::drawing::Pen penText(clrActiveText);
     dc.DrawLine(penHilight, bounds.left, bounds.top, bounds.left, bounds.bottom);
     dc.DrawLine(penText, bounds.right, bounds.top, bounds.right, bounds.bottom - 2);
   } else {
-    Pen pen(::GetSysColor(COLOR_BTNSHADOW));
-    if (false)  //(bHasBottomStyle)
+    mew::drawing::Pen pen(::GetSysColor(COLOR_BTNSHADOW));
+    if (false) {  //(bHasBottomStyle)
       dc.DrawLine(pen, bounds.right - 1, bounds.top + 3, bounds.right - 1, bounds.bottom - 1);
-    else
+    } else {
       dc.DrawLine(pen, bounds.right - 1, bounds.top + 2, bounds.right - 1, bounds.bottom - 2);
+    }
   }
   CFontHandle font;
   if (status & FOCUSED) {
-    if (status & ENABLED)
+    if (status & ENABLED) {
       dc.SetTextColor(::GetSysColor(COLOR_BTNTEXT));
-    else
+    } else {
       dc.SetTextColor(RGB(255, 0, 0));
+    }
     font = hFontBold;
   } else {
-    if (status & ENABLED)
+    if (status & ENABLED) {
       dc.SetTextColor(clrInactiveText);
-    else
+    } else {
       dc.SetTextColor(RGB(255, 0, 0));
+    }
     font = hFontNormal;
   }
   if (status & HOT) {
@@ -252,15 +246,19 @@ const int MENU_TEXT_SPACE = 4;
 
 inline SIZE ImageList_GetIconSize(IImageList* pImageList) {
   SIZE sz = {16, 16};
-  if (pImageList) pImageList->GetIconSize((int*)&sz.cx, (int*)&sz.cy);
+  if (pImageList) {
+    pImageList->GetIconSize((int*)&sz.cx, (int*)&sz.cy);
+  }
   return sz;
 }
-inline COLORREF BlendSysColor(int a, int b, int factor) { return BlendRGB(::GetSysColor(a), ::GetSysColor(b), factor); }
+inline COLORREF BlendSysColor(int a, int b, int factor) {
+  return mew::drawing::BlendRGB(::GetSysColor(a), ::GetSysColor(b), factor);
+}
 
 //==============================================================================
 // subroutine for menu
 
-static void DrawMenuText(DCHandle dc, RECT& rc, PCTSTR text, COLORREF color) {
+static void DrawMenuText(mew::drawing::DCHandle dc, RECT& rc, PCTSTR text, COLORREF color) {
   dc.SetTextColor(color);
   int nTab = -1;
   int count = ::lstrlen(text);
@@ -271,10 +269,14 @@ static void DrawMenuText(DCHandle dc, RECT& rc, PCTSTR text, COLORREF color) {
     }
   }
   dc.DrawText(text, nTab, &rc, DT_LEFT | DT_SINGLELINE | DT_VCENTER);
-  if (nTab != -1) dc.DrawText(&text[nTab + 1], -1, &rc, DT_RIGHT | DT_SINGLELINE | DT_VCENTER);
+  if (nTab != -1) {
+    dc.DrawText(&text[nTab + 1], -1, &rc, DT_RIGHT | DT_SINGLELINE | DT_VCENTER);
+  }
 }
-static void DrawMenuMark(DCHandle dc, bool selected, bool checked, bool disabled, const RECT& rc) {
-  if (!checked) return;
+static void DrawMenuMark(mew::drawing::DCHandle dc, bool selected, bool checked, bool disabled, const RECT& rc) {
+  if (!checked) {
+    return;
+  }
   const int nColor = (disabled ? COLOR_BTNSHADOW : (selected ? COLOR_MENU : COLOR_MENUTEXT));
   const int w = rc.right - rc.left;
   const int h = rc.bottom - rc.top;
@@ -314,7 +316,9 @@ static void DrawMenuMark(DCHandle dc, bool selected, bool checked, bool disabled
     dc.BitBlt(rc.left, rc.top, w, h, dcMask, 0, 0, ROP_DSno);
     dc.BitBlt(rc.left, rc.top, w, h, dcSource, 0, 0, ROP_DSa);
   } else {
-    if (clrCheck != clrBlack) dcSource.BitBlt(0, 0, w, h, dcMask, 0, 0, ROP_DSna);
+    if (clrCheck != clrBlack) {
+      dcSource.BitBlt(0, 0, w, h, dcMask, 0, 0, ROP_DSna);
+    }
     dc.BitBlt(rc.left, rc.top, w, h, dcMask, 0, 0, ROP_DSa);
     dc.BitBlt(rc.left, rc.top, w, h, dcSource, 0, 0, ROP_DSo);
   }
@@ -324,7 +328,7 @@ static void DrawMenuMark(DCHandle dc, bool selected, bool checked, bool disabled
   dcSource.SelectBitmap(hBmpOld);
   dcMask.SelectBitmap(hBmpOld1);
 }
-static void DrawMenuIcon(DCHandle dc, bool selected, bool checked, bool disabled, IImageList* pImageList,
+static void DrawMenuIcon(mew::drawing::DCHandle dc, bool selected, bool checked, bool disabled, IImageList* pImageList,
                          IMAGELISTDRAWPARAMS& params) {
   ASSERT(pImageList);
   SIZE size = ImageList_GetIconSize(pImageList);
@@ -337,12 +341,14 @@ static void DrawMenuIcon(DCHandle dc, bool selected, bool checked, bool disabled
     ::InflateRect(&rcFrame, MENU_ICON_SPACE_W, MENU_ICON_SPACE_H);
     dc.DrawRect(rcFrame, ::GetSysColor(COLOR_HIGHLIGHT), BlendSysColor(COLOR_MENU, COLOR_HIGHLIGHT, 25));
   }
-  if (selected) params.fStyle = ILD_SELECTED;
+  if (selected) {
+    params.fStyle = ILD_SELECTED;
+  }
   VERIFY_HRESULT(pImageList->Draw(&params));
 }
-static void DrawShadowIcon(DCHandle dc, HIMAGELIST hImageList, POINT pt, int nImage) {
+static void DrawShadowIcon(mew::drawing::DCHandle dc, HIMAGELIST hImageList, POINT pt, int nImage) {
   HICON hIcon = ImageList_ExtractIcon(NULL, hImageList, nImage);
-  Brush brush(BlendSysColor(COLOR_3DFACE, COLOR_WINDOWTEXT, 35));
+  mew::drawing::Brush brush(BlendSysColor(COLOR_3DFACE, COLOR_WINDOWTEXT, 35));
   SIZE sz = {0, 0};
   dc.DrawState(pt, sz, hIcon, DSS_MONO, brush);
   ::DestroyIcon(hIcon);
@@ -373,7 +379,7 @@ SIZE mew::theme::MenuMeasureItem(PCWSTR wcsText, IImageList* pImageList, int nIm
     SIZE sz = {0, ::GetSystemMetrics(SM_CYMENU) / 2};
     return sz;
   } else {
-    DC dc;
+    mew::drawing::DC dc;
     dc.CreateCompatibleDC();
     SIZE sz = dc.GetTextExtent(theMenuFont, wcsText);
     SIZE ret;
@@ -386,7 +392,7 @@ SIZE mew::theme::MenuMeasureItem(PCWSTR wcsText, IImageList* pImageList, int nIm
 
 void mew::theme::MenuDrawItem(HDC hDC, const RECT& rcBounds, DWORD dwStatus, PCWSTR wcsText, IImageList* pImageList,
                               int nImage) {
-  DCHandle dc(hDC);
+  mew::drawing::DCHandle dc(hDC);
 
   SIZE iconSize = ImageList_GetIconSize(pImageList);
 
@@ -423,7 +429,9 @@ void mew::theme::MenuDrawItem(HDC hDC, const RECT& rcBounds, DWORD dwStatus, PCW
       params.y = (rcIcon.top + rcIcon.bottom - iconSize.cy) / 2;
       params.rgbFg = CLR_DEFAULT;
       params.rgbBk = CLR_NONE;
-      if (pImageList) DrawMenuIcon(dc, selected, checked, disabled, pImageList, params);
+      if (pImageList) {
+        DrawMenuIcon(dc, selected, checked, disabled, pImageList, params);
+      }
     } else {
       rcIcon.left += MENU_ICON_SPACE_W;
       rcIcon.right = rcIcon.left + iconSize.cx;
@@ -447,9 +455,11 @@ static bool IsLuna() {
 }  // namespace
 
 bool mew::theme::MenuDrawButton(NMTBCUSTOMDRAW* draw, HFONT hFont, bool bShowKeyboardCues, bool bIsMenuDropped) {
-  DCHandle dc(draw->nmcd.hdc);
+  mew::drawing::DCHandle dc(draw->nmcd.hdc);
   HFONT hFontOld = NULL;
-  if (hFont != NULL) hFontOld = dc.SelectFont(hFont);
+  if (hFont != NULL) {
+    hFontOld = dc.SelectFont(hFont);
+  }
 
   WTL::CToolBarCtrl tb = draw->nmcd.hdr.hwndFrom;
 
@@ -460,7 +470,9 @@ bool mew::theme::MenuDrawButton(NMTBCUSTOMDRAW* draw, HFONT hFont, bool bShowKey
   tbi.cchText = sizeof(szText) / sizeof(TCHAR);
   tb.GetButtonInfo(draw->nmcd.dwItemSpec, &tbi);
 
-  if (::lstrlen(szText) == 0) tb.GetButtonText(draw->nmcd.dwItemSpec, szText);
+  if (::lstrlen(szText) == 0) {
+    tb.GetButtonText(draw->nmcd.dwItemSpec, szText);
+  }
 
   // Get state information
   UINT uItemState = draw->nmcd.uItemState;
@@ -497,9 +509,15 @@ bool mew::theme::MenuDrawButton(NMTBCUSTOMDRAW* draw, HFONT hFont, bool bShowKey
   if (tbi.iImage >= 0) {
     // Get ImageList
     HIMAGELIST hImageList = NULL;
-    if (hotlight) hImageList = tb.GetHotImageList();
-    if (disabled) hImageList = tb.GetDisabledImageList();
-    if (hImageList == NULL) hImageList = tb.GetImageList();
+    if (hotlight) {
+      hImageList = tb.GetHotImageList();
+    }
+    if (disabled) {
+      hImageList = tb.GetDisabledImageList();
+    }
+    if (hImageList == NULL) {
+      hImageList = tb.GetImageList();
+    }
     // Draw icon
     if (hImageList != NULL) {
       int cxIcon, cyIcon;
@@ -537,29 +555,37 @@ bool mew::theme::MenuDrawButton(NMTBCUSTOMDRAW* draw, HFONT hFont, bool bShowKey
   if (::lstrlen(szText) > 0) {
     COLORREF clrText;
     if (bLuna) {
-      if (disabled)
+      if (disabled) {
         clrText = GetSysColor(COLOR_GRAYTEXT);
-      else if (hotlight || bIsMenuDropped)
+      } else if (hotlight || bIsMenuDropped) {
         clrText = GetSysColor(COLOR_HIGHLIGHTTEXT);
-      else
+      } else {
         clrText = GetSysColor(COLOR_BTNTEXT);
+      }
     } else {
-      if (disabled)
+      if (disabled) {
         clrText = GetSysColor(COLOR_GRAYTEXT);
-      else
+      } else {
         clrText = GetSysColor(COLOR_BTNTEXT);
-      if (pressed || checked || bIsMenuDropped) ::OffsetRect(&rcItem, 1, 1);
+      }
+      if (pressed || checked || bIsMenuDropped) {
+        ::OffsetRect(&rcItem, 1, 1);
+      }
     }
 
     uTextFlags |= DT_SINGLELINE | DT_VCENTER;
-    if (!bShowKeyboardCues) uTextFlags |= DT_HIDEPREFIX;
+    if (!bShowKeyboardCues) {
+      uTextFlags |= DT_HIDEPREFIX;
+    }
 
     dc.SetBkMode(TRANSPARENT);
     dc.SetTextColor(clrText);
     dc.DrawText(szText, -1, &rcItem, uTextFlags);
   }
 
-  if (hFont != NULL) dc.SelectFont(hFontOld);
+  if (hFont != NULL) {
+    dc.SelectFont(hFontOld);
+  }
   return true;
 }
 

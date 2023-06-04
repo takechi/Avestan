@@ -4,12 +4,8 @@
 #include "avesta.hpp"
 #include "std/str.hpp"
 
-using namespace avesta;
-
-//==============================================================================
-// ITEMIDLIST.
-
 namespace {
+
 HRESULT HresultFromShellExecute(HINSTANCE hInstance, PCWSTR path, PCWSTR verb, HWND hwnd) {
   if (hInstance > (HINSTANCE)32) {
     return S_OK;
@@ -50,9 +46,7 @@ HRESULT HresultFromShellExecute(HINSTANCE hInstance, PCWSTR path, PCWSTR verb, H
   }
   return AtlHresultFromLastError();
 }
-}  // namespace
 
-namespace {
 HRESULT DoPathExecute(PCWSTR path, PCWSTR verb, PCWSTR args, PCWSTR dir, HWND hwnd) {
   ASSERT(!mew::str::empty(path));
 
@@ -111,7 +105,9 @@ HRESULT DoPathExecute(PCWSTR path, PCWSTR verb, PCWSTR args, PCWSTR dir, HWND hw
 
 HRESULT DoILExecute(LPCITEMIDLIST pidl, PCWSTR path, PCWSTR verb, PCWSTR args, PCWSTR dir, HWND hwnd) {
   SHELLEXECUTEINFO info = {sizeof(SHELLEXECUTEINFO), SEE_MASK_IDLIST, ::GetAncestor(hwnd, GA_ROOTOWNER)};
-  if (!hwnd) info.fMask |= SEE_MASK_FLAG_NO_UI;
+  if (!hwnd) {
+    info.fMask |= SEE_MASK_FLAG_NO_UI;
+  }
   info.nShow = SW_SHOWNORMAL;
   info.lpIDList = (LPITEMIDLIST)pidl;
   info.lpDirectory = dir;
@@ -130,7 +126,8 @@ HRESULT DoILExecute(LPCITEMIDLIST pidl, PCWSTR path, PCWSTR verb, PCWSTR args, P
 }
 }  // namespace
 
-HRESULT avesta::ILExecute(LPCITEMIDLIST pidl, PCWSTR verb, PCWSTR args, PCWSTR dir, HWND hwnd) {
+namespace avesta {
+HRESULT ILExecute(LPCITEMIDLIST pidl, PCWSTR verb, PCWSTR args, PCWSTR dir, HWND hwnd) {
   if (!pidl) {
     return E_INVALIDARG;
   }
@@ -157,7 +154,7 @@ HRESULT avesta::ILExecute(LPCITEMIDLIST pidl, PCWSTR verb, PCWSTR args, PCWSTR d
   return DoILExecute(pidl, path, verb, args, dir, hwnd);
 }
 
-HRESULT avesta::PathExecute(PCWSTR path, PCWSTR verb, PCWSTR args, PCWSTR dir, HWND hwnd) {
+HRESULT PathExecute(PCWSTR path, PCWSTR verb, PCWSTR args, PCWSTR dir, HWND hwnd) {
   if (mew::str::empty(path)) {
     return E_INVALIDARG;
   }
@@ -181,3 +178,5 @@ HRESULT avesta::PathExecute(PCWSTR path, PCWSTR verb, PCWSTR args, PCWSTR dir, H
 
   return DoPathExecute(path, verb, args, dir, hwnd);
 }
+
+}  // namespace avesta

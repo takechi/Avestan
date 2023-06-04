@@ -5,40 +5,39 @@
 #include "../mew/private.h"
 #include "xml.hpp"
 
-using namespace mew;
-using namespace mew::xml;
-
-//==============================================================================
 // XMLReader.
 
 namespace {
+
 // wchar_t* を unsigned short* としてインポートしてしまうので、
 // USHORT* ⇔ PWSTR のキャストを多用することになる。
 using XMLSTR = unsigned short*;
 STATIC_ASSERT(sizeof(unsigned short) == sizeof(wchar_t));
 
-class AttributesImpl : public XMLAttributes {
+class AttributesImpl : public mew::xml::XMLAttributes {
  private:
   MSXML2::ISAXAttributes* const m_pAttr;
 
  public:
   AttributesImpl(MSXML2::ISAXAttributes* attr) : m_pAttr(attr) { ASSERT(m_pAttr); }
-  virtual string operator[](PCWSTR name) throw() {
+  virtual mew::string operator[](PCWSTR name) throw() {
     static XMLSTR EMPTY_ATTR = (XMLSTR)(L"");
     PCWSTR val;
     INT len;
-    if SUCCEEDED (m_pAttr->getValueFromName(EMPTY_ATTR, 0, (XMLSTR)name, (int)str::length(name), (XMLSTR*)&val, &len))
-      return string(val, len);
-    else
-      return string();
+    if SUCCEEDED (m_pAttr->getValueFromName(EMPTY_ATTR, 0, (XMLSTR)name, (int)mew::str::length(name), (XMLSTR*)&val, &len)) {
+      return mew::string(val, len);
+    } else {
+      return mew::string();
+    }
   }
-  virtual string operator[](size_t index) throw() {
+  virtual mew::string operator[](size_t index) throw() {
     PCWSTR val;
     INT len;
-    if SUCCEEDED (m_pAttr->getValue(index, (XMLSTR*)&val, &len))
-      return string(val, len);
-    else
-      return string();
+    if SUCCEEDED (m_pAttr->getValue(index, (XMLSTR*)&val, &len)) {
+      return mew::string(val, len);
+    } else {
+      return mew::string();
+    }
   }
   virtual size_t length() throw() {
     INT len = 0;
@@ -54,7 +53,7 @@ class AttributesImpl : public XMLAttributes {
 
 class SAXHandlerAdapter : public MSXML2::ISAXContentHandler, public MSXML2::ISAXErrorHandler {
  public:
-  IXMLHandler* m_pHandler;
+  mew::xml::IXMLHandler* m_pHandler;
 
   STDMETHODIMP_(ULONG) AddRef() { return 1; }
   STDMETHODIMP_(ULONG) Release() { return 1; }
@@ -66,7 +65,7 @@ class SAXHandlerAdapter : public MSXML2::ISAXContentHandler, public MSXML2::ISAX
       *ppObj = static_cast<MSXML2::ISAXErrorHandler*>(this);
       return S_OK;
     }
-    *ppObj = null;
+    *ppObj = nullptr;
     return E_NOINTERFACE;
   }
 
@@ -168,7 +167,6 @@ class XMLReader : public Root<implements<IXMLReader> > {
   }
 };
 
+AVESTA_EXPORT(XMLReader)
 }  // namespace xml
 }  // namespace mew
-
-AVESTA_EXPORT(XMLReader)

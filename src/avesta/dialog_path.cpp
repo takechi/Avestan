@@ -3,10 +3,9 @@
 #include "stdafx.h"
 #include "../server/main.hpp"
 
-using namespace avesta;
-
 namespace {
-class PathDlg : public Dialog {
+
+class PathDlg : public avesta::Dialog {
   using MRUList = std::vector<mew::string>;
 
  public:
@@ -93,7 +92,9 @@ class PathDlg : public Dialog {
 };
 }  // namespace
 
-mew::ref<mew::io::IEntry> avesta::PathDialog(mew::string path) {
+namespace avesta {
+
+mew::ref<mew::io::IEntry> PathDialog(mew::string path) {
   static PathDlg dlg;
   if (dlg.Go(path) == IDOK) {
     mew::ref<mew::io::IEntry> entry = dlg.m_entry;
@@ -103,3 +104,5 @@ mew::ref<mew::io::IEntry> avesta::PathDialog(mew::string path) {
   // cancel;
   return mew::null;
 }
+
+}  // namespace avesta

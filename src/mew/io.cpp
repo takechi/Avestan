@@ -5,93 +5,12 @@
 #include "io.hpp"
 #include "path.hpp"
 
-using namespace mew;
-using namespace mew::io;
-using namespace mew::io;
-
-void mew::io::StreamReadExact(IStream* stream, void* buffer, size_t size) {
-  size_t done = StreamReadSome(stream, buffer, size);
-  if (done != size) {
-    throw mew::exceptions::IOError(_T(__FUNCTION__), STG_E_READFAULT);
-  }
-  // throw IOError(string::load(IDS_ERR_READ_LACK), STG_E_READFAULT);
-}
-
-size_t mew::io::StreamReadSome(IStream* stream, void* buffer, size_t size) {
-  ASSERT(stream);
-  ULONG done = 0;
-  HRESULT hr = stream->Read(buffer, size, &done);
-  if FAILED (hr) {
-    throw mew::exceptions::IOError(_T(__FUNCTION__), hr);
-  }
-  return done;
-}
-
-void mew::io::StreamWriteExact(IStream* stream, const void* buffer, size_t size) {
-  size_t done = StreamWriteSome(stream, buffer, size);
-  if (done != size) {
-    throw mew::exceptions::IOError(_T(__FUNCTION__), STG_E_MEDIUMFULL);
-  }
-  // throw IOError(string::load(IDS_ERR_WRITE_LACK), STG_E_MEDIUMFULL);
-}
-
-size_t mew::io::StreamWriteSome(IStream* stream, const void* buffer, size_t size) {
-  ASSERT(stream);
-  ULONG done = 0;
-  HRESULT hr = stream->Write(buffer, size, &done);
-  if FAILED (hr) {
-    throw mew::exceptions::IOError(_T(__FUNCTION__), hr);
-  }
-  return done;
-}
-
 inline void StreamSeek(IStream* stream, STREAM_SEEK origin, INT64 param, UINT64* newpos) {
   ASSERT(stream);
   HRESULT hr = stream->Seek((LARGE_INTEGER&)param, origin, (ULARGE_INTEGER*)newpos);
   if FAILED (hr) {
     throw mew::exceptions::IOError(_T(__FUNCTION__), hr);
   }
-}
-
-void mew::io::StreamSeekAbs(IStream* stream, UINT64 pos, UINT64* newpos) {
-  StreamSeek(stream, STREAM_SEEK_SET, (INT64)pos, newpos);
-}
-
-void mew::io::StreamSeekRel(IStream* stream, INT64 mov, UINT64* newpos) { StreamSeek(stream, STREAM_SEEK_CUR, mov, newpos); }
-
-void mew::io::StreamReadObject(IStream* stream, REFINTF obj) {
-  ASSERT(stream);
-  CLSID clsid;
-  StreamReadExact(stream, &clsid, sizeof(CLSID));
-  if (clsid == GUID_NULL) {
-    *obj.pp = null;
-  } else {
-    mew::CreateInstance(clsid, obj, stream);
-  }
-}
-
-void mew::io::StreamWriteObject(IStream* stream, IUnknown* obj) {
-  ASSERT(stream);
-  if (!obj) {
-    StreamWriteExact(stream, &GUID_NULL, sizeof(CLSID));
-  } else if (ref<ISerializable> serial = cast(obj)) {
-    CLSID clsid = serial->Class;
-    StreamWriteExact(stream, &clsid, sizeof(CLSID));
-    serial->Serialize(*stream);
-  } else {
-    throw mew::exceptions::CastError(string::load(IDS_ERR_FLATTENABLE, obj));
-  }
-}
-
-HGLOBAL mew::io::StreamCreateOnHGlobal(IStream** pp, size_t size, bool bDeleteOnRelease) {
-  ASSERT(pp);
-  HGLOBAL hGlobal = ::GlobalAlloc(GMEM_MOVEABLE, size);
-  if (!hGlobal) return null;
-  if FAILED (::CreateStreamOnHGlobal(hGlobal, bDeleteOnRelease, pp)) {
-    ::GlobalFree(hGlobal);
-    return null;
-  }
-  return hGlobal;
 }
 
 namespace {
@@ -182,9 +101,152 @@ struct CSIDLVerifier {
   }
 } _verify;
 #endif
+
+static mew::string PathFromArg(IUnknown* arg) {
+  if (mew::string s = mew::cast(arg)) {
+    return s;
+  } else if (mew::ref<mew::io::IEntry> entry = mew::cast(arg)) {
+    return entry->Path;
+  } else {
+    return mew::null;
+  }
+}
+static void CreateFileStream(mew::REFINTF pp, IUnknown* arg, DWORD stgm, UINT nErrorID) throw(...) {
+  if (mew::string path = PathFromArg(arg)) {
+    mew::ref<IStream> stream;
+    HRESULT hr;
+    if FAILED (hr = SHCreateStreamOnFile(path.str(), stgm, &stream)) {
+      throw mew::exceptions::IOError(mew::string::load(IDS_ERR_OPENFILE, path), hr);
+    }
+    if FAILED (hr = stream.copyto(pp)) {
+      throw mew::exceptions::CastError(mew::string::load(IDS_ERR_NOINTERFACE, stream, pp.iid), hr);
+    }
+  } else {
+    throw mew::exceptions::ArgumentError(mew::string::load(nErrorID));
+  }
+}
 }  // namespace
 
-std::pair<int, PCWSTR> mew::io::PathResolveCSIDL(PCWSTR src, PCWSTR approot, int appcsidl) {
+void CreateFileReader(mew::REFINTF pp, IUnknown* arg) throw(...) {
+  CreateFileStream(pp, arg, mew::io::STGM_DEFAULT_READ, IDS_ERR_ARG_FILEINPUTSTREAM);
+}
+
+void CreateFileWriter(mew::REFINTF pp, IUnknown* arg) throw(...) {
+  CreateFileStream(pp, arg, mew::io::STGM_DEFAULT_WRITE, IDS_ERR_ARG_FILEOUTPUTSTREAM);
+}
+
+void CreateReader(mew::REFINTF pp, IUnknown* arg) throw(...) {
+  HRESULT hr;
+  if (mew::ref<IStream> stream = mew::cast(arg)) {
+    if FAILED (hr = stream.copyto(pp)) {
+      throw mew::exceptions::CastError(mew::string::load(IDS_ERR_NOINTERFACE, stream, pp.iid), hr);
+    }
+  }
+  // else if(ref<IBuffer> buffer = cast(arg)) {
+  //   CreateMemoryReader(pp, arg);
+  // }
+  else {
+    CreateFileReader(pp, arg);
+  }
+  ASSERT(*pp.pp);
+}
+
+void CreateWriter(mew::REFINTF pp, IUnknown* arg) throw(...) {
+  HRESULT hr;
+  if (mew::ref<IStream> stream = mew::cast(arg)) {
+    if FAILED (hr = stream.copyto(pp)) {
+      throw mew::exceptions::CastError(mew::string::load(IDS_ERR_NOINTERFACE, stream, pp.iid), hr);
+    }
+  }
+  // else if(ref<IBuffer> buffer = cast(arg)) {
+  //   CreateMemoryWriter(pp, arg);
+  // }
+  else {
+    CreateFileWriter(pp, arg);
+  }
+  ASSERT(*pp.pp);
+}
+
+namespace mew {
+namespace io {
+void StreamReadExact(IStream* stream, void* buffer, size_t size) {
+  size_t done = StreamReadSome(stream, buffer, size);
+  if (done != size) {
+    throw mew::exceptions::IOError(_T(__FUNCTION__), STG_E_READFAULT);
+  }
+  // throw IOError(string::load(IDS_ERR_READ_LACK), STG_E_READFAULT);
+}
+
+size_t StreamReadSome(IStream* stream, void* buffer, size_t size) {
+  ASSERT(stream);
+  ULONG done = 0;
+  HRESULT hr = stream->Read(buffer, size, &done);
+  if FAILED (hr) {
+    throw mew::exceptions::IOError(_T(__FUNCTION__), hr);
+  }
+  return done;
+}
+
+void StreamWriteExact(IStream* stream, const void* buffer, size_t size) {
+  size_t done = StreamWriteSome(stream, buffer, size);
+  if (done != size) {
+    throw mew::exceptions::IOError(_T(__FUNCTION__), STG_E_MEDIUMFULL);
+  }
+  // throw IOError(string::load(IDS_ERR_WRITE_LACK), STG_E_MEDIUMFULL);
+}
+
+size_t StreamWriteSome(IStream* stream, const void* buffer, size_t size) {
+  ASSERT(stream);
+  ULONG done = 0;
+  HRESULT hr = stream->Write(buffer, size, &done);
+  if FAILED (hr) {
+    throw mew::exceptions::IOError(_T(__FUNCTION__), hr);
+  }
+  return done;
+}
+
+void StreamSeekAbs(IStream* stream, UINT64 pos, UINT64* newpos) { StreamSeek(stream, STREAM_SEEK_SET, (INT64)pos, newpos); }
+
+void StreamSeekRel(IStream* stream, INT64 mov, UINT64* newpos) { StreamSeek(stream, STREAM_SEEK_CUR, mov, newpos); }
+
+void StreamReadObject(IStream* stream, REFINTF obj) {
+  ASSERT(stream);
+  CLSID clsid;
+  StreamReadExact(stream, &clsid, sizeof(CLSID));
+  if (clsid == GUID_NULL) {
+    *obj.pp = null;
+  } else {
+    mew::CreateInstance(clsid, obj, stream);
+  }
+}
+
+void StreamWriteObject(IStream* stream, IUnknown* obj) {
+  ASSERT(stream);
+  if (!obj) {
+    StreamWriteExact(stream, &GUID_NULL, sizeof(CLSID));
+  } else if (ref<ISerializable> serial = cast(obj)) {
+    CLSID clsid = serial->Class;
+    StreamWriteExact(stream, &clsid, sizeof(CLSID));
+    serial->Serialize(*stream);
+  } else {
+    throw mew::exceptions::CastError(string::load(IDS_ERR_FLATTENABLE, obj));
+  }
+}
+
+HGLOBAL StreamCreateOnHGlobal(IStream** pp, size_t size, bool bDeleteOnRelease) {
+  ASSERT(pp);
+  HGLOBAL hGlobal = ::GlobalAlloc(GMEM_MOVEABLE, size);
+  if (!hGlobal) {
+    return null;
+  }
+  if FAILED (::CreateStreamOnHGlobal(hGlobal, bDeleteOnRelease, pp)) {
+    ::GlobalFree(hGlobal);
+    return null;
+  }
+  return hGlobal;
+}
+
+std::pair<int, PCWSTR> PathResolveCSIDL(PCWSTR src, PCWSTR approot, int appcsidl) {
   WCHAR name[MAX_PATH];
   size_t eaten;
   for (size_t i = 0;; ++i) {
@@ -199,21 +261,26 @@ std::pair<int, PCWSTR> mew::io::PathResolveCSIDL(PCWSTR src, PCWSTR approot, int
   const CSIDL_Map* end = begin + lengthof(CSIDL_MAP);
   const CSIDL_Map* found = algorithm::binary_search(begin, end, name);
   int csidl;
-  if (found != end)
+  if (found != end) {
     csidl = found->csidl;
-  else if (_wcsicmp(name, approot) == 0)
+  } else if (_wcsicmp(name, approot) == 0) {
     csidl = appcsidl;
-  else
+  } else {
     return std::pair<int, PCWSTR>(0, 0);
-  if (src[eaten] != L'\0') ++eaten;
+  }
+  if (src[eaten] != L'\0') {
+    ++eaten;
+  }
   return std::pair<int, PCWSTR>(csidl, src + eaten);
 }
 
-string mew::io::PathResolvePath(PCWSTR src, PCWSTR approot, int appcsidl) {
+string PathResolvePath(PCWSTR src, PCWSTR approot, int appcsidl) {
   std::pair<int, PCWSTR> result = io::PathResolveCSIDL(src, approot, appcsidl);
   int csidl = result.first;
   PCWSTR next = result.second;
-  if (!next) return src;
+  if (!next) {
+    return src;
+  }
   io::Path file;
   if (csidl == appcsidl) {
     ::GetModuleFileName(null, file, MAX_PATH);
@@ -221,7 +288,9 @@ string mew::io::PathResolvePath(PCWSTR src, PCWSTR approot, int appcsidl) {
   } else {
     SHGetFolderPath(null, csidl, null, SHGFP_TYPE_CURRENT, file);
   }
-  if (*next) file.Append(next);
+  if (*next) {
+    file.Append(next);
+  }
   for (int i = 0; file[i] != L'\0'; ++i) {
     switch (file[i]) {
       case L'/':
@@ -235,106 +304,35 @@ string mew::io::PathResolvePath(PCWSTR src, PCWSTR approot, int appcsidl) {
 //==============================================================================
 // INIƒtƒ@ƒCƒ‹.
 
-string mew::io::IniGetString(PCTSTR filename, PCTSTR group, PCTSTR key, PCTSTR defaultValue) {
+string IniGetString(PCTSTR filename, PCTSTR group, PCTSTR key, PCTSTR defaultValue) {
   TCHAR buffer[MAX_PATH];
   // DefaultNewName
   ::GetPrivateProfileString(group, key, _T(""), buffer, MAX_PATH, filename);
-  if (str::empty(buffer))
+  if (str::empty(buffer)) {
     return defaultValue;
-  else
+  } else {
     return buffer;
+  }
 }
 
-bool mew::io::IniGetBool(PCTSTR filename, PCTSTR group, PCTSTR key, bool defaultValue) {
+bool IniGetBool(PCTSTR filename, PCTSTR group, PCTSTR key, bool defaultValue) {
   TCHAR buffer[MAX_PATH];
   int len = ::GetPrivateProfileString(group, key, NULL, buffer, MAX_PATH, filename);
-  if (len == 0) return defaultValue;
-  if (str::equals_nocase(buffer, _T("true")) || str::equals_nocase(buffer, _T("yes"))) return true;
+  if (len == 0) {
+    return defaultValue;
+  }
+  if (str::equals_nocase(buffer, _T("true")) || str::equals_nocase(buffer, _T("yes"))) {
+    return true;
+  }
   int value = str::atoi(buffer);
   return value != 0;
 }
 
-//==============================================================================
-
-namespace {
-static string PathFromArg(IUnknown* arg) {
-  if (string s = cast(arg))
-    return s;
-  else if (ref<IEntry> entry = cast(arg))
-    return entry->Path;
-  else
-    return null;
-}
-static void CreateFileStream(REFINTF pp, IUnknown* arg, DWORD stgm, UINT nErrorID) throw(...) {
-  if (string path = PathFromArg(arg)) {
-    ref<IStream> stream;
-    HRESULT hr;
-    if FAILED (hr = SHCreateStreamOnFile(path.str(), stgm, &stream)) {
-      throw mew::exceptions::IOError(string::load(IDS_ERR_OPENFILE, path), hr);
-    }
-    if FAILED (hr = stream.copyto(pp)) {
-      throw mew::exceptions::CastError(string::load(IDS_ERR_NOINTERFACE, stream, pp.iid), hr);
-    }
-  } else {
-    throw mew::exceptions::ArgumentError(string::load(nErrorID));
-  }
-}
-}  // namespace
-
-//==============================================================================
-
-void CreateFileReader(REFINTF pp, IUnknown* arg) throw(...) {
-  CreateFileStream(pp, arg, STGM_DEFAULT_READ, IDS_ERR_ARG_FILEINPUTSTREAM);
-}
-
 AVESTA_EXPORT_FUNC(FileReader)
-
-//==============================================================================
-
-void CreateFileWriter(REFINTF pp, IUnknown* arg) throw(...) {
-  CreateFileStream(pp, arg, STGM_DEFAULT_WRITE, IDS_ERR_ARG_FILEOUTPUTSTREAM);
-}
-
 AVESTA_EXPORT_FUNC(FileWriter)
 
-//==============================================================================
-
-void CreateReader(REFINTF pp, IUnknown* arg) throw(...) {
-  HRESULT hr;
-  if (ref<IStream> stream = cast(arg)) {
-    if FAILED (hr = stream.copyto(pp)) {
-      throw mew::exceptions::CastError(string::load(IDS_ERR_NOINTERFACE, stream, pp.iid), hr);
-    }
-  }
-  // else if(ref<IBuffer> buffer = cast(arg)) {
-  //   CreateMemoryReader(pp, arg);
-  // }
-  else {
-    CreateFileReader(pp, arg);
-  }
-  ASSERT(*pp.pp);
-}
-
 AVESTA_EXPORT_FUNC(Reader)
-
-//==============================================================================
-
-void CreateWriter(REFINTF pp, IUnknown* arg) throw(...) {
-  HRESULT hr;
-  if (ref<IStream> stream = cast(arg)) {
-    if FAILED (hr = stream.copyto(pp)) {
-      throw mew::exceptions::CastError(string::load(IDS_ERR_NOINTERFACE, stream, pp.iid), hr);
-    }
-  }
-  // else if(ref<IBuffer> buffer = cast(arg)) {
-  //   CreateMemoryWriter(pp, arg);
-  // }
-  else {
-    CreateFileWriter(pp, arg);
-  }
-  ASSERT(*pp.pp);
-}
-
 AVESTA_EXPORT_FUNC(Writer)
 
-//==============================================================================
+}  // namespace io
+}  // namespace mew

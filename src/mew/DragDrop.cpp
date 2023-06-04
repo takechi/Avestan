@@ -6,8 +6,6 @@
 #include "io.hpp"
 #include "shell.hpp"
 
-using namespace mew::io;
-
 #ifdef _DEBUG
 #define TRACE_FORMAT(fmt, cf) \
   if (fmt->cfFormat == cf)    \
@@ -128,7 +126,7 @@ static HRESULT DuplicateStgMedium(const STGMEDIUM* src, STGMEDIUM* dst, const FO
           case TYMED_HGLOBAL:  // IStream to hGlobal
           {
             mew::Stream stream;
-            dst->hGlobal = StreamCreateOnHGlobal(&stream, 0, false);
+            dst->hGlobal = mew::io::StreamCreateOnHGlobal(&stream, 0, false);
             LARGE_INTEGER zero = {0, 0};
             src->pstm->Seek(zero, STREAM_SEEK_SET, NULL);
             const int bufsize = 1024;
@@ -523,9 +521,9 @@ class DragSource : public Root<implements<IDragSource, IDataObject> >  // IAsync
   STDMETHOD(EnumDAdvise)(IEnumSTATDATA** ppenumAdvise) { ATLTRACENOTIMPL(_T("DragSource::EnumDAdvise\n")); }
 };
 
+AVESTA_EXPORT(DragSource)
+
 }  // namespace io
 }  // namespace mew
 
-//==============================================================================
 
-AVESTA_EXPORT(DragSource)

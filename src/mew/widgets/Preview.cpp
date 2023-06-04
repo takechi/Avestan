@@ -7,11 +7,6 @@
 #include "shell.hpp"
 #include "drawing.hpp"
 
-using namespace mew::io;
-using namespace mew::drawing;
-
-//==============================================================================
-
 namespace {
 using PreviewBase = mew::ui::WindowImplBase;
 
@@ -22,7 +17,7 @@ class Drawable {
  public:
   virtual ~Drawable() {}
   virtual mew::string GetText(mew::ui::IWindow* owner) { return mew::null; }
-  virtual void Draw(mew::ui::IWindow* owner, DC dc, const mew::Size& screen) = 0;
+  virtual void Draw(mew::ui::IWindow* owner, mew::drawing::DC dc, const mew::Size& screen) = 0;
 };
 
 class MessageDrawable : public Drawable {
@@ -32,7 +27,7 @@ class MessageDrawable : public Drawable {
 
  public:
   MessageDrawable(mew::string text, DWORD flags = DT_CENTER | DT_NOPREFIX) : m_text(text), m_flags(flags) {}
-  virtual void Draw(mew::ui::IWindow* owner, DC dc, const mew::Size& screen) {
+  virtual void Draw(mew::ui::IWindow* owner, mew::drawing::DC dc, const mew::Size& screen) {
     mew::Rect bounds(0, 0, screen.w, screen.h);
     dc.FillRect(&bounds, ::GetSysColorBrush(COLOR_WINDOW));
     if (m_flags & DT_CENTER) {
@@ -65,7 +60,6 @@ class Image : public Drawable {
 
  private:
   Image(HBITMAP hBitmap, mew::Size sz, Gdiplus::PixelFormat format) : m_bitmap(hBitmap), m_size(sz) {
-    using namespace Gdiplus;
     switch (format) {
       case PixelFormat1bppIndexed:
         m_depth = 1;
@@ -103,7 +97,9 @@ class Image : public Drawable {
     }
   }
   ~Image() {
-    if (m_bitmap) m_bitmap.DeleteObject();
+    if (m_bitmap) {
+      m_bitmap.DeleteObject();
+    }
   }
 
  public:
@@ -114,10 +110,10 @@ class Image : public Drawable {
     }
     mew::Rect rc(0, 0, image->GetWidth(), image->GetHeight());
 
-    DC dcScreen = GetDC(nullptr);
+    mew::drawing::DC dcScreen = GetDC(nullptr);
     CBitmapHandle bitmap;
     bitmap.CreateCompatibleBitmap(dcScreen, rc.w, rc.h);
-    DC dc;
+    mew::drawing::DC dc;
     dc.CreateCompatibleDC(dcScreen);
     ReleaseDC(nullptr, dcScreen);
     CBitmap old = dc.SelectBitmap(bitmap);
@@ -149,7 +145,7 @@ class Image : public Drawable {
     }
     return r;
   }
-  virtual void Draw(mew::ui::IWindow* owner, DC dc, const mew::Size& screen) {
+  virtual void Draw(mew::ui::IWindow* owner, mew::drawing::DC dc, const mew::Size& screen) {
     if (screen.empty()) {
       return;
     }
@@ -159,7 +155,7 @@ class Image : public Drawable {
     int x = (screen.w - w) / 2;
     int y = (screen.h - h) / 2;
 
-    DC srcdc;
+    mew::drawing::DC srcdc;
     srcdc.CreateCompatibleDC(dc);
     srcdc.SelectBitmap(m_bitmap);
     dc.SetStretchBltMode(HALFTONE);
@@ -191,7 +187,7 @@ class Text : public Drawable {
     }
     return nullptr;
   }
-  virtual void Draw(mew::ui::IWindow* owner, DC dc, const mew::Size& screen) {
+  virtual void Draw(mew::ui::IWindow* owner, mew::drawing::DC dc, const mew::Size& screen) {
     mew::Rect rc(0, 0, screen.w, screen.h);
     dc.FillRect(&rc, ::GetSysColorBrush(COLOR_WINDOW));
     ::DrawTextA(dc, m_text, m_length, &rc, DT_NOPREFIX | DT_EXPANDTABS);
@@ -269,8 +265,8 @@ namespace ui {
 class Preview : public WindowImpl<CWindowImplEx<Preview, PreviewBase>, implements<IPreview, IWindow, ISignal, IDisposable> > {
  private:
   CAutoPtr<Drawable> m_drawable;
-  ref<IEntry> m_entry;
-  ref<IEntry> m_linked;
+  ref<io::IEntry> m_entry;
+  ref<io::IEntry> m_linked;
   HANDLE m_complete;
   bool m_HideOnOwnerMinimize;  // FIXME: こんなことしなくてもよいと思うんだが？
 
@@ -318,15 +314,18 @@ class Preview : public WindowImpl<CWindowImplEx<Preview, PreviewBase>, implement
   END_MSG_MAP()
 
   void FocusOwner() {
-    if (IsZoomed()) ShowWindow(SW_SHOWNORMAL);
+    if (IsZoomed()) {
+      ShowWindow(SW_SHOWNORMAL);
+    }
     ::SetFocus(GetWindow(GW_OWNER));
   }
 
   void ToggleZoomed() {
-    if (IsZoomed())
+    if (IsZoomed()) {
       ShowWindow(SW_SHOWNORMAL);
-    else
+    } else {
       ShowWindow(SW_MAXIMIZE);
+    }
   }
 
   LRESULT OnMouseWheel(UINT, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
@@ -345,9 +344,9 @@ class Preview : public WindowImpl<CWindowImplEx<Preview, PreviewBase>, implement
     if (m_entry) {
       Point ptClient(GET_XY_LPARAM(lParam));
       if (DragDetect(ptClient)) {
-        ref<IDragSource> source(__uuidof(DragSource));
+        ref<io::IDragSource> source(__uuidof(io::DragSource));
         source->AddIDList(m_entry->ID);
-        source->DoDragDrop(DropEffectCopy | DropEffectMove | DropEffectLink);
+        source->DoDragDrop(io::DropEffectCopy | io::DropEffectMove | io::DropEffectLink);
         return 0;
       }
     }
@@ -377,7 +376,9 @@ class Preview : public WindowImpl<CWindowImplEx<Preview, PreviewBase>, implement
 
   LRESULT OnShowWindow(UINT, WPARAM wParam, LPARAM lParam, BOOL&) {
     if (lParam == 0) {
-      if (wParam) Load();
+      if (wParam) {
+        Load();
+      }
     }
     return 0;
   }
@@ -435,7 +436,7 @@ class Preview : public WindowImpl<CWindowImplEx<Preview, PreviewBase>, implement
     return 0;
   }
 
-  void OnDraw(DC dc, const RECT& update) {
+  void OnDraw(mew::drawing::DC dc, const RECT& update) {
     if (m_drawable) {
       m_drawable->Draw(this, dc, ClientSize);
     } else {
@@ -459,7 +460,7 @@ class Preview : public WindowImpl<CWindowImplEx<Preview, PreviewBase>, implement
       return S_OK;
     }
     Invalidate();
-    if (ref<IEntry> entry = cast(p)) {
+    if (ref<io::IEntry> entry = cast(p)) {
       SetEntry(entry);
     } else {
       this->Name = L"";
@@ -469,7 +470,7 @@ class Preview : public WindowImpl<CWindowImplEx<Preview, PreviewBase>, implement
   }
 
  private:
-  void SetEntry(IEntry* entry) {
+  void SetEntry(io::IEntry* entry) {
     this->Name = entry->Name;
     m_entry = entry;
     m_linked.clear();
@@ -482,7 +483,7 @@ class Preview : public WindowImpl<CWindowImplEx<Preview, PreviewBase>, implement
     }
     Load();
   }
-  static bool CanPreview(IEntry* entry) {
+  static bool CanPreview(io::IEntry* entry) {
     string path = entry->Path;
     PCWSTR filename = path.str();
     if (!path) {
@@ -537,7 +538,7 @@ class Preview : public WindowImpl<CWindowImplEx<Preview, PreviewBase>, implement
   }
   volatile void AsyncLoad() {
     // 読み込み中に変化する場合があるため、ローカル変数に保存しておく。
-    ref<IEntry> linked = m_linked;
+    ref<io::IEntry> linked = m_linked;
     if (!linked) {
       return;
     }
@@ -575,7 +576,7 @@ class Preview : public WindowImpl<CWindowImplEx<Preview, PreviewBase>, implement
     ((Preview*)pThis)->AsyncLoad();
     return 0;
   }
-  void UpdateTitle(IEntry* linked, const string& text) {
+  void UpdateTitle(io::IEntry* linked, const string& text) {
     if (text) {
       this->Name = string::format(L"$1 : $2", linked->Name, text);
     }

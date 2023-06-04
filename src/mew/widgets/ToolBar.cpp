@@ -13,9 +13,6 @@
 
 #include "../server/main.hpp"  // もうぐちゃぐちゃ……
 
-using namespace mew::drawing;
-using namespace mew::io;
-
 namespace {
 const int ID_FIRST_ITEM = 100;
 const int BTNOFF = 1;  // なぜかツールバーの一つ目のボタンは動作がおかしいので、ダミーを追加する
@@ -973,7 +970,6 @@ class LinkBar : public Object<ToolBar, implements<IDropTarget> > {
   }
 
   LRESULT OnContextMenu(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-    using namespace io;
     Point ptScreen(GET_XY_LPARAM(lParam));
     Point ptClient;
     int index = -1;
@@ -994,7 +990,7 @@ class LinkBar : public Object<ToolBar, implements<IDropTarget> > {
       index = HitTest(&ptClient);
     }
     if (index > 0) {
-      ref<IFolder> folder;
+      ref<io::IFolder> folder;
       if SUCCEEDED (m_root->GetChild(&folder, index - 1)) {
         ref<IContextMenu> menu;
         if SUCCEEDED (folder->Entry->QueryObject(&menu)) {
@@ -1042,15 +1038,15 @@ class LinkBar : public Object<ToolBar, implements<IDropTarget> > {
   }
 
  public:  // IDropTarget
-  ref<IEntry> HitTestEntryFromScreenPoint(int x, int y, int* pIndex = null) {
+  ref<io::IEntry> HitTestEntryFromScreenPoint(int x, int y, int* pIndex = null) {
     Point ptClient(x, y);
     ScreenToClient(&ptClient);
     int index = HitTest(&ptClient);
     if (pIndex) *pIndex = index;
-    ref<IFolder> folder;
+    ref<io::IFolder> folder;
     if (index > 0 && SUCCEEDED(m_root->GetChild(&folder, index - 1))) {
-      if (ref<IEntry> e = folder->Entry) {
-        ref<IEntry> linked;
+      if (ref<io::IEntry> e = folder->Entry) {
+        ref<io::IEntry> linked;
         if SUCCEEDED (e->GetLinked(&linked)) return linked;
       }
     }
@@ -1062,7 +1058,7 @@ class LinkBar : public Object<ToolBar, implements<IDropTarget> > {
   STDMETHODIMP DragOver(DWORD key, POINTL pt, DWORD* pdwEffect) {
     afx::TipRelayEvent(m_tip, m_hWnd, pt.x, pt.y);
     int index = -1;
-    ref<IEntry> dst = HitTestEntryFromScreenPoint(pt.x, pt.y, &index);
+    ref<io::IEntry> dst = HitTestEntryFromScreenPoint(pt.x, pt.y, &index);
     SetHotItem(index);
     return ProcessDragOver(dst, key, pdwEffect);
   }
@@ -1073,7 +1069,9 @@ class LinkBar : public Object<ToolBar, implements<IDropTarget> > {
   STDMETHODIMP Drop(IDataObject* src, DWORD key, POINTL pt, DWORD* pdwEffect) {
     HRESULT hr = ProcessDrop(src, HitTestEntryFromScreenPoint(pt.x, pt.y), pt, key, pdwEffect);
     SetHotItem(-1);
-    if FAILED (hr) MessageBeep(0);
+    if FAILED (hr) {
+      MessageBeep(0);
+    }
     return hr;
   }
 };
@@ -1138,7 +1136,9 @@ class MenuBar : public ToolBarImpl<MenuBar> {
         GiveFocusBack();  // exit menu "loop"
         PostMessage(TB_SETHOTITEM, (WPARAM)-1, 0L);
       } else if (m_uSysKey != VK_SPACE && !m_bSkipMsg) {
-        if (m_bUseKeyboardCues && !m_bShowKeyboardCues && m_bAllowKeyboardCues) ShowKeyboardCues(true);
+        if (m_bUseKeyboardCues && !m_bShowKeyboardCues && m_bAllowKeyboardCues) {
+          ShowKeyboardCues(true);
+        }
 
         TakeFocus();  // enter menu "loop"
         bHandled = true;

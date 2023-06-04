@@ -4,10 +4,6 @@
 #include "avesta.hpp"
 #include "struct.hpp"
 
-using namespace avesta;
-
-//================================================================================
-
 namespace {
 class SHFileOpHack : public CWindowImpl<SHFileOpHack> {
   enum {
@@ -135,35 +131,7 @@ class SHFileOpHack : public CWindowImpl<SHFileOpHack> {
 };
 
 HWND SHFileOpHack::s_hwndProgress[MAX_COUNT];
-}  // namespace
 
-HRESULT avesta::FileOperationHack(HWND hwndProgress, HWND hwndOwner) {
-  DWORD op = SHFileOpHack::GetFileOperationMode(hwndProgress);
-  if (!op) {
-    return E_FAIL;
-  }
-  // SHFileOperationウィンドウの構成
-  // - #32770
-  //    +- SysAnimate32
-  //    +- Static : FROM から TO へ
-  //    +- Static : FILENAME
-  //    +- msctls_progress32
-  //    +- Static : 残り N分
-  //    +- Button : キャンセル
-  HRESULT hr = S_FALSE;
-  if (!SHFileOpHack::GetSubclass(hwndProgress)) {
-    new SHFileOpHack(hwndProgress);
-    hr = S_OK;
-  }
-  ::SetActiveWindow(hwndOwner);
-  ::SetForegroundWindow(hwndOwner);
-  ::SetFocus(hwndOwner);
-  return hr;
-}
-
-//================================================================================
-
-namespace {
 static bool IsEqualClassName(HWND hwnd, PCTSTR clsname) {
   if (!hwnd) {
     return false;
@@ -201,7 +169,32 @@ static HWND FindPathEditOfFileDialog() {
 }
 }  // namespace
 
-HRESULT avesta::FileDialogSetPath(PCWSTR path) {
+namespace avesta {
+HRESULT FileOperationHack(HWND hwndProgress, HWND hwndOwner) {
+  DWORD op = SHFileOpHack::GetFileOperationMode(hwndProgress);
+  if (!op) {
+    return E_FAIL;
+  }
+  // SHFileOperationウィンドウの構成
+  // - #32770
+  //    +- SysAnimate32
+  //    +- Static : FROM から TO へ
+  //    +- Static : FILENAME
+  //    +- msctls_progress32
+  //    +- Static : 残り N分
+  //    +- Button : キャンセル
+  HRESULT hr = S_FALSE;
+  if (!SHFileOpHack::GetSubclass(hwndProgress)) {
+    new SHFileOpHack(hwndProgress);
+    hr = S_OK;
+  }
+  ::SetActiveWindow(hwndOwner);
+  ::SetForegroundWindow(hwndOwner);
+  ::SetFocus(hwndOwner);
+  return hr;
+}
+
+HRESULT FileDialogSetPath(PCWSTR path) {
   HWND hComboBox = FindPathEditOfFileDialog();
   if (!hComboBox) {
     return E_FAIL;
@@ -217,3 +210,5 @@ HRESULT avesta::FileDialogSetPath(PCWSTR path) {
   ::SendMessage(hComboBox, WM_SETTEXT, 0, (LPARAM)orig);
   return S_OK;
 }
+
+}  // namespace avesta

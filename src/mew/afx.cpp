@@ -9,9 +9,8 @@
 #include "std/buffer.hpp"
 #include <atlpath.h>
 
-using namespace mew;
-
 namespace {
+
 enum {
   SHELL32_SHAllocShared = 520,
   SHELL32_SHLockShared = 521,
@@ -20,24 +19,28 @@ enum {
   SHELL32_SHGetImageList = 727,
   USER32_PrivateExtractIconsW = 521,
 };
-}
 
-//==============================================================================
-
-namespace {
 #define INVALID_FUNCTION_POINTER ((void*)(UINT_PTR)-1)
 
 // この関数は排他制御を行わなくて良い。
 // 無駄にはなるが、どうせ同じポインタが取れるので。
 static bool DynamicLoadVoidPtr(void** fn, PCWSTR module, PCSTR name, int64_t index) throw() {
   ASSERT(fn);
-  if (*fn == INVALID_FUNCTION_POINTER) return false;
-  if (*fn) return true;
+  if (*fn == INVALID_FUNCTION_POINTER) {
+    return false;
+  }
+  if (*fn) {
+    return true;
+  }
   HINSTANCE hDLL = ::LoadLibrary(module);
   *fn = ::GetProcAddress(hDLL, name);
-  if (!*fn && index > 0) *fn = ::GetProcAddress(hDLL, (PCSTR)index);
+  if (!*fn && index > 0) {
+    *fn = ::GetProcAddress(hDLL, (PCSTR)index);
+  }
   ::FreeLibrary(hDLL);
-  if (*fn) return true;
+  if (*fn) {
+    return true;
+  }
   *fn = INVALID_FUNCTION_POINTER;
   return false;
 }
@@ -62,42 +65,47 @@ HRESULT avesta::UrlDownload(PCWSTR url) {
 
 HANDLE afx::SHAllocShared(LPVOID data, ULONG size, DWORD pid) {
   static LPVOID(__stdcall * fn)(LPVOID data, ULONG size, DWORD pid) = NULL;
-  if (DynamicLoad(&fn, L"shell32.dll", "SHAllocShared", SHELL32_SHAllocShared))
+  if (DynamicLoad(&fn, L"shell32.dll", "SHAllocShared", SHELL32_SHAllocShared)) {
     return fn(data, size, pid);
-  else
+  } else {
     return NULL;
+  }
 }
 
 LPVOID afx::SHLockShared(HANDLE hData, DWORD dwOtherProcId) {
   static LPVOID(__stdcall * fn)(HANDLE hData, DWORD dwOtherProcId) = NULL;
-  if (DynamicLoad(&fn, L"shell32.dll", "SHLockShared", SHELL32_SHLockShared))
+  if (DynamicLoad(&fn, L"shell32.dll", "SHLockShared", SHELL32_SHLockShared)) {
     return fn(hData, dwOtherProcId);
-  else
+  } else {
     return NULL;
+  }
 }
 BOOL afx::SHUnlockShared(LPVOID lpvData) {
   static BOOL(__stdcall * fn)(LPVOID lpvData) = NULL;
-  if (DynamicLoad(&fn, L"shell32.dll", "SHUnlockShared", SHELL32_SHUnlockShared))
+  if (DynamicLoad(&fn, L"shell32.dll", "SHUnlockShared", SHELL32_SHUnlockShared)) {
     return fn(lpvData);
-  else
+  } else {
     return FALSE;
+  }
 }
 BOOL afx::SHFreeShared(HANDLE hData, DWORD dwSourceProcId) {
   static BOOL(__stdcall * fn)(HANDLE hData, DWORD dwSourceProcId) = NULL;
-  if (DynamicLoad(&fn, L"shell32.dll", "SHFreeShared", SHELL32_SHFreeShared))
+  if (DynamicLoad(&fn, L"shell32.dll", "SHFreeShared", SHELL32_SHFreeShared)) {
     return fn(hData, dwSourceProcId);
-  else
+  } else {
     return FALSE;
+  }
 }
 
 namespace {
 UINT __stdcall PrivateExtractIconsStab(PCWSTR lpszFile, int nIconIndex, int cxIcon, int cyIcon, HICON* phicon, UINT* piconid,
                                        UINT nIcons, UINT flags) {
   for (UINT i = 0; i < nIcons; ++i) piconid[i] = 0;
-  if (cxIcon > 16 || cyIcon > 16)
+  if (cxIcon > 16 || cyIcon > 16) {
     return ExtractIconEx(lpszFile, nIconIndex, phicon, NULL, nIcons);
-  else
+  } else {
     return ExtractIconEx(lpszFile, nIconIndex, NULL, phicon, nIcons);
+  }
 }
 }  // namespace
 
@@ -105,14 +113,17 @@ HICON afx::ExtractIcon(PCWSTR filename, int index, int w, int h) {
   static UINT(__stdcall * fn)(PCWSTR lpszFile, int nIconIndex, int cxIcon, int cyIcon, HICON* phicon, UINT* piconid,
                               UINT nIcons, UINT flags) = NULL;
   if (!fn) {
-    if (!DynamicLoad(&fn, L"user32.dll", "PrivateExtractIconsW", USER32_PrivateExtractIconsW)) fn = PrivateExtractIconsStab;
+    if (!DynamicLoad(&fn, L"user32.dll", "PrivateExtractIconsW", USER32_PrivateExtractIconsW)) {
+      fn = PrivateExtractIconsStab;
+    }
   }
   HICON hIcon;
   UINT id;
-  if (fn(filename, index, w, h, &hIcon, &id, 1, 0) == 1)
+  if (fn(filename, index, w, h, &hIcon, &id, 1, 0) == 1) {
     return hIcon;
-  else
+  } else {
     return NULL;
+  }
 }
 
 //==============================================================================
@@ -139,7 +150,9 @@ class ShellMenuProvider : public ATL::CWindowImpl<ShellMenuProvider> {
   LRESULT OnContextMenu2(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     if (m_context2) {
       try {
-        if SUCCEEDED (m_context2->HandleMenuMsg(uMsg, wParam, lParam)) return 0;
+        if SUCCEEDED (m_context2->HandleMenuMsg(uMsg, wParam, lParam)) {
+          return 0;
+        }
       } catch (...) {
       }
     }
@@ -151,7 +164,9 @@ class ShellMenuProvider : public ATL::CWindowImpl<ShellMenuProvider> {
     if (m_context3) {
       try {
         LRESULT lResult = 0;
-        if SUCCEEDED (m_context3->HandleMenuMsg2(uMsg, wParam, lParam, &lResult)) return lResult;
+        if SUCCEEDED (m_context3->HandleMenuMsg2(uMsg, wParam, lParam, &lResult)) {
+          return lResult;
+        }
       } catch (...) {
       }
     }
@@ -165,7 +180,9 @@ static const UINT ID_SHELL_MENU_LAST = 0x8FFF;
 }  // namespace
 
 HMENU afx::SHBeginContextMenu(IContextMenu* pMenu) {
-  if (!pMenu) return NULL;
+  if (!pMenu) {
+    return NULL;
+  }
   WTL::CMenu popup;
   popup.CreatePopupMenu();
   if FAILED (pMenu->QueryContextMenu(popup, 0, ID_SHELL_MENU_FIRST, ID_SHELL_MENU_LAST, CMF_CANRENAME | CMF_EXPLORE)) {
@@ -176,9 +193,13 @@ HMENU afx::SHBeginContextMenu(IContextMenu* pMenu) {
 }
 
 HMENU afx::SHBeginContextMenu(IShellView* pView, UINT svgio, IContextMenu** ppMenu) {
-  if (!ppMenu) return null;
-  *ppMenu = null;
-  if (!pView || FAILED(pView->GetItemObject(svgio, IID_IContextMenu, (void**)ppMenu))) return null;
+  if (!ppMenu) {
+    return nullptr;
+  }
+  *ppMenu = nullptr;
+  if (!pView || FAILED(pView->GetItemObject(svgio, IID_IContextMenu, (void**)ppMenu))) {
+    return nullptr;
+  }
   return afx::SHBeginContextMenu(*ppMenu);
 }
 
@@ -192,12 +213,16 @@ UINT afx::SHPopupContextMenu(IContextMenu* pMenu, HMENU hMenu, POINT ptScreen) {
       continue;
     }
     bool isSep = !!(info.fType & MF_SEPARATOR);
-    if (isSep && prevIsSeparator) DeleteMenu(hMenu, i, MF_BYPOSITION);
+    if (isSep && prevIsSeparator) {
+      DeleteMenu(hMenu, i, MF_BYPOSITION);
+    }
     prevIsSeparator = isSep;
   }
   //
   ShellMenuProvider provider(pMenu);
-  if (!provider.Create(HWND_MESSAGE)) return 0;
+  if (!provider.Create(HWND_MESSAGE)) {
+    return 0;
+  }
   UINT cmd = ::TrackPopupMenu(hMenu, TPM_RIGHTBUTTON | TPM_RETURNCMD, ptScreen.x, ptScreen.y, 0, provider, NULL);
   provider.DestroyWindow();
   return cmd;
@@ -211,7 +236,9 @@ HRESULT afx::SHEndContextMenu(IContextMenu* pMenu, int command, HWND hwnd, PWSTR
     cmi.lpVerb = MAKEINTRESOURCEA(command - ID_SHELL_MENU_FIRST);
     cmi.nShow = SW_SHOWNORMAL;
     if (SUCCEEDED(hr = pMenu->InvokeCommand(&cmi)) && verb) {
-      if FAILED (pMenu->GetCommandString(command, GCS_VERBW, NULL, (LPSTR)verb, MAX_PATH)) str::clear(verb);
+      if FAILED (pMenu->GetCommandString(command, GCS_VERBW, NULL, (LPSTR)verb, MAX_PATH)) {
+        mew::str::clear(verb);
+      }
     }
   }
   return hr;
@@ -222,7 +249,7 @@ HRESULT afx::SHEndContextMenu(IContextMenu* pMenu, int command, HWND hwnd, PWSTR
 
 namespace {
 template <class T>
-static void WritePath(const CIDA* pCIDA, Stream& stream, IShellFolder* pParentFolder, const T* parentPath,
+static void WritePath(const CIDA* pCIDA, mew::Stream& stream, IShellFolder* pParentFolder, const T* parentPath,
                       size_t parentPathLength, const T* sep, size_t seplen) {
   const size_t count = afx::CIDAGetCount(pCIDA);
   for (size_t i = 0; i < count; i++) {
@@ -238,15 +265,17 @@ static void WritePath(const CIDA* pCIDA, Stream& stream, IShellFolder* pParentFo
 template <class T>
 HGLOBAL CreateTextT(const CIDA* pCIDA) {
   CComPtr<IShellFolder> pParentFolder;
-  if FAILED (afx::ILGetSelfFolder(afx::CIDAGetParent(pCIDA), &pParentFolder)) return NULL;
+  if FAILED (afx::ILGetSelfFolder(afx::CIDAGetParent(pCIDA), &pParentFolder)) {
+    return NULL;
+  }
   T parentPath[MAX_PATH];
   afx::ILGetPath(afx::CIDAGetParent(pCIDA), parentPath);
   ATLPath::AddBackslash(parentPath);
-  UINT parentPathLength = str::length(parentPath);
+  UINT parentPathLength = mew::str::length(parentPath);
   // 大体こんなもんあれば十分だろう。
   UINT allocateBytes = (parentPathLength + 64) * afx::CIDAGetCount(pCIDA) * sizeof(T);
-  Stream stream;
-  HGLOBAL hGlobal = io::StreamCreateOnHGlobal(&stream, allocateBytes, false);
+  mew::Stream stream;
+  HGLOBAL hGlobal = mew::io::StreamCreateOnHGlobal(&stream, allocateBytes, false);
   const T sep[2] = {'\r', '\n'};
   WritePath<T>(pCIDA, stream, pParentFolder, parentPath, parentPathLength, sep, 2);
   return hGlobal;
@@ -258,15 +287,17 @@ HGLOBAL afx::CIDAToHDROP(const CIDA* pCIDA) {
   // ……ということは、DragQueryFile() は指定したインデックスのファイル名を取得するのに
   // いちいちダブルNULL区切り文字列をスキャンしているのか……。
   CComPtr<IShellFolder> pParentFolder;
-  if FAILED (ILGetSelfFolder(afx::CIDAGetParent(pCIDA), &pParentFolder)) return NULL;
+  if FAILED (ILGetSelfFolder(afx::CIDAGetParent(pCIDA), &pParentFolder)) {
+    return NULL;
+  }
   TCHAR parentPath[MAX_PATH];
   ILGetPath(afx::CIDAGetParent(pCIDA), parentPath);
   PathAddBackslash(parentPath);
   UINT parentPathLength = lstrlen(parentPath);
   // 大体こんなもんあれば十分だろう。
   UINT allocateBytes = sizeof(DROPFILES) + (parentPathLength + 64) * CIDAGetCount(pCIDA) * sizeof(TCHAR);
-  Stream stream;
-  HGLOBAL hGlobal = io::StreamCreateOnHGlobal(&stream, allocateBytes, false);
+  mew::Stream stream;
+  HGLOBAL hGlobal = mew::io::StreamCreateOnHGlobal(&stream, allocateBytes, false);
   DROPFILES dropfiles = {sizeof(DROPFILES), 0, 0, true, IS_UNICODE_CHARSET};
   GetCursorPos(&dropfiles.pt);
   stream.write(&dropfiles, sizeof(DROPFILES));
@@ -277,12 +308,14 @@ HGLOBAL afx::CIDAToHDROP(const CIDA* pCIDA) {
 HGLOBAL afx::CIDAToTextA(const CIDA* pCIDA) { return CreateTextT<CHAR>(pCIDA); }
 HGLOBAL afx::CIDAToTextW(const CIDA* pCIDA) { return CreateTextT<WCHAR>(pCIDA); }
 
-string afx::GetClipboardText(HWND hwnd) {
-  if (!::OpenClipboard(hwnd)) return null;
-  string result;
+mew::string afx::GetClipboardText(HWND hwnd) {
+  if (!::OpenClipboard(hwnd)) {
+    return mew::null;
+  }
+  mew::string result;
   if (HGLOBAL hText = ::GetClipboardData(CF_UNICODETEXT)) {
     PCTSTR data = (PCTSTR)::GlobalLock(hText);
-    result = string(data);
+    result = mew::string(data);
     ::GlobalUnlock(hText);
   }
   ::CloseClipboard();
@@ -290,7 +323,9 @@ string afx::GetClipboardText(HWND hwnd) {
 }
 
 bool afx::SetClipboard(HGLOBAL hMem, int format, HWND hWnd) {
-  if (!::OpenClipboard(hWnd)) return false;
+  if (!::OpenClipboard(hWnd)) {
+    return false;
+  }
   ::EmptyClipboard();
   ::SetClipboardData(format, hMem);
   ::CloseClipboard();
@@ -333,13 +368,13 @@ static void PathNormaizeSeparator(PWSTR dst, PCWSTR src) {
 }  // namespace
 
 HRESULT afx::PathNormalize(WCHAR dst[MAX_PATH], PCWSTR src) {
-  if (str::compare(src, L"::{", 3) == 0) {  //
-    str::copy(dst, src);
+  if (mew::str::compare(src, L"::{", 3) == 0) {  //
+    mew::str::copy(dst, src);
   } else if (UrlIsFileUrlW(src)) {
     DWORD dwLength = MAX_PATH;
     PathCreateFromUrlW(src, dst, &dwLength, 0);
   } else if (PathIsRegistory(src)) {  // Registory\HKEY_...
-    str::copy(dst, src);
+    mew::str::copy(dst, src);
   } else {
     PathNormaizeSeparator(dst, src);
     if (wcslen(dst) == 1 && iswalpha(src[0])) {  // "C" とか。
@@ -352,21 +387,32 @@ HRESULT afx::PathNormalize(WCHAR dst[MAX_PATH], PCWSTR src) {
 bool afx::PathIsRegistory(PCWSTR name) {
   static const WCHAR REGISTORY[] = L"Registry\\";
   static const WCHAR HKEY_XXX[] = L"HKEY_";
-  return str::compare_nocase(name, REGISTORY, 9) == 0 || str::compare_nocase(name, HKEY_XXX, 5) == 0;
+  return mew::str::compare_nocase(name, REGISTORY, 9) == 0 || mew::str::compare_nocase(name, HKEY_XXX, 5) == 0;
 }
 
 bool afx::PathIsFolder(PCWSTR path) {
-  if (PathIsDirectory(path)) return true;  // ディレクトリ
-
+  if (PathIsDirectory(path)) {
+    return true;  // ディレクトリ
+  }
   PCTSTR ext = PathFindExtension(path);
   TCHAR key[MAX_PATH], def[MAX_PATH], command[MAX_PATH], buffer[MAX_PATH];
-  if FAILED (avesta::RegGetString(HKEY_CLASSES_ROOT, ext, NULL, key)) return true;  // 未登録項目
+  if FAILED (avesta::RegGetString(HKEY_CLASSES_ROOT, ext, NULL, key)) {
+    return true;  // 未登録項目
+  }
   wsprintf(buffer, _T("%s\\shell"), key);
-  if FAILED (avesta::RegGetString(HKEY_CLASSES_ROOT, buffer, NULL, def)) return true;  // エラー
-  if (str::equals_nocase(def, _T("explore"))) return true;                             // エクスプローラに関連付け
-  if (str::empty(def)) lstrcpy(def, _T("open"));
+  if FAILED (avesta::RegGetString(HKEY_CLASSES_ROOT, buffer, NULL, def)) {
+    return true;  // エラー
+  }
+  if (mew::str::equals_nocase(def, _T("explore"))) {
+    return true;  // エクスプローラに関連付け
+  }
+  if (mew::str::empty(def)) {
+    lstrcpy(def, _T("open"));
+  }
   wsprintf(buffer, _T("%s\\shell\\%s\\command"), key, def);
-  if FAILED (avesta::RegGetString(HKEY_CLASSES_ROOT, buffer, NULL, command)) return true;
+  if FAILED (avesta::RegGetString(HKEY_CLASSES_ROOT, buffer, NULL, command)) {
+    return true;
+  }
   return false;  // 何かアプリケーションに関連付けられていた
 }
 
@@ -374,25 +420,34 @@ bool afx::PathIsFolder(PCWSTR path) {
 
 HRESULT afx::SHResolveLink(PCWSTR shortcut, PWSTR resolved) {
   HRESULT hr;
-  if (!resolved) return E_POINTER;
-  str::clear(resolved);
+  if (!resolved) {
+    return E_POINTER;
+  }
+  mew::str::clear(resolved);
 
   // オブジェクトの作成
   CComPtr<IShellLink> link;
   hr = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (void**)&link);
-  if FAILED (hr) return hr;
+  if FAILED (hr) {
+    return hr;
+  }
   CComPtr<IPersistFile> persist;
   hr = link->QueryInterface(&persist);
-  if FAILED (hr) return hr;
+  if FAILED (hr) {
+    return hr;
+  }
 
   // ショートカットを読み込む
   hr = persist->Load(CT2CW(shortcut), STGM_READ);
-  if FAILED (hr) return hr;
+  if FAILED (hr) {
+    return hr;
+  }
 
   // リンク先のパスを得る
   hr = link->GetPath(resolved, MAX_PATH, NULL, SLGP_UNCPRIORITY);
-  if FAILED (hr) return hr;
-
+  if FAILED (hr) {
+    return hr;
+  }
   return S_OK;
 }
 
@@ -403,16 +458,23 @@ LPITEMIDLIST afx::ILFromPath(PCWSTR path, DWORD* pdwAttr) {
   LPITEMIDLIST pidl = 0;
   DWORD dwReserved = (pdwAttr ? *pdwAttr : 0);
   SHILCreateFromPath(path, &pidl, pdwAttr);
-  if (pidl) return pidl;
-  if (pdwAttr) *pdwAttr = dwReserved;  // ゼロクリアされてしまうので、ここでもう一度セットする
-  //
-  size_t len = str::length(path);
-  if (len < 4 || path[0] != L':') return NULL;
+  if (pidl) {
+    return pidl;
+  }
+  if (pdwAttr) {
+    *pdwAttr = dwReserved;  // ゼロクリアされてしまうので、ここでもう一度セットする
+  }                         //
+  size_t len = mew::str::length(path);
+  if (len < 4 || path[0] != L':') {
+    return NULL;
+  }
   // format is ":mem:pid"
-  PCWSTR nextColon = str::find(path + 1, L':');
-  if (!nextColon) return NULL;
-  HANDLE hMem = (HANDLE)str::atoi64(path + 1);
-  DWORD pid = (DWORD)str::atoi(nextColon + 1);
+  PCWSTR nextColon = mew::str::find(path + 1, L':');
+  if (!nextColon) {
+    return NULL;
+  }
+  HANDLE hMem = (HANDLE)mew::str::atoi64(path + 1);
+  DWORD pid = (DWORD)mew::str::atoi(nextColon + 1);
   pidl = ILFromShared(hMem, pid);
   if (pidl) {
     if (pdwAttr && *pdwAttr != 0) {
@@ -435,7 +497,9 @@ LPITEMIDLIST afx::ILFromPath(PCWSTR path, DWORD* pdwAttr) {
 LPITEMIDLIST afx::ILFromShared(HANDLE hMem, DWORD pid) {
   LPITEMIDLIST pidl = NULL;
   if (LPITEMIDLIST pidlShared = (LPITEMIDLIST)SHLockShared(hMem, pid)) {
-    if (!IsBadReadPtr(pidlShared, 1)) pidl = ILClone(pidlShared);
+    if (!IsBadReadPtr(pidlShared, 1)) {
+      pidl = ILClone(pidlShared);
+    }
     afx::SHUnlockShared(pidlShared);
     SHFreeShared(hMem, pid);
   }
@@ -501,7 +565,9 @@ HRESULT afx::ILGetSelfFolder(LPCITEMIDLIST pidl, IShellFolder** ppFolder) {
 
 HGLOBAL afx::CIDAFromSingleIDList(LPCITEMIDLIST pidl) {
   LPCITEMIDLIST leaf = ILFindLastID(pidl);
-  if (!leaf) return NULL;
+  if (!leaf) {
+    return NULL;
+  }
   size_t pidlSize = ILGetSize(pidl);
   size_t headerSize = sizeof(UINT) * 3;
   size_t parentSize = (BYTE*)leaf - (BYTE*)pidl;
@@ -534,7 +600,9 @@ int ExpGetImageIndexForDrive(UINT type) {
     if (drives & (1 << i)) {
       TCHAR path[] = _T("*:\\");
       path[0] = (TCHAR)('A' + i);
-      if (GetDriveType(path) == type) return afx::ExpGetImageIndex(path);
+      if (GetDriveType(path) == type) {
+        return afx::ExpGetImageIndex(path);
+      }
     }
   }
   return 0;
@@ -545,7 +613,9 @@ int ExpGetDummyFile(PCWSTR relpath) {
   ::GetModuleFileName(NULL, path, MAX_PATH);
   ::PathRemoveFileSpec(path);
   ::PathAppend(path, relpath);
-  if (!::PathFileExists(path)) avesta::FileNew(path);
+  if (!::PathFileExists(path)) {
+    avesta::FileNew(path);
+  }
   return afx::ExpGetImageIndex(path);
 }
 
@@ -618,16 +688,20 @@ void OverrideIcons(IImageList* imagelist[], size_t count) {
       // 'Shell Icons' format:
       // name: <icon id>
       // value: "<resource path>,<icon index>"
-      if (LPTSTR comma = str::find_reverse(cchValue, _T(','))) {
-        int iconID = str::atoi(cchName);
-        int resID = str::atoi(comma + 1);
+      if (LPTSTR comma = mew::str::find_reverse(cchValue, _T(','))) {
+        int iconID = mew::str::atoi(cchName);
+        int resID = mew::str::atoi(comma + 1);
         *comma = _T('\0');
         int iconIndex = IconID_Index(iconID);
         if (iconIndex >= 0) {
           for (size_t i = 0; i < count; ++i) {
-            if (!imagelist[i]) continue;
+            if (!imagelist[i]) {
+              continue;
+            }
             int w, h;
-            if FAILED (imagelist[i]->GetIconSize(&w, &h)) continue;
+            if FAILED (imagelist[i]->GetIconSize(&w, &h)) {
+              continue;
+            }
             if (HICON hIcon = afx::ExtractIcon(cchValue, resID, w, h)) {
               int ret;
               VERIFY_HRESULT(imagelist[i]->ReplaceIcon(iconIndex, hIcon, &ret));
@@ -643,14 +717,18 @@ void OverrideIcons(IImageList* imagelist[], size_t count) {
 
 void SHImageListEnsureInitialize() {
   static BOOL(__stdcall * fn)(int, REFIID, void**) = NULL;
-  if (fn) return;
+  if (fn) {
+    return;
+  }
   if (DynamicLoad(&fn, L"shell32.dll", "SHGetImageList", SHELL32_SHGetImageList)) {
     IImageList* img[3] = {};
     fn(SHIL_SMALL, __uuidof(IImageList), (void**)&img[0]);
     fn(SHIL_LARGE, __uuidof(IImageList), (void**)&img[1]);
     fn(SHIL_EXTRALARGE, __uuidof(IImageList), (void**)&img[2]);
     OverrideIcons(img, lengthof(img));
-    for (size_t i = 0; i < lengthof(img); ++i) mew::objdec(img[i]);
+    for (size_t i = 0; i < lengthof(img); ++i) {
+      mew::objdec(img[i]);
+    }
   }
 }
 }  // namespace
@@ -660,15 +738,17 @@ HRESULT afx::ExpGetImageList(int size, IImageList** ppImageList) {
   static BOOL(__stdcall * fn)(int, REFIID, void**) = NULL;
   if (DynamicLoad(&fn, L"shell32.dll", "SHGetImageList", SHELL32_SHGetImageList)) {
     int what;
-    if (size < 32)
+    if (size < 32) {
       what = SHIL_SMALL;
-    else if (size < 48)
+    } else if (size < 48) {
       what = SHIL_LARGE;
-    else
+    } else {
       what = SHIL_EXTRALARGE;
+    }
     return fn(what, __uuidof(IImageList), (void**)ppImageList);
-  } else
+  } else {
     return E_UNEXPECTED;
+  }
 }
 
 HIMAGELIST afx::ExpGetImageList(int size) {
@@ -679,21 +759,29 @@ HIMAGELIST afx::ExpGetImageList(int size) {
 }
 
 int afx::ExpGetImageIndex(PCWSTR path) {
-  if (!path) return 0;
+  if (!path) {
+    return 0;
+  }
   SHFILEINFO file;
-  if (!SHGetFileInfo(path, 0, &file, sizeof(file), SHGFI_SYSICONINDEX | SHGFI_SMALLICON)) return 0;
+  if (!SHGetFileInfo(path, 0, &file, sizeof(file), SHGFI_SYSICONINDEX | SHGFI_SMALLICON)) {
+    return 0;
+  }
   return file.iIcon;
 }
 
 int afx::ExpGetImageIndex(LPCITEMIDLIST pidl) {
   SHFILEINFO file;
-  if (!afx::ILGetFileInfo(pidl, &file, SHGFI_SYSICONINDEX | SHGFI_SMALLICON)) return 0;
+  if (!afx::ILGetFileInfo(pidl, &file, SHGFI_SYSICONINDEX | SHGFI_SMALLICON)) {
+    return 0;
+  }
   return file.iIcon;
 }
 
 int afx::ExpGetImageIndex(int csidl) {
-  LPITEMIDLIST pidl = null;
-  if FAILED (SHGetSpecialFolderLocation(null, csidl, &pidl)) return 0;
+  LPITEMIDLIST pidl = nullptr;
+  if FAILED (SHGetSpecialFolderLocation(nullptr, csidl, &pidl)) {
+    return 0;
+  }
   int ret = ExpGetImageIndex(pidl);
   ::ILFree(pidl);
   return ret;
@@ -722,10 +810,16 @@ struct SHEnumExplorersParam {
 static BOOL CALLBACK EnumExplorersProc(HWND hwnd, LPARAM lParam) {
   SHEnumExplorersParam* param = (SHEnumExplorersParam*)lParam;
   ASSERT(param);
-  if (!::IsWindowVisible(hwnd)) return true;
-  if (!IsExplorer(hwnd)) return true;
+  if (!::IsWindowVisible(hwnd)) {
+    return true;
+  }
+  if (!IsExplorer(hwnd)) {
+    return true;
+  }
   LPITEMIDLIST pidl = afx::ILFromExplorer(hwnd);
-  if (!pidl) return true;
+  if (!pidl) {
+    return true;
+  }
   param->hr = param->fnEnum(hwnd, pidl, param->lParam);
   ILFree(pidl);
   return (param->hr == S_OK);
@@ -748,32 +842,49 @@ static UINT FindGroupItem(HMENU hMenu, HMENU* phMenuParent) {
     info.dwTypeData = text;
     info.cch = MAX_PATH;
     if (::GetMenuItemInfo(hMenu, i, TRUE, &info)) {
-      if (str::equals(text, _T("グループで表示(&G)"))) {
-        if (phMenuParent) *phMenuParent = hMenu;
+      if (mew::str::equals(text, _T("グループで表示(&G)"))) {
+        if (phMenuParent) {
+          *phMenuParent = hMenu;
+        }
         return info.wID;
       } else if (info.hSubMenu) {
-        if (UINT cmd = FindGroupItem(info.hSubMenu, phMenuParent)) return cmd;
+        if (UINT cmd = FindGroupItem(info.hSubMenu, phMenuParent)) {
+          return cmd;
+        }
       }
     }
   }
   return 0;
 }
 static HRESULT GetGroupMenuItem(IShellView* pShellView, IContextMenu** ppMenu = NULL, UINT* uCommand = NULL) {
-  if (ppMenu) *ppMenu = NULL;
-  if (uCommand) *uCommand = 0;
-  if (!pShellView) return E_UNEXPECTED;
+  if (ppMenu) {
+    *ppMenu = NULL;
+  }
+  if (uCommand) {
+    *uCommand = 0;
+  }
+  if (!pShellView) {
+    return E_UNEXPECTED;
+  }
   HRESULT hr;
   CComPtr<IContextMenu> pContextMenu1;
-  if FAILED (hr = pShellView->GetItemObject(SVGIO_BACKGROUND, IID_IContextMenu, (void**)&pContextMenu1)) return hr;
+  if FAILED (hr = pShellView->GetItemObject(SVGIO_BACKGROUND, IID_IContextMenu, (void**)&pContextMenu1)) {
+    return hr;
+  }
   CMenu menu;
   menu.CreatePopupMenu();
-  if FAILED (hr =
-                 pContextMenu1->QueryContextMenu(menu, 0, ID_SHELL_MENU_FIRST, ID_SHELL_MENU_LAST, CMF_CANRENAME | CMF_EXPLORE))
+  if FAILED (hr = pContextMenu1->QueryContextMenu(menu, 0, ID_SHELL_MENU_FIRST, ID_SHELL_MENU_LAST,
+                                                  CMF_CANRENAME | CMF_EXPLORE)) {
     return hr;
+  }
   CMenuHandle menuParent;
   UINT cmd = FindGroupItem(menu, &menuParent.m_hMenu);
-  if (cmd == 0) return E_FAIL;
-  if (uCommand) *uCommand = cmd;
+  if (cmd == 0) {
+    return E_FAIL;
+  }
+  if (uCommand) {
+    *uCommand = cmd;
+  }
   pContextMenu1.CopyTo(ppMenu);
   return (menuParent.GetMenuState(cmd, MF_BYCOMMAND) & MF_CHECKED) ? S_OK : S_FALSE;
 }
@@ -787,11 +898,15 @@ bool afx::ExpEnableGroup(IShellView* pShellView, bool enable) {
     ASSERT(!"グループ切り替えメニューが見つからない");
     return false;
   }
-  if ((hr == S_OK && enable) || (hr == S_FALSE && !enable)) return enable;  // no needs
+  if ((hr == S_OK && enable) || (hr == S_FALSE && !enable)) {
+    return enable;  // no needs
+  }
   CMINVOKECOMMANDINFO cmi = {sizeof(CMINVOKECOMMANDINFO)};
   cmi.lpVerb = MAKEINTRESOURCEA(cmd - ID_SHELL_MENU_FIRST);
   cmi.nShow = SW_SHOWNORMAL;
-  if SUCCEEDED (menu->InvokeCommand(&cmi)) return enable;
+  if SUCCEEDED (menu->InvokeCommand(&cmi)) {
+    return enable;
+  }
   ASSERT(!"グループ切り替えに失敗");
   return false;
 }
@@ -801,15 +916,18 @@ static const PCTSTR ThumbnailSizeValue = _T("ThumbnailSize");
 
 DWORD afx::ExpGetThumbnailSize() {
   DWORD currentSize = 0;
-  if SUCCEEDED (avesta::RegGetDWORD(HKEY_CURRENT_USER, ThumbnailSizeSubKey, ThumbnailSizeValue, &currentSize))
+  if SUCCEEDED (avesta::RegGetDWORD(HKEY_CURRENT_USER, ThumbnailSizeSubKey, ThumbnailSizeValue, &currentSize)) {
     return currentSize;
-  else
+  } else {
     return 0xFFFFFFFF;
+  }
 }
 
 HRESULT afx::ExpSetThumbnailSize(DWORD dwSize) {
   DWORD currentSize = ExpGetThumbnailSize();
-  if (currentSize == dwSize) return S_FALSE;  // no needs
+  if (currentSize == dwSize) {
+    return S_FALSE;  // no needs
+  }
   return avesta::RegSetDWORD(HKEY_CURRENT_USER, ThumbnailSizeSubKey, ThumbnailSizeValue, dwSize);
 }
 
@@ -836,17 +954,18 @@ void afx::RestoreModifierState(UINT vkey) {
   RestoreKeyState(keys, VK_MENU);
   RestoreKeyState(keys, VK_LMENU);
   RestoreKeyState(keys, VK_RMENU);
-  if (vkey) RestoreKeyState(keys, vkey);
+  if (vkey) {
+    RestoreKeyState(keys, vkey);
+  }
   SetKeyboardState(keys);
 }
 
 void afx::SetModifierState(UINT vkey, DWORD mods) {
-  using namespace mew::ui;
   BYTE keys[256];
   GetKeyboardState(keys);
-  BYTE vkeyControl = ((mods & ModifierControl) ? 0x80 : 0x00);
-  BYTE vkeyShift = ((mods & ModifierShift) ? 0x80 : 0x00);
-  BYTE vkeyAlt = ((mods & ModifierAlt) ? 0x80 : 0x00);
+  BYTE vkeyControl = ((mods & mew::ui::ModifierControl) ? 0x80 : 0x00);
+  BYTE vkeyShift = ((mods & mew::ui::ModifierShift) ? 0x80 : 0x00);
+  BYTE vkeyAlt = ((mods & mew::ui::ModifierAlt) ? 0x80 : 0x00);
   keys[VK_CONTROL] = vkeyControl;
   keys[VK_LCONTROL] = vkeyControl;
   keys[VK_RCONTROL] = vkeyControl;
@@ -856,13 +975,15 @@ void afx::SetModifierState(UINT vkey, DWORD mods) {
   keys[VK_MENU] = vkeyAlt;
   keys[VK_LMENU] = vkeyAlt;
   keys[VK_RMENU] = vkeyAlt;
-  if (vkey) keys[vkey] = 0x80;
+  if (vkey) {
+    keys[vkey] = 0x80;
+  }
   SetKeyboardState(keys);
 }
 
 bool afx::PumpMessage() {
   MSG msg;
-  while (::PeekMessage(&msg, null, 0, 0, PM_REMOVE)) {
+  while (::PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
     switch (msg.message) {
       case WM_NULL:
         // WH_GETMESSAGE で処理され、取り消されたメッセージは ID が WM_NULL に書き換えられている。
@@ -879,8 +1000,12 @@ bool afx::PumpMessage() {
 
 namespace {
 static BOOL __stdcall PostMessageToTopMost(HWND hWnd, LPARAM lParam) {
-  if (!IsWindow(hWnd)) return true;
-  if (GetParent(hWnd)) return true;
+  if (!IsWindow(hWnd)) {
+    return true;
+  }
+  if (GetParent(hWnd)) {
+    return true;
+  }
   ::PostMessage(hWnd, lParam, 0, 0);
   return true;
 }
@@ -907,14 +1032,17 @@ HRESULT afx::MimicDoubleClick(int x, int y) {
   in[5].mi.dx = 65535 * pt.x / w;
   in[5].mi.dy = 65535 * pt.y / h;
   in[5].mi.dwFlags = MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE;
-  if (::SendInput(6, in, sizeof(INPUT)) > 0)
+  if (::SendInput(6, in, sizeof(INPUT)) > 0) {
     return S_OK;
-  else
+  } else {
     return AtlHresultFromLastError();
+  }
 }
 
 HRESULT afx::TipRelayEvent(HWND hTip, HWND hOwner, int xScreen, int yScreen) {
-  if (!hTip || !hOwner) return E_INVALIDARG;
+  if (!hTip || !hOwner) {
+    return E_INVALIDARG;
+  }
   POINT ptOwner = {xScreen, yScreen};
   ::ScreenToClient(hOwner, &ptOwner);
   MSG msg = {hOwner, WM_MOUSEMOVE, 0, MAKELPARAM(ptOwner.x, ptOwner.y), GetTickCount(), xScreen, yScreen};
@@ -949,30 +1077,40 @@ class OshinobiEdit : public ATL::CWindowImpl<OshinobiEdit, WTL::CEdit> {
     return EndOfBaseName(text);
   }
   int EndOfBaseName(PCTSTR text) const {
-    if (m_isDirectory) return lstrlen(text);
+    if (m_isDirectory) {
+      return lstrlen(text);
+    }
     PCTSTR ext = ::PathFindExtension(text);
     return ext - text;
   }
   int StartOfExtension() const {
-    if (m_isDirectory) return -1;
+    if (m_isDirectory) {
+      return -1;
+    }
     TCHAR text[MAX_PATH];
     GetWindowText(text, MAX_PATH);
     return StartOfExtension(text);
   }
   int StartOfExtension(PCTSTR text) const {
     int len = lstrlen(text);
-    if (m_isDirectory) return len;
+    if (m_isDirectory) {
+      return len;
+    }
     PCTSTR ext = ::PathFindExtension(text);
     int beg = ext - text + 1;  // +1 は . のぶん。
     return (beg > len) ? -1 : beg;
   }
   void SelectBaseName() {
     int end = EndOfBaseName();
-    if (end > 0) PostMessage(EM_SETSEL, 0, end);
+    if (end > 0) {
+      PostMessage(EM_SETSEL, 0, end);
+    }
   }
   void SelectExtension() {
     int beg = StartOfExtension();
-    if (beg > 0) PostMessage(EM_SETSEL, beg, -1);
+    if (beg > 0) {
+      PostMessage(EM_SETSEL, beg, -1);
+    }
   }
   bool IsBaseNameSelected() {
     int beg, end;
@@ -1018,9 +1156,13 @@ class OshinobiEdit : public ATL::CWindowImpl<OshinobiEdit, WTL::CEdit> {
         TRESPASS();
     }
     WORD check[MAX_PATH];
-    if (!GetStringTypeEx(LOCALE_USER_DEFAULT, category, str, length, check)) return true;
+    if (!GetStringTypeEx(LOCALE_USER_DEFAULT, category, str, length, check)) {
+      return true;
+    }
     for (size_t i = 0; i < length; ++i) {
-      if (check[i] & flags) return true;
+      if (check[i] & flags) {
+        return true;
+      }
     }
     return false;
   }
@@ -1032,7 +1174,9 @@ class OshinobiEdit : public ATL::CWindowImpl<OshinobiEdit, WTL::CEdit> {
     if (end - beg <= 0) {
       beg = 0;
       end = EndOfBaseName(src);
-      if (end < 0) return;
+      if (end < 0) {
+        return;
+      }
       SetSel(beg, end);
     }
     UINT lcmap = (!Contains(second, src + beg, end - beg) ? second : first);
@@ -1060,20 +1204,21 @@ class OshinobiEdit : public ATL::CWindowImpl<OshinobiEdit, WTL::CEdit> {
   int StartOfSel() const {
     int beg, end;
     GetSel(beg, end);
-    return math::min(beg, end);
+    return mew::math::min(beg, end);
   }
 
   int EndOfSel() const {
     int beg, end;
     GetSel(beg, end);
-    return math::max(beg, end);
+    return mew::math::max(beg, end);
   }
 
   static UINT GetShiftModifier() {
-    if (::GetKeyState(VK_SHIFT) & 0x8000)
+    if (::GetKeyState(VK_SHIFT) & 0x8000) {
       return MK_SHIFT;
-    else
+    } else {
       return 0;
+    }
   }
   void PressKey(UINT vkey, UINT mods) {
     afx::SetModifierState(vkey, mods);
@@ -1218,7 +1363,9 @@ class OshinobiEdit : public ATL::CWindowImpl<OshinobiEdit, WTL::CEdit> {
 HRESULT afx::Edit_SubclassSingleLineTextBox(HWND hwndEdit, LPCWSTR fullpath, DWORD options) {
   BOOL isDirectory = fullpath && ::PathIsDirectory(fullpath);
   OshinobiEdit* edit = new OshinobiEdit(hwndEdit, isDirectory != 0, options);
-  if (!(options & afx::RenameExtension)) edit->SelectBaseName();
+  if (!(options & afx::RenameExtension)) {
+    edit->SelectBaseName();
+  }
   return S_OK;
 }
 
@@ -1243,11 +1390,11 @@ int ListView_GetMaxColumnWidth(HWND hwndListView, HWND hwndHeader, int index) {
   const int rows = ListView_GetItemCount(hwndListView);
   for (int i = 0; i < rows; ++i) {
     ListView_GetItemText(hwndListView, i, index, text, lengthof(text));
-    if (!str::empty(text)) {
+    if (!mew::str::empty(text)) {
       CClientDC dc(hwndListView);
       SIZE size;
       dc.GetTextExtent(text, lstrlen(text), &size);
-      width = math::max<int>(width, size.cx);
+      width = mew::math::max<int>(width, size.cx);
     }
   }
   // special
@@ -1267,9 +1414,13 @@ int ListView_GetMaxColumnWidth(HWND hwndListView, HWND hwndHeader, int index) {
 
 HRESULT afx::ListView_AdjustToWindow(HWND hwndListView) {
   HWND hwndHeader = ListView_GetHeader(hwndListView);
-  if (!hwndHeader || !IsWindowVisible(hwndHeader)) return E_UNEXPECTED;
+  if (!hwndHeader || !IsWindowVisible(hwndHeader)) {
+    return E_UNEXPECTED;
+  }
   const int columns = Header_GetItemCount(hwndHeader);
-  if (columns == 0) return E_UNEXPECTED;
+  if (columns == 0) {
+    return E_UNEXPECTED;
+  }
   std::vector<int> width(columns);
   int wTotal = 0, wMin = INT_MAX;
   for (int i = 0; i < columns; ++i) {
@@ -1286,7 +1437,9 @@ HRESULT afx::ListView_AdjustToWindow(HWND hwndListView) {
   const int wClient = rcClient.right - rcClient.left;
   if (wClient < wTotal) {            // クライアント幅が足りない
     if (wMin * columns > wClient) {  // 一番狭いカラムよりも狭い。だめぽ。
-      for (int i = 0; i < columns; ++i) width[i] = wClient / columns;
+      for (int i = 0; i < columns; ++i) {
+        width[i] = wClient / columns;
+      }
     } else {
       int remainClient = wClient - wMin * columns;
       int remainTotal = wTotal - wMin * columns;
@@ -1296,7 +1449,7 @@ HRESULT afx::ListView_AdjustToWindow(HWND hwndListView) {
     }
   } else {                               // クライアント幅は十分
     for (int i = 0; i < columns; ++i) {  // あんまり広くなりすぎても困るので、1.5倍でとめておく
-      width[i] = math::min(width[i] * 3 / 2, width[i] * wClient / wTotal);
+      width[i] = mew::math::min(width[i] * 3 / 2, width[i] * wClient / wTotal);
     }
   }
   for (int i = 0; i < columns; ++i) {
@@ -1308,7 +1461,9 @@ HRESULT afx::ListView_AdjustToWindow(HWND hwndListView) {
 
 HRESULT afx::ListView_AdjustToItems(HWND hwndListView) {
   HWND hwndHeader = ListView_GetHeader(hwndListView);
-  if (!hwndHeader || !IsWindowVisible(hwndHeader)) return E_UNEXPECTED;
+  if (!hwndHeader || !IsWindowVisible(hwndHeader)) {
+    return E_UNEXPECTED;
+  }
   const int columns = Header_GetItemCount(hwndHeader);
   for (int i = 0; i < columns; ++i) {
     NMHEADER notify = {hwndHeader, static_cast<UINT_PTR>(::GetDlgCtrlID(hwndHeader)), HDN_DIVIDERDBLCLICK, i, 0};
@@ -1322,7 +1477,9 @@ HRESULT afx::ListView_GetSortKey(HWND hwndListView, int* column, bool* ascending
   ASSERT(ascending);
   *column = -1;
   HWND hwndHeader = ListView_GetHeader(hwndListView);
-  if (!::IsWindow(hwndHeader)) return E_INVALIDARG;
+  if (!::IsWindow(hwndHeader)) {
+    return E_INVALIDARG;
+  }
   const int headerCount = Header_GetItemCount(hwndHeader);
   *column = ListView_GetSelectedColumn(hwndListView);
   *ascending = false;
@@ -1345,25 +1502,34 @@ HRESULT afx::ListView_GetSortKey(HWND hwndListView, int* column, bool* ascending
 }
 
 HRESULT afx::ListView_SetSortKey(HWND hwndListView, int column, bool ascending) {
-  if (column < 0) return E_INVALIDARG;
+  if (column < 0) {
+    return E_INVALIDARG;
+  }
 
   HWND hwndOwner = ::GetParent(hwndListView);
   HWND hwndHeader = ListView_GetHeader(hwndListView);
-  if (!::IsWindow(hwndHeader)) return E_INVALIDARG;
-  if (column >= Header_GetItemCount(hwndHeader)) return E_INVALIDARG;
-  for (int i = 0; i < 10; ++i)  // 変なことが起こって無限ループになるのを防ぐため。
-  {
+  if (!::IsWindow(hwndHeader)) {
+    return E_INVALIDARG;
+  }
+  if (column >= Header_GetItemCount(hwndHeader)) {
+    return E_INVALIDARG;
+  }
+  for (int i = 0; i < 10; ++i) {  // 変なことが起こって無限ループになるのを防ぐため。
     NMLISTVIEW notify = {hwndListView, static_cast<UINT_PTR>(::GetDlgCtrlID(hwndListView)), LVN_COLUMNCLICK, -1, column};
     ::SendMessage(hwndOwner, WM_NOTIFY, notify.hdr.idFrom, (LPARAM)&notify);
     int c;
     bool a;
-    if (SUCCEEDED(ListView_GetSortKey(hwndListView, &c, &a)) && c == column && a == ascending) break;
+    if (SUCCEEDED(ListView_GetSortKey(hwndListView, &c, &a)) && c == column && a == ascending) {
+      break;
+    }
   }
   return S_OK;
 }
 
 HRESULT afx::ListView_SelectReverse(HWND hwndListView) {
-  if (!::IsWindow(hwndListView)) return E_POINTER;
+  if (!::IsWindow(hwndListView)) {
+    return E_POINTER;
+  }
   int count = ListView_GetItemCount(hwndListView);
   int focus = ListView_GetNextItem(hwndListView, -1, LVNI_FOCUSED);
   int focusNext = INT_MAX;
@@ -1372,7 +1538,9 @@ HRESULT afx::ListView_SelectReverse(HWND hwndListView) {
       ListView_SetItemState(hwndListView, i, 0, LVIS_SELECTED);
     } else {
       ListView_SetItemState(hwndListView, i, LVIS_SELECTED, LVIS_SELECTED);
-      if (math::abs(focusNext - focus) > math::abs(i - focus)) focusNext = i;
+      if (mew::math::abs(focusNext - focus) > mew::math::abs(i - focus)) {
+        focusNext = i;
+      }
     }
   }
   // 以前のフォーカスに最も近い、選択中の項目をフォーカスする。
@@ -1398,13 +1566,15 @@ bool afx::ComboBoxEx_IsAutoCompleting(HWND hwndComboBoxEx) {
   TCHAR classname[64];
   return hwnd != hwndCombo && hwnd != ::GetParent(hwndComboBoxEx) &&
          ::GetWindowThreadProcessId(hwnd, NULL) == ::GetCurrentThreadId() && ::GetClassName(hwnd, classname, 64) &&
-         str::equals(classname, _T("SysListView32"));
+         mew::str::equals(classname, _T("SysListView32"));
 }
 
 HRESULT afx::ILGetDisplayName(IShellFolder* folder, LPCITEMIDLIST leaf, DWORD shgdn, WCHAR name[], size_t bufsize) {
   STRRET strret = {0};
   HRESULT hr = folder->GetDisplayNameOf(leaf, shgdn, &strret);
-  if FAILED (hr) return hr;
+  if FAILED (hr) {
+    return hr;
+  }
   return StrRetToBuf(&strret, leaf, name, bufsize);
 }
 
@@ -1462,28 +1632,32 @@ bool afx::PatternEquals(PCWSTR wild, PCWSTR text_orig) {
   PCWSTR text = text_orig;
 
   while (*text && *wild != ';' && *wild != '*') {
-    if (!eq(*wild, *text) && (*wild != '?')) return false;
-    wild = str::inc(wild);
-    text = str::inc(text);
+    if (!eq(*wild, *text) && (*wild != '?')) {
+      return false;
+    }
+    wild = mew::str::inc(wild);
+    text = mew::str::inc(text);
   }
   if (*wild != ';') {
     while (*text) {
       if (*wild == '*') {
-        wild = str::inc(wild);
-        if (!*wild || *wild == ';') return true;
+        wild = mew::str::inc(wild);
+        if (!*wild || *wild == ';') {
+          return true;
+        }
         mp = wild;
-        cp = str::inc(text);
+        cp = mew::str::inc(text);
       } else if (eq(*wild, *text) || (*wild == '?')) {
-        wild = str::inc(wild);
-        text = str::inc(text);
+        wild = mew::str::inc(wild);
+        text = mew::str::inc(text);
       } else {
         wild = mp;
         text = cp;
-        cp = str::inc(cp);
+        cp = mew::str::inc(cp);
       }
     }
     while (*wild == '*') {
-      wild = str::inc(wild);
+      wild = mew::str::inc(wild);
     }
   }
   if (*wild == ';') {
@@ -1492,10 +1666,10 @@ bool afx::PatternEquals(PCWSTR wild, PCWSTR text_orig) {
   if (*wild) {
     mp = wild;
     while ((*mp) && (*mp != ';')) {
-      mp = str::inc(mp);
+      mp = mew::str::inc(mp);
     }
     if (*mp == ';') {
-      wild = str::inc(mp);
+      wild = mew::str::inc(mp);
       return PatternEquals(wild, text_orig);
     }
   }

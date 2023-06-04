@@ -46,31 +46,35 @@ VOID CALLBACK setViewModeDetailsTimerProc(HWND hwndList, UINT, UINT_PTR idEvent,
 }
 #endif
 
-using namespace mew::io;
-
-//==============================================================================
-
 Shell::History::History() { m_cursor = 0; }
-bool Shell::History::Add(IEntry* entry) {
+bool Shell::History::Add(mew::io::IEntry* entry) {
   ASSERT(entry);
   if (!m_history.empty()) {
-    if (entry->Equals(GetRelativeHistory(0))) return false;
+    if (entry->Equals(GetRelativeHistory(0))) {
+      return false;
+    }
   }
   m_history.resize(m_cursor);
   m_history.push_back(entry);
-  if (m_cursor > MAX_HISTORY) m_history.pop_front();
+  if (m_cursor > MAX_HISTORY) {
+    m_history.pop_front();
+  }
   m_cursor = m_history.size();
   return true;
 }
-void Shell::History::Replace(IEntry* entry) {
+void Shell::History::Replace(mew::io::IEntry* entry) {
   ASSERT(entry);
-  if (m_cursor == 0) return;
+  if (m_cursor == 0) {
+    return;
+  }
   --m_cursor;
   Add(entry);
 }
-IEntry* Shell::History::GetRelativeHistory(int step, size_t* index) {
+mew::io::IEntry* Shell::History::GetRelativeHistory(int step, size_t* index) {
   size_t at = (size_t)math::clamp<int>(m_cursor + step, 1, m_history.size()) - 1;
-  if (index) *index = at;
+  if (index) {
+    *index = at;
+  }
   return m_history[at];
 }
 size_t Shell::History::Back(size_t step) {
@@ -136,11 +140,17 @@ static SHELLDLL_DefView theDefViewMap;
 class SHELLDLL_ListView : public CMessageMap {
  private:
   static bool ListView_LoopCursor(HWND hWnd, UINT direction, UINT vkeyReplace) {
-    if (!theAvesta->LoopCursor) return false;
+    if (!theAvesta->LoopCursor) {
+      return false;
+    }
     int focus = ListView_GetNextItem(hWnd, -1, LVNI_FOCUSED);
-    if (focus < 0) return false;
+    if (focus < 0) {
+      return false;
+    }
     int next = ListView_GetNextItem(hWnd, focus, direction);
-    if (next >= 0 && next != focus) return false;
+    if (next >= 0 && next != focus) {
+      return false;
+    }
     ::SendMessage(hWnd, WM_KEYDOWN, vkeyReplace, 0);
     return true;
   }
@@ -180,7 +190,9 @@ class SHELLDLL_ListView : public CMessageMap {
             afx::PumpMessage();
             // TODO: ユーザがカスタマイズできるように
             UINT32 mods = ui::GetCurrentModifiers();
-            if (mods == 0) mods = m;
+            if (mods == 0) {
+              mods = m;
+            }
             afx::SetModifierState(VK_RETURN, mods);
             ::SendMessage(hWnd, WM_KEYDOWN, VK_RETURN, 0);
             afx::RestoreModifierState(VK_RETURN);
@@ -212,7 +224,9 @@ class SHELLDLL_ListView : public CMessageMap {
         break;
       case WM_MOUSEWHEEL:
         lResult = ::SendMessage(GetParent(GetParent(hWnd)), uMsg, wParam, lParam);
-        if (lResult) return true;
+        if (lResult) {
+          return true;
+        }
         break;  // default.
       case WM_SYSCHAR:
         switch (wParam) {
@@ -268,35 +282,42 @@ class ShellBrowser : public Root<implements<IOleWindow, IShellBrowser, ICommDlgB
   STDMETHODIMP ContextSensitiveHelp(BOOL fEnterMode) { return E_NOTIMPL; }
 
  public:  // ICommDlgBrowser
-  static HRESULT QueryFolderAsDefault(IEntry* entry, REFINTF pp) {
+  static HRESULT QueryFolderAsDefault(io::IEntry* entry, REFINTF pp) {
     string path = entry->Path;
-    if (!path || afx::PathIsFolder(path.str()))
+    if (!path || afx::PathIsFolder(path.str())) {
       return entry->QueryObject(pp);
-    else
+    } else {
       return E_FAIL;
+    }
   }
-  static bool IsVirtualFolder(IEntry* folder) {
+  static bool IsVirtualFolder(io::IEntry* folder) {
     ASSERT(folder);
-    if (afx::ILIsRoot(folder->ID)) return false;  // desktop is not a virtual folder.
+    if (afx::ILIsRoot(folder->ID)) {
+      return false;  // desktop is not a virtual folder.
+    }
     string path = folder->Path;
     return !path;
   }
   STDMETHODIMP OnDefaultCommand(IShellView* pShellView) {  // handle double click and ENTER key if needed
-    ref<IEntryList> selections;
-    if FAILED (m_Owner.GetContents(&selections, SELECTED)) return S_FALSE;
+    ref<io::IEntryList> selections;
+    if FAILED (m_Owner.GetContents(&selections, SELECTED)) {
+      return S_FALSE;
+    }
     ref<IShellFolder> pCurrentFolder = m_Owner.GetCurrentFolder();
     const int count = selections->Count;
     if (IsVirtualFolder(
             m_Owner
                 .GetCurrentEntry())) {  // 仮想フォルダ。この場合は、どうせデフォルト実行以外できないので、OnDefaultExecute()しない。
       bool containsFolder = false;
-      array<IEntry> entries;
+      array<io::IEntry> entries;
       entries.reserve(count);
       // まず、1pass目でフォルダを含んでいるか否かを調べる.
       for (int i = 0; i < count; ++i) {
-        ref<IEntry> item;
-        if FAILED (selections->GetAt(&item, i)) continue;
-        ref<IEntry> resolved;
+        ref<io::IEntry> item;
+        if FAILED (selections->GetAt(&item, i)) {
+          continue;
+        }
+        ref<io::IEntry> resolved;
         item->GetLinked(&resolved);
         entries.push_back(resolved);
         if (containsFolder) {  // すでにフォルダを含むことが分かっている場合は、これ以上のチェックを行う必要は無い
@@ -322,9 +343,9 @@ class ShellBrowser : public Root<implements<IOleWindow, IShellBrowser, ICommDlgB
       }
     } else {  // 実フォルダ。
       for (int i = 0; i < count; ++i) {
-        ref<IEntry> item;
+        ref<io::IEntry> item;
         if FAILED (selections->GetAt(&item, i)) continue;
-        ref<IEntry> resolved;
+        ref<io::IEntry> resolved;
         item->GetLinked(&resolved);
         ref<IShellFolder> folder;
         if SUCCEEDED (QueryFolderAsDefault(resolved, &folder)) {
@@ -341,15 +362,15 @@ class ShellBrowser : public Root<implements<IOleWindow, IShellBrowser, ICommDlgB
     return S_OK;
   }
   STDMETHODIMP OnStateChange(IShellView* pShellView, ULONG uChange) {  // handle selection, rename, focus if needed
-    //#define caseTrace(what) case what: TRACE(L#what); break;
-    // switch(uChange) {
-    //  caseTrace(CDBOSC_SETFOCUS    )// The focus has been set to the view.
-    //  caseTrace(CDBOSC_KILLFOCUS   )// The view has lost the focus.
-    //  caseTrace(CDBOSC_SELCHANGE   )// The selected item has changed.
-    //  caseTrace(CDBOSC_RENAME      )// An item has been renamed.
-    //  caseTrace(CDBOSC_STATECHANGE )// An item has been checked or unchecked
-    //}
-    //#undef caseTrace
+    // #define caseTrace(what) case what: TRACE(L#what); break;
+    //  switch(uChange) {
+    //   caseTrace(CDBOSC_SETFOCUS    )// The focus has been set to the view.
+    //   caseTrace(CDBOSC_KILLFOCUS   )// The view has lost the focus.
+    //   caseTrace(CDBOSC_SELCHANGE   )// The selected item has changed.
+    //   caseTrace(CDBOSC_RENAME      )// An item has been renamed.
+    //   caseTrace(CDBOSC_STATECHANGE )// An item has been checked or unchecked
+    // }
+    // #undef caseTrace
     return m_Owner.OnStateChange(pShellView, uChange);
   }
   STDMETHODIMP IncludeObject(IShellView* pShellView, LPCITEMIDLIST pidl) {  // 表示ファイルのフィルタリング。
@@ -382,7 +403,9 @@ class ShellBrowser : public Root<implements<IOleWindow, IShellBrowser, ICommDlgB
   STDMETHODIMP OnViewWindowActive(IShellView* pShellView) { return E_NOTIMPL; }
   STDMETHODIMP GetViewStateStream(DWORD grfMode, IStream** ppStream) { return m_Owner.GetViewStateStream(grfMode, ppStream); }
   STDMETHODIMP GetControlWindow(UINT id, HWND* lphwnd) {
-    if (!lphwnd) return E_POINTER;
+    if (!lphwnd) {
+      return E_POINTER;
+    }
     switch (id) {
       case FCW_STATUS:
         *lphwnd = m_Owner;
@@ -395,7 +418,9 @@ class ShellBrowser : public Root<implements<IOleWindow, IShellBrowser, ICommDlgB
     switch (id) {
       case FCW_STATUS:
         lResult = m_Owner.SendMessage(uMsg, wParam, lParam);
-        if (pret) *pret = lResult;
+        if (pret) {
+          *pret = lResult;
+        }
         break;
     }
     return E_NOTIMPL;
@@ -422,9 +447,15 @@ Shell::Shell()
 Shell::~Shell() { DisposeShellView(); }
 void Shell::DisposeShellView() throw() {
   SaveViewState();
-  if (m_wndHeader) m_wndHeader.UnsubclassWindow();
-  if (m_wndList) m_wndList.UnsubclassWindow();
-  if (m_wndShell) m_wndShell.UnsubclassWindow();
+  if (m_wndHeader) {
+    m_wndHeader.UnsubclassWindow();
+  }
+  if (m_wndList) {
+    m_wndList.UnsubclassWindow();
+  }
+  if (m_wndShell) {
+    m_wndShell.UnsubclassWindow();
+  }
   if (m_pShellView) {
     IShellView* tmp = m_pShellView.detach();
     tmp->UIActivate(SVUIA_DEACTIVATE);
@@ -435,7 +466,9 @@ void Shell::DisposeShellView() throw() {
   m_pShellBrowser.clear();
 }
 HRESULT Shell::SaveViewState() {
-  if (!m_pShellView) return E_UNEXPECTED;
+  if (!m_pShellView) {
+    return E_UNEXPECTED;
+  }
   m_pShellView->GetCurrentInfo(&m_FolderSettings);
 
   m_pViewStateStream.clear();
@@ -483,7 +516,7 @@ BOOL Shell::ProcessShellMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
       switch (((NMHDR*)lParam)->code) {
         case LVN_BEGINLABELEDIT:
           if (NMLVDISPINFO* info = (NMLVDISPINFO*)lParam) {
-            ref<IEntry> entry;
+            ref<io::IEntry> entry;
             if SUCCEEDED (GetAt(&entry, info->item.iItem)) {
               HWND hEdit = m_wndList.GetEditControl();
               ASSERT(hEdit);
@@ -570,7 +603,9 @@ BOOL Shell::ProcessShellMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 }
 
 HRESULT Shell::MimicKeyDown(UINT vkey, UINT mods) {
-  if (!m_pShellView) return E_UNEXPECTED;
+  if (!m_pShellView) {
+    return E_UNEXPECTED;
+  }
   afx::SetModifierState(vkey, mods);
   MSG msg = {m_wndList, WM_KEYDOWN, vkey, static_cast<LPARAM>(MapVirtualKey(vkey, 0) | 1)};
   HRESULT hr = m_pShellView->TranslateAccelerator(&msg);
@@ -586,7 +621,9 @@ HRESULT Shell::ReCreateViewWindow(IShellFolder* pShellFolder, bool reload) {
   HRESULT hr;
 
   ASSERT(m_pShellBrowser);
-  if (!m_pShellBrowser) return E_INVALIDARG;
+  if (!m_pShellBrowser) {
+    return E_INVALIDARG;
+  }
   RECT rcView = {0, 0, 0, 0};
   if (m_wndShell) {
     m_wndShell.GetWindowRect(&rcView);
@@ -603,9 +640,15 @@ HRESULT Shell::ReCreateViewWindow(IShellFolder* pShellFolder, bool reload) {
     return hr;
   }
 
-  if (m_wndHeader) m_wndHeader.UnsubclassWindow();
-  if (m_wndList) m_wndList.UnsubclassWindow();
-  if (m_wndShell) m_wndShell.UnsubclassWindow();
+  if (m_wndHeader) {
+    m_wndHeader.UnsubclassWindow();
+  }
+  if (m_wndList) {
+    m_wndList.UnsubclassWindow();
+  }
+  if (m_wndShell) {
+    m_wndShell.UnsubclassWindow();
+  }
 
   m_pViewStateStream.clear();
   if (reload && SUCCEEDED(OnQueryStream(STGM_READ, &m_pViewStateStream))) {
@@ -622,7 +665,9 @@ HRESULT Shell::ReCreateViewWindow(IShellFolder* pShellFolder, bool reload) {
   m_FolderSettings.fFlags &= ~MEW_FWF_ALWAYSNOT;
   if (ref<IShellView2> view2 = cast(pNewShellView)) {
     SV2CVW2_PARAMS params = {sizeof(SV2CVW2_PARAMS), m_pShellView, &m_FolderSettings, m_pShellBrowser, &rcView};
-    if SUCCEEDED (hr = view2->CreateViewWindow2(&params)) hwndShell = params.hwndView;
+    if SUCCEEDED (hr = view2->CreateViewWindow2(&params)) {
+      hwndShell = params.hwndView;
+    }
   } else {
     hr = pNewShellView->CreateViewWindow(m_pShellView, &m_FolderSettings, m_pShellBrowser, &rcView, &hwndShell);
   }
@@ -648,13 +693,23 @@ HRESULT Shell::ReCreateViewWindow(IShellFolder* pShellFolder, bool reload) {
   if (HWND hListView = ::FindWindowEx(m_wndShell, NULL, _T("SysListView32"), NULL)) {
     m_wndList.SubclassWindow(hListView);
     DWORD dwExStyle = 0;
-    if (m_CheckBox) dwExStyle |= LVS_EX_CHECKBOXES;
-    if (m_FullRowSelect) dwExStyle |= LVS_EX_FULLROWSELECT;
-    if (m_GridLine) dwExStyle |= LVS_EX_GRIDLINES;
+    if (m_CheckBox) {
+      dwExStyle |= LVS_EX_CHECKBOXES;
+    }
+    if (m_FullRowSelect) {
+      dwExStyle |= LVS_EX_FULLROWSELECT;
+    }
+    if (m_GridLine) {
+      dwExStyle |= LVS_EX_GRIDLINES;
+    }
     m_wndList.SetExtendedListViewStyle(dwExStyle, LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_CHECKBOXES);
     ImmAssociateContext(m_wndList, null);
-    if (HWND hHeader = m_wndList.GetHeader()) m_wndHeader.SubclassWindow(hHeader);
-    if (HFONT hFont = GetFont()) m_wndList.SetFont(hFont);
+    if (HWND hHeader = m_wndList.GetHeader()) {
+      m_wndHeader.SubclassWindow(hHeader);
+    }
+    if (HFONT hFont = GetFont()) {
+      m_wndList.SetFont(hFont);
+    }
   }
 
   m_Grouping = (m_wndList ? m_wndList.SendMessage(LVM_ISGROUPVIEWENABLED, 0, 0) != 0 : false);
@@ -662,12 +717,16 @@ HRESULT Shell::ReCreateViewWindow(IShellFolder* pShellFolder, bool reload) {
   return S_OK;
 }
 HRESULT Shell::Refresh() {
-  if (!m_pShellView) return E_UNEXPECTED;
+  if (!m_pShellView) {
+    return E_UNEXPECTED;
+  }
   int column = 0;
   bool ascending = true;
   GetSortKey(&column, &ascending);
   HRESULT hr = m_pShellView->Refresh();
-  if FAILED (hr) return hr;
+  if FAILED (hr) {
+    return hr;
+  }
   SetSortKey(column, ascending);
   UpdateBackground();
   return S_OK;
@@ -700,10 +759,12 @@ HRESULT Shell::SetStatusByIndex(int index, Status status, bool unique) {
 }
 HRESULT Shell::SetStatusByUnknown(IUnknown* unk, Status status, bool unique) {
   IShellFolder* folder = GetCurrentFolder();
-  if (!folder) return E_UNEXPECTED;
+  if (!folder) {
+    return E_UNEXPECTED;
+  }
   bool newLeaf = false;
   LPITEMIDLIST leaf = null;
-  ref<IEntry> entry = cast(unk);
+  ref<io::IEntry> entry = cast(unk);
   if (entry) {
     leaf = ILFindLastID(entry->ID);
   } else if (string name = cast(unk)) {
@@ -712,7 +773,7 @@ HRESULT Shell::SetStatusByUnknown(IUnknown* unk, Status status, bool unique) {
   if (!leaf) {
     try {
       ASSERT(!entry);
-      entry.create(__uuidof(Entry), unk);
+      entry.create(__uuidof(io::Entry), unk);
       leaf = ILFindLastID(entry->ID);
     } catch (mew::exceptions::Error& e) {
       TRACE(e.Message);
@@ -721,11 +782,15 @@ HRESULT Shell::SetStatusByUnknown(IUnknown* unk, Status status, bool unique) {
   }
   ASSERT(leaf);
   HRESULT hr = SetStatusByIDList(leaf, status, unique);
-  if (newLeaf) ILFree(leaf);
+  if (newLeaf) {
+    ILFree(leaf);
+  }
   return hr;
 }
 HRESULT Shell::SetStatusByIDList(LPCITEMIDLIST leaf, Status status, bool unique) {
-  if (!leaf) return E_POINTER;
+  if (!leaf) {
+    return E_POINTER;
+  }
   switch (status) {
     case SELECTED:
       if (unique) SelectNone();
@@ -735,24 +800,34 @@ HRESULT Shell::SetStatusByIDList(LPCITEMIDLIST leaf, Status status, bool unique)
   }
 }
 HRESULT Shell::Select(LPCITEMIDLIST leaf, UINT svsi) {
-  if (!m_pShellView) return E_UNEXPECTED;
+  if (!m_pShellView) {
+    return E_UNEXPECTED;
+  }
   return m_pShellView->SelectItem(leaf, svsi);
 }
 HRESULT Shell::SelectNone() { return m_pShellView ? m_pShellView->SelectItem(NULL, SVSI_DESELECTOTHERS) : E_FAIL; }
 HRESULT Shell::SelectAll() {
-  if (!m_wndList.IsWindow()) return E_UNEXPECTED;
+  if (!m_wndList.IsWindow()) {
+    return E_UNEXPECTED;
+  }
   m_wndList.SetItemState(-1, LVIS_SELECTED, LVIS_SELECTED);  // -1 で全選択
   return S_OK;
 }
 HRESULT Shell::CheckAll(bool check) {
-  if (!m_CheckBox) return S_FALSE;
-  if (!m_wndList.IsWindow()) return E_UNEXPECTED;
+  if (!m_CheckBox) {
+    return S_FALSE;
+  }
+  if (!m_wndList.IsWindow()) {
+    return E_UNEXPECTED;
+  }
   m_CheckBoxChangeEnabled = true;
   m_wndList.SetCheckState(-1, check);  // -1 で全選択
   return S_OK;
 }
 HRESULT Shell::SelectChecked() {
-  if (!m_CheckBox) return S_FALSE;
+  if (!m_CheckBox) {
+    return S_FALSE;
+  }
 #if 0  // XP では SVGIO_CHECKED は取得できないっぽい
   ref<IEntryList> entries;
   HRESULT hr;
@@ -763,14 +838,18 @@ HRESULT Shell::SelectChecked() {
     m_pShellView->SelectItem(entries->Leaf[i], SVSI_SELECT | SVSI_CHECK);
   }
 #else  // 仕方ないので、リストビューを参照しながらチェックされたアイテムを選択する
-  if (!m_wndList.IsWindow()) return E_UNEXPECTED;
+  if (!m_wndList.IsWindow()) {
+    return E_UNEXPECTED;
+  }
   int count = m_wndList.GetItemCount();
   int focus = m_wndList.GetNextItem(-1, LVNI_FOCUSED);
   int focusNext = INT_MAX;
   for (int i = 0; i < count; i++) {
     if (m_wndList.GetCheckState(i)) {
       m_wndList.SetItemState(i, LVIS_SELECTED, LVIS_SELECTED);
-      if (math::abs(focusNext - focus) > math::abs(i - focus)) focusNext = i;
+      if (math::abs(focusNext - focus) > math::abs(i - focus)) {
+        focusNext = i;
+      }
     } else {
       m_wndList.SetItemState(i, 0, LVIS_SELECTED);
     }
@@ -812,18 +891,21 @@ HRESULT Shell::GetContents(REFINTF ppInterface, Status option) {
     default:
       TRESPASS();
   }
-  if SUCCEEDED (GetContents_FolderView(ppInterface, svgio))
+  if SUCCEEDED (GetContents_FolderView(ppInterface, svgio)) {
     return S_OK;
-  else
+  } else {
     return GetContents_ShellView(ppInterface, svgio);
+  }
 }
 HRESULT Shell::GetContents_FolderView(REFINTF ppInterface, int svgio) {
   if (ref<IFolderView> folder = cast(m_pShellView)) {
     ref<IDataObject> pDataObject;
     HRESULT hr = folder->Items(svgio, IID_IDataObject, (void**)&pDataObject);
-    if FAILED (hr) return hr;
+    if FAILED (hr) {
+      return hr;
+    }
     try {
-      ref<IEntryList> entries(__uuidof(EntryList), pDataObject);
+      ref<io::IEntryList> entries(__uuidof(io::EntryList), pDataObject);
       return entries->QueryInterface(ppInterface);
     } catch (mew::exceptions::Error& e) {
       return e.Code;
@@ -833,58 +915,88 @@ HRESULT Shell::GetContents_FolderView(REFINTF ppInterface, int svgio) {
 }
 HRESULT Shell::GetContents_ShellView(REFINTF ppInterface, int svgio) {
   HRESULT hr;
-  if (!m_pShellView) return E_UNEXPECTED;
+  if (!m_pShellView) {
+    return E_UNEXPECTED;
+  }
   // 特別処理
-  if (svgio == (SVGIO_SELECTION | SVGIO_FLAG_VIEWORDER)) return GetContents_Select(ppInterface);
-  if (svgio == (SVGIO_CHECKED | SVGIO_FLAG_VIEWORDER)) return GetContents_Checked(ppInterface);
+  if (svgio == (SVGIO_SELECTION | SVGIO_FLAG_VIEWORDER)) {
+    return GetContents_Select(ppInterface);
+  }
+  if (svgio == (SVGIO_CHECKED | SVGIO_FLAG_VIEWORDER)) {
+    return GetContents_Checked(ppInterface);
+  }
 
   ref<IDataObject> pDataObject;
-  if FAILED (hr = m_pShellView->GetItemObject(svgio, IID_IDataObject, (void**)&pDataObject)) return hr;
+  if FAILED (hr = m_pShellView->GetItemObject(svgio, IID_IDataObject, (void**)&pDataObject)) {
+    return hr;
+  }
   try {
-    ref<IEntryList> entries(__uuidof(EntryList), pDataObject);
+    ref<io::IEntryList> entries(__uuidof(io::EntryList), pDataObject);
     return entries->QueryInterface(ppInterface);
   } catch (mew::exceptions::Error& e) {
     return e.Code;
   }
 }
 HRESULT Shell::GetContents_Select(REFINTF ppInterface) {
-  if (!m_wndList.IsWindow()) return E_UNEXPECTED;
+  if (!m_wndList.IsWindow()) {
+    return E_UNEXPECTED;
+  }
   // IShellView::Item(SVGIO_SELECTION | SVGIO_FLAG_VIEWORDER) は、順番が狂ってしまう。
   // 仕方ないので、全部取得し、リストビューを調べて再構築する.
   HRESULT hr;
-  ref<IEntryList> entries;
-  if FAILED (hr = GetContents(&entries, StatusNone)) return hr;
+  ref<io::IEntryList> entries;
+  if FAILED (hr = GetContents(&entries, StatusNone)) {
+    return hr;
+  }
   ASSERT(entries->Count == (size_t)m_wndList.GetItemCount());
   int index = -1;
   std::vector<size_t> subset;
   while (-1 != (index = m_wndList.GetNextItem(index, LVNI_SELECTED))) {
     subset.push_back(index);
   }
-  if (subset.empty()) return E_FAIL;
+  if (subset.empty()) {
+    return E_FAIL;
+  }
   return entries->CloneSubset(ppInterface, &subset[0], subset.size());
 }
 HRESULT Shell::GetContents_Checked(REFINTF ppInterface) {
-  if (!m_wndList.IsWindow()) return E_UNEXPECTED;
+  if (!m_wndList.IsWindow()) {
+    return E_UNEXPECTED;
+  }
   HRESULT hr;
-  ref<IEntryList> entries;
-  if FAILED (hr = GetContents(&entries, StatusNone)) return hr;
+  ref<io::IEntryList> entries;
+  if FAILED (hr = GetContents(&entries, StatusNone)) {
+    return hr;
+  }
   ASSERT(entries->Count == (size_t)m_wndList.GetItemCount());
   std::vector<size_t> subset;
   int count = m_wndList.GetItemCount();
   for (int i = 0; i < count; i++) {
-    if (m_wndList.GetCheckState(i)) subset.push_back(i);
+    if (m_wndList.GetCheckState(i)) {
+      subset.push_back(i);
+    }
   }
-  if (subset.empty()) return E_FAIL;
+  if (subset.empty()) {
+    return E_FAIL;
+  }
   return entries->CloneSubset(ppInterface, &subset[0], subset.size());
 }
 HRESULT Shell::GoUp(size_t step, bool selectPrev) {
-  if (!m_pCurrentEntry) return E_FAIL;
-  if (step == 0) return !afx::ILIsRoot(m_pCurrentEntry->ID);
+  if (!m_pCurrentEntry) {
+    return E_FAIL;
+  }
+  if (step == 0) {
+    return !afx::ILIsRoot(m_pCurrentEntry->ID);
+  }
   HRESULT hr;
-  ref<IEntry> current = m_pCurrentEntry;
-  ref<IEntry> parent;
-  if FAILED (hr = m_pCurrentEntry->QueryObject(&parent, step)) return hr;
-  if FAILED (hr = GoAbsolute(parent, GoNew)) return hr;
+  ref<io::IEntry> current = m_pCurrentEntry;
+  ref<io::IEntry> parent;
+  if FAILED (hr = m_pCurrentEntry->QueryObject(&parent, step)) {
+    return hr;
+  }
+  if FAILED (hr = GoAbsolute(parent, GoNew)) {
+    return hr;
+  }
   // 以前いたフォルダにカーソルを合わせる.
   if (selectPrev) {
     if (LPITEMIDLIST prev = ILCloneFirst((LPITEMIDLIST)(((BYTE*)current->ID) + ILGetSize(parent->ID) - 2))) {
@@ -903,13 +1015,21 @@ static LPITEMIDLIST ILCreateChild(LPCITEMIDLIST parent, LPCITEMIDLIST child) {
   return ILCloneFirst(ILFindRelative(parent, child));
 }
 HRESULT Shell::GoBack(size_t step, bool selectPrev) {
-  if (!m_pCurrentEntry) return E_FAIL;
-  if (step == 0) return m_History.BackLength();
+  if (!m_pCurrentEntry) {
+    return E_FAIL;
+  }
+  if (step == 0) {
+    return m_History.BackLength();
+  }
   HRESULT hr;
-  ref<IEntry> prev = m_pCurrentEntry;
-  ref<IEntry> next = m_History.GetRelativeHistory(-(int)step);
-  if (!next || next->Equals(prev)) return E_FAIL;
-  if FAILED (hr = GoAbsolute(next, GoAgain)) return hr;
+  ref<io::IEntry> prev = m_pCurrentEntry;
+  ref<io::IEntry> next = m_History.GetRelativeHistory(-(int)step);
+  if (!next || next->Equals(prev)) {
+    return E_FAIL;
+  }
+  if FAILED (hr = GoAbsolute(next, GoAgain)) {
+    return hr;
+  }
   m_History.Back(step);
   // 以前いたフォルダにカーソルを合わせる.
   if (selectPrev && ILIsParent(next->ID, prev->ID, false)) {
@@ -920,13 +1040,21 @@ HRESULT Shell::GoBack(size_t step, bool selectPrev) {
   return hr;
 }
 HRESULT Shell::GoForward(size_t step, bool selectPrev) {
-  if (!m_pCurrentEntry) return E_FAIL;
-  if (step == 0) return m_History.ForwardLength();
+  if (!m_pCurrentEntry) {
+    return E_FAIL;
+  }
+  if (step == 0) {
+    return m_History.ForwardLength();
+  }
   HRESULT hr;
-  ref<IEntry> prev = m_pCurrentEntry;
-  ref<IEntry> next = m_History.GetRelativeHistory(step);
-  if (!next || next->Equals(prev)) return E_FAIL;
-  if FAILED (hr = GoAbsolute(next, GoAgain)) return hr;
+  ref<io::IEntry> prev = m_pCurrentEntry;
+  ref<io::IEntry> next = m_History.GetRelativeHistory(step);
+  if (!next || next->Equals(prev)) {
+    return E_FAIL;
+  }
+  if FAILED (hr = GoAbsolute(next, GoAgain)) {
+    return hr;
+  }
   m_History.Forward(step);
   // 以前いたフォルダにカーソルを合わせる.
   if (selectPrev && ILIsParent(next->ID, prev->ID, false)) {
@@ -936,24 +1064,28 @@ HRESULT Shell::GoForward(size_t step, bool selectPrev) {
   }
   return hr;
 }
-HRESULT Shell::GoAbsolute(IEntry* path, GoType go) {
+HRESULT Shell::GoAbsolute(io::IEntry* path, GoType go) {
   HRESULT hr;
-  if (!path) return E_INVALIDARG;
+  if (!path) {
+    return E_INVALIDARG;
+  }
 
   // 「フォルダを別ウィンドウで開く」という動作の際に現在の設定が反映されないため、
   // OnDirectoryChanging() の前に呼ぶように変更した。
   SaveViewState();
 
-  if (!OnDirectoryChanging(path, go)) return E_ABORT;
+  if (!OnDirectoryChanging(path, go)) {
+    return E_ABORT;
+  }
 
-  ref<IEntry> resolved;
+  ref<io::IEntry> resolved;
   path->GetLinked(&resolved);
   if (!path->Exists()) {
     TRACE(_T("error: OpenFolder(not-existing)"));
     return STG_E_FILENOTFOUND;
   }
   if (!resolved->IsFolder()) {
-    ref<IEntry> parentEntry;
+    ref<io::IEntry> parentEntry;
     if (SUCCEEDED(hr = resolved->GetParent(&parentEntry)) && SUCCEEDED(hr = GoAbsolute(parentEntry, GoNew))) {
       SetStatusByIDList(ILFindLastID(resolved->ID), SELECTED);
       return S_OK;
@@ -966,14 +1098,16 @@ HRESULT Shell::GoAbsolute(IEntry* path, GoType go) {
   if (FAILED(hr = resolved->QueryObject(&pShellFolder))) {
     TRACE(_T("error: ShellListView.GoAbsolute(), GetSelfFolder()"));
     // 仕方ないのでデスクトップを。
-    if FAILED (hr = SHGetDesktopFolder(&pShellFolder)) return hr;
+    if FAILED (hr = SHGetDesktopFolder(&pShellFolder)) {
+      return hr;
+    }
   }
 
   if (m_pCurrentEntry && m_pCurrentEntry->Equals(resolved)) {  // 同じフォルダへの移動
     return S_OK;
   }
 
-  ref<IEntry> pPrevEntry = m_pCurrentEntry;
+  ref<io::IEntry> pPrevEntry = m_pCurrentEntry;
   m_pCurrentEntry = resolved;
   if FAILED (hr = ReCreateViewWindow(pShellFolder, true)) {  // 失敗した場合に元に戻す
     m_pCurrentEntry = pPrevEntry;
@@ -1018,7 +1152,7 @@ HRESULT Shell::EndContextMenu(IContextMenu* pMenu, UINT cmd) {
   }
   return hr;
 }
-void Shell::OnDefaultDirectoryChange(IEntry* folder, IShellFolder* pShellFolder) {
+void Shell::OnDefaultDirectoryChange(io::IEntry* folder, IShellFolder* pShellFolder) {
   if SUCCEEDED (GoAbsolute(folder)) {
     if (IsKeyPressed(VK_RETURN)) {
       LVITEM item = {LVIF_STATE, 0};
@@ -1031,16 +1165,19 @@ void Shell::OnDefaultDirectoryChange(IEntry* folder, IShellFolder* pShellFolder)
   }
 }
 HRESULT Shell::GetViewFlags(DWORD* dw) {
-  if (m_ShowAllFiles)
+  if (m_ShowAllFiles) {
     *dw = CDB2GVF_SHOWALLFILES;
-  else
+  } else {
     *dw = 0;
+  }
   return S_OK;
 }
 
 HRESULT Shell::IncludeObject(IShellView* pShellView, LPCITEMIDLIST pidl) {
   // 隠しファイルを隠すは、GetViewFlags()だけでは効果が無いため、ここで個別にフィルタリングする
-  if (!m_pCurrentFolder || !m_pCurrentEntry) return S_OK;
+  if (!m_pCurrentFolder || !m_pCurrentEntry) {
+    return S_OK;
+  }
   // フィルタ.
   if (m_PatternMask) {
     WCHAR name[MAX_PATH];
@@ -1049,13 +1186,19 @@ HRESULT Shell::IncludeObject(IShellView* pShellView, LPCITEMIDLIST pidl) {
         SFGAOF flags = SFGAO_FOLDER;
         if SUCCEEDED (m_pCurrentFolder->GetAttributesOf(1, &pidl,
                                                         &flags)) {  // パターンがマッチしなかった、非フォルダのみ隠す。
-          if ((flags & SFGAO_FOLDER) == 0) return S_FALSE;
+          if ((flags & SFGAO_FOLDER) == 0) {
+            return S_FALSE;
+          }
         }
       }
     }
   }
-  if (!theShellFlagState.fShowAllObjects) return S_OK;  // すでにフィルタリング済み
-  if (m_ShowAllFiles) return S_OK;                      // 全部表示するから
+  if (!theShellFlagState.fShowAllObjects) {
+    return S_OK;  // すでにフィルタリング済み
+  }
+  if (m_ShowAllFiles) {
+    return S_OK;  // 全部表示するから
+  }
   SFGAOF flags = SFGAO_GHOSTED;
   if SUCCEEDED (m_pCurrentFolder->GetAttributesOf(1, &pidl, &flags)) {
     return (flags & SFGAO_GHOSTED) ? S_FALSE : S_OK;
@@ -1066,17 +1209,21 @@ HRESULT Shell::IncludeObject(IShellView* pShellView, LPCITEMIDLIST pidl) {
     TCHAR path[MAX_PATH];
     if SUCCEEDED (afx::ILGetPath(fullpath, path)) {
       DWORD dwAttrs = GetFileAttributes(path);
-      if (dwAttrs != (DWORD)-1 && (dwAttrs & FILE_ATTRIBUTE_HIDDEN)) result = S_FALSE;
+      if (dwAttrs != (DWORD)-1 && (dwAttrs & FILE_ATTRIBUTE_HIDDEN)) {
+        result = S_FALSE;
+      }
     }
     ILFree(fullpath);
     return result;
   }
 }
 HRESULT Shell::GetViewStateStream(DWORD grfMode, IStream** ppStream) {
-  if (IEntry* folder = GetCurrentEntry()) {
+  if (io::IEntry* folder = GetCurrentEntry()) {
     if (grfMode & STGM_WRITE) {
       HRESULT hr = OnQueryStream(grfMode, ppStream);
-      if FAILED (hr) return hr;
+      if FAILED (hr) {
+        return hr;
+      }
       (*ppStream)->Write(&m_FolderSettings, sizeof(FOLDERSETTINGS), NULL);
       return S_OK;
     } else if (m_pViewStateStream) {
@@ -1087,19 +1234,29 @@ HRESULT Shell::GetViewStateStream(DWORD grfMode, IStream** ppStream) {
 }
 HRESULT Shell::UpdateStyle() {
   m_FolderSettings.fFlags = MEW_FWF_ALWAYS;
-  if (m_AutoArrange) m_FolderSettings.fFlags |= FWF_AUTOARRANGE;
-  if (m_CheckBox) m_FolderSettings.fFlags |= FWF_CHECKSELECT;
-  if (!m_pCurrentFolder) return S_FALSE;
+  if (m_AutoArrange) {
+    m_FolderSettings.fFlags |= FWF_AUTOARRANGE;
+  }
+  if (m_CheckBox) {
+    m_FolderSettings.fFlags |= FWF_CHECKSELECT;
+  }
+  if (!m_pCurrentFolder) {
+    return S_FALSE;
+  }
   int column = 0;
   bool ascending = true;
   GetSortKey(&column, &ascending);
   HRESULT hr = ReCreateViewWindow(m_pCurrentFolder, false);
-  if FAILED (hr) return hr;
+  if FAILED (hr) {
+    return hr;
+  }
   SetSortKey(column, ascending);
   return S_OK;
 }
 ListStyle Shell::get_Style() const {
-  if (m_pShellView) m_pShellView->GetCurrentInfo(const_cast<FOLDERSETTINGS*>(&m_FolderSettings));
+  if (m_pShellView) {
+    m_pShellView->GetCurrentInfo(const_cast<FOLDERSETTINGS*>(&m_FolderSettings));
+  }
   return (ListStyle)m_FolderSettings.ViewMode;
 }
 HRESULT Shell::set_Style(ListStyle style) {
@@ -1108,14 +1265,17 @@ HRESULT Shell::set_Style(ListStyle style) {
     return E_INVALIDARG;
   }
   m_FolderSettings.ViewMode = style;
-  if (ref<IFolderView> folder = cast(m_pShellView))
+  if (ref<IFolderView> folder = cast(m_pShellView)) {
     return folder->SetCurrentViewMode(m_FolderSettings.ViewMode);
-  else
+  } else {
     return UpdateStyle();  // LVS_* でスタイルを設定すると誤動作する。仕方ないので作り直す。
+  }
 }
 bool Shell::get_AutoArrange() const {
   Shell* pThis = const_cast<Shell*>(this);
-  if (m_pShellView) m_pShellView->GetCurrentInfo(&pThis->m_FolderSettings);
+  if (m_pShellView) {
+    m_pShellView->GetCurrentInfo(&pThis->m_FolderSettings);
+  }
   pThis->m_AutoArrange = !!(m_FolderSettings.fFlags & FWF_AUTOARRANGE);
 #if defined(USE_ADHOC_FIX_FOR_SHELLBROWSER_LISTVIEW_DETAILS)
   if (get_Style() == ListStyleDetails) {
@@ -1125,43 +1285,65 @@ bool Shell::get_AutoArrange() const {
   return pThis->m_AutoArrange;
 }
 HRESULT Shell::set_AutoArrange(bool value) {
-  if (get_AutoArrange() == value) return S_OK;
+  if (get_AutoArrange() == value) {
+    return S_OK;
+  }
   m_AutoArrange = value;
   return UpdateStyle();
 }
 HRESULT Shell::set_CheckBox(bool value) {
-  if (m_CheckBox == value) return S_OK;
+  if (m_CheckBox == value) {
+    return S_OK;
+  }
   m_CheckBox = value;
   // FOLDERSETTINGS でやらなくても一応大丈夫そう
-  if (m_wndList) m_wndList.SetExtendedListViewStyle(m_CheckBox ? LVS_EX_CHECKBOXES : 0, LVS_EX_CHECKBOXES);
+  if (m_wndList) {
+    m_wndList.SetExtendedListViewStyle(m_CheckBox ? LVS_EX_CHECKBOXES : 0, LVS_EX_CHECKBOXES);
+  }
   return S_OK;
 }
 HRESULT Shell::set_FullRowSelect(bool value) {
-  if (m_FullRowSelect == value) return S_OK;
+  if (m_FullRowSelect == value) {
+    return S_OK;
+  }
   m_FullRowSelect = value;
-  if (m_wndList) m_wndList.SetExtendedListViewStyle(m_FullRowSelect ? LVS_EX_FULLROWSELECT : 0, LVS_EX_FULLROWSELECT);
+  if (m_wndList) {
+    m_wndList.SetExtendedListViewStyle(m_FullRowSelect ? LVS_EX_FULLROWSELECT : 0, LVS_EX_FULLROWSELECT);
+  }
   return S_OK;
 }
 HRESULT Shell::set_GridLine(bool value) {
-  if (m_GridLine == value) return S_OK;
+  if (m_GridLine == value) {
+    return S_OK;
+  }
   m_GridLine = value;
-  if (m_wndList) m_wndList.SetExtendedListViewStyle(m_GridLine ? LVS_EX_GRIDLINES : 0, LVS_EX_GRIDLINES);
+  if (m_wndList) {
+    m_wndList.SetExtendedListViewStyle(m_GridLine ? LVS_EX_GRIDLINES : 0, LVS_EX_GRIDLINES);
+  }
   return S_OK;
 }
 HRESULT Shell::set_Grouping(bool value) {
-  if (!m_pShellView) return E_UNEXPECTED;
-  if (m_Grouping == value) return S_OK;
+  if (!m_pShellView) {
+    return E_UNEXPECTED;
+  }
+  if (m_Grouping == value) {
+    return S_OK;
+  }
   m_Grouping = afx::ExpEnableGroup(m_pShellView, value);
   return S_OK;
 }
 HRESULT Shell::set_ShowAllFiles(bool value) {
-  if (m_ShowAllFiles == value) return S_OK;
+  if (m_ShowAllFiles == value) {
+    return S_OK;
+  }
   m_ShowAllFiles = value;
   return UpdateStyle();
 }
 LRESULT Shell::DefaultContextMenu(WPARAM wParam, LPARAM lParam) {
   // 無限ループに陥るの避けるため、サブクラス化されている場合のみ。
-  if (m_wndShell.m_pfnSuperWindowProc) return m_wndShell.DefWindowProc(WM_CONTEXTMENU, wParam, lParam);
+  if (m_wndShell.m_pfnSuperWindowProc) {
+    return m_wndShell.DefWindowProc(WM_CONTEXTMENU, wParam, lParam);
+  }
   return 0;
 }
 
@@ -1172,10 +1354,11 @@ bool Shell::PreTranslateMessage(MSG* msg) {
   if (m_wndShell != msg->hwnd && !m_wndShell.IsChild(msg->hwnd)) {  // シェルビューまたはその子供でなければ処理しない
     return false;
   } else if (m_wndList.IsChild(msg->hwnd)) {  // リストビューの子供＝ファイルリネーム中のエディットなので処理を任せる
-    if (m_pShellView->TranslateAccelerator(msg) == S_OK)
+    if (m_pShellView->TranslateAccelerator(msg) == S_OK) {
       return true;
-    else
+    } else {
       return false;
+    }
   } else {  // デフォルトでは、喰ってしまうのに処理しないキーアクセラレータを処理する.
     switch (msg->message) {
       case WM_KEYDOWN:
@@ -1186,18 +1369,24 @@ bool Shell::PreTranslateMessage(MSG* msg) {
   }
 }
 void Shell::set_WallPaperFile(string value) {
-  if (m_WallPaperFile == value) return;
+  if (m_WallPaperFile == value) {
+    return;
+  }
   m_WallPaperFile = value;
   UpdateBackground();
 }
 void Shell::set_WallPaperAlign(UINT32 value) {
-  if (m_WallPaperAlign == value) return;
+  if (m_WallPaperAlign == value) {
+    return;
+  }
   m_WallPaperAlign = value;
   UpdateBackground();
 }
 void Shell::UpdateBackground() {
   // どうやら、実質的にタイリングと左上以外は使い物にならないようだ
-  if (!m_wndList.IsWindow()) return;
+  if (!m_wndList.IsWindow()) {
+    return;
+  }
 
   LVBKIMAGE bkgnd = {0};
   if (!m_WallPaperFile) {
@@ -1250,16 +1439,21 @@ int GetIconSize(ListStyle style) {
   }
 
   if (theIconSize[0] == 0) {
-    for (int i = 0; i < MAX_VIEW_MODE; ++i)
+    for (int i = 0; i < MAX_VIEW_MODE; ++i) {
       theIconSize[i] = theAvesta->GetProfileSint32(L"Style", PROFILE_ICON_NAME[i], DEFAULT_ICON_SIZE[i]);
+    }
   }
-  if (theIconSize[index] == DEFAULT_ICON_SIZE[index]) return 0;  // 変更する必要なし。
+  if (theIconSize[index] == DEFAULT_ICON_SIZE[index]) {
+    return 0;  // 変更する必要なし。
+  }
   return theIconSize[index];
 }
 }  // namespace
 
 void Shell::OnListViewModeChanged() {
-  if (!m_wndList.IsWindow()) return;
+  if (!m_wndList.IsWindow()) {
+    return;
+  }
 
   m_wndList.SetRedraw(false);
 
@@ -1276,8 +1470,6 @@ void Shell::OnListViewModeChanged() {
 
   m_wndList.SetRedraw(true);
 }
-
-//==============================================================================
 
 }  // namespace ui
 }  // namespace mew

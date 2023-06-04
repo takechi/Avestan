@@ -10,10 +10,6 @@
 
 #include "../server/main.hpp"  // もうぐちゃぐちゃ……
 
-using namespace mew::drawing;
-
-//==============================================================================
-
 namespace {
 
 const DWORD MEW_WS_TREE =
@@ -260,17 +256,15 @@ class TreeView : public TreeViewBase<TreeView, ITreeItem, implements<ITreeView, 
 namespace mew {
 namespace ui {
 
-using namespace io;
-
-class ShellTreeView
-    : public TreeViewBase<ShellTreeView, IFolder, implements<ITreeView, ITree, IWindow, ISignal, IDisposable, IDropTarget> > {
+class ShellTreeView : public TreeViewBase<ShellTreeView, io::IFolder,
+                                          implements<ITreeView, ITree, IWindow, ISignal, IDisposable, IDropTarget> > {
  public:  // override
-  void AddChildren(HTREEITEM hParant, IFolder* pParent) {
+  void AddChildren(HTREEITEM hParant, io::IFolder* pParent) {
     SuppressRedraw redraw(m_hWnd);
     pParent->OnUpdate();
     size_t count = pParent->GetChildCount();
     for (size_t i = 0; i < count; ++i) {
-      ref<IFolder> child;
+      ref<io::IFolder> child;
       if SUCCEEDED (pParent->GetChild(&child, i)) {
         InsertItem(hParant, child);
       }
@@ -280,7 +274,7 @@ class ShellTreeView
     SuppressRedraw redraw(m_hWnd);
     HRESULT hr = E_FAIL;
     HTREEITEM hTreeItem = GetNextItem(NULL, TVGN_CHILD);
-    if (IFolder* folder = GetItemData(hTreeItem)) {
+    if (io::IFolder* folder = GetItemData(hTreeItem)) {
       if (ILIsEqual(folder->Entry->ID, pidl)) {
         SelectItem(hTreeItem);
         EnsureVisible(hTreeItem);
@@ -295,7 +289,7 @@ class ShellTreeView
     ASSERT(pidl);
     Expand(hTreeItem);
     for (HTREEITEM hItem = GetNextItem(hTreeItem, TVGN_CHILD); hItem; hItem = GetNextItem(hItem, TVGN_NEXT)) {
-      if (IFolder* folder = GetItemData(hItem)) {
+      if (io::IFolder* folder = GetItemData(hItem)) {
         LPCITEMIDLIST itemIDL = folder->Entry->ID;
         if (ILIsEqual(itemIDL, pidl)) {
           SelectItem(hItem);
@@ -310,7 +304,7 @@ class ShellTreeView
     }
     return E_FAIL;
   }
-  HRESULT SetStatusByEntry(IEntry* entry, Status status) {
+  HRESULT SetStatusByEntry(io::IEntry* entry, Status status) {
     ASSERT(entry);
     switch (status) {
       case FOCUSED:
@@ -321,12 +315,12 @@ class ShellTreeView
   }
   HRESULT SetStatus(IUnknown* item, Status status) {
     try {
-      if (ref<IFolder> folder = cast(item)) {
+      if (ref<io::IFolder> folder = cast(item)) {
         return SetStatusByEntry(folder->Entry, status);
-      } else if (ref<IEntry> entry = cast(item)) {
+      } else if (ref<io::IEntry> entry = cast(item)) {
         return SetStatusByEntry(entry, status);
       } else if (string path = cast(item)) {
-        return SetStatusByEntry(ref<IEntry>(__uuidof(Entry), path), status);
+        return SetStatusByEntry(ref<io::IEntry>(__uuidof(io::Entry), path), status);
       } else {
         ASSERT(0);
         return E_NOTIMPL;
@@ -341,7 +335,7 @@ class ShellTreeView
   void DoCreate(CWindowEx parent) {
     __super::DoCreate(parent, NULL, DirNone, MEW_WS_TREE, MEW_WS_EX_TREE);
     ImmAssociateContext(m_hWnd, null);
-    this->set_Root(ref<ITreeItem>(__uuidof(FolderMenu)));
+    this->set_Root(ref<ITreeItem>(__uuidof(io::FolderMenu)));
   }
   void Update(bool sync = false) {
     __super::Update(sync);
@@ -349,7 +343,7 @@ class ShellTreeView
       return;
     }
     SuppressRedraw redraw(m_hWnd);
-    ref<IFolder> selected = GetItemData(GetSelectedItem());
+    ref<io::IFolder> selected = GetItemData(GetSelectedItem());
     m_root->Reset();
     Expand(UpdateTree(null, m_root));
     if (selected) {
@@ -367,7 +361,7 @@ class ShellTreeView
     if (!hItem) {
       return true;
     }
-    IFolder* folder = GetItemData(hItem);
+    io::IFolder* folder = GetItemData(hItem);
     ref<IContextMenu> menu;
     if SUCCEEDED (folder->Entry->QueryObject(&menu)) {  // 選択アイテムがある場合
       if (CMenu popup = afx::SHBeginContextMenu(menu)) {
@@ -417,7 +411,9 @@ class ShellTreeView
   // END_MSG_MAP()
 
   HRESULT Send(message msg) {
-    if (!m_hWnd) return E_FAIL;
+    if (!m_hWnd) {
+      return E_FAIL;
+    }
     switch (msg.code) {
       case CommandCut:
         Cut();
@@ -450,7 +446,7 @@ class ShellTreeView
   HRESULT Cut() {
     HRESULT hr;
     HTREEITEM hItem = GetSelectedItem();
-    IFolder* folder = GetItemData(hItem);
+    io::IFolder* folder = GetItemData(hItem);
     if (!folder) {
       return E_UNEXPECTED;
     }
@@ -461,14 +457,14 @@ class ShellTreeView
     return S_OK;
   }
   HRESULT Copy() {
-    IFolder* folder = GetItemData(GetSelectedItem());
+    io::IFolder* folder = GetItemData(GetSelectedItem());
     if (!folder) {
       return E_UNEXPECTED;
     }
     return avesta::FileCopy(folder->Entry->Path.str());
   }
   HRESULT Paste() {
-    IFolder* folder = GetItemData(GetSelectedItem());
+    io::IFolder* folder = GetItemData(GetSelectedItem());
     if (!folder) {
       return E_UNEXPECTED;
     }
@@ -477,11 +473,11 @@ class ShellTreeView
   HRESULT Delete(bool undo) {
     HRESULT hr;
     HTREEITEM hItem = GetSelectedItem();
-    IFolder* folder = GetItemData(hItem);
+    io::IFolder* folder = GetItemData(hItem);
     if (!folder) {
       return E_UNEXPECTED;
     }
-    ref<IEntry> entry = folder->Entry;
+    ref<io::IEntry> entry = folder->Entry;
     ASSERT(entry);
     TCHAR buffer[MAX_PATH + 1] = {0};
     entry->Path.copyto(buffer, MAX_PATH);
@@ -496,7 +492,7 @@ class ShellTreeView
     return S_FALSE;
   }
   HRESULT Property() {
-    IFolder* folder = GetItemData(GetSelectedItem());
+    io::IFolder* folder = GetItemData(GetSelectedItem());
     if (!folder) {
       return E_UNEXPECTED;
     }
@@ -553,8 +549,10 @@ class ShellTreeView
     ScreenToClient(&hit.pt);
     return HitTest(&hit);
   }
-  ref<IEntry> EntryFromScreenPoint(int x, int y) const {
-    if (HTREEITEM hItem = ItemFromScreenPoint(x, y)) {return GetItemData(hItem)->Entry;}
+  ref<io::IEntry> EntryFromScreenPoint(int x, int y) const {
+    if (HTREEITEM hItem = ItemFromScreenPoint(x, y)) {
+      return GetItemData(hItem)->Entry;
+    }
     return null;
   }
   STDMETHODIMP DragEnter(IDataObject* src, DWORD key, POINTL pt, DWORD* effect) {

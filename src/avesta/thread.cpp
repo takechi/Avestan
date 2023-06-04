@@ -5,8 +5,6 @@
 #include <process.h>
 #include <memory>
 
-using namespace avesta;
-
 namespace {
 const int MAX_THREADS = 32;
 
@@ -53,7 +51,7 @@ class MessageHook {
         ::DispatchMessage(&msg);
       } else if (m_needsUpdateUIState) {  // メッセージキューが空になったので、WM_UPDATEUISTATE をポストする。
         m_needsUpdateUIState = false;
-        Window::Broadcast(WM_UPDATEUISTATE);
+        avesta::Window::Broadcast(WM_UPDATEUISTATE);
       } else {
         ::WaitMessage();
       }
@@ -102,7 +100,7 @@ class MessageHook {
         m_needsUpdateUIState = true;
         // fall down
       case WM_MOUSEMOVE:
-        handled = Window::Filter(msg);
+        handled = avesta::Window::Filter(msg);
         break;
       case WM_MOUSEWHEEL:
         m_needsUpdateUIState = true;
@@ -120,7 +118,7 @@ class MessageHook {
     if (m_needsUpdateUIState &&
         HIWORD(GetQueueStatus(QS_ALLINPUT)) == 0) {  // メッセージキューが空になったので、WM_UPDATEUISTATE をポストする。
       m_needsUpdateUIState = false;
-      Window::Broadcast(WM_UPDATEUISTATE);
+      avesta::Window::Broadcast(WM_UPDATEUISTATE);
     }
     return handled;
   }
@@ -149,7 +147,44 @@ bool RemoveThread(int at) {
   --theNumThreads;
   return true;
 }
+
+int MessageLoop() {
+  while (true) {
+    // ローカル変数にコピーするが、常に nCount == theNumThreads
+    const size_t nCount = theNumThreads;
+
+    if (nCount == 0) {
+      return 0;
+    }
+
+    DWORD ret = ::MsgWaitForMultipleObjects((DWORD)nCount, theThreads, false, INFINITE, QS_ALLINPUT);
+    if (ret == WAIT_OBJECT_0 + nCount) {  // メッセージによる起床
+      MSG msg;
+      while (::PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
+        switch (msg.message) {
+          case WM_APP:
+            avesta::Thread::New((avesta::Thread::Routine)msg.wParam, (void*)msg.lParam);
+            break;
+        }
+      }
+    } else if (WAIT_OBJECT_0 <= ret && ret < WAIT_OBJECT_0 + nCount) {  // スレッドのどれかが終了した
+      RemoveThread(ret - WAIT_OBJECT_0);
+    } else if (WAIT_ABANDONED_0 <= ret && ret < WAIT_ABANDONED_0 + nCount) {  // スレッドどれかが破棄済み？ ここには来ないかも。
+      RemoveThread(ret - WAIT_ABANDONED_0);
+    } else {  // エラー。既にスレッドが終了している可能性がある。
+      // 複数のウィンドウを同時に閉じた場合に発生しやすい。
+      for (int i = theNumThreads - 1; i >= 0; --i) {
+        DWORD code;
+        if (!::GetExitCodeThread(theThreads[i], &code) || code != STILL_ACTIVE) {
+          RemoveThread(i);
+        }
+      }
+    }
+  }
+}
 }  // namespace
+
+namespace avesta {
 
 HANDLE Thread::New(Routine fn, void* args) {
   ASSERT(fn);
@@ -173,43 +208,6 @@ HANDLE Thread::New(Routine fn, void* args) {
 
 int Thread::Loop(HWND hwnd) { return std::auto_ptr<MessageHook>(new MessageHook())->Loop(hwnd); }
 
-namespace {
-int MessageLoop() {
-  while (true) {
-    // ローカル変数にコピーするが、常に nCount == theNumThreads
-    const size_t nCount = theNumThreads;
-
-    if (nCount == 0) {
-      return 0;
-    }
-
-    DWORD ret = ::MsgWaitForMultipleObjects((DWORD)nCount, theThreads, false, INFINITE, QS_ALLINPUT);
-    if (ret == WAIT_OBJECT_0 + nCount) {  // メッセージによる起床
-      MSG msg;
-      while (::PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
-        switch (msg.message) {
-          case WM_APP:
-            Thread::New((Thread::Routine)msg.wParam, (void*)msg.lParam);
-            break;
-        }
-      }
-    } else if (WAIT_OBJECT_0 <= ret && ret < WAIT_OBJECT_0 + nCount) {  // スレッドのどれかが終了した
-      RemoveThread(ret - WAIT_OBJECT_0);
-    } else if (WAIT_ABANDONED_0 <= ret && ret < WAIT_ABANDONED_0 + nCount) {  // スレッドどれかが破棄済み？ ここには来ないかも。
-      RemoveThread(ret - WAIT_ABANDONED_0);
-    } else {  // エラー。既にスレッドが終了している可能性がある。
-      // 複数のウィンドウを同時に閉じた場合に発生しやすい。
-      for (int i = theNumThreads - 1; i >= 0; --i) {
-        DWORD code;
-        if (!::GetExitCodeThread(theThreads[i], &code) || code != STILL_ACTIVE) {
-          RemoveThread(i);
-        }
-      }
-    }
-  }
-}
-}  // namespace
-
 int Thread::Run(Routine fn, void* args) {
   ASSERT(!theMainThreadId);
 
@@ -230,3 +228,5 @@ bool Thread::IsLocalLoop() {
   GUITHREADINFO info = {sizeof(GUITHREADINFO)};
   return ::GetGUIThreadInfo(::GetCurrentThreadId(), &info) && (info.flags & (GUI_INMENUMODE | GUI_INMOVESIZE)) != 0;
 }
+
+}  // namespace avesta

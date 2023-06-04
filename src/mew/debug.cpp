@@ -3,8 +3,8 @@
 #include "stdafx.h"
 #include "private.h"
 
-//#define DEBUG_LOG
-//#define DEBUG_MEMLEAK
+// #define DEBUG_LOG
+// #define DEBUG_MEMLEAK
 
 #ifdef _DEBUG
 #include <set>
@@ -20,14 +20,10 @@
 #endif
 #endif
 
-using namespace mew;
-
-//==============================================================================
-
 #ifdef _DEBUG
 
 namespace {
-//==============================================================================
+
 // Assert ignore list
 struct SourceInfo {
   PCWSTR file;
@@ -35,12 +31,13 @@ struct SourceInfo {
   PCWSTR fn;
 };
 static bool operator<(const SourceInfo& lhs, const SourceInfo& rhs) {
-  if (lhs.file < rhs.file)
+  if (lhs.file < rhs.file) {
     return true;
-  else if (lhs.file > rhs.file)
+  } else if (lhs.file > rhs.file) {
     return false;
-  else
+  } else {
     return lhs.line < rhs.line;
+  }
 }
 static std::set<SourceInfo> ignorelist;
 
@@ -123,17 +120,20 @@ MEW_API void Trace(const string& msg) {
 }
 MEW_API bool Assert(PCWSTR msg, PCWSTR file, int line, PCWSTR fn) {
   SourceInfo info = {file, line, fn};
-  if (ignorelist.find(info) != ignorelist.end()) return true;
+  if (ignorelist.find(info) != ignorelist.end()) {
+    return true;
+  }
   WCHAR buffer[1024];
   _snwprintf(buffer, 1024, L"%s (%d)\n%s()\n%s", file, line, fn, msg);
   switch (::MessageBoxW(null, buffer, L"ASSERTION FAILED", MB_ABORTRETRYIGNORE | MB_ICONERROR)) {
     case IDABORT: {
       Trace(_T("========== ASSERTION FAILED =========="));
       Trace(buffer);
-      if (IsDebuggerPresent())
+      if (IsDebuggerPresent()) {
         return false;
-      else
+      } else {
         FatalExit(3);
+      }
       break;
     }
     case IDRETRY:

@@ -6,11 +6,8 @@
 
 class __declspec(uuid("7C476BA2-02B1-48f4-8048-B24619DDC058")) ImageList;
 
-using namespace mew::drawing;
-
-//==============================================================================
-
 namespace {
+
 void CopyBits(void *dst, int dststride, const void *src, int srcstride, size_t bpp, size_t width, size_t height) {
   ASSERT(dst);
   ASSERT(src);
@@ -75,7 +72,7 @@ class ImageList : public mew::Root<mew::implements<mew::drawing::IImageList2, II
 
     // アルファなしビットマップ
     WTL::CBitmap bitmap;
-    if (image->GetHBITMAP(SysColor(COLOR_3DFACE), &bitmap.m_hBitmap) != Gdiplus::Ok) {
+    if (image->GetHBITMAP(mew::drawing::SysColor(COLOR_3DFACE), &bitmap.m_hBitmap) != Gdiplus::Ok) {
       return nullptr;
     }
     ImageList_Add(imagelist, bitmap, nullptr);
@@ -140,15 +137,21 @@ class ImageList : public mew::Root<mew::implements<mew::drawing::IImageList2, II
   }
 
   inline static HRESULT call(int *pResult, int result) {
-    if (pResult) *pResult = result;
+    if (pResult) {
+      *pResult = result;
+    }
     return result >= 0 ? S_OK : AtlHresultFromLastError();
   }
   inline static HRESULT call(COLORREF *pResult, COLORREF result) {
-    if (pResult) *pResult = result;
+    if (pResult) {
+      *pResult = result;
+    }
     return S_OK;
   }
   inline static HRESULT call(HICON *pResult, HICON result) {
-    if (pResult) *pResult = result;
+    if (pResult) {
+      *pResult = result;
+    }
     return result ? S_OK : AtlHresultFromLastError();
   }
   inline static HRESULT call(BOOL result) {
@@ -156,7 +159,9 @@ class ImageList : public mew::Root<mew::implements<mew::drawing::IImageList2, II
     return result ? S_OK : AtlHresultFromLastError();
   }
   static HRESULT FromHIMAGELIST(HIMAGELIST hNormal, HIMAGELIST hDisabled, HIMAGELIST hHot, REFIID iid, void **ppv) {
-    if (!ppv) {return E_POINTER;}
+    if (!ppv) {
+      return E_POINTER;
+    }
     return mew::objnew<ImageList>(hNormal, hDisabled, hHot)->QueryInterface(iid, ppv);
   }
 
@@ -169,7 +174,9 @@ class ImageList : public mew::Root<mew::implements<mew::drawing::IImageList2, II
     return call(pi, ImageList_AddMasked(m_normal, hbmImage, crMask));
   }
   HRESULT __stdcall Draw(IMAGELISTDRAWPARAMS *pimldp) {
-    if (!pimldp) {return E_POINTER;}
+    if (!pimldp) {
+      return E_POINTER;
+    }
     IMAGELISTDRAWPARAMS params = *pimldp;
     params.himl = m_normal;
     return call(ImageList_DrawIndirect(&params));
@@ -191,13 +198,19 @@ class ImageList : public mew::Root<mew::implements<mew::drawing::IImageList2, II
   HRESULT __stdcall GetImageRect(int i, RECT *prc) {
     IMAGEINFO info;
     HRESULT hr = GetImageInfo(i, &info);
-    if FAILED (hr) {return hr;}
-    if (prc) {*prc = info.rcImage;}
+    if FAILED (hr) {
+      return hr;
+    }
+    if (prc) {
+      *prc = info.rcImage;
+    }
     return S_OK;
   }
   HRESULT __stdcall GetIconSize(int *cx, int *cy) { return call(ImageList_GetIconSize(m_normal, cx, cy)); }
   HRESULT __stdcall SetIconSize(int cx, int cy) {
-    if (m_normal) {return call(m_normal.SetIconSize(cx, cy));}
+    if (m_normal) {
+      return call(m_normal.SetIconSize(cx, cy));
+    }
     m_normal.Create(cx, cy, ILC_COLOR32, 10, 10);
     return S_OK;
   }

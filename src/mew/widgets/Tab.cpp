@@ -13,8 +13,6 @@
 
 // #define ENABLE_DEFAULT_KEYMAP
 
-using namespace mew::drawing;
-
 // どうしても複数選択タブが思い通りに動かないので、ツールバーを使って再実装する
 // ボトムタブを実現できない。ツールバーとコンテナ領域を分けたほうがよかったかも。
 
@@ -89,8 +87,8 @@ class TabCtrlLook {
     m_ColorActiveTab = ::GetSysColor(COLOR_BTNFACE);
     m_ColorActiveText = ::GetSysColor(COLOR_BTNTEXT);
     m_ColorInactiveText = mew::theme::DotNetInactiveTextColor();
-    if (MaxColorDistance(m_ColorBkgnd, m_ColorInactiveText) < 16) {  // 背景と非アクティブ色が近すぎる
-      if (MaxColorDistance(m_ColorBkgnd) < 128) {
+    if (mew::drawing::MaxColorDistance(m_ColorBkgnd, m_ColorInactiveText) < 16) {  // 背景と非アクティブ色が近すぎる
+      if (mew::drawing::MaxColorDistance(m_ColorBkgnd) < 128) {
         m_ColorInactiveText = RGB(255, 255, 255);  // 背景が黒に近い場合
       } else {
         m_ColorInactiveText = RGB(0, 0, 0);  // 背景が白に近い場合
@@ -121,7 +119,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
 
  public:
   bool SupportsEvent(EventCode code) const throw() {
-    if (__super::SupportsEvent(code)) return true;
+    if (__super::SupportsEvent(code)) {
+      return true;
+    }
     switch (code) {
       case EventItemFocus:
         return true;
@@ -175,15 +175,18 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
             TRESPASS();
         }
         ref<IWindow> w;
-        if SUCCEEDED (QueryInterfaceInWindow(GetItemData(i), &w)) e->push_back(w);
+        if SUCCEEDED (QueryInterfaceInWindow(GetItemData(i), &w)) {
+          e->push_back(w);
+        }
       }
       return e.copyto(pp);
     } else {
       ASSERT(status == FOCUSED);
-      if (m_wndFocus)
+      if (m_wndFocus) {
         return QueryInterfaceInWindow(m_wndFocus, pp);
-      else
+      } else {
         return E_FAIL;
+      }
     }
   }
   size_t get_Count() { return GetItemCount() - 1; }
@@ -192,29 +195,42 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
   void set_InsertPosition(InsertTo pos) { m_InsertPosition = pos; }
   ArrangeType get_Arrange() { return m_Arrange; }
   void set_Arrange(ArrangeType value) {
-    if (m_Arrange == value) return;
+    if (m_Arrange == value) {
+      return;
+    }
     m_Arrange = value;
     Update();
   }
   HRESULT GetStatus(IndexOr<IUnknown> item, DWORD* status, size_t* index = null) {
-    if (status) *status = 0;
-    if (index) *index = 0;
-    if (item.is_index())
+    if (status) {
+      *status = 0;
+    }
+    if (index) {
+      *index = 0;
+    }
+    if (item.is_index()) {
       return DoGetStatus(item, status, index);
-    else if (ref<IWindow> w = cast(item))
+    } else if (ref<IWindow> w = cast(item)) {
       return DoGetStatus(IndexFromParam(w->Handle) - 1, status, index);
-    else
+    } else {
       return E_INVALIDARG;
+    }
   }
   HRESULT DoGetStatus(size_t index, DWORD* out_status, size_t* out_index = null) {
     ++index;  // 0はダミーボタン
-    if (index >= (size_t)GetItemCount()) return E_INVALIDARG;
+    if (index >= (size_t)GetItemCount()) {
+      return E_INVALIDARG;
+    }
 
     if (out_status) {
       TBBUTTONINFO info = {sizeof(TBBUTTONINFO), TBIF_BYINDEX | TBIF_STATE};
       GetButtonInfo(index, &info);
-      if (IsVisible(info)) *out_status |= SELECTED;
-      if (IsLocked(info)) *out_status |= CHECKED;
+      if (IsVisible(info)) {
+        *out_status |= SELECTED;
+      }
+      if (IsLocked(info)) {
+        *out_status |= CHECKED;
+      }
     }
     if (out_index) {
       *out_index = index - 1;
@@ -222,16 +238,19 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
     return S_OK;
   }
   HRESULT SetStatus(IndexOr<IUnknown> item, Status status = SELECTED, bool unique = false) {
-    if (item.is_index())
+    if (item.is_index()) {
       return DoSetStatus(item, status, unique);
-    else if (ref<IWindow> w = cast(item))
+    } else if (ref<IWindow> w = cast(item)) {
       return DoSetStatus(IndexFromParam(w->Handle) - 1, status, unique);
-    else
+    } else {
       return E_INVALIDARG;
+    }
   }
   HRESULT DoSetStatus(size_t index, Status status = SELECTED, bool unique = false) {
     ++index;  // 0はダミーボタン
-    if (index >= (size_t)GetItemCount()) return E_INVALIDARG;
+    if (index >= (size_t)GetItemCount()) {
+      return E_INVALIDARG;
+    }
     if (unique) {
       switch (status) {
         case SELECTED:
@@ -272,7 +291,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
     }
     if (!GetChecked(IndexFromParam(m_wndFocus))) {
       SetFocusWindow(FindFocusTarget());
-      if (HasFocus()) m_wndFocus.SetFocus();
+      if (HasFocus()) {
+        m_wndFocus.SetFocus();
+      }
     }
     Update();
     return S_OK;
@@ -290,8 +311,12 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
         ++lc;
       }
     }
-    if (checked) *checked = ch;
-    if (locked) *locked = lc;
+    if (checked) {
+      *checked = ch;
+    }
+    if (locked) {
+      *locked = lc;
+    }
   }
   int GetCheckedCount() const {
     int checked;
@@ -307,21 +332,35 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
     }
   }
   void FocusChild(HWND hWnd) {
-    if (!GetChecked(IndexFromParam(hWnd))) return;
-    if (m_wndFocus != hWnd) Invalidate();
+    if (!GetChecked(IndexFromParam(hWnd))) {
+      return;
+    }
+    if (m_wndFocus != hWnd) {
+      Invalidate();
+    }
     SetFocusWindow(hWnd);
     if (m_wndFocus) {
-      if (HasFocus()) m_wndFocus.SetFocus();
+      if (HasFocus()) {
+        m_wndFocus.SetFocus();
+      }
     }
   }
   void FocusChild(int index) {
-    if (!GetChecked(index)) return;
+    if (!GetChecked(index)) {
+      return;
+    }
     CWindowEx wnd = GetItemData(index);
-    if (!wnd.IsWindow()) return;
-    if (m_wndFocus != wnd) Invalidate();
+    if (!wnd.IsWindow()) {
+      return;
+    }
+    if (m_wndFocus != wnd) {
+      Invalidate();
+    }
     SetFocusWindow(wnd);
     if (m_wndFocus) {
-      if (HasFocus()) m_wndFocus.SetFocus();
+      if (HasFocus()) {
+        m_wndFocus.SetFocus();
+      }
     }
   }
   // フォーカス候補を探す
@@ -329,7 +368,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
     int count = GetItemCount() - 1;
     for (int i = 0; i < count; ++i) {
       int index = (start - 1 + i * sgn + count) % count + 1;
-      if (GetChecked(index)) return GetItemData(index);
+      if (GetChecked(index)) {
+        return GetItemData(index);
+      }
     }
     return 0;
   }
@@ -382,7 +423,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
     int h = 0, v = 0;
     for (int i = 1; i < count; ++i) {
       ref<IWindow> p;
-      if FAILED (QueryInterfaceInWindow(windows[i].hWnd, &p)) continue;
+      if FAILED (QueryInterfaceInWindow(windows[i].hWnd, &p)) {
+        continue;
+      }
       if (windows[i].Visible) {
         const int x = rcClient.left + h * width / horz + h * m_Border.w + padding;
         const int y = rcClient.top + v * height / vert + v * m_Border.h + padding;
@@ -403,7 +446,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
     }
   }
   void HandleUpdateLayout() {
-    if (IsIconic() || !Visible) return;
+    if (IsIconic() || !Visible) {
+      return;
+    }
     Rect rcHeader, rcClient;
     GetHeaderAndClient(rcHeader, rcClient);
 
@@ -427,15 +472,18 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
         int horz = 1;
         float ratioMinusOneMin = FLT_MAX;
         for (int h = 1; h <= checked; ++h) {
-          if (checked % h != 0) continue;
+          if (checked % h != 0) {
+            continue;
+          }
           int v = checked / h;
           float width = (float)((rcClient.w - padding * 2) - m_Border.w * (h - 1)) / h;
           float height = (float)((rcClient.h - padding * 2) - m_Border.h * (v - 1)) / v;
           float ratioMinusOne;
-          if (width > height)
+          if (width > height) {
             ratioMinusOne = (float)width / height - 1;
-          else
+          } else {
             ratioMinusOne = (float)height / width - 1;
+          }
           if (ratioMinusOne < ratioMinusOneMin) {
             ratioMinusOneMin = ratioMinusOne;
             horz = h;
@@ -450,7 +498,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
     ResetToolTip();
   }
   bool IsDragRegion(Point pt) {
-    if (GetItemCount() <= 1) return false;
+    if (GetItemCount() <= 1) {
+      return false;
+    }
     Rect rcHeader, rcClient;
     GetHeaderAndClient(rcHeader, rcClient);
     return rcClient.contains(pt);
@@ -528,7 +578,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
   //  return TBDDRET_DEFAULT;
   //}
   HRESULT Send(message msg) {
-    if (!m_hWnd) return E_FAIL;
+    if (!m_hWnd) {
+      return E_FAIL;
+    }
     switch (msg.code) {
       case CommandGoForward:  // next
         WalkTab(false, false);
@@ -561,18 +613,23 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
   }
   void WalkTab(bool shift, bool control) {
     int count = GetItemCount() - 1;
-    if (count <= 1) return;
+    if (count <= 1) {
+      return;
+    }
     int checked, locked;
     CountStatus(&checked, &locked);
-    if (checked == 0) return;
+    if (checked == 0) {
+      return;
+    }
     int index = IndexFromParam(m_wndFocus) - 1;
     SuppressRedraw redraw(m_hWnd);
     if (checked == 1) {
       int next;
-      if (shift)
+      if (shift) {
         next = (index == 0 ? count - 1 : index - 1) + 1;
-      else
+      } else {
         next = (index == count - 1 ? 0 : index + 1) + 1;
+      }
       SetChecked(index + 1, false);
       SetChecked(next, true);
       FocusChild(next);
@@ -628,7 +685,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
   }
   LRESULT OnForwardMsg(UINT, WPARAM, LPARAM lParam, BOOL& bHandled) {
     MSG* msg = (MSG*)lParam;
-    if (UpdateToolTip()) m_tip.RelayEvent(msg);
+    if (UpdateToolTip()) {
+      m_tip.RelayEvent(msg);
+    }
 #ifdef ENABLE_DEFAULT_KEYMAP
     if (!m_Extensions.m_keymap) {  // default-keymap
       switch (msg->message) {
@@ -648,12 +707,15 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
   void OnSettingChange(HFONT hFont) {
     m_look.OnSettingChange(hFont);
     DefWindowProc(WM_SETFONT, (WPARAM)m_look.GetFocusFont().m_hFont, 0);
-    if (hFont) AutoSize();
+    if (hFont) {
+      AutoSize();
+    }
     RECT rcDummyButton;
-    if (GetItemRect(0, &rcDummyButton))
+    if (GetItemRect(0, &rcDummyButton)) {
       SetIndent(3 - rcDummyButton.right);
-    else
+    } else {
       SetIndent(0);
+    }
     Invalidate();
     Update();
   }
@@ -690,7 +752,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
     return 0;
   }
   HRESULT OnChildRename(message msg) {
-    if (!m_hWnd) return E_FAIL;
+    if (!m_hWnd) {
+      return E_FAIL;
+    }
     ref<IWindow> from = msg["from"];
     string name = msg["name"];
     if (from && name) {
@@ -716,7 +780,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
   }
   void HandleChildCreate(bool create, CWindowEx w) {
     ref<IWindow> p;
-    if FAILED (QueryInterfaceInWindow(w, &p)) return;
+    if FAILED (QueryInterfaceInWindow(w, &p)) {
+      return;
+    }
     if (create) {
       p->Connect(EventRename, function(this, &TabPanel::OnChildRename));
       HandleChildCreate_InsertTab(w);
@@ -726,7 +792,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
       if (index > 0) {
         int count = GetItemCount();
         int checked = GetCheckedCount();
-        if (GetChecked(index)) --checked;
+        if (GetChecked(index)) {
+          --checked;
+        }
 
         if (checked == 0) {  // 現在唯一のアクティブビューが閉じられた場合
           int next = (index >= count - 1 ? count - 2 : index + 1);
@@ -790,13 +858,17 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
     DECLARE_WND_CLASS_EX(L"NotifyTip", 0, -1)
 
     static NotifyTip* New(HWND hwndParent, const Rect& bounds) {
-      if (bounds.empty()) return null;
+      if (bounds.empty()) {
+        return null;
+      }
       if (!s_bitmap) {
         io::Path path;
         ::GetModuleFileName(null, path, MAX_PATH);
         path.Append(L"..\\..\\usr\\arrow.bmp");
         s_bitmap = (HBITMAP)::LoadImage(NULL, path, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-        if (!s_bitmap) return null;
+        if (!s_bitmap) {
+          return null;
+        }
       }
       return new NotifyTip(hwndParent, bounds);
     }
@@ -882,7 +954,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
   }
   void HotPopup_OnTimer() {
     KillTimer(HOTPOPUP_ID);
-    if (m_wndHot.empty()) return;
+    if (m_wndHot.empty()) {
+      return;
+    }
 
     std::vector<int> hotIndex;
     hotIndex.reserve(m_wndHot.size());
@@ -892,11 +966,17 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
       TBBUTTONINFO info = {sizeof(TBBUTTONINFO)};
       info.dwMask = TBIF_STATE | TBIF_LPARAM | TBIF_BYINDEX;
       GetButtonInfo(i, &info);
-      if (IsVisible(info)) ++shown;
+      if (IsVisible(info)) {
+        ++shown;
+      }
       //
       CWindowEx w = (HWND)info.lParam;
-      if (!w.IsWindow()) continue;                      // already destroyed.
-      if (!algorithm::contains(m_wndHot, w)) continue;  // not hot.
+      if (!w.IsWindow()) {
+        continue;  // already destroyed.
+      }
+      if (!algorithm::contains(m_wndHot, w)) {
+        continue;  // not hot.
+      }
       hotIndex.push_back(i);
     }
     //
@@ -916,15 +996,21 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
   }
 
   void ResetToolTip() {
-    if (!m_tip.IsWindow()) return;
+    if (!m_tip.IsWindow()) {
+      return;
+    }
     int tips = m_tip.GetToolCount();
     for (int i = 0; i < tips; ++i) {
       m_tip.DelTool(m_hWnd, i + 1);
     }
   }
   bool UpdateToolTip() {
-    if (!m_tip.IsWindow()) return false;
-    if (m_tip.GetToolCount() > 0) return true;
+    if (!m_tip.IsWindow()) {
+      return false;
+    }
+    if (m_tip.GetToolCount() > 0) {
+      return true;
+    }
     int count = GetItemCount();
     for (int i = 1; i < count; ++i) {
       HWND hWnd = GetItemData(i);
@@ -941,7 +1027,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
         !GetChecked(IndexFromParam(m_wndFocus))) {  // 以前フォーカスを持っていたビューがすでに無効になっている
       SetFocusWindow(FindFocusTarget());
     }
-    if (m_wndFocus) m_wndFocus.SetFocus();
+    if (m_wndFocus) {
+      m_wndFocus.SetFocus();
+    }
     return true;
   }
   LRESULT OnUpdateUIState(UINT, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
@@ -1007,7 +1095,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
       info.fsState |= TBSTATE_CHECKED;
       info.fsState ^= TBSTATE_ENABLED;
       SetButtonInfo(index, &info);
-      if (needsUpdate) Update();
+      if (needsUpdate) {
+        Update();
+      }
     }
     return 0;
   }
@@ -1020,38 +1110,54 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
     if (!(GET_KEYSTATE_WPARAM(wParam) & ~MK_LBUTTON) && GetItemCount() > 1) {  // 左ボタンのほかには何も押されていない
       Point pt(GET_XY_LPARAM(lParam));
       int index = HitTest(&pt);
-      if (index > 0) m_DraggingTab = index;
+      if (index > 0) {
+        m_DraggingTab = index;
+      }
     }
     DefWindowProc(uMsg, wParam & ~MK_RBUTTON, lParam);
     return 0;
   }
   LRESULT OnLButtonUp(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&) {
-    if (!m_DragSwap) DefWindowProc(uMsg, wParam, lParam);
+    if (!m_DragSwap) {
+      DefWindowProc(uMsg, wParam, lParam);
+    }
     m_DraggingTab = -1;
     m_DragSwap = false;
-    if ((GET_KEYSTATE_WPARAM(wParam) && MouseButtonMask) == 0 && GetCapture() == m_hWnd) ::ReleaseCapture();
+    if ((GET_KEYSTATE_WPARAM(wParam) && MouseButtonMask) == 0 && GetCapture() == m_hWnd) {
+      ::ReleaseCapture();
+    }
     return 0;
   }
   LRESULT OnMButtonUp(UINT, WPARAM, LPARAM lParam, BOOL&) {
-    if (m_DraggingTab >= 0 && m_DragSwap) return 0;
+    if (m_DraggingTab >= 0 && m_DragSwap) {
+      return 0;
+    }
     m_DraggingTab = -1;
     m_DragSwap = false;
     Point pt(GET_XY_LPARAM(lParam));
     int index = HitTest(&pt);
-    if (index >= 0) CloseView(index);
+    if (index >= 0) {
+      CloseView(index);
+    }
     return 0;
   }
   LRESULT OnRButtonDown(UINT, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-    if (m_DraggingTab >= 0 && m_DragSwap) return 0;
+    if (m_DraggingTab >= 0 && m_DragSwap) {
+      return 0;
+    }
     m_DraggingTab = -1;
     m_DragSwap = false;
     // if(GetCapture() != m_hWnd) // キャプチャすると、ツールバーコントロールが悪さをするみたい
     //   SetCapture();
-    if ((wParam & MK_LBUTTON) == 0) m_RButtonDown = true;
+    if ((wParam & MK_LBUTTON) == 0) {
+      m_RButtonDown = true;
+    }
     return 0;
   }
   LRESULT OnRButtonUp(UINT, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-    if (m_DraggingTab >= 0 && m_DragSwap) return 0;
+    if (m_DraggingTab >= 0 && m_DragSwap) {
+      return 0;
+    }
     m_DraggingTab = -1;
     m_DragSwap = false;
     if (GET_KEYSTATE_WPARAM(wParam) & MK_LBUTTON) {
@@ -1064,13 +1170,17 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
         SendMessage(OCM_COMMAND, MAKEWPARAM(index, GetDlgCtrlID()), (LPARAM)m_hWnd);
       }
       m_RButtonDown = false;
-      if (GetCapture() == m_hWnd) ::ReleaseCapture();
+      if (GetCapture() == m_hWnd) {
+        ::ReleaseCapture();
+      }
     } else {
       if (m_RButtonDown) {  // 右が押され、その後左が押されることなく右が離された場合のみコンテキストメニュー
         PostMessage(WM_CONTEXTMENU, (WPARAM)m_hWnd, ::GetMessagePos());
       }
       m_RButtonDown = false;
-      if ((GET_KEYSTATE_WPARAM(wParam) && MouseButtonMask) == 0 && GetCapture() == m_hWnd) ::ReleaseCapture();
+      if ((GET_KEYSTATE_WPARAM(wParam) && MouseButtonMask) == 0 && GetCapture() == m_hWnd) {
+        ::ReleaseCapture();
+      }
     }
     return 0;
   }
@@ -1106,17 +1216,27 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
       GetButtonInfo(index, &info);
       // Close
       int close = MF_STRING;
-      if (!lockClose && IsLocked(info)) close |= MF_DISABLED | MF_GRAYED;
+      if (!lockClose && IsLocked(info)) {
+        close |= MF_DISABLED | MF_GRAYED;
+      }
       menu.AppendMenu(close, ID_CLOSE, L"閉じる(&C)");
       // Show/Hide
       int show = MF_STRING;
-      if ((checked == 1 && IsVisible(info)) || IsLocked(info)) show |= MF_DISABLED | MF_GRAYED;
-      if (IsVisible(info)) show |= MF_CHECKED;
+      if ((checked == 1 && IsVisible(info)) || IsLocked(info)) {
+        show |= MF_DISABLED | MF_GRAYED;
+      }
+      if (IsVisible(info)) {
+        show |= MF_CHECKED;
+      }
       menu.AppendMenu(show, ID_VIEW, L"表示(&V)");
       // Navigate Lock
       int lock = MF_STRING;
-      if (!IsVisible(info)) lock |= MF_DISABLED | MF_GRAYED;
-      if (IsLocked(info)) lock |= MF_CHECKED;
+      if (!IsVisible(info)) {
+        lock |= MF_DISABLED | MF_GRAYED;
+      }
+      if (IsLocked(info)) {
+        lock |= MF_CHECKED;
+      }
       menu.AppendMenu(lock, ID_LOCK, L"ナビゲートロック(&L)");
       menu.AppendMenu(MF_SEPARATOR);
     }
@@ -1211,28 +1331,36 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
     const int count = GetButtonCount();
     int left = 1;
     for (int i = left; i < count; ++i) {
-      if (GetChecked(i)) MoveTabInternal(i, left++);
+      if (GetChecked(i)) {
+        MoveTabInternal(i, left++);
+      }
     }
   }
   void ShownToRight() {
     const int count = GetButtonCount();
     int right = count - 1;
     for (int i = right; i > 0; --i) {
-      if (GetChecked(i)) MoveTabInternal(i, right--);
+      if (GetChecked(i)) {
+        MoveTabInternal(i, right--);
+      }
     }
   }
   void LockedToLeft() {
     const int count = GetButtonCount();
     int left = 1;
     for (int i = 1; i < count; ++i) {
-      if (!GetEnabled(i)) MoveTabInternal(i, left++);
+      if (!GetEnabled(i)) {
+        MoveTabInternal(i, left++);
+      }
     }
   }
   void LockedToRight() {
     const int count = GetButtonCount();
     int right = count - 1;
     for (int i = right; i > 0; --i) {
-      if (!GetEnabled(i)) MoveTabInternal(i, right--);
+      if (!GetEnabled(i)) {
+        MoveTabInternal(i, right--);
+      }
     }
   }
   LRESULT OnContextMenu(UINT, WPARAM, LPARAM lParam, BOOL&) {
@@ -1245,37 +1373,46 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
   }
   Rect GetTabRectByIndex(size_t index) const {
     RECT rc;
-    if (GetItemRect(index, &rc))
+    if (GetItemRect(index, &rc)) {
       return Rect(rc);
-    else
+    } else {
       return Rect::Zero;
+    }
   }
   Rect GetTabRect(IndexOr<IUnknown> item) {
     int itemIndex;
-    if (item.is_index())
+    if (item.is_index()) {
       itemIndex = (int)item + 1;
-    else if (ref<IWindow> w = cast(item))
+    } else if (ref<IWindow> w = cast(item)) {
       itemIndex = IndexFromParam(w->Handle);
-    else
+    } else {
       return Rect::Zero;
+    }
     return GetTabRectByIndex(itemIndex);
   }
   HRESULT MoveTabInternal(int from, int to) {
-    if (to < 1) to = 1;
-    if (from < 1) return E_INVALIDARG;
-    if (from == to) return S_FALSE;
+    if (to < 1) {
+      to = 1;
+    }
+    if (from < 1) {
+      return E_INVALIDARG;
+    }
+    if (from == to) {
+      return S_FALSE;
+    }
     MoveButton(from, to);
     Update();
     return S_OK;
   }
   HRESULT MoveTab(IndexOr<IUnknown> from, int to) {
     int fromIndex;
-    if (from.is_index())
+    if (from.is_index()) {
       fromIndex = (int)from + 1;
-    else if (ref<IWindow> w = cast(from))
+    } else if (ref<IWindow> w = cast(from)) {
       fromIndex = IndexFromParam(w->Handle);
-    else
+    } else {
       return E_INVALIDARG;
+    }
     return MoveTabInternal(fromIndex, to + 1);
   }
   HRESULT SetMinMaxTabWidth(size_t min, size_t max) {
@@ -1294,10 +1431,11 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
           return 0;  // この場合はHandleUpdateLayout()は必要ないはず……
         }
         CWindowEx w = GetItemData(index);
-        if (GetChecked(index))
+        if (GetChecked(index)) {
           FocusChild(w);
-        else if (m_wndFocus == w)
+        } else if (m_wndFocus == w) {
           FocusChild(FindFocusTarget());
+        }
       } else {  // 修飾キーなしでのクリックは、それのみをアクティブにする
         SelectOnly(index);
       }
@@ -1307,11 +1445,21 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
   }
   inline static DWORD CDIS2Status(DWORD cdis) {
     DWORD status = 0;
-    if (cdis & CDIS_FOCUS) status |= FOCUSED;
-    if (cdis & CDIS_CHECKED) status |= CHECKED;
-    if (cdis & CDIS_HOT) status |= HOT;
-    if (cdis & CDIS_SELECTED) status |= SELECTED;
-    if (!(cdis & CDIS_DISABLED)) status |= ENABLED;
+    if (cdis & CDIS_FOCUS) {
+      status |= FOCUSED;
+    }
+    if (cdis & CDIS_CHECKED) {
+      status |= CHECKED;
+    }
+    if (cdis & CDIS_HOT) {
+      status |= HOT;
+    }
+    if (cdis & CDIS_SELECTED) {
+      status |= SELECTED;
+    }
+    if (!(cdis & CDIS_DISABLED)) {
+      status |= ENABLED;
+    }
     return status;
   }
   LRESULT OnCustomDraw(int, LPNMHDR pnmh, BOOL& bHandled) {
@@ -1328,7 +1476,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
         return CDRF_SKIPDEFAULT;
       }
       case CDDS_ITEMPREPAINT: {
-        if (draw->nmcd.dwItemSpec == 0) return CDRF_SKIPDEFAULT;
+        if (draw->nmcd.dwItemSpec == 0) {
+          return CDRF_SKIPDEFAULT;
+        }
         CDCHandle dc = draw->nmcd.hdc;
         RECT bounds = draw->nmcd.rc;
         bounds.top += 4;  // 最上部ピクセルはボーダーが引かれているためずらす
@@ -1338,10 +1488,11 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
         ASSERT(::IsWindow(hView));
         dc.SetBkMode(TRANSPARENT);
         DWORD status = CDIS2Status(draw->nmcd.uItemState);
-        if (hView == m_wndFocus)
+        if (hView == m_wndFocus) {
           status |= FOCUSED;
-        else
+        } else {
           status &= ~FOCUSED;
+        }
         m_look.DrawTab(dc, bounds, text, status);
         return CDRF_SKIPDEFAULT;
       }
@@ -1362,7 +1513,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
     return (HWND)info.lParam;
   }
   void CloseView(int index) {
-    if (HWND hwnd = _getViewIfClosable(index)) ::PostMessage(hwnd, WM_CLOSE, 0, 0);
+    if (HWND hwnd = _getViewIfClosable(index)) {
+      ::PostMessage(hwnd, WM_CLOSE, 0, 0);
+    }
   }
   void CloseViewCheckVisible(int index, bool visible) {
     if (HWND hwnd = _getViewIfClosable(index)) {
@@ -1403,7 +1556,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
         newTab.level = 1;
       }
       for (int i = 0; i < count; ++i) {
-        if (i == index) continue;
+        if (i == index) {
+          continue;
+        }
         TempTabText& otherTab = names[i];
         if (newTab.text == otherTab.text) {
           // そもそも全く同じ名前
@@ -1418,21 +1573,26 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
         otherTab.level = math::max(otherTab.level, minLevel);
       }
       for (int i = 0; i < count; ++i) {
-        if (i == index) continue;
+        if (i == index) {
+          continue;
+        }
         int level = names[i].level;
-        if (level < 0) level = newTab.level;
+        if (level < 0) {
+          level = newTab.level;
+        }
         SetTabText(i, GetTextForTab(names[i].text, level));
       }
       return GetTextForTab(newTab.text, newTab.level);
     } else {
       PCWSTR s = name.str();
       int ln = name.length();
-      if (ln >= 2 && (s[1] == _T(':') || (s[0] == _T('\\') && s[1] == _T('\\'))))
+      if (ln >= 2 && (s[1] == _T(':') || (s[0] == _T('\\') && s[1] == _T('\\')))) {
         return PathFindFileName(s);
-      else if (afx::PathIsRegistory(s))
+      } else if (afx::PathIsRegistory(s)) {
         return PathFindFileName(s);
-      else
+      } else {
         return name;
+      }
     }
   }
   static PCTSTR GetTextForTab(string name, int level) {
@@ -1443,7 +1603,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
         switch (text[i - 1]) {
           case L'\\':
           case L'/':
-            if (--level <= 0) return text + i;
+            if (--level <= 0) {
+              return text + i;
+            }
             break;
         }
       }
@@ -1498,7 +1660,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
             SystemParametersInfo(SPI_GETMOUSEHOVERTIME, 0, &AUTOACTIVATE_HOVER, 0);
             // そのまま使うと体感的にかなり短めのなので、ツールチップホバーの2倍または500ms の長いほうにする。
             AUTOACTIVATE_HOVER *= 2;
-            if (AUTOACTIVATE_HOVER < AUTOACTIVATE_HOVER_MIN) AUTOACTIVATE_HOVER = AUTOACTIVATE_HOVER_MIN;
+            if (AUTOACTIVATE_HOVER < AUTOACTIVATE_HOVER_MIN) {
+              AUTOACTIVATE_HOVER = AUTOACTIVATE_HOVER_MIN;
+            }
             if (GetTickCount() - m_LastMouseTime > AUTOACTIVATE_HOVER) {
               SetStatus(w, SELECTED, false);
             }
@@ -1522,7 +1686,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
       SetHotItem(index);
       HWND hWnd = GetItemData(index);
       ref<IDropTarget> pDropTarget;
-      if (QueryDropTargetInWindow(hWnd, &pDropTarget, (const POINT&)ptScreen)) return pDropTarget;
+      if (QueryDropTargetInWindow(hWnd, &pDropTarget, (const POINT&)ptScreen)) {
+        return pDropTarget;
+      }
     }
     SetHotItem(-1);
     return null;
@@ -1534,7 +1700,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
       Point pt(GET_XY_LPARAM(lParam));
       ScreenToClient(&pt);
       int index = HitTest(&pt);
-      if (index <= 0) return false;
+      if (index <= 0) {
+        return false;
+      }
       QueryInterface(pp);
     }
     return true;
@@ -1546,7 +1714,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
     SetTimer(AUTOACTIVATE_ID, AUTOACTIVATE_CHECK, NULL);
     m_dwDropEffect = *pdwEffect;
     m_pDropData = pDataObject;
-    if (m_drop = QueryDropTargetInTab(pt)) m_drop->DragEnter(pDataObject, key, pt, pdwEffect);
+    if (m_drop = QueryDropTargetInTab(pt)) {
+      m_drop->DragEnter(pDataObject, key, pt, pdwEffect);
+    }
     // ここで拒否すると今後のDragOverが呼ばれないので、とりあえずすべてを受け入れる
     *pdwEffect = DROPEFFECT_COPY | DROPEFFECT_MOVE | DROPEFFECT_LINK;
     return S_OK;
@@ -1554,7 +1724,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
   STDMETHODIMP DragOver(DWORD key, POINTL pt, DWORD* pdwEffect) {
     DWORD dwCurrentTick = GetTickCount();
 
-    if (UpdateToolTip()) afx::TipRelayEvent(m_tip, m_hWnd, pt.x, pt.y);
+    if (UpdateToolTip()) {
+      afx::TipRelayEvent(m_tip, m_hWnd, pt.x, pt.y);
+    }
 
     // マウスホバー
     if (m_LastMousePos.x != pt.x || m_LastMousePos.y != pt.y) {
@@ -1564,7 +1736,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
 
     ref<IDropTarget> pDropTarget = QueryDropTargetInTab(pt);
     if (!objcmp(pDropTarget, m_drop)) {  // ターゲットが代わったので、IDropTargetをエミュレートする
-      if (m_drop) m_drop->DragLeave();
+      if (m_drop) {
+        m_drop->DragLeave();
+      }
       m_drop = pDropTarget;
       if (m_drop) {
         DWORD dwCopy = m_dwDropEffect;
@@ -1578,10 +1752,11 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
         return E_NOTIMPL;
       }
     } else {
-      if (m_drop)
+      if (m_drop) {
         return m_drop->DragOver(key, pt, pdwEffect);
-      else
+      } else {
         return E_NOTIMPL;
+      }
     }
   }
   STDMETHODIMP DragLeave() {

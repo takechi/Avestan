@@ -6,6 +6,7 @@
 #include "object.hpp"
 
 namespace ave {
+
 MEW_API void GetDriveLetter(PCWSTR path, PWSTR buffer) {
   size_t pathlen = mew::str::length(path);
   PCTSTR pathstr = path;
@@ -84,10 +85,6 @@ MEW_API UINT64 GetSelectedBytes(mew::ui::IShellListView* view) {
 }
 }  // namespace ave
 
-//==============================================================================
-
-using namespace ave;
-
 namespace {
 const PCTSTR MODS_NAME[] = {
     _T("Default"), _T("Alt"),      _T("Control"),      _T("ControlAlt"),
@@ -146,11 +143,11 @@ class DefaultCallback : public mew::Root<mew::implements<ICallback, mew::IDispos
         TCHAR sTotalSize[32], sFreeBytes[32];
         if (path) {
           GetDiskFreeSpaceEx(path.str(), (ULARGE_INTEGER*)&uFreeBytes, nullptr, nullptr);
-          GetDriveLetter(path.str(), sDrive);
+          ave::GetDriveLetter(path.str(), sDrive);
         }
         if (totalCount > 0) {  // totalCount == 0 の場合、まだフォルダを計算中の可能性があり、
           // このときに列挙するとしばらく応答しなくなる場合がある。
-          uTotalBytes = GetTotalBytes(view);
+          uTotalBytes = ave::GetTotalBytes(view);
         }
         StrFormatByteSize64(uTotalBytes, sTotalSize, 32);
         StrFormatByteSize64(uFreeBytes, sFreeBytes, 32);
@@ -159,7 +156,7 @@ class DefaultCallback : public mew::Root<mew::implements<ICallback, mew::IDispos
       }
     } else {  // 複数選択
       TCHAR sSelectBytes[32];
-      StrFormatByteSize64(GetSelectedBytes(view), sSelectBytes, 32);
+      StrFormatByteSize64(ave::GetSelectedBytes(view), sSelectBytes, 32);
       return mew::string::format(_T("$1 / $2 個のオブジェクトを選択 ( $3 )"), selectedCount, totalCount, sSelectBytes);
     }
   }
@@ -182,11 +179,11 @@ class DefaultCallback : public mew::Root<mew::implements<ICallback, mew::IDispos
   avesta::Navigation NavigateVerb(mew::io::IEntry* current, mew::io::IEntry* where, UINT mods, bool locked,
                                   avesta::Navigation defaultVerb) {
     const avesta::Navigation NormalGoto[8] = {
-        avesta::NaviGoto, avesta::NaviAppend, avesta::NaviReserve, avesta::NaviReplace,
+        avesta::NaviGoto, avesta::NaviAppend,     avesta::NaviReserve, avesta::NaviReplace,
         avesta::NaviGoto, avesta::NaviOpenAlways, avesta::NaviSwitch,  avesta::NaviGoto,
     };
     const avesta::Navigation LockedGoto[8] = {
-        avesta::NaviAppend, avesta::NaviGoto, avesta::NaviReserve, avesta::NaviAppend,
+        avesta::NaviAppend, avesta::NaviGoto,   avesta::NaviReserve, avesta::NaviAppend,
         avesta::NaviAppend, avesta::NaviAppend, avesta::NaviSwitch,  avesta::NaviAppend,
     };
     const avesta::Navigation NormalOpen[8] = {
@@ -194,7 +191,7 @@ class DefaultCallback : public mew::Root<mew::implements<ICallback, mew::IDispos
         avesta::NaviOpen, avesta::NaviGotoAlways, avesta::NaviSwitch,  avesta::NaviOpen,
     };
     const avesta::Navigation LockedOpen[8] = {
-        avesta::NaviAppend, avesta::NaviAppend, avesta::NaviReserve, avesta::NaviAppend,
+        avesta::NaviAppend, avesta::NaviAppend,     avesta::NaviReserve, avesta::NaviAppend,
         avesta::NaviAppend, avesta::NaviGotoAlways, avesta::NaviSwitch,  avesta::NaviAppend,
     };
 

@@ -7,8 +7,6 @@
 #include "theme.hpp"
 #include "drawing.hpp"
 
-using namespace mew::drawing;
-
 namespace {
 const UINT ID_DEFAULT_MENU_ITEM = 0x0FFF;
 static WORD ID_MENU_COMMAND = 0x1000;
@@ -116,7 +114,8 @@ static void Menu_Insert(
   size_t count = pMenu->GetChildCount();
   for (size_t i = 0; i < count; ++i) {
     mew::ref<mew::ui::ITreeItem> child;
-    if FAILED (pMenu->GetChild(&child, i)) {continue;
+    if FAILED (pMenu->GetChild(&child, i)) {
+      continue;
     }
     mew::string text = child->Name;
     MenuItemInfo info(MIIM_FTYPE | MIIM_DATA);
