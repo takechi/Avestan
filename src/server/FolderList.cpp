@@ -8,17 +8,25 @@
 #include "object.hpp"
 
 namespace {
-HRESULT ShellCopyHere(IShellListView* view) {
-  if (!view) return E_POINTER;
-  ref<IEntryList> entries;
+HRESULT ShellCopyHere(mew::ui::IShellListView* view) {
+  if (!view) {
+    return E_POINTER;
+  }
+  mew::ref<mew::io::IEntryList> entries;
   HRESULT hr;
-  if FAILED (hr = view->GetContents(&entries, SELECTED)) return hr;
-  string path = GetPathOfView(view);
+  if FAILED (hr = view->GetContents(&entries, mew::SELECTED)) {
+    return hr;
+  }
+  mew::string path = ave::GetPathOfView(view);
   for (size_t i = 0; i < entries->Count; ++i) {
-    ref<IEntry> from;
-    if FAILED (entries->GetAt(&from, i)) continue;
-    string src = from->Path;
-    if (!src) continue;
+    mew::ref<mew::io::IEntry> from;
+    if FAILED (entries->GetAt(&from, i)) {
+      continue;
+    }
+    mew::string src = from->Path;
+    if (!src) {
+      continue;
+    }
     WCHAR dst[MAX_PATH];
     if (PathMakeUniqueName(dst, MAX_PATH, NULL, PathFindFileNameW(src.str()), path.str())) {
       WCHAR src2null[MAX_PATH] = {0};  // 末端はダブルNULLが必要なため。
@@ -39,81 +47,92 @@ inline UINT8 IndexToMnemonic(size_t index) {
   else
     return 0;
 }
-static HRESULT DoMoveTo(IEntryList* entries, PCTSTR dst, bool copy) {
+static HRESULT DoMoveTo(mew::io::IEntryList* entries, PCTSTR dst, bool copy) {
   ASSERT(entries);
-  StringBuffer srcfiles;
+  mew::StringBuffer srcfiles;
   const size_t count = entries->Count;
   for (size_t i = 0; i < count; ++i) {
-    ref<IEntry> entry;
+    mew::ref<mew::io::IEntry> entry;
     if SUCCEEDED (entries->GetAt(&entry, i)) {
-      if (string path = entry->Path) {
+      if (mew::string path = entry->Path) {
         srcfiles.append(path.str(), path.length() + 1);
       }
     }
   }
   srcfiles.push_back(_T('\0'));
-  if (copy)
+  if (copy) {
     return avesta::FileDup(srcfiles, dst);
-  else
+  } else {
     return avesta::FileMove(srcfiles, dst);
+  }
 }
-static HRESULT DoMoveTo(IShellListView* src, PCTSTR dst, bool copy) {
+static HRESULT DoMoveTo(mew::ui::IShellListView* src, PCTSTR dst, bool copy) {
   HRESULT hr;
-  ref<IEntryList> entries;
-  if FAILED (hr = src->GetContents(&entries, SELECTED)) return hr;
+  mew::ref<mew::io::IEntryList> entries;
+  if FAILED (hr = src->GetContents(&entries, mew::SELECTED)) {
+    return hr;
+  }
   return DoMoveTo(entries, dst, copy);
 }
 enum ExposeGroup {
   ExposeGroupView,
   ExposeGroupTab,
 };
-static size_t AddShownToExpose(IExpose* expose, HWND hwndRoot, IWindow* current) {
+static size_t AddShownToExpose(mew::ui::IExpose* expose, HWND hwndRoot, mew::ui::IWindow* current) {
   size_t shown = 0;
   size_t indexSelected = 0;
   size_t indexCurrent = INT_MAX;
-  ref<ITabPanel> tabs;
-  theAvesta->GetComponent(&tabs, AvestaTab);
+  mew::ref<mew::ui::ITabPanel> tabs;
+  theAvesta->GetComponent(&tabs, avesta::AvestaTab);
   const size_t count = tabs->Count;
   for (size_t i = 0; i < count; ++i) {
-    ref<IWindow> w;
+    mew::ref<mew::ui::IWindow> w;
     if (SUCCEEDED(tabs->GetAt(&w, i)) && w->Visible) {
-      if (objcmp(current, w)) indexCurrent = i;
-      Rect rc;
+      if (objcmp(current, w)) {
+        indexCurrent = i;
+      }
+      mew::Rect rc;
       HWND hwndFolder = w->Handle;
       ::GetWindowRect(hwndFolder, &rc);
       afx::ScreenToClient(hwndRoot, &rc);
       UINT8 mne = IndexToMnemonic(shown);
       expose->AddRect(i, ExposeGroupView, rc, mne);
-      if (indexSelected == 0 && indexCurrent < i) indexSelected = shown;
+      if (indexSelected == 0 && indexCurrent < i) {
+        indexSelected = shown;
+      }
       ++shown;
     }
   }
-  if (shown == 1)
+  if (shown == 1) {
     return indexCurrent + shown;  // もし表示中が一つだけならば、タブの中でその表示中を指すものにカーソルを合わせる
-  else
+  } else {
     return indexSelected;  // 複数が表示中ならば、フォーカスの次のビューにカーソルを合わせる
+  }
 }
-static void AddTabToExpose(IExpose* expose, HWND hwndRoot) {
-  ref<ITabPanel> tabs;
-  theAvesta->GetComponent(&tabs, AvestaTab);
+static void AddTabToExpose(mew::ui::IExpose* expose, HWND hwndRoot) {
+  mew::ref<mew::ui::ITabPanel> tabs;
+  theAvesta->GetComponent(&tabs, avesta::AvestaTab);
   HWND hwndTab = tabs->Handle;
   const size_t count = tabs->Count;
   for (size_t i = 0; i < count; ++i) {
-    Rect rect = tabs->GetTabRect(i);
+    mew::Rect rect = tabs->GetTabRect(i);
     afx::MapWindowRect(hwndTab, hwndRoot, &rect);
     UINT8 mne = IndexToMnemonic(10 + i);
     expose->AddRect(i, ExposeGroupTab, rect, mne);
   }
 }
-void ShellMoveTo(IShellListView* current, bool copy) {
-  if (!current || current->SelectedCount == 0) return;
+void ShellMoveTo(mew::ui::IShellListView* current, bool copy) {
+  if (!current || current->SelectedCount == 0) {
+    return;
+  }
 
-  ref<IExpose> expose(__uuidof(Expose));
+  mew::ref<mew::ui::IExpose> expose(__uuidof(mew::ui::Expose));
 
-  if (copy)
+  if (copy) {
     expose->SetTitle(L"コピー先の指定");
-  else
+  } else {
     expose->SetTitle(L"移動先の指定");
+  }
 
   HWND hwndRoot = ::GetAncestor(current->Handle, GA_ROOT);
 
@@ -126,37 +145,46 @@ void ShellMoveTo(IShellListView* current, bool copy) {
 
   UINT32 time = theAvesta->GetExposeTime();
   HRESULT hr = expose->Go(hwndRoot, time);
-  ref<IShellListView> dst;
-  if (SUCCEEDED(hr) && SUCCEEDED(theAvesta->GetComponent(&dst, AvestaFolder, hr))) {
+  mew::ref<mew::ui::IShellListView> dst;
+  if (SUCCEEDED(hr) && SUCCEEDED(theAvesta->GetComponent(&dst, avesta::AvestaFolder, hr))) {
     if (objcmp(current, dst)) {
-      if (copy)
+      if (copy) {
         ShellCopyHere(current);
-      else
-        ErrorBox(current, _T("送り手と受け手が同じです"));
-    } else if (string dstpath = GetPathOfView(dst)) {
+      } else {
+        ave::ErrorBox(current, _T("送り手と受け手が同じです"));
+      }
+    } else if (mew::string dstpath = ave::GetPathOfView(dst)) {
       TCHAR dstpath2[MAX_PATH] = {0};
       dstpath.copyto(dstpath2, MAX_PATH);
       DoMoveTo(current, dstpath2, copy);
     }
   }
 }
-void ShellMoveToOther(IShellListView* current, bool copy) {
-  if (!current || current->SelectedCount == 0) return;
+void ShellMoveToOther(mew::ui::IShellListView* current, bool copy) {
+  if (!current || current->SelectedCount == 0) {
+    return;
+  }
   size_t shown = 0;
-  ref<IShellListView> dst;
-  ref<ITabPanel> tabs;
-  theAvesta->GetComponent(&tabs, AvestaTab);
+  mew::ref<mew::ui::IShellListView> dst;
+  mew::ref<mew::ui::ITabPanel> tabs;
+  theAvesta->GetComponent(&tabs, avesta::AvestaTab);
   const size_t count = tabs->Count;
   for (size_t i = 0; i < count; ++i) {
-    ref<IShellListView> w;
+    mew::ref<mew::ui::IShellListView> w;
     if (SUCCEEDED(tabs->GetAt(&w, i)) && w->Visible) {
-      if (!objcmp(current, w)) dst = w;
-      if (++shown > 2) break;
+      if (!objcmp(current, w)) {
+        dst = w;
+      }
+      if (++shown > 2) {
+        break;
+      }
     }
   }
-  if (shown != 2) return ShellMoveTo(current, copy);
+  if (shown != 2) {
+    return ShellMoveTo(current, copy);
+  }
   // ちょうど2つ開かれていたので、コピーまたは移動
-  if (string dstpath = GetPathOfView(dst)) {
+  if (mew::string dstpath = ave::GetPathOfView(dst)) {
     TCHAR dstpath2[MAX_PATH] = {0};
     dstpath.copyto(dstpath2, MAX_PATH);
     DoMoveTo(current, dstpath2, copy);
@@ -166,31 +194,35 @@ void ShellMoveToOther(IShellListView* current, bool copy) {
 
 class ShellListSink {
  public:
-  static HRESULT OnExecuteEntry(message msg) {
-    if (ref<IEntry> what = msg["what"]) {
-      AvestaExecute(what);
+  static HRESULT OnExecuteEntry(mew::message msg) {
+    if (mew::ref<mew::io::IEntry> what = msg["what"]) {
+      avesta::AvestaExecute(what);
       msg["cancel"] = true;
     }
     return S_OK;
   }
-  static HRESULT OnFolderChanging(message msg) {
+  static HRESULT OnFolderChanging(mew::message msg) {
     HRESULT hr;
-    ref<IShellListView> view = msg["from"];
-    ref<IEntry> where = msg["where"];
-    if (!where) return S_OK;
-    ref<IList> parent;
-    if FAILED (hr = QueryParent(view, &parent)) return hr;
-    Navigation navi = theAvesta->NavigateVerb(view, where, IsLocked(view, parent), NaviGoto);
+    mew::ref<mew::ui::IShellListView> view = msg["from"];
+    mew::ref<mew::io::IEntry> where = msg["where"];
+    if (!where) {
+      return S_OK;
+    }
+    mew::ref<mew::ui::IList> parent;
+    if FAILED (hr = QueryParent(view, &parent)) {
+      return hr;
+    }
+    avesta::Navigation navi = theAvesta->NavigateVerb(view, where, IsLocked(view, parent), avesta::NaviGoto);
     switch (navi) {
-      case NaviGoto:
-      case NaviGotoAlways:
+      case avesta::NaviGoto:
+      case avesta::NaviGotoAlways:
         break;
-      case NaviOpen:
-      case NaviOpenAlways:
-      case NaviAppend:
-      case NaviReserve:
-      case NaviSwitch:
-      case NaviReplace:
+      case avesta::NaviOpen:
+      case avesta::NaviOpenAlways:
+      case avesta::NaviAppend:
+      case avesta::NaviReserve:
+      case avesta::NaviSwitch:
+      case avesta::NaviReplace:
         msg["cancel"] = true;
         theAvesta->OpenFolder(where, navi);
         break;
@@ -200,9 +232,9 @@ class ShellListSink {
     }
     return S_OK;
   }
-  static HRESULT OnUnsupported(message msg) {
-    ref<IShellListView> view = msg["from"];
-    message what = msg["what"];
+  static HRESULT OnUnsupported(mew::message msg) {
+    mew::ref<mew::ui::IShellListView> view = msg["from"];
+    mew::message what = msg["what"];
     switch (what.code) {
       case AVESTA_New:
         DlgNew(view);
@@ -217,10 +249,10 @@ class ShellListSink {
         ShellCopyHere(view);
         break;
       case AVESTA_Show:
-        SetSelfStatus(view, SELECTED);
+        SetSelfStatus(view, mew::SELECTED);
         break;
       case AVESTA_Hide:
-        SetSelfStatus(view, UNSELECTED);
+        SetSelfStatus(view, mew::UNSELECTED);
         break;
       case AVESTA_CopyTo:
         ShellMoveTo(view, true);
@@ -247,13 +279,13 @@ class ShellListSink {
         SyncDescendants(view);
         break;
       case AVESTA_CopyPath:
-        EntryNameToClipboard(view, SELECTED, IEntry::PATH);
+        ave::EntryNameToClipboard(view, mew::SELECTED, mew::io::IEntry::PATH);
         break;
       case AVESTA_CopyName:
-        EntryNameToClipboard(view, SELECTED, IEntry::LEAF_OR_NAME);
+        ave::EntryNameToClipboard(view, mew::SELECTED, mew::io::IEntry::LEAF_OR_NAME);
         break;
       case AVESTA_CopyBase:
-        EntryNameToClipboard(view, SELECTED, IEntry::BASE_OR_NAME);
+        ave::EntryNameToClipboard(view, mew::SELECTED, mew::io::IEntry::BASE_OR_NAME);
         break;
       case AVESTA_RenamePaste:
         DlgRename(view, true);
@@ -265,29 +297,34 @@ class ShellListSink {
         DlgRename(view, false);
         break;
       case AVESTA_Export:
-        if (ref<IEntry> folder = GetFolderOfView(view))
-          if (SUCCEEDED(avesta::ILExecute(folder->ID, L"open"))) view->Close();
+        if (mew::ref<mew::io::IEntry> folder = ave::GetFolderOfView(view)) {
+          if (SUCCEEDED(avesta::ILExecute(folder->ID, L"open"))) {
+            view->Close();
+          }
+        }
         break;
       case AVESTA_Find:
-        if (ref<IEntry> folder = GetFolderOfView(view)) avesta::ILExecute(folder->ID, L"find");
+        if (mew::ref<mew::io::IEntry> folder = ave::GetFolderOfView(view)) {
+          avesta::ILExecute(folder->ID, L"find");
+        }
         break;
       case AVESTA_ShowAllFiles:
         view->ShowAllFiles = !view->ShowAllFiles;
         break;
       case AVEOBS_ShowAllFiles:
-        what["state"] = (ENABLED | (view->ShowAllFiles ? CHECKED : 0));
+        what["state"] = (mew::ENABLED | (view->ShowAllFiles ? mew::CHECKED : 0));
         break;
       case AVESTA_AutoArrange:
         view->AutoArrange = !view->AutoArrange;
         break;
       case AVEOBS_AutoArrange:
-        what["state"] = (ENABLED | (view->AutoArrange ? CHECKED : 0));
+        what["state"] = (mew::ENABLED | (view->AutoArrange ? mew::CHECKED : 0));
         break;
       case AVESTA_Grouping:
         view->Grouping = !view->Grouping;
         break;
       case AVEOBS_Grouping:
-        what["state"] = (ENABLED | (view->Grouping ? CHECKED : 0));
+        what["state"] = (mew::ENABLED | (view->Grouping ? mew::CHECKED : 0));
         break;
       default:
         ASSERT(!"Invalid Command on ShellListView");
@@ -296,60 +333,80 @@ class ShellListSink {
   }
 
  private:
-  static HRESULT SetSelfStatus(IShellListView* view, Status status) {
-    ref<IList> parent;
+  static HRESULT SetSelfStatus(mew::ui::IShellListView* view, mew::Status status) {
+    mew::ref<mew::ui::IList> parent;
     HRESULT hr = QueryParent(view, &parent);
-    if FAILED (hr) return hr;
+    if FAILED (hr) {
+      return hr;
+    }
     return parent->SetStatus(view, status);
   }
-  static HRESULT PasteTo(IShellListView* view) {
-    if (!view) return E_UNEXPECTED;
-    HRESULT hr;
-    if (!::IsClipboardFormatAvailable(CF_HDROP)) return E_UNEXPECTED;
-    if (view->SelectedCount != 1) {
-      ErrorBox(view, string::load(IDS_ERR_NOSELECTFOLDER));
+  static HRESULT PasteTo(mew::ui::IShellListView* view) {
+    if (!view) {
       return E_UNEXPECTED;
     }
-    ref<IEntryList> entries;
-    if FAILED (hr = view->GetContents(&entries, SELECTED)) return hr;
-    ref<IEntry> dst;
-    if FAILED (hr = entries->GetAt(&dst, 0)) return hr;
-    string dstpath = dst->Path;
+    HRESULT hr;
+    if (!::IsClipboardFormatAvailable(CF_HDROP)) {
+      return E_UNEXPECTED;
+    }
+    if (view->SelectedCount != 1) {
+      ave::ErrorBox(view, mew::string::load(IDS_ERR_NOSELECTFOLDER));
+      return E_UNEXPECTED;
+    }
+    mew::ref<mew::io::IEntryList> entries;
+    if FAILED (hr = view->GetContents(&entries, mew::SELECTED)) {
+      return hr;
+    }
+    mew::ref<mew::io::IEntry> dst;
+    if FAILED (hr = entries->GetAt(&dst, 0)) {
+      return hr;
+    }
+    mew::string dstpath = dst->Path;
     if (!::PathIsDirectory(dstpath.str())) {
-      ErrorBox(view, string::load(IDS_ERR_SELECTIONISNONFOLDER));
+      ave::ErrorBox(view, mew::string::load(IDS_ERR_SELECTIONISNONFOLDER));
       return E_UNEXPECTED;
     }
     return avesta::FilePaste(dstpath.str());
   }
-  static HRESULT MoveCheckedTo(IShellListView* view, bool copy) {
-    if (!view) return E_UNEXPECTED;
+  static HRESULT MoveCheckedTo(mew::ui::IShellListView* view, bool copy) {
+    if (!view) {
+      return E_UNEXPECTED;
+    }
     HRESULT hr;
     // dst
     if (view->SelectedCount != 1) {
-      ErrorBox(view, string::load(IDS_ERR_NOSELECTFOLDER));
+      ave::ErrorBox(view, mew::string::load(IDS_ERR_NOSELECTFOLDER));
       return E_UNEXPECTED;
     }
-    ref<IEntryList> entries;
-    if FAILED (hr = view->GetContents(&entries, SELECTED)) return hr;
-    ref<IEntry> dst;
-    if FAILED (hr = entries->GetAt(&dst, 0)) return hr;
-    string dstpath = dst->Path;
+    mew::ref<mew::io::IEntryList> entries;
+    if FAILED (hr = view->GetContents(&entries, mew::SELECTED)) {
+      return hr;
+    }
+    mew::ref<mew::io::IEntry> dst;
+    if FAILED (hr = entries->GetAt(&dst, 0)) {
+      return hr;
+    }
+    mew::string dstpath = dst->Path;
     if (!::PathIsDirectory(dstpath.str())) {
-      ErrorBox(view, string::load(IDS_ERR_SELECTIONISNONFOLDER));
+      ave::ErrorBox(view, mew::string::load(IDS_ERR_SELECTIONISNONFOLDER));
       return E_UNEXPECTED;
     }
     // src
-    ref<IEntryList> checked;
-    if FAILED (hr = view->GetContents(&checked, CHECKED)) return hr;
+    mew::ref<mew::io::IEntryList> checked;
+    if FAILED (hr = view->GetContents(&checked, mew::CHECKED)) {
+      return hr;
+    }
     DoMoveTo(checked, dstpath.str(), copy);
     return S_OK;
   }
-  static HRESULT SyncDescendants(IShellListView* view) {
-    ref<IEntry> folder = GetFolderOfView(view);
-    if (!folder || !folder->Exists()) return E_UNEXPECTED;
-    switch (QuestionBox(view, string::load(IDS_SYNCDESC, folder->Path), MB_OKCANCEL)) {
+  static HRESULT SyncDescendants(mew::ui::IShellListView* view) {
+    mew::ref<mew::io::IEntry> folder = ave::GetFolderOfView(view);
+    if (!folder || !folder->Exists()) {
+      return E_UNEXPECTED;
+    }
+    switch (ave::QuestionBox(view, mew::string::load(IDS_SYNCDESC, folder->Path), MB_OKCANCEL)) {
       case IDOK:
-        view->Send(CommandSave);
+        view->Send(mew::ui::CommandSave);
         theAvesta->SyncDescendants(folder);
         return S_OK;
       case IDCANCEL:
@@ -359,11 +416,11 @@ class ShellListSink {
   }
 };
 
-ref<IShellListView> CreateFolderList(IList* parent, IEntry* pFolder) {
-  ref<IShellListView> view(__uuidof(ShellListView), parent);
-  view->Dock = DirCenter;
-  view->Connect(EventUnsupported, &ShellListSink::OnUnsupported);
-  view->Connect(EventFolderChanging, &ShellListSink::OnFolderChanging);
-  view->Connect(EventExecuteEntry, &ShellListSink::OnExecuteEntry);
+mew::ref<mew::ui::IShellListView> CreateFolderList(mew::ui::IList* parent, mew::io::IEntry* pFolder) {
+  mew::ref<mew::ui::IShellListView> view(__uuidof(mew::ui::ShellListView), parent);
+  view->Dock = mew::ui::DirCenter;
+  view->Connect(mew::ui::EventUnsupported, &ShellListSink::OnUnsupported);
+  view->Connect(mew::ui::EventFolderChanging, &ShellListSink::OnFolderChanging);
+  view->Connect(mew::ui::EventExecuteEntry, &ShellListSink::OnExecuteEntry);
   return view;
 }

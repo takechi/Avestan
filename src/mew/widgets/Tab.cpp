@@ -44,24 +44,28 @@ class TabCtrlLook {
   void DrawBackground(CDCHandle dc, RECT& rcHeader) const {
     rcHeader.bottom -= HEADER_UNDERLINE;
     RECT rcUnderline = {rcHeader.left, rcHeader.bottom, rcHeader.right, rcHeader.bottom + HEADER_UNDERLINE};
-    theme::TabDrawHeader(dc, rcHeader);
+    mew::theme::TabDrawHeader(dc, rcHeader);
     dc.FillSolidRect(&rcHeader, m_ColorBkgnd);
     dc.FillSolidRect(&rcUnderline, m_ColorBkgnd);
   }
   void CompactPath(HDC hDC, PTSTR buffer, INT32 minWidth, INT32 maxWidth) {
     HGDIOBJ hOldFont = ::SelectObject(hDC, GetFocusFont());
     PathCompactPath(hDC, buffer, maxWidth);
-    Size sz;
+    mew::Size sz;
     int len = lstrlen(buffer);
     if (len > 0) {
       GetTextExtentPoint32(hDC, buffer, len, &sz);
       if (sz.w < minWidth) {
-        Size szSpace(8, 8);
+        mew::Size szSpace(8, 8);
         GetTextExtentPoint32(hDC, L" ", 1, &szSpace);
         int n = (minWidth - sz.w + szSpace.w * 2 - 1) / (szSpace.w * 2);
         if (n > 0 && len + n * 2 < MAX_PATH) {
-          for (int i = len - 1; i >= 0; --i) buffer[n + i] = buffer[i];
-          for (int i = 0; i < n; ++i) buffer[i] = buffer[len + n + i] = _T(' ');
+          for (int i = len - 1; i >= 0; --i) {
+            buffer[n + i] = buffer[i];
+          }
+          for (int i = 0; i < n; ++i) {
+            buffer[i] = buffer[len + n + i] = _T(' ');
+          }
           buffer[len + n * 2] = _T('\0');
         }
       }
@@ -69,23 +73,28 @@ class TabCtrlLook {
     ::SelectObject(hDC, hOldFont);
   }
   void DrawTab(CDCHandle dc, RECT bounds, PCWSTR text, DWORD status) const {
-    theme::TabDrawItem(dc, bounds, text, status, m_FontNormal, GetFocusFont(), m_ColorActiveTab, m_ColorActiveText,
-                       m_ColorInactiveText);
+    mew::theme::TabDrawItem(dc, bounds, text, status, m_FontNormal, GetFocusFont(), m_ColorActiveTab, m_ColorActiveText,
+                            m_ColorInactiveText);
   }
   CFontHandle GetFocusFont() const { return m_FontFocus ? m_FontFocus.m_hFont : m_FontNormal.m_hFont; }
   void OnSettingChange(HFONT hFont) {
-    if (hFont) m_FontNormal = hFont;
-    if (m_FontFocus) m_FontFocus.DeleteObject();
+    if (hFont) {
+      m_FontNormal = hFont;
+    }
+    if (m_FontFocus) {
+      m_FontFocus.DeleteObject();
+    }
     m_FontFocus.Attach(AtlCreateBoldFont(m_FontNormal));
-    m_ColorBkgnd = theme::DotNetTabBkgndColor();
+    m_ColorBkgnd = mew::theme::DotNetTabBkgndColor();
     m_ColorActiveTab = ::GetSysColor(COLOR_BTNFACE);
     m_ColorActiveText = ::GetSysColor(COLOR_BTNTEXT);
-    m_ColorInactiveText = theme::DotNetInactiveTextColor();
+    m_ColorInactiveText = mew::theme::DotNetInactiveTextColor();
     if (MaxColorDistance(m_ColorBkgnd, m_ColorInactiveText) < 16) {  // ”wŒi‚Æ”ñƒAƒNƒeƒBƒuF‚ª‹ß‚·‚¬‚é
-      if (MaxColorDistance(m_ColorBkgnd) < 128)
+      if (MaxColorDistance(m_ColorBkgnd) < 128) {
         m_ColorInactiveText = RGB(255, 255, 255);  // ”wŒi‚ª•‚É‹ß‚¢ê‡
-      else
+      } else {
         m_ColorInactiveText = RGB(0, 0, 0);  // ”wŒi‚ª”’‚É‹ß‚¢ê‡
+      }
     }
   }
 };
@@ -1088,7 +1097,7 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
     CMenu menu;
     menu.CreatePopupMenu();
 
-    const bool lockClose = avesta::GetOption(BoolLockClose);
+    const bool lockClose = avesta::GetOption(avesta::BoolLockClose);
     int checked, locked;
     CountStatus(&checked, &locked);
     const int count = GetButtonCount();
@@ -1344,16 +1353,23 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
 
   HWND _getViewIfClosable(int index) const {
     TBBUTTONINFO info = {sizeof(TBBUTTONINFO), TBIF_BYINDEX | TBIF_STATE | TBIF_LPARAM};
-    if (!GetButtonInfo(index, &info)) return null;
-    if (!avesta::GetOption(BoolLockClose) && IsLocked(info)) return null;
+    if (!GetButtonInfo(index, &info)) {
+      return null;
+    }
+    if (!avesta::GetOption(avesta::BoolLockClose) && IsLocked(info)) {
+      return null;
+    }
     return (HWND)info.lParam;
   }
   void CloseView(int index) {
     if (HWND hwnd = _getViewIfClosable(index)) ::PostMessage(hwnd, WM_CLOSE, 0, 0);
   }
   void CloseViewCheckVisible(int index, bool visible) {
-    if (HWND hwnd = _getViewIfClosable(index))
-      if (afx::GetVisible(hwnd) == visible) ::PostMessage(hwnd, WM_CLOSE, 0, 0);
+    if (HWND hwnd = _getViewIfClosable(index)) {
+      if (afx::GetVisible(hwnd) == visible) {
+        ::PostMessage(hwnd, WM_CLOSE, 0, 0);
+      }
+    }
   }
 
  private:
@@ -1593,9 +1609,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
   }
 };
 
+AVESTA_EXPORT(TabPanel)
+
 }  // namespace ui
 }  // namespace mew
 
-AVESTA_EXPORT(TabPanel)
-
-CBitmap TabPanel::NotifyTip::s_bitmap;
+CBitmap mew::ui::TabPanel::NotifyTip::s_bitmap;

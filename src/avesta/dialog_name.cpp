@@ -8,12 +8,12 @@ using namespace avesta;
 namespace {
 class NameDlg : public Dialog {
  public:
-  string m_path;
+  mew::string m_path;
   TCHAR m_name[MAX_PATH];
 
  public:
-  NameDlg() { str::clear(m_name); }
-  INT_PTR Go(string path, string name, UINT nID) {
+  NameDlg() { mew::str::clear(m_name); }
+  INT_PTR Go(mew::string path, mew::string name, UINT nID) {
     m_path = path;
     name.copyto(m_name, MAX_PATH);
     return __super::Go(nID);
@@ -44,14 +44,14 @@ class NameDlg : public Dialog {
 };
 }  // namespace
 
-HRESULT avesta::NameDialog(IString** pp, string path, string name, UINT resID) {
+HRESULT avesta::NameDialog(mew::IString** pp, mew::string path, mew::string name, UINT resID) {
   ASSERT(pp);
 
   NameDlg dlg;
   if (dlg.Go(path, name, resID) != IDOK) {
-    *pp = null;
+    *pp = nullptr;
     return E_ABORT;  // cancel
   }
-  string(dlg.m_name).copyto(pp);
+  mew::string(dlg.m_name).copyto(pp);
   return S_OK;
 }

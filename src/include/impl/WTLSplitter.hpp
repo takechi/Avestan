@@ -14,10 +14,10 @@ class __declspec(novtable) CSplitterBase {
 
  protected:
   static HCURSOR s_hCursors[2];
-  Size m_Border;
+  mew::Size m_Border;
   DragMode m_DragMode;
-  Point m_DragStart;
-  CWindowEx m_wndDrag[2];
+  mew::Point m_DragStart;
+  mew::ui::CWindowEx m_wndDrag[2];
 
   CSplitterBase() : m_DragMode(DragNone) {}
   void SetSizeCursor(DragMode mode) {
@@ -36,21 +36,23 @@ class __declspec(novtable) CSplitterBase {
   }
   static int DistanceOfPointAndRect(const POINT& pt, const RECT& rc) {
     int dx, dy;
-    if (pt.x < rc.left)
+    if (pt.x < rc.left) {
       dx = rc.left - pt.x;
-    else if (pt.x > rc.right)
+    } else if (pt.x > rc.right) {
       dx = pt.x - rc.right;
-    else
+    } else {
       dx = 0;
-    if (pt.y < rc.top)
+    }
+    if (pt.y < rc.top) {
       dy = rc.top - pt.y;
-    else if (pt.y > rc.bottom)
+    } else if (pt.y > rc.bottom) {
       dy = pt.y - rc.bottom;
-    else
+    } else {
       dy = 0;
+    }
     return dx + dy;
   }
-  static DragMode HitTestImpl(const CWindowEx view[2], CWindowEx hwnds[2]) {
+  static DragMode HitTestImpl(const mew::ui::CWindowEx view[2], mew::ui::CWindowEx hwnds[2]) {
     RECT rc[2];
     view[0].GetWindowRect(&rc[0]);
     view[1].GetWindowRect(&rc[1]);
@@ -101,9 +103,9 @@ class __declspec(novtable) CSplitter : public CSplitterBase {
   /// pt の位置でのクリックが、ドラッグを開始すべきか否かを返す.
   bool IsDragRegion(POINT pt) { return true; }
   /// w がドラッグ可能なウィンドウか否かを返す.
-  bool IsDragTarget(CWindowEx w) { return w.IsWindowVisible() != 0; }
+  bool IsDragTarget(mew::ui::CWindowEx w) { return w.IsWindowVisible() != 0; }
   /// 実際にドラッグ中のウィンドウをリサイズする.
-  void OnResizeDragTargets(DragMode mode, CWindowEx wndDrag[2], POINT pt);
+  void OnResizeDragTargets(DragMode mode, mew::ui::CWindowEx wndDrag[2], POINT pt);
 
   const T& get_final() const throw() { return *static_cast<T*>(this); }
   T& get_final() throw() { return *static_cast<T*>(this); }
@@ -121,30 +123,40 @@ class __declspec(novtable) CSplitter : public CSplitterBase {
   END_MSG_MAP()
 
  public:
-  bool BeginDrag(Point pt) {
+  bool BeginDrag(mew::Point pt) {
     ASSERT(!m_wndDrag[0]);
     ASSERT(!m_wndDrag[1]);
     m_DragMode = final.SplitterHitTest(pt, m_wndDrag);
-    if (m_DragMode == DragNone) return false;
+    if (m_DragMode == DragNone) {
+      return false;
+    }
     m_DragStart = pt;
     final.SetCapture();
     SetSizeCursor(m_DragMode);
     return true;
   }
   void CancelDrag() {
-    if (m_DragMode == DragNone) return;
-    if (GetCapture() == final.m_hWnd) ReleaseCapture();
+    if (m_DragMode == DragNone) {
+      return;
+    }
+    if (GetCapture() == final.m_hWnd) {
+      ReleaseCapture();
+    }
     m_wndDrag[0].Detach();
     m_wndDrag[1].Detach();
     m_DragMode = DragNone;
   }
-  DragMode SplitterHitTest(Point pt, CWindowEx hwnds[2] = null) {
-    if (!final.IsDragRegion(pt)) return DragNone;
-    CWindowEx view[2];
+  DragMode SplitterHitTest(mew::Point pt, mew::ui::CWindowEx hwnds[2] = nullptr) {
+    if (!final.IsDragRegion(pt)) {
+      return DragNone;
+    }
+    mew::ui::CWindowEx view[2];
     int dis[2] = {INT_MAX, INT_MAX};
-    for (CWindowEx w = final.GetWindow(GW_CHILD); w; w = w.GetWindow(GW_HWNDNEXT)) {
+    for (mew::ui::CWindowEx w = final.GetWindow(GW_CHILD); w; w = w.GetWindow(GW_HWNDNEXT)) {
       final.IsDragTarget(w);
-      if (!IsDragTarget(w)) continue;
+      if (!IsDragTarget(w)) {
+        continue;
+      }
       RECT rc;
       w.GetWindowRect(&rc);
       final.ScreenToClient(&rc);
@@ -159,17 +171,21 @@ class __declspec(novtable) CSplitter : public CSplitterBase {
         dis[1] = d;
       }
     }
-    if (!view[1] || !view[0]) return DragNone;
+    if (!view[1] || !view[0]) {
+      return DragNone;
+    }
     return HitTestImpl(view, hwnds);
   }
   LRESULT OnMouseMove(UINT, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-    Point pt(GET_XY_LPARAM(lParam));
+    mew::Point pt(GET_XY_LPARAM(lParam));
     if (!IsDragging()) {
       if (!final.IsDragRegion(pt)) {
         bHandled = false;
       } else {
         HWND hWnd = final.ChildWindowFromPointEx(pt, CWP_SKIPINVISIBLE);
-        if (hWnd == final.m_hWnd) SetSizeCursor(SplitterHitTest(pt));
+        if (hWnd == final.m_hWnd) {
+          SetSizeCursor(SplitterHitTest(pt));
+        }
       }
     } else if (pt != m_DragStart) {
       final.OnResizeDragTargets(m_DragMode, m_wndDrag, pt);
@@ -178,22 +194,30 @@ class __declspec(novtable) CSplitter : public CSplitterBase {
     return 0;
   }
   LRESULT OnLButtonDown(UINT, WPARAM, LPARAM lParam, BOOL& bHandled) {
-    if (IsDragging()) return 0;
-    Point pt(GET_XY_LPARAM(lParam));
-    if (!BeginDrag(pt)) bHandled = false;
+    if (IsDragging()) {
+      return 0;
+    }
+    mew::Point pt(GET_XY_LPARAM(lParam));
+    if (!BeginDrag(pt)) {
+      bHandled = false;
+    }
     return 0;
   }
   LRESULT OnCancelDrag(UINT, WPARAM, LPARAM, BOOL& bHandled) {
-    if (IsDragging()) CancelDrag();
+    if (IsDragging()) {
+      CancelDrag();
+    }
     bHandled = false;
     return 0;
   }
   LRESULT OnSetCursor(UINT, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     if ((HWND)wParam == final.m_hWnd && LOWORD(lParam) == HTCLIENT) {
       DWORD dwPos = ::GetMessagePos();
-      Point pt(GET_XY_LPARAM(dwPos));
+      mew::Point pt(GET_XY_LPARAM(dwPos));
       final.ScreenToClient(&pt);
-      if (final.IsDragRegion(pt) && final.ChildWindowFromPointEx(pt, CWP_SKIPINVISIBLE) == final.m_hWnd) return true;
+      if (final.IsDragRegion(pt) && final.ChildWindowFromPointEx(pt, CWP_SKIPINVISIBLE) == final.m_hWnd) {
+        return true;
+      }
     }
     bHandled = false;
     return false;

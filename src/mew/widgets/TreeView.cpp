@@ -10,7 +10,7 @@
 
 #include "../server/main.hpp"  // もうぐちゃぐちゃ……
 
-using namespace drawing;
+using namespace mew::drawing;
 
 //==============================================================================
 
@@ -22,15 +22,17 @@ const DWORD MEW_WS_EX_TREE = WS_EX_CLIENTEDGE;
 
 template <class TFinal, class TParam, class TList>
 class __declspec(novtable) TreeViewBase
-    : public WindowImpl<WTLEX::CTypedTreeImpl<TFinal, TParam*, CTreeViewCtrlT<WindowImplBase> >, TList> {
+    : public mew::ui::WindowImpl<WTLEX::CTypedTreeImpl<TFinal, TParam*, CTreeViewCtrlT<mew::ui::WindowImplBase> >, TList> {
  protected:
   using ParamType = TParam*;
-  ref<TParam> m_root;
-  ref<IImageList> m_image;
+  mew::ref<TParam> m_root;
+  mew::ref<IImageList> m_image;
 
  public:  // override
   HTREEITEM UpdateTree(HTREEITEM hNode, ParamType pNode) {
-    if (!pNode) return null;
+    if (!pNode) {
+      return nullptr;
+    }
     DeleteChildren(hNode);
     pNode->OnUpdate();
     if (hNode) {
@@ -51,28 +53,38 @@ class __declspec(novtable) TreeViewBase
 
  public:
   void OnInsertItem(HTREEITEM hItem, ParamType param) {
-    if (param) param->AddRef();
+    if (param) {
+      param->AddRef();
+    }
   }
   void OnDeleteItem(HTREEITEM hItem, ParamType param) {
-    if (param) param->Release();
+    if (param) {
+      param->Release();
+    }
   }
   void OnResetItem(HTREEITEM hItem, ParamType prev, ParamType next) {
-    if (next) next->AddRef();
-    if (prev) prev->Release();
+    if (next) {
+      next->AddRef();
+    }
+    if (prev) {
+      prev->Release();
+    }
   }
   void OnExpanding(HTREEITEM hItem, ParamType param, bool expand) {
-    if (expand && GetChildItem(hItem) == NULL) final.AddChildren(hItem, param);
+    if (expand && GetChildItem(hItem) == NULL) {
+      final.AddChildren(hItem, param);
+    }
   }
   void OnQueryHasChildren(HTREEITEM hItem, ParamType param, bool& hasChildren) { hasChildren = param->HasChildren(); }
   void OnQueryName(HTREEITEM hItem, ParamType param, PCWSTR& name) { name = param->Name.str(); }
   void OnQueryImage(HTREEITEM hItem, ParamType param, bool selected, int& image) { image = param->Image; }
-  void OnSelChanged(HTREEITEM hItem, ParamType param) { InvokeEvent<EventItemFocus>(this, param); }
+  void OnSelChanged(HTREEITEM hItem, ParamType param) { InvokeEvent<mew::ui::EventItemFocus>(this, param); }
 
  public:  // ITree
-  ITreeItem* get_Root() { return m_root; }
-  void set_Root(ITreeItem* value) {
-    SuppressRedraw redraw(m_hWnd);
-    m_root = cast(value);
+  mew::ui::ITreeItem* get_Root() { return m_root; }
+  void set_Root(mew::ui::ITreeItem* value) {
+    mew::ui::SuppressRedraw redraw(m_hWnd);
+    m_root = mew::cast(value);
     ASSERT(m_root);
     HTREEITEM hItem = final.UpdateTree(NULL, m_root);
     Expand(hItem);
@@ -85,10 +97,12 @@ class __declspec(novtable) TreeViewBase
   }
 
  public:
-  bool SupportsEvent(EventCode code) const throw() {
-    if (__super::SupportsEvent(code)) return true;
+  bool SupportsEvent(mew::EventCode code) const throw() {
+    if (__super::SupportsEvent(code)) {
+      return true;
+    }
     switch (code) {
-      case EventItemFocus:
+      case mew::ui::EventItemFocus:
         return true;
       default:
         return false;
@@ -96,16 +110,16 @@ class __declspec(novtable) TreeViewBase
   }
 
  public:  // ITreeView
-  HRESULT GetContents(REFINTF ppInterface, Status status) {
+  HRESULT GetContents(mew::REFINTF ppInterface, mew::Status status) {
     switch (status) {
-      case FOCUSED:
+      case mew::FOCUSED:
         return objcpy(GetItemData(GetSelectedItem()), ppInterface);
       default:
         TRESPASS_DBG(return E_NOTIMPL);
     }
   }
   HRESULT GetStatus(IUnknown* item, DWORD* status) { TRESPASS_DBG(return E_NOTIMPL); }
-  HRESULT SetStatus(IUnknown* item, Status status) { TRESPASS_DBG(return E_NOTIMPL); }
+  HRESULT SetStatus(IUnknown* item, mew::Status status) { TRESPASS_DBG(return E_NOTIMPL); }
 
  public:
   BEGIN_MSG_MAP_(HandleWindowMessage)
@@ -132,8 +146,10 @@ class __declspec(novtable) TreeViewBase
       if (HTREEITEM hItem = HitTest(&hit)) {
         SelectDropTarget(hItem);
         // TODO: ユーザがカスタマイズできるように
-        UINT32 mods = ui::GetCurrentModifiers();
-        if (mods == 0) mods = m;
+        UINT32 mods = mew::ui::GetCurrentModifiers();
+        if (mods == 0) {
+          mods = m;
+        }
         afx::SetModifierState(0, mods);
         final.OnExecuteItem(hItem);
         afx::RestoreModifierState(0);
@@ -145,7 +161,9 @@ class __declspec(novtable) TreeViewBase
   }
   LRESULT OnKillFocus(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     HWND hwndFocus = (HWND)wParam;
-    if (!IsChild(hwndFocus)) EndEditLabelNow(FALSE);
+    if (!IsChild(hwndFocus)) {
+      EndEditLabelNow(FALSE);
+    }
     bHandled = false;
     return 0;
   }
@@ -189,7 +207,9 @@ class TreeView : public TreeViewBase<TreeView, ITreeItem, implements<ITreeView, 
   }
   void OnExecuteItem(HTREEITEM hItem) {
     if (ITreeItem* item = GetItemData(hItem)) {
-      if (ICommand* command = item->Command) command->Invoke();
+      if (ICommand* command = item->Command) {
+        command->Invoke();
+      }
     }
   }
   bool OnContextMenu(HTREEITEM hItem, POINT ptScreen) {
@@ -197,7 +217,9 @@ class TreeView : public TreeViewBase<TreeView, ITreeItem, implements<ITreeView, 
       ID_CLOSE = 1,
       ID_EXECUTE,
     };
-    if (!hItem) return true;
+    if (!hItem) {
+      return true;
+    }
     CMenu menu;
     menu.CreatePopupMenu();
     menu.AppendMenu(MF_STRING, ID_EXECUTE, _T("開く(&O)"));
@@ -309,7 +331,7 @@ class ShellTreeView
         ASSERT(0);
         return E_NOTIMPL;
       }
-    } catch (Error& e) {
+    } catch (mew::exceptions::Error& e) {
       TRACE(e.Message);
       return e.Code;
     }
@@ -323,20 +345,28 @@ class ShellTreeView
   }
   void Update(bool sync = false) {
     __super::Update(sync);
-    if (!m_root) return;
+    if (!m_root) {
+      return;
+    }
     SuppressRedraw redraw(m_hWnd);
     ref<IFolder> selected = GetItemData(GetSelectedItem());
     m_root->Reset();
     Expand(UpdateTree(null, m_root));
-    if (selected) ExpandAndFocus(selected->Entry->ID);
+    if (selected) {
+      ExpandAndFocus(selected->Entry->ID);
+    }
   }
   void OnExecuteItem(HTREEITEM hItem) {
     if (ITreeItem* item = GetItemData(hItem)) {
-      if (ICommand* command = item->Command) command->Invoke();
+      if (ICommand* command = item->Command) {
+        command->Invoke();
+      }
     }
   }
   bool OnContextMenu(HTREEITEM hItem, POINT ptScreen) {
-    if (!hItem) return true;
+    if (!hItem) {
+      return true;
+    }
     IFolder* folder = GetItemData(hItem);
     ref<IContextMenu> menu;
     if SUCCEEDED (folder->Entry->QueryObject(&menu)) {  // 選択アイテムがある場合
@@ -421,33 +451,45 @@ class ShellTreeView
     HRESULT hr;
     HTREEITEM hItem = GetSelectedItem();
     IFolder* folder = GetItemData(hItem);
-    if (!folder) return E_UNEXPECTED;
-    if FAILED (hr = avesta::FileCut(folder->Entry->Path.str())) return hr;
+    if (!folder) {
+      return E_UNEXPECTED;
+    }
+    if FAILED (hr = avesta::FileCut(folder->Entry->Path.str())) {
+      return hr;
+    }
     SetItemState(hItem, TVIS_CUT, TVIS_CUT);
     return S_OK;
   }
   HRESULT Copy() {
     IFolder* folder = GetItemData(GetSelectedItem());
-    if (!folder) return E_UNEXPECTED;
+    if (!folder) {
+      return E_UNEXPECTED;
+    }
     return avesta::FileCopy(folder->Entry->Path.str());
   }
   HRESULT Paste() {
     IFolder* folder = GetItemData(GetSelectedItem());
-    if (!folder) return E_UNEXPECTED;
+    if (!folder) {
+      return E_UNEXPECTED;
+    }
     return avesta::FilePaste(folder->Entry->Path.str());
   }
   HRESULT Delete(bool undo) {
     HRESULT hr;
     HTREEITEM hItem = GetSelectedItem();
     IFolder* folder = GetItemData(hItem);
-    if (!folder) return E_UNEXPECTED;
+    if (!folder) {
+      return E_UNEXPECTED;
+    }
     ref<IEntry> entry = folder->Entry;
     ASSERT(entry);
     TCHAR buffer[MAX_PATH + 1] = {0};
     entry->Path.copyto(buffer, MAX_PATH);
-    if FAILED (hr = (undo ? avesta::FileDelete(buffer) : avesta::FileBury(buffer))) return hr;
-    if (!entry->Exists())  // キャンセルされた時にも S_OK が帰るので、ファイルの存在チェックを行う.
-    {                      // TODO: IFolder との同期。
+    if FAILED (hr = (undo ? avesta::FileDelete(buffer) : avesta::FileBury(buffer))) {
+      return hr;
+    }
+    if (!entry->Exists()) {  // キャンセルされた時にも S_OK が帰るので、ファイルの存在チェックを行う.
+      // TODO: IFolder との同期。
       VERIFY(DeleteItem(hItem));
       return S_OK;
     }
@@ -455,12 +497,18 @@ class ShellTreeView
   }
   HRESULT Property() {
     IFolder* folder = GetItemData(GetSelectedItem());
-    if (!folder) return E_UNEXPECTED;
+    if (!folder) {
+      return E_UNEXPECTED;
+    }
     return avesta::ILExecute(folder->Entry->ID, L"properties", null, null, m_hWnd);
   }
   HRESULT Rename(HTREEITEM hItem = null) {
-    if (!hItem) hItem = GetSelectedItem();
-    if (!hItem) return E_UNEXPECTED;
+    if (!hItem) {
+      hItem = GetSelectedItem();
+    }
+    if (!hItem) {
+      return E_UNEXPECTED;
+    }
     SetFocus();
     return EditLabel(hItem) ? S_OK : E_FAIL;
   }
@@ -475,7 +523,9 @@ class ShellTreeView
   }
   bool OnEndLabelEdit(HTREEITEM hItem, ParamType param, PCTSTR text) {
     TRACE(L"OnEndLabelEdit($1, $2, $3)", (DWORD)hItem, param->Entry->Name, text);
-    if (!text) return true;
+    if (!text) {
+      return true;
+    }
     return SUCCEEDED(param->Entry->SetName(text, m_hWnd));
   }
 
@@ -483,9 +533,13 @@ class ShellTreeView
   BOOL ForceSelectDropTarget(HTREEITEM hItem) {
     BOOL bDragFullWindows = FALSE;
     SystemParametersInfo(SPI_GETDRAGFULLWINDOWS, 0, &bDragFullWindows, 0);
-    if (!bDragFullWindows) SetRedraw(TRUE);
+    if (!bDragFullWindows) {
+      SetRedraw(TRUE);
+    }
     BOOL result = SelectDropTarget(hItem);
-    if (!bDragFullWindows) UpdateWindow();
+    if (!bDragFullWindows) {
+      UpdateWindow();
+    }
     return result;
   }
   bool HandleQueryDrop(IDropTarget** ppDropTarget, LPARAM lParam) {
@@ -500,7 +554,7 @@ class ShellTreeView
     return HitTest(&hit);
   }
   ref<IEntry> EntryFromScreenPoint(int x, int y) const {
-    if (HTREEITEM hItem = ItemFromScreenPoint(x, y)) return GetItemData(hItem)->Entry;
+    if (HTREEITEM hItem = ItemFromScreenPoint(x, y)) {return GetItemData(hItem)->Entry;}
     return null;
   }
   STDMETHODIMP DragEnter(IDataObject* src, DWORD key, POINTL pt, DWORD* effect) {
@@ -512,7 +566,9 @@ class ShellTreeView
     if (hItemNext != hItemPrev) {
       ForceSelectDropTarget(hItemNext);
     }
-    if (!hItemNext) *effect = 0;
+    if (!hItemNext) {
+      *effect = 0;
+    }
     return ProcessDragOver(EntryFromScreenPoint(pt.x, pt.y), key, effect);
   }
   STDMETHODIMP DragLeave() {
@@ -526,11 +582,11 @@ class ShellTreeView
   }
 };
 
-}  // namespace ui
-}  // namespace mew
-
 AVESTA_EXPORT(TreeView)
 AVESTA_EXPORT(ShellTreeView)
+
+}  // namespace ui
+}  // namespace mew
 
 /*
 void CIEFolderTreeCtrl::SetAttributes(HTREEITEM hItem,LPSHELLFOLDER pFolder,ITEMIDLIST* pidl)

@@ -9,7 +9,7 @@ inline bool operator<(REFGUID lhs, REFGUID rhs) { return memcmp(&lhs, &rhs, size
 //==============================================================================
 
 namespace {
-using Registrar = stdext::hash_map<CLSID, FactoryProc>;
+using Registrar = stdext::hash_map<CLSID, mew::FactoryProc>;
 // 他のグローバル変数の初期化ルーチンから呼ばれるても良いように、
 // 関数ないスタティックにして構築順序を制御する必要がある。
 Registrar& GetRegistrar() {
@@ -33,7 +33,7 @@ MEW_API void CreateInstance(REFCLSID clsid, REFINTF ppInterface, IUnknown* arg) 
     ASSERT(*ppInterface.pp);
     return;
   } else {  // クラスが見つからない
-    throw ClassError(string::load(IDS_ERR_INVALIDCLSID, clsid), hr);
+    throw mew::exceptions::ClassError(string::load(IDS_ERR_INVALIDCLSID, clsid), hr);
   }
 }
 MEW_API void RegisterFactory(REFCLSID clsid, FactoryProc factory) throw() {

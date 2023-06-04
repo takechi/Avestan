@@ -6,7 +6,7 @@
 #include "impl/WTLControls.hpp"
 
 namespace {
-using StatusBarBase = WTLEX::CStatusBar<CStatusBarCtrlT<WindowImplBase> >;
+using StatusBarBase = WTLEX::CStatusBar<CStatusBarCtrlT<mew::ui::WindowImplBase> >;
 }
 
 //==============================================================================
@@ -164,7 +164,8 @@ class StatusBar
   }
 };
 
+AVESTA_EXPORT(StatusBar)
+
 }  // namespace ui
 }  // namespace mew
 
-AVESTA_EXPORT(StatusBar)

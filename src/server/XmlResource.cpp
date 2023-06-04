@@ -34,51 +34,57 @@ inline static bool equals(PCWSTR lhs, PCWSTR rhs, size_t cch) { return wcsncmp(l
 //==============================================================================
 
 namespace {
-class PopupCommand : public Root<implements<ICommand> > {
+class PopupCommand : public mew::Root<mew::implements<mew::ICommand> > {
  private:
-  ref<ITreeItem> m_menu;
+  mew::ref<mew::ui::ITreeItem> m_menu;
 
  public:
-  PopupCommand(ITreeItem* menu) : m_menu(menu) {}
-  string get_Description() { return null; }
-  UINT32 QueryState(IUnknown* owner) { return ENABLED; }
+  PopupCommand(mew::ui::ITreeItem* menu) : m_menu(menu) {}
+  mew::string get_Description() { return mew::null; }
+  UINT32 QueryState(IUnknown* owner) { return mew::ENABLED; }
   void Invoke() {
-    ref<IWindow> owner;
-    if FAILED (theAvesta->GetComponent(&owner, AvestaFolder))
-      if FAILED (theAvesta->GetComponent(&owner, AvestaForm)) return;
+    mew::ref<mew::ui::IWindow> owner;
+    if FAILED (theAvesta->GetComponent(&owner, avesta::AvestaFolder)) {
+      if FAILED (theAvesta->GetComponent(&owner, avesta::AvestaForm)) {
+        return;
+      }
+    }
     HWND hwnd = owner->Handle;
-    Rect rc;
+    mew::Rect rc;
     ::GetWindowRect(hwnd, &rc);
-    Point pt = rc.center;
+    mew::Point pt = rc.center;
     // FIXME: ugly...
-    if (ref<ICommand> cmd = mew::ui::MenuProvider::PopupMenu(m_menu, ::GetAncestor(hwnd, GA_ROOT),
-                                                             TPM_RIGHTBUTTON | TPM_CENTERALIGN | TPM_VCENTERALIGN, pt.x, pt.y))
+    if (mew::ref<ICommand> cmd = mew::ui::MenuProvider::PopupMenu(
+            m_menu, ::GetAncestor(hwnd, GA_ROOT), TPM_RIGHTBUTTON | TPM_CENTERALIGN | TPM_VCENTERALIGN, pt.x, pt.y)) {
       cmd->Invoke();
+    }
   }
 };
 
-ref<ICommand> CommandFromMenu(ITreeItem* menu) { return ref<ICommand>::from(new PopupCommand(menu)); }
+mew::ref<mew::ICommand> CommandFromMenu(mew::ui::ITreeItem* menu) {
+  return mew::ref<mew::ICommand>::from(new PopupCommand(menu));
+}
 }  // namespace
 
 //==============================================================================
 
 namespace {
-class TreeItemReader : public XMLHandlerImpl {
+class TreeItemReader : public mew::xml::XMLHandlerImpl {
  private:
-  ref<IEditableTreeItem> m_root;
-  array<IEditableTreeItem> m_stack;  // ITreeItem ÇÕêeÇ÷ÇÃÉäÉìÉNÇéùÇΩÇ»Ç¢ÇΩÇﬂÅAäOïîìIÇ…ä«óùÇ∑ÇÈ
+  mew::ref<mew::ui::IEditableTreeItem> m_root;
+  mew::array<mew::ui::IEditableTreeItem> m_stack;  // ITreeItem ÇÕêeÇ÷ÇÃÉäÉìÉNÇéùÇΩÇ»Ç¢ÇΩÇﬂÅAäOïîìIÇ…ä«óùÇ∑ÇÈ
 
  protected:
   TreeItemReader() { m_stack.reserve(8); }
 
-  void PushTreeItem(IEditableTreeItem* item) {
+  void PushTreeItem(mew::ui::IEditableTreeItem* item) {
     if (!m_root) {
       ASSERT(m_stack.empty());
       m_root = item;
       m_stack.push_back(item);
     } else if (m_stack.empty()) {  // ÉãÅ[ÉgÉåÉxÉãÇ…ï°êîÇÃÉÅÉjÉÖÅ[Ç™ï¿ÇÒÇ≈Ç¢ÇÈÅBÉ_É~Å[ÉãÅ[ÉgÇë}ì¸Ç∑ÇÈÅB
       // ref<ITreeItem> root = CreateStandardTreeItem();
-      ref<IEditableTreeItem> root(__uuidof(DefaultTreeItem));
+      mew::ref<mew::ui::IEditableTreeItem> root(__uuidof(mew::ui::DefaultTreeItem));
       m_stack.push_back(root);
       m_stack.push_back(item);
       root->AddChild(m_root);
@@ -89,15 +95,15 @@ class TreeItemReader : public XMLHandlerImpl {
       m_stack.push_back(item);
     }
   }
-  ref<IEditableTreeItem> PopTreeItem() {
-    ref<IEditableTreeItem> item = m_stack.back();
+  mew::ref<mew::ui::IEditableTreeItem> PopTreeItem() {
+    mew::ref<mew::ui::IEditableTreeItem> item = m_stack.back();
     m_stack.pop_back();
     return item;
   }
 
  public:
-  ref<ITreeItem> DetachTreeItem() {
-    ref<ITreeItem> tmp = m_root;
+  mew::ref<mew::ui::ITreeItem> DetachTreeItem() {
+    mew::ref<mew::ui::ITreeItem> tmp = m_root;
     m_stack.clear();
     m_root.clear();
     return tmp;
@@ -110,14 +116,14 @@ class TreeItemReader : public XMLHandlerImpl {
 namespace {
 class MenuReader : public TreeItemReader {
  protected:
-  ref<ICommands> m_commands;
+  mew::ref<mew::ICommands> m_commands;
 
  public:
-  MenuReader(ICommands* commands) : m_commands(commands) {}
+  MenuReader(mew::ICommands* commands) : m_commands(commands) {}
   ~MenuReader() {}
-  HRESULT StartElement(PCWSTR name, size_t cch, XMLAttributes& attr) {
+  HRESULT StartElement(PCWSTR name, size_t cch, mew::xml::XMLAttributes& attr) {
     if (equals(name, ITEM_NODE, cch)) {
-      ref<IEditableTreeItem> item = XmlAttrTreeItem(attr, m_commands);
+      mew::ref<mew::ui::IEditableTreeItem> item = avesta::XmlAttrTreeItem(attr, m_commands);
       ASSERT(item);
       PushTreeItem(item);
     } else {
@@ -127,9 +133,9 @@ class MenuReader : public TreeItemReader {
   }
   HRESULT EndElement(PCWSTR name, size_t cch) {
     if (equals(name, ITEM_NODE, cch)) {
-      ref<IEditableTreeItem> back = PopTreeItem();
+      mew::ref<mew::ui::IEditableTreeItem> back = PopTreeItem();
       if (back->Name && !back->Command && !back->HasChildren()) {
-        back->Name = string::format(_T("ÉRÉ}ÉìÉhÇ™å©Ç¬Ç©ÇËÇ‹ÇπÇÒÅF$1"), back->Name);
+        back->Name = mew::string::format(_T("ÉRÉ}ÉìÉhÇ™å©Ç¬Ç©ÇËÇ‹ÇπÇÒÅF$1"), back->Name);
       }
     }
     return S_OK;
@@ -137,7 +143,7 @@ class MenuReader : public TreeItemReader {
 };
 }  // namespace
 
-ref<ITreeItem> XmlLoadTreeItem(string xmlfile, ICommands* commands, IXMLReader* sax) {
+mew::ref<mew::ui::ITreeItem> XmlLoadTreeItem(mew::string xmlfile, mew::ICommands* commands, mew::xml::IXMLReader* sax) {
   MenuReader reader(commands);
   sax->Parse(&reader, xmlfile);
   return reader.DetachTreeItem();
@@ -148,37 +154,39 @@ ref<ITreeItem> XmlLoadTreeItem(string xmlfile, ICommands* commands, IXMLReader* 
 namespace {
 class KeymapReader : public MenuReader {
  private:
-  ref<IKeymapTable> m_keymap;
+  mew::ref<mew::ui::IKeymapTable> m_keymap;
   UINT16 m_mods;
   UINT8 m_vkey;
 
  public:
-  KeymapReader(ICommands* commands) : MenuReader(commands) {
+  KeymapReader(mew::ICommands* commands) : MenuReader(commands) {
     m_mods = 0;
     m_vkey = 0;
   }
   ~KeymapReader() {}
-  ref<IKeymap> GetProduct() { return m_keymap; }
-  HRESULT StartElement(PCWSTR name, size_t cch, XMLAttributes& attr) {
+  mew::ref<mew::ui::IKeymap> GetProduct() { return m_keymap; }
+  HRESULT StartElement(PCWSTR name, size_t cch, mew::xml::XMLAttributes& attr) {
     if (equals(name, KEYMAP_ROOT, cch)) {
-      m_keymap.create(__uuidof(KeymapTable));
+      m_keymap.create(__uuidof(mew::ui::KeymapTable));
       return S_OK;
     } else if (equals(name, KEYMAP_BIND, cch)) {
-      if (!m_keymap) return E_UNEXPECTED;
+      if (!m_keymap) {
+        return E_UNEXPECTED;
+      }
       // âºëzÉLÅ[ÉRÅ[Éh
-      m_vkey = XmlAttrKey(attr);
+      m_vkey = avesta::XmlAttrKey(attr);
       if (m_vkey == 0) {
         TRACE(L"INVALID_KEYNAME");
         return S_OK;
       }
       // èCè¸éqÇÃèàóù
-      m_mods = XmlAttrModifiers(attr);
+      m_mods = avesta::XmlAttrModifiers(attr);
       // ÉRÉ}ÉìÉhÇÃèàóù
-      if (ref<ICommand> command = XmlAttrCommand(attr, m_commands)) {
+      if (mew::ref<mew::ICommand> command = avesta::XmlAttrCommand(attr, m_commands)) {
         m_keymap->SetBind(m_mods, m_vkey, command);
       } else {  // XXX: Ç±ÇÃÉuÉçÉbÉNÇÕïsóvÇ©Ç‡ÇµÇÍÇ»Ç¢
-        ref<IEditableTreeItem> menu;
-        menu.create(__uuidof(DefaultTreeItem));
+        mew::ref<mew::ui::IEditableTreeItem> menu;
+        menu.create(__uuidof(mew::ui::DefaultTreeItem));
         PushTreeItem(menu);
       }
     } else {
@@ -189,7 +197,9 @@ class KeymapReader : public MenuReader {
   HRESULT EndElement(PCWSTR name, size_t cch) {
     if (equals(name, KEYMAP_BIND, cch)) {
       if (m_vkey != 0) {
-        if (ref<ITreeItem> menu = DetachTreeItem()) m_keymap->SetBind(m_mods, m_vkey, CommandFromMenu(menu));
+        if (mew::ref<mew::ui::ITreeItem> menu = DetachTreeItem()) {
+          m_keymap->SetBind(m_mods, m_vkey, CommandFromMenu(menu));
+        }
         m_mods = 0;
         m_vkey = 0;
       }
@@ -201,7 +211,7 @@ class KeymapReader : public MenuReader {
 };
 }  // namespace
 
-ref<IKeymap> XmlLoadKeymap(string xmlfile, ICommands* commands, IXMLReader* sax) {
+mew::ref<mew::ui::IKeymap> XmlLoadKeymap(mew::string xmlfile, mew::ICommands* commands, mew::xml::IXMLReader* sax) {
   KeymapReader reader(commands);
   sax->Parse(&reader, xmlfile);
   return reader.GetProduct();
@@ -210,36 +220,38 @@ ref<IKeymap> XmlLoadKeymap(string xmlfile, ICommands* commands, IXMLReader* sax)
 //==============================================================================
 
 namespace {
-class GestureReader : public XMLHandlerImpl {
+class GestureReader : public mew::xml::XMLHandlerImpl {
  private:
-  ref<IGestureTable> m_gesture;
-  ref<ICommands> m_commands;
+  mew::ref<mew::ui::IGestureTable> m_gesture;
+  mew::ref<mew::ICommands> m_commands;
 
  public:
-  GestureReader(ICommands* commands) : m_commands(commands) {}
+  GestureReader(mew::ICommands* commands) : m_commands(commands) {}
   ~GestureReader() {}
-  ref<IGestureTable> GetProduct() { return m_gesture; }
-  HRESULT StartElement(PCWSTR name, size_t cch, XMLAttributes& attr) {
+  mew::ref<mew::ui::IGestureTable> GetProduct() { return m_gesture; }
+  HRESULT StartElement(PCWSTR name, size_t cch, mew::xml::XMLAttributes& attr) {
     if (equals(name, GESTURE_ROOT, cch)) {
-      m_gesture.create(__uuidof(GestureTable));
+      m_gesture.create(__uuidof(mew::ui::GestureTable));
       return S_OK;
     } else if (equals(name, GESTURE_BIND, cch)) {
-      if (!m_gesture) return E_UNEXPECTED;
+      if (!m_gesture) {
+        return E_UNEXPECTED;
+      }
       // èàóù
-      string input = attr[GESTURE_INPUT];
+      mew::string input = attr[GESTURE_INPUT];
       if (!input) {
         ASSERT(!"gesture/@input Ç™å©Ç¬Ç©ÇËÇ‹ÇπÇÒ");
         return S_OK;
       }
-      std::vector<Gesture> gesture;
+      std::vector<mew::ui::Gesture> gesture;
       if (!StringToGesture(input, gesture)) {
         TRACE(L"gesture/@input Ç™ïsê≥Ç≈Ç∑ : $1", input);
         ASSERT(!"gesture/@input Ç™ïsê≥Ç≈Ç∑");
         return S_OK;
       }
       // ÉRÉ}ÉìÉh
-      if (ref<ICommand> command = XmlAttrCommand(attr, m_commands)) {
-        m_gesture->SetGesture(XmlAttrModifiers(attr), gesture.size(), &gesture[0], command);
+      if (mew::ref<mew::ICommand> command = avesta::XmlAttrCommand(attr, m_commands)) {
+        m_gesture->SetGesture(avesta::XmlAttrModifiers(attr), gesture.size(), &gesture[0], command);
       }
       return S_OK;
     } else {
@@ -249,43 +261,44 @@ class GestureReader : public XMLHandlerImpl {
   }
 
  private:
-  static bool StringToGesture(const string& str, std::vector<Gesture>& gesture) {
+  static bool StringToGesture(const mew::string& str, std::vector<mew::ui::Gesture>& gesture) {
     gesture.clear();
     PCWSTR s = str.str();
     size_t length = str.length();
     for (size_t i = 0; i < length; ++i) {
       WCHAR c = s[i];
-      if (str::find(L"L1ÇkÇPá@ç∂áà", c))
-        gesture.push_back(GestureButtonLeft);
-      else if (str::find(L"R2ÇqÇQáAâEáâ", c))
-        gesture.push_back(GestureButtonRight);
-      else if (str::find(L"M3ÇláBíÜáÜ", c))
-        gesture.push_back(GestureButtonMiddle);
-      else if (str::find(L"4ÇSáC", c))
-        gesture.push_back(GestureButtonX1);
-      else if (str::find(L"5ÇTáD", c))
-        gesture.push_back(GestureButtonX2);
-      else if (str::find(L"UÇtè„áÖÅ»Å¢Å£", c))
-        gesture.push_back(GestureWheelUp);
-      else if (str::find(L"DÇcâ∫ááÅ…Å§Å•", c))
-        gesture.push_back(GestureWheelDown);
-      else if (str::find(L"WÇvÅ©", c))
-        gesture.push_back(GestureWest);
-      else if (str::find(L"EÇdÅ®", c))
-        gesture.push_back(GestureEast);
-      else if (str::find(L"NÇmÅ™", c))
-        gesture.push_back(GestureNorth);
-      else if (str::find(L"SÇrÅ´", c))
-        gesture.push_back(GestureSouth);
-      else
+      if (mew::str::find(L"L1ÇkÇPá@ç∂áà", c)) {
+        gesture.push_back(mew::ui::GestureButtonLeft);
+      } else if (mew::str::find(L"R2ÇqÇQáAâEáâ", c)) {
+        gesture.push_back(mew::ui::GestureButtonRight);
+      } else if (mew::str::find(L"M3ÇláBíÜáÜ", c)) {
+        gesture.push_back(mew::ui::GestureButtonMiddle);
+      } else if (mew::str::find(L"4ÇSáC", c)) {
+        gesture.push_back(mew::ui::GestureButtonX1);
+      } else if (mew::str::find(L"5ÇTáD", c)) {
+        gesture.push_back(mew::ui::GestureButtonX2);
+      } else if (mew::str::find(L"UÇtè„áÖÅ»Å¢Å£", c)) {
+        gesture.push_back(mew::ui::GestureWheelUp);
+      } else if (mew::str::find(L"DÇcâ∫ááÅ…Å§Å•", c)) {
+        gesture.push_back(mew::ui::GestureWheelDown);
+      } else if (mew::str::find(L"WÇvÅ©", c)) {
+        gesture.push_back(mew::ui::GestureWest);
+      } else if (mew::str::find(L"EÇdÅ®", c)) {
+        gesture.push_back(mew::ui::GestureEast);
+      } else if (mew::str::find(L"NÇmÅ™", c)) {
+        gesture.push_back(mew::ui::GestureNorth);
+      } else if (mew::str::find(L"SÇrÅ´", c)) {
+        gesture.push_back(mew::ui::GestureSouth);
+      } else {
         return false;
+      }
     }
     return !gesture.empty();
   }
 };
 }  // namespace
 
-ref<IGesture> XmlLoadGesture(string xmlfile, ICommands* commands, IXMLReader* sax) {
+mew::ref<mew::ui::IGesture> XmlLoadGesture(mew::string xmlfile, mew::ICommands* commands, mew::xml::IXMLReader* sax) {
   GestureReader reader(commands);
   sax->Parse(&reader, xmlfile);
   return reader.GetProduct();
@@ -294,15 +307,15 @@ ref<IGesture> XmlLoadGesture(string xmlfile, ICommands* commands, IXMLReader* sa
 //==============================================================================
 
 namespace {
-class LinkMenuItem : public Root<implements<ITreeItem, IEditableTreeItem, IFolder> > {
+class LinkMenuItem : public mew::Root<mew::implements<mew::ui::ITreeItem, mew::ui::IEditableTreeItem, mew::io::IFolder> > {
  private:  // variables
-  string m_Text;
-  ref<IFolder> m_pFolder;
+  mew::string m_Text;
+  mew::ref<mew::io::IFolder> m_pFolder;
   UINT32 m_TimeStamp;
-  array<ITreeItem> m_Children;
+  mew::array<mew::ui::ITreeItem> m_Children;
 
  public:  // Object
-  LinkMenuItem(IFolder* folder) : m_pFolder(folder) {
+  LinkMenuItem(mew::io::IFolder* folder) : m_pFolder(folder) {
     ASSERT(folder);
     m_TimeStamp = 0;
   }
@@ -314,7 +327,7 @@ class LinkMenuItem : public Root<implements<ITreeItem, IEditableTreeItem, IFolde
   }
 
  public:  // IFolder
-  IEntry* get_Entry() { return m_pFolder->get_Entry(); }
+  mew::io::IEntry* get_Entry() { return m_pFolder->get_Entry(); }
   bool get_IncludeFiles() { return m_pFolder->get_IncludeFiles(); }
   void set_IncludeFiles(bool value) { m_pFolder->set_IncludeFiles(value); }
   int get_Depth() { return m_pFolder->get_Depth(); }
@@ -322,33 +335,38 @@ class LinkMenuItem : public Root<implements<ITreeItem, IEditableTreeItem, IFolde
   void Reset() { m_pFolder->Reset(); }
 
  public:  // ITreeItem
-  string get_Name() { return m_Text; }
-  ref<ICommand> get_Command() { return cast(m_pFolder); }
+  mew::string get_Name() { return m_Text; }
+  mew::ref<mew::ICommand> get_Command() { return cast(m_pFolder); }
   int get_Image() { return m_pFolder->Image; }
-  void set_Name(string value) {
+  void set_Name(mew::string value) {
     m_Text = value;
     ++m_TimeStamp;
   }
-  void set_Command(ICommand* value) { TRESPASS(); }
+  void set_Command(mew::ICommand* value) { TRESPASS(); }
   void set_Image(int value) { TRESPASS(); }
 
   bool HasChildren() { return !m_Children.empty() || m_pFolder->HasChildren(); }
   size_t GetChildCount() { return m_Children.size() + m_pFolder->GetChildCount(); }
-  HRESULT GetChild(REFINTF ppChild, size_t index) {
+  HRESULT GetChild(mew::REFINTF ppChild, size_t index) {
     const size_t count = GetChildCount();
-    if (index >= count) return E_INVALIDARG;
-    if (index < m_Children.size())
+    if (index >= count) {
+      return E_INVALIDARG;
+    }
+    if (index < m_Children.size()) {
       return m_Children[index]->QueryInterface(ppChild);
-    else
+    } else {
       return m_pFolder->GetChild(ppChild, index - m_Children.size());
+    }
   }
-  UINT32 OnUpdate() { return m_TimeStamp = math::max(m_TimeStamp, m_pFolder->OnUpdate()); }
-  void AddChild(ITreeItem* child) {
+  UINT32 OnUpdate() { return m_TimeStamp = mew::math::max(m_TimeStamp, m_pFolder->OnUpdate()); }
+  void AddChild(mew::ui::ITreeItem* child) {
     m_Children.push_back(child);
     ++m_TimeStamp;
   }
-  bool RemoveChild(ITreeItem* child) {
-    if (!m_Children.erase(child)) return false;
+  bool RemoveChild(mew::ui::ITreeItem* child) {
+    if (!m_Children.erase(child)) {
+      return false;
+    }
     ++m_TimeStamp;
     return true;
   }
@@ -358,44 +376,44 @@ class LinkMenuItem : public Root<implements<ITreeItem, IEditableTreeItem, IFolde
 
 class LinkReader : public TreeItemReader {
  private:
-  function m_invokeHandler;
+  mew::function m_invokeHandler;
   int m_FolderImageIndex;
 
  public:
-  LinkReader(function fn) : m_invokeHandler(fn) { m_FolderImageIndex = afx::ExpGetImageIndexForFolder(); }
+  LinkReader(mew::function fn) : m_invokeHandler(fn) { m_FolderImageIndex = afx::ExpGetImageIndexForFolder(); }
   ~LinkReader() {}
-  HRESULT StartElement(PCWSTR name, size_t cch, XMLAttributes& attr) {
+  HRESULT StartElement(PCWSTR name, size_t cch, mew::xml::XMLAttributes& attr) {
     if (equals(name, ITEM_NODE, cch)) {
       int depth = -1;
       bool includeFiles = false;
-      string text = attr[ITEM_TEXT];
-      string path = attr[LINK_ATTR_PATH];
-      if (string depth_s = attr[LINK_ATTR_DEPTH]) {
-        depth = str::atoi(depth_s.str());
+      mew::string text = attr[ITEM_TEXT];
+      mew::string path = attr[LINK_ATTR_PATH];
+      if (mew::string depth_s = attr[LINK_ATTR_DEPTH]) {
+        depth = mew::str::atoi(depth_s.str());
       }
-      if (string includeFiles_s = attr[LINK_ATTR_FILES]) {
+      if (mew::string includeFiles_s = attr[LINK_ATTR_FILES]) {
         includeFiles = (includeFiles_s.equals_nocase(_T("true")) || includeFiles_s.equals_nocase(_T("yes")) ||
-                        str::atoi(includeFiles_s.str()) != 0);
+                        mew::str::atoi(includeFiles_s.str()) != 0);
       }
-      ref<IFolder> folder;
+      mew::ref<mew::io::IFolder> folder;
       if (path) {
         try {
-          folder.create(__uuidof(FolderMenu), path);
+          folder.create(__uuidof(mew::io::FolderMenu), path);
           folder->IncludeFiles = includeFiles;
           folder->Depth = depth;
-          cast<ISignal>(folder)->Connect(EventInvoke, m_invokeHandler);
+          mew::cast<mew::ISignal>(folder)->Connect(mew::EventInvoke, m_invokeHandler);
         } catch (mew::exceptions::Error& e) {
           TRACE(e.Message);
         }
       }
-      ref<IEditableTreeItem> menu;
+      mew::ref<mew::ui::IEditableTreeItem> menu;
       if (folder) {
         menu.attach(new LinkMenuItem(folder));
       } else {
-        menu.create(__uuidof(DefaultTreeItem));
+        menu.create(__uuidof(mew::ui::DefaultTreeItem));
         menu->Image = m_FolderImageIndex;
       }
-      menu->Name = XmlAttrText(attr);
+      menu->Name = avesta::XmlAttrText(attr);
       PushTreeItem(menu);
     } else {
       TRACE(L"INVALID_ELEMENT");
@@ -411,7 +429,7 @@ class LinkReader : public TreeItemReader {
 };
 }  // namespace
 
-ref<ITreeItem> XmlLoadLinks(string xmlfile, function onOpen, IXMLReader* sax) {
+mew::ref<mew::ui::ITreeItem> XmlLoadLinks(mew::string xmlfile, mew::function onOpen, mew::xml::IXMLReader* sax) {
   LinkReader reader(onOpen);
   sax->Parse(&reader, xmlfile);
   return reader.DetachTreeItem();

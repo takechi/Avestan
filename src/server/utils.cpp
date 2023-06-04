@@ -4,23 +4,26 @@
 #include "main.hpp"
 #include "utils.hpp"
 
-HRESULT ave::EntryNameToClipboard(IEntryList* entries, IEntry::NameType what) {
+HRESULT ave::EntryNameToClipboard(mew::io::IEntryList* entries, mew::io::IEntry::NameType what) {
   size_t count = entries->Count;
-  if (count == 0) return S_FALSE;
+  if (count == 0) {
+    return S_FALSE;
+  }
   bool first = true;
-  Stream stream;
-  HGLOBAL hGlobal = StreamCreateOnHGlobal(&stream, 0, false);
+  mew::Stream stream;
+  HGLOBAL hGlobal = mew::io::StreamCreateOnHGlobal(&stream, 0, false);
   for (size_t i = 0; i < count; ++i) {
-    ref<IEntry> entry;
+    mew::ref<mew::io::IEntry> entry;
     if SUCCEEDED (entries->GetAt(&entry, i)) {
-      string path = entry->GetName(what);
+      mew::string path = entry->GetName(what);
       if (!!path) {
         PCTSTR text = path.str();
         size_t length = path.length();
-        if (first)
+        if (first){
           first = false;
-        else
+        }else{
           stream.write(L"\r\n", 2 * sizeof(WCHAR));
+        }
         stream.write(text, length * sizeof(TCHAR));
       }
     }
@@ -31,9 +34,11 @@ HRESULT ave::EntryNameToClipboard(IEntryList* entries, IEntry::NameType what) {
   return S_OK;
 }
 
-HRESULT ave::EntryNameToClipboard(IShellListView* view, Status status, IEntry::NameType what) {
+HRESULT ave::EntryNameToClipboard(mew::ui::IShellListView* view, mew::Status status, mew::io::IEntry::NameType what) {
   HRESULT hr;
-  ref<IEntryList> entries;
-  if FAILED (hr = view->GetContents(&entries, status)) return hr;
+  mew::ref<mew::io::IEntryList> entries;
+  if FAILED (hr = view->GetContents(&entries, status)) {
+    return hr;
+  }
   return EntryNameToClipboard(entries, what);
 }

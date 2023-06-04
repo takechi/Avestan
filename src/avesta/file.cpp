@@ -13,18 +13,19 @@ using namespace avesta;
 namespace {
 bool ChoiceBetter(LPTSTR bestfile, PCWSTR candidate) {
   bool better = false;
-  if (str::empty(bestfile)) {
+  if (mew::str::empty(bestfile)) {
     better = true;
   } else {
     int i;
-    for (i = 0; bestfile[i] != _T('\0') && candidate[i] != _T('\0') && str::tolower(bestfile[i]) == str::tolower(candidate[i]);
+    for (i = 0; bestfile[i] != _T('\0') && candidate[i] != _T('\0') &&
+                mew::str::tolower(bestfile[i]) == mew::str::tolower(candidate[i]);
          ++i) {
     }
-    better = (str::atoi(bestfile + i) < str::atoi(candidate + i));
+    better = (mew::str::atoi(bestfile + i) < mew::str::atoi(candidate + i));
   }
   //
   if (better) {
-    str::copy(bestfile, candidate);
+    mew::str::copy(bestfile, candidate);
     return true;
   }
   return false;
@@ -36,8 +37,12 @@ HRESULT FileNewShell(PCWSTR path, PCWSTR ext, PCWSTR templates) {
   lstrcat(reg, _T("\\ShellNew"));
   // レジストリの単純ShellNewエントリを探す
   if SUCCEEDED (avesta::RegGetString(HKEY_CLASSES_ROOT, reg, _T("FileName"), srcfile)) {
-    if (PathIsRelative(srcfile)) str::prepend(srcfile, templates);
-    if (PathFileExists(srcfile)) return avesta::FileDup(srcfile, path);
+    if (PathIsRelative(srcfile)) {
+      mew::str::prepend(srcfile, templates);
+    }
+    if (PathFileExists(srcfile)) {
+      return avesta::FileDup(srcfile, path);
+    }
   }
   return E_FAIL;
 }
@@ -54,8 +59,8 @@ HRESULT FileNewTemplate(PCWSTR path, PCWSTR ext, PCWSTR templates) {
       ChoiceBetter(srcfile, find.cFileName);
     } while (::FindNextFile(hFind, &find));
     ::FindClose(hFind);
-    if (!str::empty(srcfile)) {
-      str::prepend(srcfile, templates);
+    if (!mew::str::empty(srcfile)) {
+      mew::str::prepend(srcfile, templates);
       return avesta::FileDup(srcfile, path);
     }
   }
@@ -64,7 +69,9 @@ HRESULT FileNewTemplate(PCWSTR path, PCWSTR ext, PCWSTR templates) {
 
 HRESULT FileNewNull(PCWSTR path) {
   HANDLE hFile = ::CreateFile(path, GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_NEW, 0, 0);
-  if (hFile == INVALID_HANDLE_VALUE) return AtlHresultFromLastError();
+  if (hFile == INVALID_HANDLE_VALUE) {
+    return AtlHresultFromLastError();
+  }
   ::SHChangeNotify(SHCNE_CREATE, SHCNF_PATH, path, NULL);
   ::CloseHandle(hFile);
   return S_OK;
@@ -78,9 +85,13 @@ HRESULT avesta::FileNew(PCWSTR path) {
     SHGetSpecialFolderPath(NULL, templates, CSIDL_TEMPLATES, FALSE);
     PathAddBackslash(templates);
     // まずは単純ShellNewエントリを参照する。
-    if SUCCEEDED (FileNewShell(path, ext, templates)) return S_OK;
+    if SUCCEEDED (FileNewShell(path, ext, templates)) {
+      return S_OK;
+    }
     // 次にCSIDL_TEMPLATESフォルダの同じ拡張子を捜す
-    if SUCCEEDED (FileNewTemplate(path, ext, templates)) return S_OK;
+    if SUCCEEDED (FileNewTemplate(path, ext, templates)) {
+      return S_OK;
+    }
   }
   // テンプレートファイルが無い
   return FileNewNull(path);
@@ -95,7 +106,9 @@ HRESULT DoFileOperation(PCWSTR src, PCWSTR dst, WORD fo, FILEOP_FLAGS flags, HWN
   op.pFrom = src;
   op.pTo = dst;
   op.fFlags = flags;
-  if (SHFileOperation(&op) != 0) return E_FAIL;
+  if (SHFileOperation(&op) != 0) {
+    return E_FAIL;
+  }
   return op.fAnyOperationsAborted ? S_FALSE : S_OK;
 }
 }  // namespace
@@ -104,9 +117,9 @@ HRESULT avesta::FileDup(PCWSTR src, PCWSTR dst) { return DoFileOperation(src, ds
 
 HRESULT avesta::FileMove(PCWSTR src, PCWSTR dst) { return DoFileOperation(src, dst, FO_MOVE, FOF_ALLOWUNDO); }
 
-HRESULT avesta::FileDelete(PCWSTR src) { return DoFileOperation(src, null, FO_DELETE, FOF_WANTNUKEWARNING | FOF_ALLOWUNDO); }
+HRESULT avesta::FileDelete(PCWSTR src) { return DoFileOperation(src, nullptr, FO_DELETE, FOF_WANTNUKEWARNING | FOF_ALLOWUNDO); }
 
-HRESULT avesta::FileBury(PCWSTR src) { return DoFileOperation(src, null, FO_DELETE, FOF_WANTNUKEWARNING); }
+HRESULT avesta::FileBury(PCWSTR src) { return DoFileOperation(src, nullptr, FO_DELETE, FOF_WANTNUKEWARNING); }
 
 HRESULT avesta::FileRename(PCWSTR src, PCWSTR dst) {
   if (lstrcmp(src, dst) == 0) {  // 同じ名前なので変更する必要が無い
@@ -129,14 +142,18 @@ static bool IsCopy() {
 }
 
 HRESULT FileCutOrCopy(PCTSTR srcSingle, DWORD dwDropEffect) {
-  if (!srcSingle) return E_INVALIDARG;
+  if (!srcSingle) {
+    return E_INVALIDARG;
+  }
   size_t len = lstrlen(srcSingle);
-  if (len == 0) return E_INVALIDARG;
+  if (len == 0) {
+    return E_INVALIDARG;
+  }
 
   // CF_HDROPを作成
   DROPFILES dropfiles = {sizeof(DROPFILES), 0, 0, true, IS_UNICODE_CHARSET};
-  Stream stream;
-  HGLOBAL hDrop = io::StreamCreateOnHGlobal(&stream, sizeof(DROPFILES) + ((len + 1) * 1 + 1) * sizeof(TCHAR), false);
+  mew::Stream stream;
+  HGLOBAL hDrop = mew::io::StreamCreateOnHGlobal(&stream, sizeof(DROPFILES) + ((len + 1) * 1 + 1) * sizeof(TCHAR), false);
   stream.write(&dropfiles, sizeof(DROPFILES));
   stream.write(srcSingle, (len + 1) * sizeof(TCHAR));
   stream.write(_T("\0"), sizeof(TCHAR));
@@ -170,15 +187,17 @@ HRESULT avesta::FilePaste(PCTSTR dst) {
     if (HDROP hDrop = (HDROP)::GetClipboardData(CF_HDROP)) {
       bool copy = IsCopy();
 
-      StringBuffer srcfiles;
+      mew::StringBuffer srcfiles;
       const UINT count = ::DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0);
       for (UINT i = 0; i < count; ++i) {
         TCHAR path[MAX_PATH];
         ::DragQueryFile(hDrop, i, path, MAX_PATH);
-        srcfiles.append(path, str::length(path) + 1);
+        srcfiles.append(path, mew::str::length(path) + 1);
       }
 
-      if (!copy) ::EmptyClipboard();
+      if (!copy) {
+        ::EmptyClipboard();
+      }
       ::CloseClipboard();
 
       if (!srcfiles.empty()) {

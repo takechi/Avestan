@@ -184,7 +184,7 @@ class WallPaperDialog : public Root<implements<IWallPaperDialog> >, public CDial
   }
 };
 
+AVESTA_EXPORT(WallPaperDialog)
+
 }  // namespace ui
 }  // namespace mew
-
-AVESTA_EXPORT(WallPaperDialog)

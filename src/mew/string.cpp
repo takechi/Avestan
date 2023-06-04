@@ -48,8 +48,10 @@ class VariableLengthBuffer {
     m_length = sz;
   }
   void reserve(size_t capacity) throw() {
-    if (m_capacity >= capacity) return;
-    m_capacity = math::max(static_cast<size_t>(16), capacity, m_capacity * 2);
+    if (m_capacity >= capacity) {
+      return;
+    }
+    m_capacity = mew::math::max(static_cast<size_t>(16), capacity, m_capacity * 2);
     const size_t bytesize = sizeof(Struct) + m_capacity * sizeof(T);
     m_data = (T*)((UINT8*)::realloc(data(), bytesize) + sizeof(Struct));
   }
@@ -128,47 +130,49 @@ class String : public Root<implements<IString, ISerializable> > {
     ::free(this);
   }
 };
-}  // namespace mew
 
-namespace {
+// static mew::FunctionFactory<mew::String, CreateString> creatable_String;
+
 //==============================================================================
 
-void CreateString(REFINTF pp, IUnknown* arg) throw(...) {
+void CreateString(mew::REFINTF pp, IUnknown* arg) throw(...) {
   if (!arg) {
-    *pp.pp = null;
-  } else if (ref<IStream> stream = cast(arg)) {
+    *pp.pp = nullptr;
+  } else if (mew::ref<IStream> stream = mew::cast(arg)) {
     size_t len;
-    io::StreamReadExact(stream, &len, sizeof(len));
+    mew::io::StreamReadExact(stream, &len, sizeof(len));
     if (len == 0) {  // 長さゼロの文字列
-      *pp.pp = null;
+      *pp.pp = nullptr;
     } else {
-      IString* obj;
-      PWSTR buf = String::NewRaw(&obj, len);
-      io::StreamReadExact(stream, buf, len * sizeof(WCHAR));
+      mew::IString* obj;
+      PWSTR buf = mew::String::NewRaw(&obj, len);
+      mew::io::StreamReadExact(stream, buf, len * sizeof(WCHAR));
       buf[len] = L'\0';
       VERIFY_HRESULT(obj->QueryInterface(pp.iid, pp.pp));
       obj->Release();
     }
   } else {  // コンストラクタ引数がstreamでない
-    throw ArgumentError(L"Stringの引数がstreamでない");
+    throw mew::exceptions::ArgumentError(L"Stringの引数がstreamでない");
   }
 }
 
 AVESTA_EXPORT_FUNC(String)
+}  // namespace mew
 
 //==============================================================================
+namespace {
 
-static void FormatString(IString** pp, PCWSTR format, size_t length, size_t argc, PCWSTR argv[]) throw() {
+static void FormatString(mew::IString** pp, PCWSTR format, size_t length, size_t argc, PCWSTR argv[]) throw() {
   ASSERT(pp);
   ASSERT(format);
   const size_t MAX_ARGS = 9;
   ASSERT(argc <= MAX_ARGS);
   size_t arglen[MAX_ARGS];
-  String::Buffer buf;
+  mew::String::Buffer buf;
 
   size_t enough = length;
   for (size_t i = 0; i < argc; i++) {
-    size_t len = str::length(argv[i]);
+    size_t len = mew::str::length(argv[i]);
     arglen[i] = len;
     enough += len;
   }
@@ -188,34 +192,40 @@ static void FormatString(IString** pp, PCWSTR format, size_t length, size_t argc
   }
   size_t buflen = buf.size();
   buf.push_back(L'\0');
-  *pp = String::NewHere(buf.detach(), buflen);
+  *pp = mew::String::NewHere(buf.detach(), buflen);
 }
 }  // namespace
 
 //==============================================================================
-
-MEW_API void mew::CreateString(IString** pp, PCWSTR format, size_t length, size_t argc, PCWSTR argv[]) throw() {
-  if (length == (size_t)-1) length = str::length(format);
-  if (length == 0)
-    *pp = null;
-  else if (argc > 0)
+namespace mew {
+MEW_API void CreateString(mew::IString** pp, PCWSTR format, size_t length, size_t argc, PCWSTR argv[]) throw() {
+  if (length == (size_t)-1) {
+    length = mew::str::length(format);
+  }
+  if (length == 0) {
+    *pp = nullptr;
+  } else if (argc > 0) {
     FormatString(pp, format, length, argc, argv);
-  else
-    *pp = String::NewCopy(format, length);
+  } else {
+    *pp = mew::String::NewCopy(format, length);
+  }
 }
 
-MEW_API void mew::CreateString(IString** pp, UINT nID, HMODULE hModule, size_t argc, PCWSTR argv[]) throw() {
+MEW_API void CreateString(mew::IString** pp, UINT nID, HMODULE hModule, size_t argc, PCWSTR argv[]) throw() {
   const int BUFEXPAND = 256;
   int bufsize = BUFEXPAND, length;
   CHeapPtr<WCHAR> buffer;
   while (true) {
     buffer.Reallocate(bufsize);
     length = ::LoadStringW(hModule, nID, buffer, bufsize);
-    if (length < bufsize - 1) break;
+    if (length < bufsize - 1) {
+      break;
+    }
     bufsize += BUFEXPAND;
   }
-  CreateString(pp, buffer, length, argc, argv);
+  CreateString(pp, (PCWSTR)buffer, (size_t)length, argc, argv);
 }
+}  // namespace mew
 
 void mew::StringReplace(IString** pp, IString* s, WCHAR from, WCHAR to) {
   if (!s) {

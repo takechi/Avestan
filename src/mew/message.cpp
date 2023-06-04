@@ -29,7 +29,9 @@ class Message : public Root<implements<IMessage, ISerializable> > {
    public:
     EnumVariant(Message* owner) : m_owner(owner) { Reset(); }
     bool Next(GUID* key, variant* var) {
-      if (m_iter == m_owner->m_vars.end()) return false;
+      if (m_iter == m_owner->m_vars.end()) {
+        return false;
+      }
       if (key) {
         *key = m_iter->first;
       }
@@ -45,7 +47,9 @@ class Message : public Root<implements<IMessage, ISerializable> > {
  public:  // Object
   Message() {}
   Message(INT32 code) {
-    if (code != 0) m_vars[GUID_Verb] = code;
+    if (code != 0) {
+      m_vars[GUID_Verb] = code;
+    }
   }
   Message(VariantMap& vars) { m_vars.swap(vars); }
   void __init__(IUnknown* arg) {
@@ -64,22 +68,25 @@ class Message : public Root<implements<IMessage, ISerializable> > {
  public:  // IMessage
   const variant& Get(const Guid& key) throw() {
     VariantMap::const_iterator i = m_vars.find(key);
-    if (i == m_vars.end())
+    if (i == m_vars.end()) {
       return variant::null;
-    else
+    } else {
       return i->second;
+    }
   }
   void Set(const Guid& key, const variant& var) throw() {
-    if (var.empty())
+    if (var.empty()) {
       m_vars.erase(key);
-    else
+    } else {
       m_vars[key] = var;
+    }
   }
   ref<IEnumVariant> Enumerate() throw() {
-    if (m_vars.empty())
+    if (m_vars.empty()) {
       return null;
-    else
+    } else {
       return objnew<EnumVariant>(this);
+    }
   }
 };
 
@@ -88,16 +95,20 @@ void CreateMessage(IMessage** ppMessage, EventCode code, IUnknown* arg) {
   *ppMessage = new Message(code);
 }
 
-}  // namespace mew
-
 AVESTA_EXPORT(Message)
+
+}  // namespace mew
 
 //==============================================================================
 
 HRESULT mew::LoadPersistMessage(IPersistMessage* obj, const message& msg, const char* key) {
-  if (!obj) return E_POINTER;
+  if (!obj) {
+    return E_POINTER;
+  }
   message data = msg[key];
-  if (!data) return E_FAIL;
+  if (!data) {
+    return E_FAIL;
+  }
   try {
     obj->LoadFromMessage(data);
     return S_OK;
@@ -106,7 +117,9 @@ HRESULT mew::LoadPersistMessage(IPersistMessage* obj, const message& msg, const 
   }
 }
 HRESULT mew::SavePersistMessage(IPersistMessage* obj, message& msg, const char* key) {
-  if (!obj) return E_POINTER;
+  if (!obj) {
+    return E_POINTER;
+  }
   try {
     msg[key] = obj->SaveToMessage();
     return S_OK;

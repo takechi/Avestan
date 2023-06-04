@@ -5,10 +5,10 @@
 #include "std/buffer.hpp"
 #include "object.hpp"
 
-//#define ENABLE_UN
+// #define ENABLE_UN
 
 namespace {
-using StringVector = std::vector<string>;
+using StringVector = std::vector<mew::string>;
 
 enum ExecuteType {
   ExecuteNoArg = -1,
@@ -31,40 +31,40 @@ static HRESULT Execute(PCWSTR path, PCWSTR args) {
   // 自己呼び出しの最適化
   TCHAR selfname[MAX_PATH];
   ::GetModuleFileName(NULL, selfname, MAX_PATH);
-  if (str::equals_nocase(path, selfname)) {
+  if (mew::str::equals_nocase(path, selfname)) {
     theAvesta->ParseCommandLine(args);
     return S_OK;
   }
   // 自分以外
-  string dir = theAvesta->CurrentPath();
-  return avesta::PathExecute(path, null, args, dir.str());
+  mew::string dir = theAvesta->CurrentPath();
+  return avesta::PathExecute(path, nullptr, args, dir.str());
 }
 
-class ExecuteCommandNoArgs : public Root<implements<ICommand> > {
+class ExecuteCommandNoArgs : public mew::Root<mew::implements<mew::ICommand> > {
  private:
-  string m_path;
-  string m_args;
+  mew::string m_path;
+  mew::string m_args;
 
  public:
-  ExecuteCommandNoArgs(string path, string args) : m_path(path), m_args(args) {}
-  string get_Description() { return m_path; }
-  UINT32 QueryState(IUnknown* owner) { return ENABLED; }
+  ExecuteCommandNoArgs(mew::string path, mew::string args) : m_path(path), m_args(args) {}
+  mew::string get_Description() { return m_path; }
+  UINT32 QueryState(IUnknown* owner) { return mew::ENABLED; }
   void Invoke() { Execute(m_path.str(), m_args.str()); }
 };
 
-class __declspec(novtable) ExecuteCommandBase : public Root<implements<ICommand> > {
+class __declspec(novtable) ExecuteCommandBase : public mew::Root<mew::implements<mew::ICommand> > {
  protected:
   ExecuteType m_type;
-  string m_path, m_argsL, m_argsR;
+  mew::string m_path, m_argsL, m_argsR;
 
  protected:
-  ExecuteCommandBase(string path, ExecuteType type, PCWSTR args, PCWSTR le, PCWSTR rs) : m_path(path), m_type(type) {
+  ExecuteCommandBase(mew::string path, ExecuteType type, PCWSTR args, PCWSTR le, PCWSTR rs) : m_path(path), m_type(type) {
     m_argsL.assign(args, le - args);
     m_argsR.assign(rs);
   }
 
  public:
-  string get_Description() { return m_path; }
+  mew::string get_Description() { return m_path; }
   UINT32 QueryState(IUnknown* owner) {
     switch (m_type) {
       case ExecuteFolderCurrent:
@@ -79,18 +79,20 @@ class __declspec(novtable) ExecuteCommandBase : public Root<implements<ICommand>
       case ExecuteItemsUnchecked:
 #endif
       {
-        ref<IShellListView> current;
-        if (SUCCEEDED(theAvesta->GetComponent(&current, AvestaFolder)))
-          return ENABLED;
-        else
+        mew::ref<mew::ui::IShellListView> current;
+        if (SUCCEEDED(theAvesta->GetComponent(&current, avesta::AvestaFolder))) {
+          return mew::ENABLED;
+        } else {
           return 0;
+        }
       }
       case ExecuteItemsSelected: {
-        ref<IShellListView> current;
-        if (SUCCEEDED(theAvesta->GetComponent(&current, AvestaFolder)) && current->SelectedCount > 0)
-          return ENABLED;
-        else
+        mew::ref<mew::ui::IShellListView> current;
+        if (SUCCEEDED(theAvesta->GetComponent(&current, avesta::AvestaFolder)) && current->SelectedCount > 0) {
+          return mew::ENABLED;
+        } else {
           return 0;
+        }
       }
       default:
         TRESPASS_DBG(return 0);
@@ -101,21 +103,21 @@ class __declspec(novtable) ExecuteCommandBase : public Root<implements<ICommand>
   bool QueryFiles(StringVector& files) {
     switch (m_type) {
       case ExecuteFolderCurrent:
-        return QueryFolders(FOCUSED, files);
+        return QueryFolders(mew::FOCUSED, files);
       case ExecuteFolderAll:
-        return QueryFolders(StatusNone, files);
+        return QueryFolders(mew::StatusNone, files);
       case ExecuteFolderShown:
-        return QueryFolders(SELECTED, files);
+        return QueryFolders(mew::SELECTED, files);
       case ExecuteFolderHidden:
-        return QueryFolders(UNSELECTED, files);
+        return QueryFolders(mew::UNSELECTED, files);
       case ExecuteFolderParent:
-        return QueryParent(FOCUSED, files);
+        return QueryParent(mew::FOCUSED, files);
       case ExecuteItems:
-        return QueryItems(StatusNone, files);
+        return QueryItems(mew::StatusNone, files);
       case ExecuteItemsSelected:
-        return QueryItems(SELECTED, files);
+        return QueryItems(mew::SELECTED, files);
       case ExecuteItemsChecked:
-        return QueryItems(CHECKED, files);
+        return QueryItems(mew::CHECKED, files);
 #ifdef ENABLE_UN
       case ExecuteItemsUnselected:
         return QueryItems(UNSELECTED, files);
@@ -126,25 +128,31 @@ class __declspec(novtable) ExecuteCommandBase : public Root<implements<ICommand>
         TRESPASS_DBG(return 0);
     }
   }
-  static bool QueryFolders(Status status, StringVector& files) {
+  static bool QueryFolders(mew::Status status, StringVector& files) {
     files.clear();
-    ref<IList> tab;
-    if FAILED (theAvesta->GetComponent(&tab, AvestaTab)) return false;
+    mew::ref<mew::ui::IList> tab;
+    if FAILED (theAvesta->GetComponent(&tab, avesta::AvestaTab)) {
+      return false;
+    }
     // current folder path.
-    ref<IEnumUnknown> views;
-    if FAILED (tab->GetContents(&views, status)) return false;
-    for (each<IShellListView> i(views); i.next();) {
-      if (ref<IEntry> entry = GetFolderOfView(i)) {
-        if (string path = entry->Path) files.push_back(path);
+    mew::ref<IEnumUnknown> views;
+    if FAILED (tab->GetContents(&views, status)) {
+      return false;
+    }
+    for (mew::each<mew::ui::IShellListView> i(views); i.next();) {
+      if (mew::ref<mew::io::IEntry> entry = ave::GetFolderOfView(i)) {
+        if (mew::string path = entry->Path) {
+          files.push_back(path);
+        }
       }
     }
     return !files.empty();
   }
-  static bool QueryParent(Status status, StringVector& files) {
+  static bool QueryParent(mew::Status status, StringVector& files) {
     QueryFolders(status, files);
     for (size_t i = 0; i < files.size(); ++i) {
       if (PathIsRoot(files[i].str())) {
-        files[i] = GUID_MyComputer;  // ドライブの上のフォルダはマイコンピュータ
+        files[i] = mew::io::GUID_MyComputer;  // ドライブの上のフォルダはマイコンピュータ
       } else {
         WCHAR parent[MAX_PATH];
         files[i].copyto(parent);
@@ -154,24 +162,30 @@ class __declspec(novtable) ExecuteCommandBase : public Root<implements<ICommand>
     }
     return true;
   }
-  static bool QueryItems(Status status, StringVector& files) {
-    ref<IEntryList> items;
-    if (!QueryItems(status, &items)) return false;
+  static bool QueryItems(mew::Status status, StringVector& files) {
+    mew::ref<mew::io::IEntryList> items;
+    if (!QueryItems(status, &items)) {
+      return false;
+    }
     const size_t count = items->Count;
     for (size_t i = 0; i < count; ++i) {
-      ref<IEntry> entry;
-      if FAILED (items->GetAt(&entry, i)) continue;
-      string path = entry->Path;
-      if (!path) continue;
+      mew::ref<mew::io::IEntry> entry;
+      if FAILED (items->GetAt(&entry, i)) {
+        continue;
+      }
+      mew::string path = entry->Path;
+      if (!path) {
+        continue;
+      }
       files.push_back(path);
     }
     return !files.empty();
   }
-  static bool QueryItems(Status status, IEntryList** items) {
+  static bool QueryItems(mew::Status status, mew::io::IEntryList** items) {
     ASSERT(items);
-    ref<IShellListView> current;
-    ref<IEntry> entry;
-    if (FAILED(theAvesta->GetComponent(&current, AvestaFolder)) || FAILED(current->GetFolder(&entry))) {
+    mew::ref<mew::ui::IShellListView> current;
+    mew::ref<mew::io::IEntry> entry;
+    if (FAILED(theAvesta->GetComponent(&current, avesta::AvestaFolder)) || FAILED(current->GetFolder(&entry))) {
       return false;
     }
     // selections
@@ -184,16 +198,16 @@ class ExecuteEachCommand : public ExecuteCommandBase {
   using super = ExecuteCommandBase;
 
  public:
-  ExecuteEachCommand(string path, ExecuteType type, PCWSTR args, PCWSTR le, PCWSTR rs) : super(path, type, args, le, rs) {}
+  ExecuteEachCommand(mew::string path, ExecuteType type, PCWSTR args, PCWSTR le, PCWSTR rs) : super(path, type, args, le, rs) {}
   void Invoke() {
     StringVector files;
-    string directory;
+    mew::string directory;
     if (!QueryFiles(files)) {
-      theAvesta->Notify(NotifyWarning, string::load(IDS_WARN_NOTARGET));
+      theAvesta->Notify(avesta::NotifyWarning, mew::string::load(IDS_WARN_NOTARGET));
       return;
     }
     const size_t count = files.size();
-    StringBuffer params;
+    mew::StringBuffer params;
     params.reserve(m_argsL.length() + m_argsR.length() + MAX_PATH);
     for (size_t i = 0; i < count; ++i) {
       params.clear();
@@ -211,15 +225,15 @@ class ExecuteAllCommand : public ExecuteCommandBase {
   using super = ExecuteCommandBase;
 
  public:
-  ExecuteAllCommand(string path, ExecuteType type, PCWSTR args, PCWSTR le, PCWSTR rs) : super(path, type, args, le, rs) {}
+  ExecuteAllCommand(mew::string path, ExecuteType type, PCWSTR args, PCWSTR le, PCWSTR rs) : super(path, type, args, le, rs) {}
   void Invoke() {
     StringVector files;
     if (!QueryFiles(files)) {
-      theAvesta->Notify(NotifyWarning, string::load(IDS_WARN_NOTARGET));
+      theAvesta->Notify(avesta::NotifyWarning, mew::string::load(IDS_WARN_NOTARGET));
       return;
     }
     const size_t count = files.size();
-    StringBuffer params;
+    mew::StringBuffer params;
     params.reserve(m_argsL.length() + m_argsR.length() + MAX_PATH + 128 * count);  // 適当な量を確保
     params.append(m_argsL.str());
     for (size_t i = 0; i < count; ++i) {
@@ -265,32 +279,42 @@ ExecuteType SearchVarsInArgs(PCWSTR args, WCHAR bracket[2], PCWSTR* le, PCWSTR* 
 }  // namespace
 
 namespace {
-bool PathExtensionExists(string& basename, PCWSTR extension) {
+bool PathExtensionExists(mew::string& basename, PCWSTR extension) {
   WCHAR path[MAX_PATH];
   basename.copyto(path, MAX_PATH);
-  str::append(path, extension);
-  if (!::PathFileExists(path)) return false;
+  mew::str::append(path, extension);
+  if (!::PathFileExists(path)) {
+    return false;
+  }
   basename = path;
   return true;
 }
 
 bool PathIsNonFile(PCWSTR path) {
-  if (str::compare(path, L"http://", 7) == 0) return true;
-  if (str::compare(path, L"https://", 8) == 0) return true;
-  if (str::compare(path, L"ftp://", 6) == 0) return true;
+  if (mew::str::compare(path, L"http://", 7) == 0) {
+    return true;
+  }
+  if (mew::str::compare(path, L"https://", 8) == 0) {
+    return true;
+  }
+  if (mew::str::compare(path, L"ftp://", 6) == 0) {
+    return true;
+  }
   return false;
 }
 }  // namespace
 
-ref<ICommand> CreateExecuteCommand(string path, string args) {
+mew::ref<mew::ICommand> CreateExecuteCommand(mew::string path, mew::string args) {
   // path のパスを解決する.
   if (!PathIsNonFile(path.str())) {
-    path = ResolvePath(path);
-    if (!path) return null;
+    path = ave::ResolvePath(path);
+    if (!path) {
+      return mew::null;
+    }
     if (!PathFileExists(path.str())) {  // 不完全なパス？
       // とりあえず、自動補完される実行ファイルの拡張子を補って試してみる。
       if (!PathExtensionExists(path, L".exe") && !PathExtensionExists(path, L".bat") && !PathExtensionExists(path, L".cmd")) {
-        return null;
+        return mew::null;
       }
     }
   }
@@ -301,11 +325,15 @@ ref<ICommand> CreateExecuteCommand(string path, string args) {
     ExecuteType type;
     // 'all' variables
     type = SearchVarsInArgs(wcsArgs, L"{}", &le, &rs);
-    if (type != ExecuteNoArg) return objnew<ExecuteAllCommand>(path, type, wcsArgs, le, rs);
+    if (type != ExecuteNoArg) {
+      return mew::objnew<ExecuteAllCommand>(path, type, wcsArgs, le, rs);
+    }
     // 'each' variables
     type = SearchVarsInArgs(wcsArgs, L"[]", &le, &rs);
-    if (type != ExecuteNoArg) return objnew<ExecuteEachCommand>(path, type, wcsArgs, le, rs);
+    if (type != ExecuteNoArg) {
+      return mew::objnew<ExecuteEachCommand>(path, type, wcsArgs, le, rs);
+    }
     // no args, fall through
   }
-  return objnew<ExecuteCommandNoArgs>(path, args);
+  return mew::objnew<ExecuteCommandNoArgs>(path, args);
 }

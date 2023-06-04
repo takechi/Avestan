@@ -3,7 +3,6 @@
 
 namespace mew {
 namespace detail {
-using namespace meta;
 
 inline HRESULT InterfaceAssign(IUnknown* p, void** pp) {
   *pp = p;
@@ -14,7 +13,7 @@ inline HRESULT InterfaceAssign(IUnknown* p, void** pp) {
 //==============================================================================
 
 template <class TInherits, class TSupports>
-class __declspec(novtable) Interface : public Inherits<TInherits> {
+class __declspec(novtable) Interface : public meta::Inherits<TInherits> {
  public:
   using __primary__ = typename TInherits::Head;  ///< OIDに対応するインタフェース.
   IUnknown* get_OID() throw() { return static_cast<IUnknown*>(static_cast<__primary__*>(this)); }
@@ -29,21 +28,22 @@ class __declspec(novtable) Interface : public Inherits<TInherits> {
   template <typename Interface>
   Interface* InternalGetInterface() {
     STATIC_ASSERT(SUPERSUBCLASS(IUnknown, Interface));
-    using Derived = typename MostDerived<TInherits, Interface>::Result;
+    using Derived = typename meta::MostDerived<TInherits, Interface>::Result;
     return static_cast<Interface*>(static_cast<Derived*>(this));
   }
   template <typename TList>
   HRESULT __stdcall InternalQueryInterface(REFIID iid, void** pp) throw() {
-    if (iid == __uuidof(TList::Head))
+    if (iid == __uuidof(TList::Head)) {
       return InterfaceAssign(InternalGetInterface<TList::Head>(), pp);
-    else
+    } else {
       return InternalQueryInterface<TList::Tail>(iid, pp);
+    }
   }
   template <>
-  HRESULT __stdcall InternalQueryInterface<Void>(REFIID iid, void** pp) throw() {
-    if (iid == __uuidof(IUnknown))
+  HRESULT __stdcall InternalQueryInterface<meta::Void>(REFIID iid, void** pp) throw() {
+    if (iid == __uuidof(IUnknown)) {
       return InterfaceAssign(OID, pp);
-    else {
+    } else {
       *pp = null;
       return E_NOINTERFACE;
     }
@@ -54,7 +54,7 @@ class __declspec(novtable) Interface : public Inherits<TInherits> {
 
 template <class TBase, class TSupports, typename TMixin>
 class Object2 {
-  using TInherits = typename MostDerivedOnly<TSupports>::Result;
+  using TInherits = typename meta::MostDerivedOnly<TSupports>::Result;
   using mixin = typename TMixin::template Result1<Interface<TInherits, TSupports> >::Result;
 
  public:
@@ -63,17 +63,18 @@ class Object2 {
     using TRight = mixin;
 
    public:
-    using __inherits__ = Union<typename TLeft::__inherits__, TInherits>;
-    using __supports__ = Union<typename TLeft::__supports__, TSupports>;
+    using __inherits__ = meta::Union<typename TLeft::__inherits__, TInherits>;
+    using __supports__ = meta::Union<typename TLeft::__supports__, TSupports>;
 
     // IUnknownの実装はすべてTLeftへ転送する。
     using __primary__ = typename TLeft::__primary__;
     HRESULT __stdcall QueryInterface(REFIID iid, void** pp) throw() {
       HRESULT hr = TLeft::QueryInterface(iid, pp);
-      if (hr != E_NOINTERFACE)
+      if (hr != E_NOINTERFACE) {
         return hr;
-      else
+      } else {
         return TRight::QueryInterface(iid, pp);
+      }
     }
     ULONG __stdcall AddRef() throw() { return TLeft::AddRef(); }
     ULONG __stdcall Release() throw() { return TLeft::Release(); }
@@ -83,8 +84,8 @@ class Object2 {
 };
 
 template <class TSupports, typename TMixin>
-class Object2<Void, TSupports, TMixin> {
-  using TInherits = typename MostDerivedOnly<TSupports>::Result;
+class Object2<meta::Void, TSupports, TMixin> {
+  using TInherits = typename meta::MostDerivedOnly<TSupports>::Result;
   using mixin = typename TMixin::template Result1<Interface<TInherits, TSupports> >::Result;
 
  public:
@@ -94,7 +95,7 @@ class Object2<Void, TSupports, TMixin> {
     using __inherits__ = TInherits;
     using __supports__ = TSupports;
     HRESULT __stdcall QueryInterface(REFIID iid, void** pp) throw() {
-      if (!pp) return E_INVALIDARG;
+      if (!pp) {return E_INVALIDARG;}
       return __super::QueryInterface(iid, pp);
     }
     HRESULT __stdcall QueryInterface(REFINTF pp) throw() { return QueryInterface(pp.iid, pp.pp); }
@@ -104,15 +105,15 @@ class Object2<Void, TSupports, TMixin> {
 };
 
 template <class TBase, typename TMixin>
-class Object2<TBase, Void, TMixin> {
+class Object2<TBase, meta::Void, TMixin> {
  public:
   using Result = typename TMixin::template Result1<TBase>::Result;
 };
 
 template <typename TMixin>
-class Object2<Void, Void, TMixin> {
+class Object2<meta::Void, meta::Void, TMixin> {
  public:
-  using Result = typename TMixin::template Result1<Void>::Result;
+  using Result = typename TMixin::template Result1<meta::Void>::Result;
 };
 
 //==============================================================================
@@ -120,7 +121,7 @@ class Object2<Void, Void, TMixin> {
 template <class TBase, typename TImplements, typename TMixin>
 class Object1 {
   using Sorted = typename meta::DerivedToFront<typename TImplements::Result>::Result;
-  using Avail = typename Subtract<Sorted, typename TBase::__supports__>::Result;
+  using Avail = typename meta::Subtract<Sorted, typename TBase::__supports__>::Result;
 
  public:
   using Result = typename Object2<TBase, Avail, TMixin>::Result;
@@ -129,21 +130,21 @@ class Object1 {
 template <class TBase, typename TMixin>
 class Object1<TBase, implements<>, TMixin> {
  public:
-  using Result = typename Object2<TBase, Void, TMixin>::Result;
+  using Result = typename Object2<TBase, meta::Void, TMixin>::Result;
 };
 
 template <typename TImplements, typename TMixin>
-class Object1<Void, TImplements, TMixin> {
+class Object1<meta::Void, TImplements, TMixin> {
   using Avail = typename meta::DerivedToFront<typename TImplements::Result>::Result;
 
  public:
-  using Result = typename Object2<Void, Avail, TMixin>::Result;
+  using Result = typename Object2<meta::Void, Avail, TMixin>::Result;
 };
 
 template <typename TMixin>
-class Object1<Void, implements<>, TMixin> {
+class Object1<meta::Void, implements<>, TMixin> {
  public:
-  using Result = typename Object2<Void, Void, TMixin>::Result;
+  using Result = typename Object2<meta::Void, meta::Void, TMixin>::Result;
 };
 }  // namespace detail
 }  // namespace mew

@@ -6,6 +6,8 @@
 
 //==============================================================================
 
+namespace mew {
+namespace ui {
 BOOL CWindowEx::ModifyClassStyle(DWORD dwRemove, DWORD dwAdd, UINT nFlags) throw() {
   HWND hWnd = m_hWnd;
   ASSERT(::IsWindow(hWnd));
@@ -63,7 +65,7 @@ void CWindowEx::SendMessageToDescendants(UINT msg, WPARAM wParam, LPARAM lParam,
 
 //==============================================================================
 
-HRESULT WindowImplBase::Send(IWindow* self, const message& msg) const {
+HRESULT WindowImplBase::Send(mew::ui::IWindow* self, const message& msg) const {
   using namespace mew::ui;
   switch (msg.code) {
     case CommandClose:
@@ -87,7 +89,9 @@ HRESULT WindowImplBase::Send(IWindow* self, const message& msg) const {
   return S_OK;
 }
 void WindowImplBase::set_Dock(Direction value) {
-  if (m_Dock == value) return;
+  if (m_Dock == value) {
+    return;
+  }
   m_Dock = (Direction)(value & (DirCenter | DirWest | DirEast | DirNorth | DirSouth));
   if (m_Dock > DirCenter) {
     Rect bounds = afx::GetBounds(m_hWnd);
@@ -116,21 +120,34 @@ LRESULT WindowImplBase::OnCopyData(IWindow* self, UINT, WPARAM wParam, LPARAM lP
   }
 }
 
+}  // namespace ui
+}  // namespace mew
+
 HRESULT mew::ui::QueryInterfaceInWindow(HWND hWnd, REFINTF pp) {
-  if (!::IsWindow(hWnd)) return E_FAIL;
+  if (!::IsWindow(hWnd)) {
+    return E_FAIL;
+  }
   HRESULT hr = ::SendMessage(hWnd, MEW_QUERY_INTERFACE, (WPARAM)&pp.iid, (LPARAM)pp.pp);
-  if FAILED (hr) return hr;
-  if (!*pp.pp) return E_NOINTERFACE;
+  if FAILED (hr) {
+    return hr;
+  }
+  if (!*pp.pp) {
+    return E_NOINTERFACE;
+  }
   return S_OK;
 }
 
 bool mew::ui::ResizeToDefault(IWindow* window) {
   Size size = window->DefaultSize;
-  if (size.empty()) return false;
+  if (size.empty()) {
+    return false;
+  }
   Rect bounds = window->Bounds;
   window->Bounds = Rect(bounds.location, size);
   ref<IWindow> parent;
-  if FAILED (QueryParent(window, &parent)) return false;
+  if FAILED (QueryParent(window, &parent)) {
+    return false;
+  }
   parent->Update();
   return true;
 }

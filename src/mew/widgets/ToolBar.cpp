@@ -13,19 +13,19 @@
 
 #include "../server/main.hpp"  // もうぐちゃぐちゃ……
 
-using namespace drawing;
-using namespace io;
+using namespace mew::drawing;
+using namespace mew::io;
 
 namespace {
 const int ID_FIRST_ITEM = 100;
 const int BTNOFF = 1;  // なぜかツールバーの一つ目のボタンは動作がおかしいので、ダミーを追加する
 
-class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CToolBarCtrlT<WindowImplBase> >,
-                                         public MenuProvider {
+class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CToolBarCtrlT<mew::ui::WindowImplBase> >,
+                                         public mew::ui::MenuProvider {
  protected:
   static const int ID_MSGMAP_PARENT = 2;
 
-  ref<ITreeItem> m_root;
+  mew::ref<mew::ui::ITreeItem> m_root;
 
   int m_nPopBtn;
   int m_nNextPopBtn;
@@ -54,12 +54,13 @@ class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CTo
         m_bShowKeyboardCues(false),
         m_bAllowKeyboardCues(true) {}
   int GetButtonCountWithoutDummy() const { return GetButtonCount() - BTNOFF; }
-  ref<ICommand> IdToCommand(INT wID) const {
-    ref<ITreeItem> menu;
-    if SUCCEEDED (m_root->GetChild(&menu, CommandToIndex(wID) - BTNOFF))
+  mew::ref<mew::ICommand> IdToCommand(INT wID) const {
+    mew::ref<mew::ui::ITreeItem> menu;
+    if SUCCEEDED (m_root->GetChild(&menu, CommandToIndex(wID) - BTNOFF)) {
       return menu->Command;
-    else
-      return null;
+    } else {
+      return mew::null;
+    }
   }
   int IndexToCommand(int index) const {
     TBBUTTON tbb = {0};
@@ -85,12 +86,12 @@ class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CTo
     for (int i = 0; i < btns; ++i) {
       TBBUTTONINFO info = {sizeof(TBBUTTONINFO), TBIF_BYINDEX | TBIF_COMMAND | TBIF_STATE};
       if (GetButtonInfo(i + BTNOFF, &info)) {
-        ref<ITreeItem> menu;
+        mew::ref<mew::ui::ITreeItem> menu;
         if SUCCEEDED (m_root->GetChild(&menu, CommandToIndex(info.idCommand) - BTNOFF)) {
-          if (ICommand* command = menu->Command) {
+          if (mew::ICommand* command = menu->Command) {
             UINT32 uState = command->QueryState(menu);
-            bitof(info.fsState, TBSTATE_ENABLED) = !!(uState & ENABLED);
-            bitof(info.fsState, TBSTATE_CHECKED) = !!(uState & CHECKED);
+            mew::bitof(info.fsState, TBSTATE_ENABLED) = !!(uState & mew::ENABLED);
+            mew::bitof(info.fsState, TBSTATE_CHECKED) = !!(uState & mew::CHECKED);
           } else if (menu->HasChildren()) {
             info.fsState = TBSTATE_ENABLED;
           }
@@ -111,21 +112,27 @@ class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CTo
   }
   void ReCreateButtons() {
     ResetButtons();
-    if (!m_root) return;
-    SuppressRedraw lock(m_hWnd);
+    if (!m_root) {
+      return;
+    }
+    mew::ui::SuppressRedraw lock(m_hWnd);
 
     bool doesBarUseImage = false;
     m_root->OnUpdate();
     size_t count = m_root->GetChildCount();
     for (size_t i = 0; i < count; ++i) {
-      ref<ITreeItem> menu;
-      if FAILED (m_root->GetChild(&menu, i)) continue;
-      string text = menu->Name;
+      mew::ref<mew::ui::ITreeItem> menu;
+      if FAILED (m_root->GetChild(&menu, i)) {
+        continue;
+      }
+      mew::string text = menu->Name;
       bool hasChildren = menu->HasChildren();
       bool hasCommand = !!menu->Command;
       if (text || hasChildren || hasCommand) {
         int image = menu->Image;
-        if (image >= 0) doesBarUseImage = true;
+        if (image >= 0) {
+          doesBarUseImage = true;
+        }
         TBBUTTON item = {0};
         item.iBitmap = (image >= 0 ? image : I_IMAGENONE);
         item.idCommand = i + ID_FIRST_ITEM;
@@ -136,10 +143,11 @@ class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CTo
           item.iString = (INT_PTR)text.str();
         }
         if (hasChildren) {
-          if (hasCommand)
+          if (hasCommand) {
             item.fsStyle |= BTNS_DROPDOWN;
-          else
+          } else {
             item.fsStyle |= BTNS_WHOLEDROPDOWN;
+          }
         } else if (hasCommand) {
           item.fsStyle |= BTNS_BUTTON;
         }
@@ -154,28 +162,40 @@ class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CTo
     UpdateToolBarImageList(doesBarUseImage);
   }
   bool DoesBarUseImage() const {
-    if (!m_root) return false;
+    if (!m_root) {
+      return false;
+    }
     size_t count = m_root->GetChildCount();
     for (size_t i = 0; i < count; ++i) {
-      ref<ITreeItem> menu;
-      if FAILED (m_root->GetChild(&menu, i)) continue;
-      if (menu->Image >= 0) return true;
+      mew::ref<mew::ui::ITreeItem> menu;
+      if FAILED (m_root->GetChild(&menu, i)) {
+        continue;
+      }
+      if (menu->Image >= 0) {
+        return true;
+      }
     }
     return false;
   }
   void UpdateToolBarImageList(bool enable) {
-    ref<IImageList> imagelist = (enable ? GetMenuImageList() : null);
+    mew::ref<IImageList> imagelist = (enable ? GetMenuImageList() : mew::null);
     SetImageList(imagelist);
     AutoSize();
   }
 
  protected:
   void TakeFocus() {
-    if (::GetFocus() != m_hWnd) SetFocus();
+    if (::GetFocus() != m_hWnd) {
+      SetFocus();
+    }
   }
   void GiveFocusBack() {
-    if (m_bUseKeyboardCues && m_bShowKeyboardCues) ShowKeyboardCues(false);
-    if (HasFocus()) GetTopLevelParent().SetFocus();
+    if (m_bUseKeyboardCues && m_bShowKeyboardCues) {
+      ShowKeyboardCues(false);
+    }
+    if (HasFocus()) {
+      GetTopLevelParent().SetFocus();
+    }
   }
   void ShowKeyboardCues(bool bShow) {
     m_bShowKeyboardCues = bShow;
@@ -186,15 +206,21 @@ class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CTo
 
   // Implementation
   void InvokeButtonCommand(INT wID) {
-    if (ref<ICommand> command = IdToCommand(wID)) command->Invoke();
+    if (mew::ref<mew::ICommand> command = IdToCommand(wID)) {
+      command->Invoke();
+    }
     GiveFocusBack();
   }
   void DoPopupMenu(const int index, bool animate) {
-    ref<ITreeItem> menu;
-    if (FAILED(m_root->GetChild(&menu, index - BTNOFF))) return;
+    mew::ref<mew::ui::ITreeItem> menu;
+    if (FAILED(m_root->GetChild(&menu, index - BTNOFF))) {
+      return;
+    }
 
     if (animate) {
-      if (::GetFocus() != m_hWnd) TakeFocus();
+      if (::GetFocus() != m_hWnd) {
+        TakeFocus();
+      }
       m_bEscapePressed = false;
     }
 
@@ -213,26 +239,37 @@ class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CTo
       GetItemRect(index, &rcExclude);
       afx::MapWindowRect(m_hWnd, NULL, &rcExclude);
       SetHotItem(index);
-      if (info.fsStyle & BTNS_WHOLEDROPDOWN) PressButton(nCmdID, true);
-      ref<ICommand> command =
+      if (info.fsStyle & BTNS_WHOLEDROPDOWN) {
+        PressButton(nCmdID, true);
+      }
+      mew::ref<mew::ICommand> command =
           DoTrackPopupMenu(menu, animate ? TPM_VERPOSANIMATION : TPM_NOANIMATION, rcExclude.left, rcExclude.bottom, rcExclude);
-      if (info.fsStyle & BTNS_WHOLEDROPDOWN) PressButton(nCmdID, false);
-      if (::GetFocus() != m_hWnd) SetHotItem(-1);
+      if (info.fsStyle & BTNS_WHOLEDROPDOWN) {
+        PressButton(nCmdID, false);
+      }
+      if (::GetFocus() != m_hWnd) {
+        SetHotItem(-1);
+      }
       m_nPopBtn = -1;  // restore
 
       // eat next msg if click is on the same button
       MSG msg;
-      if (::PeekMessage(&msg, m_hWnd, WM_LBUTTONDOWN, WM_LBUTTONDOWN, PM_NOREMOVE) && ::PtInRect(&rcExclude, msg.pt))
+      if (::PeekMessage(&msg, m_hWnd, WM_LBUTTONDOWN, WM_LBUTTONDOWN, PM_NOREMOVE) && ::PtInRect(&rcExclude, msg.pt)) {
         ::PeekMessage(&msg, m_hWnd, WM_LBUTTONDOWN, WM_LBUTTONDOWN, PM_REMOVE);
+      }
       // check if another popup menu should be displayed
       if (m_nNextPopBtn != -1) {
         PostMessage(GetAutoPopupMessage(), m_nNextPopBtn & 0xFFFF);
-        if (!(m_nNextPopBtn & 0xFFFF0000) && !m_bPopupItem && IsDropDown(m_nNextPopBtn & 0xFFFF)) PostKeyDown(VK_DOWN);
+        if (!(m_nNextPopBtn & 0xFFFF0000) && !m_bPopupItem && IsDropDown(m_nNextPopBtn & 0xFFFF)) {
+          PostKeyDown(VK_DOWN);
+        }
         m_nNextPopBtn = -1;
       } else {
         // If user didn't hit escape, give focus back
         if (!m_bEscapePressed) {
-          if (m_bUseKeyboardCues && m_bShowKeyboardCues) m_bAllowKeyboardCues = false;
+          if (m_bUseKeyboardCues && m_bShowKeyboardCues) {
+            m_bAllowKeyboardCues = false;
+          }
           GiveFocusBack();
         } else {
           SetHotItem(index);
@@ -240,14 +277,16 @@ class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CTo
       }
 
       // invole command
-      if (command) command->Invoke();
+      if (command) {
+        command->Invoke();
+      }
     } else {
       SetHotItem(index);
       m_nPopBtn = -1;  // restore
     }
   }
 
-  ref<ICommand> DoTrackPopupMenu(ITreeItem* menu, UINT uAnimFlag, int x, int y, const RECT& rcExclude) {
+  mew::ref<mew::ICommand> DoTrackPopupMenu(mew::ui::ITreeItem* menu, UINT uAnimFlag, int x, int y, const RECT& rcExclude) {
     CWindowCreateCriticalSectionLock lock;
     lock.Lock();
 
@@ -255,25 +294,29 @@ class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CTo
     m_bAutoPopup = true;
     m_bMenuActive = true;
     UINT uFlags = (uAnimFlag | TPM_LEFTBUTTON | TPM_VERTICAL | TPM_LEFTALIGN | TPM_TOPALIGN);
-    ref<ICommand> command = PopupMenu(menu, m_hWnd, uFlags, x, y, &rcExclude);
+    mew::ref<mew::ICommand> command = PopupMenu(menu, m_hWnd, uFlags, x, y, &rcExclude);
     m_bMenuActive = false;
     m_bAutoPopup = false;
 
     lock.Unlock();
 
-    ASSERT(ui::GetMenuDepth() == 0);
+    ASSERT(mew::ui::GetMenuDepth() == 0);
 
     UpdateWindow();
     GetTopLevelParent().UpdateWindow();
     return command;
   }
   int GetPreviousMenuItem(int nBtn) const {
-    if (nBtn == -1) return -1;
+    if (nBtn == -1) {
+      return -1;
+    }
     RECT rcClient;
     GetClientRect(&rcClient);
     int nNextBtn;
     for (nNextBtn = nBtn - 1; nNextBtn != nBtn; nNextBtn--) {
-      if (nNextBtn < 1) nNextBtn = GetButtonCount() - 1;
+      if (nNextBtn < 1) {
+        nNextBtn = GetButtonCount() - 1;
+      }
       TBBUTTON tbb = {0};
       GetButton(nNextBtn, &tbb);
       RECT rcBtn;
@@ -282,18 +325,24 @@ class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CTo
         nNextBtn = -2;  // chevron
         break;
       }
-      if ((tbb.fsState & TBSTATE_ENABLED) != 0 && (tbb.fsState & TBSTATE_HIDDEN) == 0) break;
+      if ((tbb.fsState & TBSTATE_ENABLED) != 0 && (tbb.fsState & TBSTATE_HIDDEN) == 0) {
+        break;
+      }
     }
     return (nNextBtn != nBtn) ? nNextBtn : -1;
   }
   int GetNextMenuItem(int nBtn) const {
-    if (nBtn == -1) return -1;
+    if (nBtn == -1) {
+      return -1;
+    }
     RECT rcClient;
     GetClientRect(&rcClient);
     int nNextBtn;
     int nCount = GetButtonCount();
     for (nNextBtn = nBtn + 1; nNextBtn != nBtn; nNextBtn++) {
-      if (nNextBtn >= nCount) nNextBtn = 1;
+      if (nNextBtn >= nCount) {
+        nNextBtn = 1;
+      }
       TBBUTTON tbb = {0};
       GetButton(nNextBtn, &tbb);
       RECT rcBtn;
@@ -302,7 +351,9 @@ class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CTo
         nNextBtn = -2;  // chevron
         break;
       }
-      if ((tbb.fsState & TBSTATE_ENABLED) != 0 && (tbb.fsState & TBSTATE_HIDDEN) == 0) break;
+      if ((tbb.fsState & TBSTATE_ENABLED) != 0 && (tbb.fsState & TBSTATE_HIDDEN) == 0) {
+        break;
+      }
     }
     return (nNextBtn != nBtn) ? nNextBtn : -1;
   }
@@ -347,12 +398,15 @@ class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CTo
     return 0;
   }
   LRESULT OnChar(UINT, WPARAM wParam, LPARAM, BOOL& bHandled) {
-    if (wParam != VK_SPACE)
+    if (wParam != VK_SPACE) {
       bHandled = false;
-    else
+    } else {
       return 0;
+    }
     // Security
-    if (!GetTopLevelParent().IsWindowEnabled() || ::GetFocus() != m_hWnd) return 0;
+    if (!GetTopLevelParent().IsWindowEnabled() || ::GetFocus() != m_hWnd) {
+      return 0;
+    }
 
     // Handle mnemonic press when we have focus
     int nCmd = 0;
@@ -369,10 +423,11 @@ class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CTo
       if ((info.fsState & TBSTATE_ENABLED) != 0 && (info.fsState & TBSTATE_HIDDEN) == 0 && rcBtn.right <= rcClient.right) {
         if (wParam != VK_RETURN) {
           SetHotItem(nBtn);
-          if (info.fsStyle & BTNS_WHOLEDROPDOWN)
+          if (info.fsStyle & BTNS_WHOLEDROPDOWN) {
             PostKeyDown(VK_DOWN);
-          else if (info.fsStyle & BTNS_DROPDOWN)
+          } else if (info.fsStyle & BTNS_DROPDOWN) {
             PostKeyDown(VK_UP);
+          }
         }
       } else {
         MessageBeep(0);
@@ -388,11 +443,14 @@ class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CTo
   }
   LRESULT OnInternalGetBar(UINT, WPARAM wParam, LPARAM, BOOL&) {
     // Let's make sure we're not embedded in another process
-    if ((LPVOID)wParam != NULL) *((DWORD*)wParam) = GetCurrentProcessId();
-    if (IsWindowVisible())
+    if ((LPVOID)wParam != NULL) {
+      *((DWORD*)wParam) = GetCurrentProcessId();
+    }
+    if (IsWindowVisible()) {
       return (LRESULT) static_cast<ToolBarBase*>(this);
-    else
+    } else {
       return NULL;
+    }
   }
   LRESULT OnUpdateUIState(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     UpdateButtonState();
@@ -477,7 +535,7 @@ class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CTo
 
     bHandled = false;
     if (m_bMenuActive && m_bAutoPopup && ::WindowFromPoint(point) == m_hWnd) {
-      if (CWindowEx wndMenu = ui::GetMenu()) {
+      if (CWindowEx wndMenu = mew::ui::GetMenu()) {
         ScreenToClient(&point);
         int nHit = HitTest(&point);
 
@@ -507,7 +565,9 @@ class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CTo
   LRESULT OnHookSysKeyDown(UINT, WPARAM wParam, LPARAM, BOOL& bHandled) {
     bHandled = false;
 
-    if (wParam == VK_MENU && m_bUseKeyboardCues && !m_bShowKeyboardCues && m_bAllowKeyboardCues) ShowKeyboardCues(true);
+    if (wParam == VK_MENU && m_bUseKeyboardCues && !m_bShowKeyboardCues && m_bAllowKeyboardCues) {
+      ShowKeyboardCues(true);
+    }
 
     if (wParam != VK_SPACE && !m_bMenuActive && ::GetFocus() == m_hWnd) {
       m_bAllowKeyboardCues = false;
@@ -533,8 +593,12 @@ class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CTo
       case VK_ESCAPE:
         if (m_bMenuActive) {
           int nHot = GetHotItem();
-          if (nHot == -1) nHot = m_nPopBtn;
-          if (nHot == -1) nHot = 0;
+          if (nHot == -1) {
+            nHot = m_nPopBtn;
+          }
+          if (nHot == -1) {
+            nHot = 0;
+          }
           SetHotItem(nHot);
           bHandled = true;
           TakeFocus();
@@ -562,23 +626,29 @@ class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CTo
         const WPARAM wpNext = bRTL ? VK_LEFT : VK_RIGHT;
         const WPARAM wpPrev = bRTL ? VK_RIGHT : VK_LEFT;
         HWND hWndMenu;
-        if (m_bMenuActive && m_bAutoPopup && !(wParam == wpNext && m_bPopupItem) && (hWndMenu = ui::GetMenu()) != NULL) {
+        if (m_bMenuActive && m_bAutoPopup && !(wParam == wpNext && m_bPopupItem) && (hWndMenu = mew::ui::GetMenu()) != NULL) {
           bool bAction = false;
-          if (wParam == wpPrev && ui::GetMenuDepth() == 1) {
+          if (wParam == wpPrev && mew::ui::GetMenuDepth() == 1) {
             m_nNextPopBtn = GetPreviousMenuItem(m_nPopBtn);
-            if (m_nNextPopBtn != -1) bAction = true;
+            if (m_nNextPopBtn != -1) {
+              bAction = true;
+            }
           } else if (wParam == wpNext) {
             m_nNextPopBtn = GetNextMenuItem(m_nPopBtn);
-            if (m_nNextPopBtn != -1) bAction = true;
+            if (m_nNextPopBtn != -1) {
+              bAction = true;
+            }
           }
           // Close the popup menu
           if (bAction) {
             ::PostMessage(hWndMenu, WM_KEYDOWN, VK_ESCAPE, 0L);
             if (wParam == wpNext) {
-              int cItem = ui::GetMenuDepth() - 1;
+              int cItem = mew::ui::GetMenuDepth() - 1;
               while (cItem >= 0) {
-                hWndMenu = ui::GetMenu(cItem);
-                if (hWndMenu != NULL) ::PostMessage(hWndMenu, WM_KEYDOWN, VK_ESCAPE, 0L);
+                hWndMenu = mew::ui::GetMenu(cItem);
+                if (hWndMenu != NULL) {
+                  ::PostMessage(hWndMenu, WM_KEYDOWN, VK_ESCAPE, 0L);
+                }
                 cItem--;
               }
             }
@@ -615,7 +685,9 @@ class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CTo
   // Implementation - internal msg helpers
   static UINT GetAutoPopupMessage() {
     static UINT uAutoPopupMessage = 0;
-    if (uAutoPopupMessage == 0) uAutoPopupMessage = ::RegisterWindowMessage(_T("mew.ToolBar.AutoPopup"));
+    if (uAutoPopupMessage == 0) {
+      uAutoPopupMessage = ::RegisterWindowMessage(_T("mew.ToolBar.AutoPopup"));
+    }
     ASSERT(uAutoPopupMessage != 0);
     return uAutoPopupMessage;
   }
@@ -624,27 +696,33 @@ class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CTo
 //==============================================================================
 
 template <class TFinal>
-class ToolBarImpl : public WindowImpl<CWindowImplEx<TFinal, ToolBarBase>, implements<ITree, IWindow, ISignal, IDisposable> > {
+class ToolBarImpl
+    : public mew::ui::WindowImpl<mew::ui::CWindowImplEx<TFinal, ToolBarBase>,
+                                 mew::implements<mew::ui::ITree, mew::ui::IWindow, mew::ISignal, mew::IDisposable> > {
  public:
   void DoCreate(HWND hParent) {
-    __super::DoCreate(hParent, NULL, DirNorth, WS_CONTROL | CCS_NOLAYOUT | TBSTYLE_FLAT | TBSTYLE_LIST | TBSTYLE_TRANSPARENT,
-                      0);
+    __super::DoCreate(hParent, NULL, mew::ui::DirNorth,
+                      WS_CONTROL | CCS_NOLAYOUT | TBSTYLE_FLAT | TBSTYLE_LIST | TBSTYLE_TRANSPARENT, 0);
     SendMessage(CCM_SETVERSION, 5, 0);
     SetButtonStructSize();
     GetSystemSettings();
     ResetButtons();
-    ui::RegisterMessageHook(static_cast<TFinal*>(this), OnHookMessage);
+    mew::ui::RegisterMessageHook(static_cast<TFinal*>(this), OnHookMessage);
   }
   void HandleDestroy() {
-    ui::UnregisterMessageHook(static_cast<TFinal*>(this), OnHookMessage);
+    mew::ui::UnregisterMessageHook(static_cast<TFinal*>(this), OnHookMessage);
     m_root.clear();
   }
   bool HandleQueryDrop(IDropTarget** pp, LPARAM lParam) {
-    if (__super::HandleQueryDrop(pp, lParam)) return true;
-    Point pt(GET_XY_LPARAM(lParam));
+    if (__super::HandleQueryDrop(pp, lParam)) {
+      return true;
+    }
+    mew::Point pt(GET_XY_LPARAM(lParam));
     ScreenToClient(&pt);
     int index = HitTest(&pt);
-    if (index <= 0) return false;
+    if (index <= 0) {
+      return false;
+    }
     return SUCCEEDED(OID->QueryInterface(pp));
   }
   // bool SupportsEvent(EventCode code) const throw()
@@ -656,17 +734,17 @@ class ToolBarImpl : public WindowImpl<CWindowImplEx<TFinal, ToolBarBase>, implem
   //     return false;
   // }
   //}
-  void set_Dock(Direction value) {
+  void set_Dock(mew::ui::Direction value) {
     DWORD style = 0;
     switch (value) {
-      case DirNone:
-      case DirCenter:
-      case DirNorth:
-      case DirSouth:
+      case mew::ui::DirNone:
+      case mew::ui::DirCenter:
+      case mew::ui::DirNorth:
+      case mew::ui::DirSouth:
         style = 0;
         break;
-      case DirWest:
-      case DirEast:
+      case mew::ui::DirWest:
+      case mew::ui::DirEast:
         style = CCS_VERT;
         break;
       default:
@@ -675,17 +753,17 @@ class ToolBarImpl : public WindowImpl<CWindowImplEx<TFinal, ToolBarBase>, implem
     ModifyStyle(CCS_VERT, style);
     __super::set_Dock(value);
   }
-  Size get_DefaultSize() {
+  mew::Size get_DefaultSize() {
     RECT rc = {0, 0, 0, 0};
     GetItemRect(GetItemCount() - 1, &rc);
-    return Size(rc.right, rc.bottom);
+    return mew::Size(rc.right, rc.bottom);
   }
-  ITreeItem* get_Root() { return m_root; }
+  mew::ui::ITreeItem* get_Root() { return m_root; }
   void OnChangeButtons() {
     ResizeToDefault(this);
-    InvokeEvent<EventResizeDefault>(static_cast<IWindow*>(this), get_DefaultSize());
+    InvokeEvent<mew::ui::EventResizeDefault>(static_cast<mew::ui::IWindow*>(this), get_DefaultSize());
   }
-  void set_Root(ITreeItem* value) {
+  void set_Root(mew::ui::ITreeItem* value) {
     m_root = value;
     ReCreateButtons();
     OnChangeButtons();
@@ -693,9 +771,13 @@ class ToolBarImpl : public WindowImpl<CWindowImplEx<TFinal, ToolBarBase>, implem
   IImageList* get_ImageList() { return GetMenuImageList(); }
   void set_ImageList(IImageList* value) {
     SetMenuImageList(value);
-    if (ref<mew::drawing::IImageList2> imagelist2 = cast(value)) {
-      if (HIMAGELIST hDisabled = imagelist2->Disabled) SetDisabledImageList(hDisabled);
-      if (HIMAGELIST hHot = imagelist2->Hot) SetHotImageList(hHot);
+    if (mew::ref<mew::drawing::IImageList2> imagelist2 = mew::cast(value)) {
+      if (HIMAGELIST hDisabled = imagelist2->Disabled) {
+        SetDisabledImageList(hDisabled);
+      }
+      if (HIMAGELIST hHot = imagelist2->Hot) {
+        SetHotImageList(hHot);
+      }
     }
     UpdateToolBarImageList(DoesBarUseImage());
     ReCreateButtons();
@@ -787,18 +869,30 @@ class ToolBar : public ToolBarImpl<ToolBar> {
   }
   void HandleUpdateLayout() { ResetToolTip(); }
   bool UpdateToolTip() {
-    if (!m_tip.IsWindow()) return false;
-    if (m_tip.GetToolCount() > 0) return true;
-    if (!m_root) return false;
+    if (!m_tip.IsWindow()) {
+      return false;
+    }
+    if (m_tip.GetToolCount() > 0) {
+      return true;
+    }
+    if (!m_root) {
+      return false;
+    }
     int tips = 0;
     size_t count = m_root->GetChildCount();
     for (size_t i = 0; i < count; ++i) {
       ref<ITreeItem> menu;
-      if FAILED (m_root->GetChild(&menu, i)) continue;
+      if FAILED (m_root->GetChild(&menu, i)) {
+        continue;
+      }
       ref<ICommand> command = menu->Command;
-      if (!command) continue;
+      if (!command) {
+        continue;
+      }
       string description = command->Description;
-      if (!description) continue;
+      if (!description) {
+        continue;
+      }
       RECT rc;
       GetItemRect(i + BTNOFF, &rc);
       VERIFY(m_tip.AddTool(m_hWnd, description.str(), &rc, ++tips));
@@ -806,7 +900,9 @@ class ToolBar : public ToolBarImpl<ToolBar> {
     return true;
   }
   void ResetToolTip() {
-    if (!m_tip.IsWindow()) return;
+    if (!m_tip.IsWindow()) {
+      return;
+    }
     int tips = m_tip.GetToolCount();
     for (int i = 0; i < tips; ++i) {
       m_tip.DelTool(m_hWnd, i + 1);
@@ -831,7 +927,9 @@ class ToolBar : public ToolBarImpl<ToolBar> {
     bHandled = false;
     switch (wParam) {
       case 0:  // from mew.widget framework
-        if (UpdateToolTip()) m_tip.RelayEvent((LPMSG)lParam);
+        if (UpdateToolTip()) {
+          m_tip.RelayEvent((LPMSG)lParam);
+        }
         return 0;
       default:
         break;
@@ -862,7 +960,9 @@ class LinkBar : public Object<ToolBar, implements<IDropTarget> > {
       if (index > 0) {
         // TODO: ユーザがカスタマイズできるように
         UINT32 mods = ui::GetCurrentModifiers();
-        if (mods == 0) mods = m;
+        if (mods == 0) {
+          mods = m;
+        }
         afx::SetModifierState(0, mods);
         InvokeButtonCommand(IndexToCommand(index));
         afx::RestoreModifierState(0);
@@ -913,7 +1013,9 @@ class LinkBar : public Object<ToolBar, implements<IDropTarget> > {
     // ショートカットの作成(&S), 削除(&D), 名前の変更(&M) を取り除く
     for (int i = popup.GetMenuItemCount() - 1; i >= 0; --i) {
       TCHAR text[MAX_PATH];
-      if (popup.GetMenuString(i, text, MAX_PATH, MF_BYPOSITION) == 0) continue;
+      if (popup.GetMenuString(i, text, MAX_PATH, MF_BYPOSITION) == 0) {
+        continue;
+      }
       if (str::equals(text, _T("ショートカットの作成(&S)")) || str::equals(text, _T("削除(&D)")) ||
           str::equals(text, _T("名前の変更(&M)"))) {
         popup.DeleteMenu(i, MF_BYPOSITION);
@@ -976,11 +1078,11 @@ class LinkBar : public Object<ToolBar, implements<IDropTarget> > {
   }
 };
 
-}  // namespace ui
-}  // namespace mew
-
 AVESTA_EXPORT(ToolBar)
 AVESTA_EXPORT(LinkBar)
+
+}  // namespace ui
+}  // namespace mew
 
 //==============================================================================
 
@@ -1050,7 +1152,9 @@ class MenuBar : public ToolBarImpl<MenuBar> {
 
  public:
   bool SupportsEvent(EventCode code) const throw() {
-    if (__super::SupportsEvent(code)) return true;
+    if (__super::SupportsEvent(code)) {
+      return true;
+    }
     switch (code) {
       // case EventItemFocus:
       //   return true;
@@ -1065,7 +1169,9 @@ class MenuBar : public ToolBarImpl<MenuBar> {
     m_wndParent.SubclassWindow(GetAncestor(GA_ROOT));
   }
   void HandleDestroy() {
-    if (m_wndParent.IsWindow()) m_wndParent.UnsubclassWindow();
+    if (m_wndParent.IsWindow()) {
+      m_wndParent.UnsubclassWindow();
+    }
     __super::HandleDestroy();
   }
 
@@ -1078,7 +1184,7 @@ class MenuBar : public ToolBarImpl<MenuBar> {
   // }
 };
 
+AVESTA_EXPORT(MenuBar)
+
 }  // namespace ui
 }  // namespace mew
-
-AVESTA_EXPORT(MenuBar)

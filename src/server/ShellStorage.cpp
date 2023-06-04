@@ -11,9 +11,9 @@ const int DEFAULT_SETTING_EXPIRE = 7 * 24 * 60 * 60;
 
 //==============================================================================
 
-class ShellStorage : public Root<implements<IShellStorage, ISerializable> > {
+class ShellStorage : public mew::Root<mew::implements<mew::ui::IShellStorage, mew::ISerializable> > {
  private:
-  using Buffer = BufferT<BYTE>;
+  using Buffer = mew::BufferT<BYTE>;
   struct Value {
     time_t time;
     Buffer buffer;
@@ -22,17 +22,18 @@ class ShellStorage : public Root<implements<IShellStorage, ISerializable> > {
 
     friend inline IStream& operator<<(IStream& stream, const Value& v) throw(...) { return stream << v.time << v.buffer; }
   };
-  using Storage = io::StorageT<string, Value>;
+  using Storage = mew::io::StorageT<mew::string, Value>;
 
-  class ShellStream : public Root<implements<IStream, ISequentialStream>, mixin<io::StreamImpl, mew::DynamicLife> > {
+  class ShellStream
+      : public mew::Root<mew::implements<IStream, ISequentialStream>, mew::mixin<mew::io::StreamImpl, mew::DynamicLife> > {
    public:
     ShellStorage* m_owner;
-    const string m_key;
+    const mew::string m_key;
     const bool m_writable;
     Buffer& m_buffer;
     size_t m_pos;
 
-    ShellStream(ShellStorage* owner, const string& key, Buffer& buffer, bool writable)
+    ShellStream(ShellStorage* owner, const mew::string& key, Buffer& buffer, bool writable)
         : m_owner(owner), m_key(key), m_buffer(buffer), m_writable(writable) {
       m_pos = 0;
       m_buffer.reserve(200);
@@ -41,7 +42,7 @@ class ShellStorage : public Root<implements<IShellStorage, ISerializable> > {
     void Dispose() {
       if (m_owner) {
         m_owner->OnStreamClose(this);
-        m_owner = null;
+        m_owner = nullptr;
       }
     }
     HRESULT __stdcall Read(void* data, ULONG size, ULONG* done) {
@@ -51,10 +52,14 @@ class ShellStorage : public Root<implements<IShellStorage, ISerializable> > {
       return (r > 0 ? S_OK : S_FALSE);
     }
     HRESULT __stdcall Write(const void* data, ULONG size, ULONG* done) {
-      if (!m_writable) return STG_E_ACCESSDENIED;
+      if (!m_writable) {
+        return STG_E_ACCESSDENIED;
+      }
       m_buffer.write(m_pos, (const BYTE*)data, size);
       m_pos += size;
-      if (done) *done = size;
+      if (done) {
+        *done = size;
+      }
       return S_OK;
     }
     HRESULT __stdcall SetSize(ULARGE_INTEGER sz) {
@@ -66,7 +71,9 @@ class ShellStorage : public Root<implements<IShellStorage, ISerializable> > {
     virtual UINT64 GetSize() const { return m_buffer.size(); }
     virtual UINT64 GetPosition() const { return m_pos; }
     virtual HRESULT SeekTo(UINT64 where) {
-      if (!m_writable && where > m_buffer.size()) return E_FAIL;
+      if (!m_writable && where > m_buffer.size()) {
+        return E_FAIL;
+      }
       m_pos = (size_t)where;
       return S_OK;
     }
@@ -78,7 +85,7 @@ class ShellStorage : public Root<implements<IShellStorage, ISerializable> > {
  public:  // Object
   void __init__(IUnknown* arg) {
     if (arg) {
-      Stream stream(__uuidof(io::Reader), arg);
+      mew::Stream stream(__uuidof(mew::io::Reader), arg);
       Deserialize(stream);
     }
   }
@@ -94,19 +101,23 @@ class ShellStorage : public Root<implements<IShellStorage, ISerializable> > {
   }
 
  public:  // IShellStorage
-  static string RemoveLeaf(const string& path) {
+  static mew::string RemoveLeaf(const mew::string& path) {
     size_t len1 = path.length();
     TCHAR tmp[MAX_PATH];
     path.copyto(tmp, MAX_PATH);
-    if (!PathRemoveFileSpec(tmp)) return null;
-    size_t len2 = str::length(tmp);
-    if (len1 == len2) return null;
-    return string(tmp, len2);
+    if (!PathRemoveFileSpec(tmp)) {
+      return mew::null;
+    }
+    size_t len2 = mew::str::length(tmp);
+    if (len1 == len2) {
+      return mew::null;
+    }
+    return mew::string(tmp, len2);
   }
 
-  HRESULT QueryStream(IStream** ppStream, io::IEntry* pFolder, bool writable) {
+  HRESULT QueryStream(IStream** ppStream, mew::io::IEntry* pFolder, bool writable) {
     HRESULT hr;
-    string name = pFolder->GetName(IEntry::PATH_OR_NAME);
+    mew::string name = pFolder->GetName(mew::io::IEntry::PATH_OR_NAME);
     hr = OnStreamOpen(name, writable, ppStream);
     if (SUCCEEDED(hr) || writable) return hr;
     // read only の場合、見つからなければ親フォルダの設定を返す。
@@ -123,25 +134,25 @@ class ShellStorage : public Root<implements<IShellStorage, ISerializable> > {
   }
 
   struct IsDescendant {
-    string path;
-    bool operator()(const string& key, const Value& value) const {
+    mew::string path;
+    bool operator()(const mew::string& key, const Value& value) const {
       bool ret = PathIsChild(path, key);
       if (ret) TRACE(L"$1 is deleted. ($2)", key, path);
       return ret;
     }
-    static bool PathIsChild(const string& parent, const string& child) {
+    static bool PathIsChild(const mew::string& parent, const mew::string& child) {
       size_t lenP = parent.length();
       size_t lenC = child.length();
       if (lenP == 0 || lenC <= lenP) return false;
       LPCWSTR strP = parent.str();
       LPCWSTR strC = child.str();
-      if (str::compare_nocase(strP, strC, lenP) != 0) return false;
+      if (mew::str::compare_nocase(strP, strC, lenP) != 0) return false;
       return (strP[lenP - 1] == '\\' || strC[lenP] == L'\\');
     }
   };
 
-  HRESULT SyncDescendants(io::IEntry* pFolder) {
-    string key = pFolder->GetName(IEntry::PATH_OR_NAME);
+  HRESULT SyncDescendants(mew::io::IEntry* pFolder) {
+    mew::string key = pFolder->GetName(mew::io::IEntry::PATH_OR_NAME);
     IsDescendant op = {key};
     m_storage.DeleteIf(op);
     return S_OK;
@@ -149,7 +160,7 @@ class ShellStorage : public Root<implements<IShellStorage, ISerializable> > {
 
   struct IsExpired {
     time_t time;
-    bool operator()(const string& key, const Value& value) const {
+    bool operator()(const mew::string& key, const Value& value) const {
       bool ret = (value.time < time);
       if (ret) TRACE(L"$1 is deleted. ($2 < $3)", key, (UINT)value.time, (UINT)time);
       return ret;
@@ -167,11 +178,13 @@ class ShellStorage : public Root<implements<IShellStorage, ISerializable> > {
     TRACE(L"OnStreamClose($1, $2)", stream->m_key, (stream->m_writable ? L"w" : L"r"));
     m_storage.Unlock(stream->m_key);
   }
-  HRESULT OnStreamOpen(const string& key, bool writable, IStream** ppStream) {
+  HRESULT OnStreamOpen(const mew::string& key, bool writable, IStream** ppStream) {
     Value* value;
     HRESULT hr = m_storage.Lock(key, writable, &value);
     TRACE(L"OnStreamOpen($1, $2) == $3", key, (writable ? L"w" : L"r"), (int)hr);
-    if FAILED (hr) return hr;
+    if FAILED (hr) {
+      return hr;
+    }
     value->time = time(NULL);
     *ppStream = new ShellStream(this, key, value->buffer, writable);
     return S_OK;

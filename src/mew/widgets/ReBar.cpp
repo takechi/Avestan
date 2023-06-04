@@ -42,18 +42,20 @@ struct ReBarBandInfo : REBARBANDINFO {
 template <class TBase>
 class __declspec(novtable) WallPaperImpl : public TBase {
  protected:
-  string m_WallPaperFile;
+  mew::string m_WallPaperFile;
   UINT32 m_WallPaperAlign;
   CAutoPtr<Gdiplus::Image> m_BackgroundImage;
 
  protected:
-  WallPaperImpl() : m_WallPaperAlign(DirMaskWE | DirMaskNS) {}
+  WallPaperImpl() : m_WallPaperAlign(mew::ui::DirMaskWE | mew::ui::DirMaskNS) {}
 
  public:  // IWallPaper
-  string get_WallPaperFile() { return m_WallPaperFile; }
+  mew::string get_WallPaperFile() { return m_WallPaperFile; }
   UINT32 get_WallPaperAlign() { return m_WallPaperAlign; }
-  void set_WallPaperFile(string value) {
-    if (m_WallPaperFile == value) return;
+  void set_WallPaperFile(mew::string value) {
+    if (m_WallPaperFile == value) {
+      return;
+    }
     if (!value) {
       m_WallPaperFile.clear();
       m_BackgroundImage.Free();
@@ -69,33 +71,35 @@ class __declspec(novtable) WallPaperImpl : public TBase {
     Update();
   }
   void set_WallPaperAlign(UINT32 value) {
-    if (m_WallPaperAlign == value) return;
+    if (m_WallPaperAlign == value) {
+      return;
+    }
     m_WallPaperAlign = value;
     Update();
   }
 
  private:
-  static int GetHorzPos(UINT32 align, const Rect& rc, const Size& sz) {
-    switch (align & DirMaskWE) {
+  static int GetHorzPos(UINT32 align, const mew::Rect& rc, const mew::Size& sz) {
+    switch (align & mew::ui::DirMaskWE) {
       case 0:  // center
         return (rc.left + rc.right - sz.w) / 2;
-      case DirWest:
+      case mew::ui::DirWest:
         return rc.left;
-      case DirEast:
+      case mew::ui::DirEast:
         return rc.right - sz.w;
       default:  // tile
         return 0;
     }
   }
-  static int GetVertPos(UINT32 align, const Rect& rc, const Size& sz) {
-    switch (align & DirMaskNS) {
+  static int GetVertPos(UINT32 align, const mew::Rect& rc, const mew::Size& sz) {
+    switch (align & mew::ui::DirMaskNS) {
       case 0:  // center
         return (rc.top + rc.bottom - sz.h) / 2;
         break;
-      case DirNorth:
+      case mew::ui::DirNorth:
         return rc.top;
         break;
-      case DirSouth:
+      case mew::ui::DirSouth:
         return rc.bottom - sz.h;
         break;
       default:  // tile
@@ -104,23 +108,29 @@ class __declspec(novtable) WallPaperImpl : public TBase {
   }
 
  public:  // operation for implement
-  void DrawBackground(HDC hDC, const Rect& rc, COLORREF clrBkgnd) const {
+  void DrawBackground(HDC hDC, const mew::Rect& rc, COLORREF clrBkgnd) const {
     CDCHandle dc(hDC);
     if (m_BackgroundImage) {
-      Size sz(m_BackgroundImage->GetWidth(), m_BackgroundImage->GetHeight());
-      Point pt(GetHorzPos(m_WallPaperAlign, rc, sz), GetVertPos(m_WallPaperAlign, rc, sz));
+      mew::Size sz(m_BackgroundImage->GetWidth(), m_BackgroundImage->GetHeight());
+      mew::Point pt(GetHorzPos(m_WallPaperAlign, rc, sz), GetVertPos(m_WallPaperAlign, rc, sz));
       Gdiplus::Graphics g(dc);
-      if ((m_WallPaperAlign & DirMaskNS) == (DirMaskNS)) {
-        if ((m_WallPaperAlign & DirMaskWE) == (DirMaskWE)) {  // tile both
+      if ((m_WallPaperAlign & mew::ui::DirMaskNS) == (mew::ui::DirMaskNS)) {
+        if ((m_WallPaperAlign & mew::ui::DirMaskWE) == (mew::ui::DirMaskWE)) {  // tile both
           for (int x = rc.left; x < rc.right; x += sz.w)
-            for (int y = rc.top; y < rc.bottom; y += sz.h) g.DrawImage(m_BackgroundImage, x, y);
+            for (int y = rc.top; y < rc.bottom; y += sz.h) {
+              g.DrawImage(m_BackgroundImage, x, y);
+            }
         } else {  // tile vert
           dc.FillSolidRect(&rc, clrBkgnd);
-          for (int y = rc.top; y < rc.bottom; y += sz.h) g.DrawImage(m_BackgroundImage, pt.x, y);
+          for (int y = rc.top; y < rc.bottom; y += sz.h) {
+            g.DrawImage(m_BackgroundImage, pt.x, y);
+          }
         }
-      } else if ((m_WallPaperAlign & DirMaskWE) == (DirMaskWE)) {  // tile horz
+      } else if ((m_WallPaperAlign & mew::ui::DirMaskWE) == (mew::ui::DirMaskWE)) {  // tile horz
         dc.FillSolidRect(&rc, clrBkgnd);
-        for (int x = rc.left; x < rc.right; x += sz.w) g.DrawImage(m_BackgroundImage, x, pt.y);
+        for (int x = rc.left; x < rc.right; x += sz.w) {
+          g.DrawImage(m_BackgroundImage, x, pt.y);
+        }
       } else {  // non-tiling
         dc.FillSolidRect(&rc, clrBkgnd);
         g.DrawImage(m_BackgroundImage, pt.x, pt.y);
@@ -144,7 +154,9 @@ class ReBar
 
  public:
   bool SupportsEvent(EventCode code) const throw() {
-    if (__super::SupportsEvent(code)) return true;
+    if (__super::SupportsEvent(code)) {
+      return true;
+    }
     switch (code) {
         // case EventItemFocus:
         //   return true;
@@ -205,12 +217,16 @@ class ReBar
   END_MSG_MAP()
 
   HRESULT Send(message msg) {
-    if (!m_hWnd) return E_FAIL;
+    if (!m_hWnd) {
+      return E_FAIL;
+    }
     return __super::Send(msg);
   }
   HRESULT OnChildResizeDefault(message msg) {
     ref<IWindow> from = msg["from"];
-    if (!from) return E_FAIL;
+    if (!from) {
+      return E_FAIL;
+    }
     int index = FindBand(from->Handle);
     if (index >= 0) {
       Size size = msg["size"];
@@ -236,7 +252,9 @@ class ReBar
   }
   void HandleChildCreate(bool create, CWindowEx w) {
     ref<IWindow> p;
-    if FAILED (QueryInterfaceInWindow(w, &p)) return;
+    if FAILED (QueryInterfaceInWindow(w, &p)) {
+      return;
+    }
     if (create) {
       p->Connect(EventResizeDefault, function(this, &ReBar::OnChildResizeDefault));
       Size size = p->DefaultSize;
@@ -251,7 +269,9 @@ class ReBar
     } else {
       p->Disconnect(0, 0, OID);
       int index = FindBand(w);
-      if (index >= 0) DeleteBand(index);
+      if (index >= 0) {
+        DeleteBand(index);
+      }
     }
   }
   LRESULT OnHeightChange(int, LPNMHDR pnmh, BOOL&) {
@@ -263,7 +283,9 @@ class ReBar
     ReBarBandInfo band(RBBIM_CHILD | RBBIM_STYLE);
     const int count = GetBandCount();
     for (int i = 0; i < count; ++i) {
-      if (!GetBandInfo(i, &band)) continue;
+      if (!GetBandInfo(i, &band)) {
+        continue;
+      }
       bool visible = afx::GetVisible(band.hwndChild);
       if (visible != band.Visible) {
         change = true;
@@ -274,7 +296,9 @@ class ReBar
     return true;
   }
   bool OnEraseBkgnd(UINT, WPARAM wParam, LPARAM, LRESULT& lResult) {
-    if (!m_BackgroundImage) return false;
+    if (!m_BackgroundImage) {
+      return false;
+    }
     __super::DrawBackground((HDC)wParam, ClientArea, ::GetSysColor(COLOR_3DFACE));
     lResult = 1;
     return true;
@@ -285,7 +309,9 @@ class ReBar
   }
   bool OnContextMenu(UINT, WPARAM, LPARAM lParam, LRESULT&) {
     int count = GetBandCount();
-    if (count == 0) return true;
+    if (count == 0) {
+      return true;
+    }
     Point ptScreen(GET_XY_LPARAM(lParam));
     if (ptScreen.x < 0 || ptScreen.y < 0) {  // by menu-key
       RECT rc;
@@ -302,7 +328,9 @@ class ReBar
       popup.AppendMenu(MF_STRING | (band.Visible ? MF_CHECKED : 0), i + 1, name);
     }
     const UINT ID_LOCKED = 1000;
-    if (count > 0) popup.AppendMenu(MF_SEPARATOR);
+    if (count > 0) {
+      popup.AppendMenu(MF_SEPARATOR);
+    }
     popup.AppendMenu(MF_STRING | (m_locked ? MF_CHECKED : 0), ID_LOCKED, _T("ツールバーを固定する(&B)"));
     int cmd = popup.TrackPopupMenu(TPM_RIGHTBUTTON | TPM_RETURNCMD, ptScreen.x, ptScreen.y, m_hWnd);
     switch (cmd) {
@@ -326,7 +354,9 @@ class ReBar
   size_t get_Count() { return GetBandCount(); }
   HRESULT GetAt(REFINTF ppObj, size_t index) {
     ReBarBandInfo band(RBBIM_CHILD);
-    if (!GetBandInfo(index, &band)) return E_INVALIDARG;
+    if (!GetBandInfo(index, &band)) {
+      return E_INVALIDARG;
+    }
     return QueryInterfaceInWindow(band.hwndChild, ppObj);
   }
   HRESULT GetContents(REFINTF pp, Status status) {
@@ -349,7 +379,9 @@ class ReBar
             TRESPASS();
         }
         ref<IWindow> w;
-        if SUCCEEDED (QueryInterfaceInWindow(band.hwndChild, &w)) e->push_back(w);
+        if SUCCEEDED (QueryInterfaceInWindow(band.hwndChild, &w)) {
+          e->push_back(w);
+        }
       }
       return e.copyto(pp);
     }
@@ -374,7 +406,9 @@ class ReBar
         DeleteBand(0);
         if (message msg_ = archive[i]) {
           string name = msg_["name"];
-          if (!name) break;
+          if (!name) {
+            break;
+          }
           UINT32 width = msg_["width"] | BAND_WIDTH_MIN;
           bool linebreak = msg_["linebreak"] | true;
           bool visible = msg_["visible"] | true;
@@ -384,7 +418,9 @@ class ReBar
             if (name == wndName) {
               bands[j].cx = width;
               bands[j].fStyle = RBBS_GRIPPERALWAYS | (linebreak ? RBBS_BREAK : 0) | (visible ? 0 : RBBS_HIDDEN);
-              if (i != j) std::swap(bands[i], bands[j]);
+              if (i != j) {
+                std::swap(bands[i], bands[j]);
+              }
               break;
             }
           }
@@ -394,7 +430,9 @@ class ReBar
       for (size_t i = 0; i < size; ++i) {
         InsertBand(i, &bands[i]);
         ref<IWindow> w;
-        if SUCCEEDED (QueryInterfaceInWindow(bands[i].hwndChild, &w)) w->Visible = bands[i].Visible;
+        if SUCCEEDED (QueryInterfaceInWindow(bands[i].hwndChild, &w)) {
+          w->Visible = bands[i].Visible;
+        }
       }
       if (m_locked) {  // バンドがひとつしかない場合にRBBS_NOGRIPPERを設定すると、自動的にRBBS_GRIPPERALWAYSも解除されてしまう。
         // これを防ぐため、InsertBand()とSetBandInfo(~RBBS_NOGRIPPER)を別々に行う。
@@ -450,13 +488,15 @@ class ReBar
       band.Visible = true;
       band.Locked = locked;
       InsertBand(i, &band);
-      if (!visible) afx::SetVisible(band.hwndChild, false);
+      if (!visible) {
+        afx::SetVisible(band.hwndChild, false);
+      }
     }
     SetRedraw(true);
   }
 };
 
+AVESTA_EXPORT(ReBar)
+
 }  // namespace ui
 }  // namespace mew
-
-AVESTA_EXPORT(ReBar)

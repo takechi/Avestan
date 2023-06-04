@@ -48,50 +48,50 @@ __interface IAvesta {
   /// コンポーネント数を取得する.
   size_t GetComponentCount(AvestaComponent type);
   /// コンポーネントを取得する.
-  HRESULT GetComponent(REFINTF pp, AvestaComponent type, size_t index = (size_t)-1);
+  HRESULT GetComponent(mew::REFINTF pp, AvestaComponent type, size_t index = (size_t)-1);
   /// IShellListView を列挙する.
-  ref<IEnumUnknown> EnumFolders(Status status) const;
+  mew::ref<IEnumUnknown> EnumFolders(mew::Status status) const;
 
-  ref<IShellListView> CurrentView() const;
-  ref<IEntry> CurrentFolder() const;
-  string CurrentPath() const;
+  mew::ref<mew::ui::IShellListView> CurrentView() const;
+  mew::ref<mew::io::IEntry> CurrentFolder() const;
+  mew::string CurrentPath() const;
 
   /// フォルダとして開きます.
-  ref<IShellListView> OpenFolder(IEntry * entry, Navigation navi, Navigation* naviResult = null);
+  mew::ref<mew::ui::IShellListView> OpenFolder(mew::io::IEntry * entry, Navigation navi, Navigation* naviResult = nullptr);
   /// フォルダとして開くか、実行します.
-  HRESULT OpenOrExecute(IEntry * entry);
+  HRESULT OpenOrExecute(mew::io::IEntry * entry);
 
   /// 通知をユーザの邪魔にならないように表示する.
-  void Notify(DWORD priority, string msg);
+  void Notify(DWORD priority, mew::string msg);
   ///
   void ParseCommandLine(PCWSTR args);
   ///
-  void Restart(PCWSTR newDLL = null);
+  void Restart(PCWSTR newDLL = nullptr);
 };
 
 /// 関連付け実行します.
-HRESULT AvestaExecute(IEntry* entry);
+HRESULT AvestaExecute(mew::io::IEntry* entry);
 }  // namespace avesta
 
 namespace ave {
 MEW_API void GetDriveLetter(PCWSTR path, PWSTR buffer);
-MEW_API UINT64 GetTotalBytes(IShellListView* view);
-MEW_API UINT64 GetSelectedBytes(IShellListView* view);
+MEW_API UINT64 GetTotalBytes(mew::ui::IShellListView* view);
+MEW_API UINT64 GetSelectedBytes(mew::ui::IShellListView* view);
 
-inline string ResolvePath(PCWSTR path) {
+inline mew::string ResolvePath(PCWSTR path) {
   const int CSIDL_AVESTA = 0xFFFFFFFF;
-  return io::PathResolvePath(path, L"AVESTA", CSIDL_AVESTA);
+  return mew::io::PathResolvePath(path, L"AVESTA", CSIDL_AVESTA);
 }
-inline string ResolvePath(const string& path) { return ResolvePath(path.str()); }
+inline mew::string ResolvePath(const mew::string& path) { return ResolvePath(path.str()); }
 }  // namespace ave
 
 //==============================================================================
 
-void NewFolder(IShellListView* view);
+void NewFolder(mew::ui::IShellListView* view);
 
-void DlgNew(IShellListView* view);
-void DlgSelect(IShellListView* view);
-void DlgPattern(IShellListView* view);
-void DlgRename(IShellListView* view, bool paste);
+void DlgNew(mew::ui::IShellListView* view);
+void DlgSelect(mew::ui::IShellListView* view);
+void DlgPattern(mew::ui::IShellListView* view);
+void DlgRename(mew::ui::IShellListView* view, bool paste);
 
 // void DlgOpen(IShellListView* view);

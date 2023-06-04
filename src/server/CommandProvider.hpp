@@ -6,67 +6,75 @@
 template <class TBase>
 class __declspec(novtable) CommandProvider : public TBase {
  protected:
-  ref<ICommands> m_commands;
+  mew::ref<mew::ICommands> m_commands;
 
  public:
-  HRESULT InvokeCommand(string name) {
+  HRESULT InvokeCommand(mew::string name) {
     HRESULT hr;
-    ref<ICommand> command;
-    if FAILED (hr = m_commands->Find(&command, name)) return hr;
+    mew::ref<mew::ICommand> command;
+    if FAILED (hr = m_commands->Find(&command, name)) {
+      return hr;
+    }
     command->Invoke();
     return S_OK;
   }
 
  public:
   template <class M>
-  void HandleEvent(ISignal* source, int code, HRESULT (M::*fn)(message), message msg = null) {
-    source->Connect(code, function(this, fn), msg);
+  void HandleEvent(mew::ISignal* source, int code, HRESULT (M::*fn)(mew::message), mew::message msg = mew::null) {
+    source->Connect(code, mew::function(this, fn), msg);
   }
   template <class T, class M>
-  void HandleEvent(ISignal* source, int code, T* sink, HRESULT (M::*fn)(message), message msg = null) {
-    source->Connect(code, function(sink, fn), msg);
+  void HandleEvent(mew::ISignal* source, int code, T* sink, HRESULT (M::*fn)(mew::message), mew::message msg = mew::null) {
+    source->Connect(code, mew::function(sink, fn), msg);
   }
-  void HandleEvent(ISignal* source, int code, IWindow* window, message msg = null) {
-    source->Connect(code, function(window, &IWindow::Send), msg);
+  void HandleEvent(mew::ISignal* source, int code, mew::ui::IWindow* window, mew::message msg = mew::null) {
+    source->Connect(code, mew::function(window, &mew::ui::IWindow::Send), msg);
   }
 
  public:  // SetHandler thunk
   template <class M>
-  void CommandProcess(const string& command, HRESULT (M::*fn)(message), message msg = null) {
-    CommandProcess(command, function(this, fn), msg);
+  void CommandProcess(const mew::string& command, HRESULT (M::*fn)(mew::message), mew::message msg = mew::null) {
+    CommandProcess(command, mew::function(this, fn), msg);
   }
   template <class T, class M>
-  void CommandProcess(const string& command, const T& p, HRESULT (M::*fn)(message), message msg = null) {
-    if (p)
-      CommandProcess(command, function(p, fn), msg);
-    else
+  void CommandProcess(const mew::string& command, const T& p, HRESULT (M::*fn)(mew::message), mew::message msg = mew::null) {
+    if (p){
+      CommandProcess(command, mew::function(p, fn), msg);
+    }else{
       DisableCommand(command);
+      }
   }
-  void CommandProcess(const string& command, IWindow* window, message msg = null) {
-    if (window)
-      CommandProcess(command, function(window, &IWindow::Send), msg);
-    else
+  void CommandProcess(const mew::string& command, mew::ui::IWindow* window, mew::message msg = mew::null) {
+    if (window) {
+      CommandProcess(command, mew::function(window, &mew::ui::IWindow::Send), msg);
+    } else {
       DisableCommand(command);
+    }
   }
-  void CommandProcess(const string& command, function fn, message msg = null) { m_commands->SetHandler(command, fn, msg); }
+  void CommandProcess(const mew::string& command, mew::function fn, mew::message msg = mew::null) {
+    m_commands->SetHandler(command, fn, msg);
+  }
 
  public:  // SetObserver thunk
   template <class M>
-  void CommandObserve(const string& command, HRESULT (M::*fn)(message), message msg = null) {
-    CommandObserve(command, function(this, fn), msg);
+  void CommandObserve(const mew::string& command, HRESULT (M::*fn)(mew::message), mew::message msg = mew::null) {
+    CommandObserve(command, mew::function(this, fn), msg);
   }
   template <class T, class M>
-  void CommandObserve(const string& command, const T& p, HRESULT (M::*fn)(message), message msg = null) {
-    CommandObserve(command, function(p, fn), msg);
+  void CommandObserve(const mew::string& command, const T& p, HRESULT (M::*fn)(mew::message), mew::message msg = mew::null) {
+    CommandObserve(command, mew::function(p, fn), msg);
   }
-  void CommandObserve(const string& command, IWindow* window, message msg = null) {
-    CommandObserve(command, function(window, &IWindow::Send), msg);
+  void CommandObserve(const mew::string& command, mew::ui::IWindow* window, mew::message msg = mew::null) {
+    CommandObserve(command, mew::function(window, &mew::ui::IWindow::Send), msg);
   }
-  void CommandObserve(const string& command, function fn, message msg = null) { m_commands->SetObserver(command, fn, msg); }
+  void CommandObserve(const mew::string& command, mew::function fn, mew::message msg = mew::null) {
+    m_commands->SetObserver(command, fn, msg);
+  }
 
  public:  // SetHandler and Observer
   template <class H1, class H2>
-  void CommandHandler(const string& command, const H1& h1, message process, const H2& h2, message observe) {
+  void CommandHandler(const mew::string& command, const H1& h1, mew::message process, const H2& h2, mew::message observe) {
     if (h1) {
       CommandProcess(command, h1, process);
       CommandObserve(command, h2, observe);
@@ -74,20 +82,20 @@ class __declspec(novtable) CommandProvider : public TBase {
       DisableCommand(command);
     }
   }
-  void CommandToFocus(const string& command, message msg) {
-    CommandProcess(command, function(this, &Main::ForwardToCurrent), msg);
-    CommandObserve(command, function(this, &Main::EnableIfAnyFolder));
+  void CommandToFocus(const mew::string& command, mew::message msg) {
+    CommandProcess(command, mew::function(this, &Main::ForwardToCurrent), msg);
+    CommandObserve(command, mew::function(this, &Main::EnableIfAnyFolder));
   }
-  void CommandToSelect(const string& command, message msg) {
-    CommandProcess(command, function(this, &Main::ForwardToCurrent), msg);
-    CommandObserve(command, function(this, &Main::EnableIfAnySelection));
+  void CommandToSelect(const mew::string& command, mew::message msg) {
+    CommandProcess(command, mew::function(this, &Main::ForwardToCurrent), msg);
+    CommandObserve(command, mew::function(this, &Main::EnableIfAnySelection));
   }
-  void CommandToCheck(const string& command, message msg) {
-    CommandProcess(command, function(this, &Main::ForwardToCurrent), msg);
-    CommandObserve(command, function(this, &Main::EnableIfCheckBoxEnabled));
+  void CommandToCheck(const mew::string& command, mew::message msg) {
+    CommandProcess(command, mew::function(this, &Main::ForwardToCurrent), msg);
+    CommandObserve(command, mew::function(this, &Main::EnableIfCheckBoxEnabled));
   }
-  void DisableCommand(const string& command) { CommandObserve(command, &Main::DisableCommandHandler); }
-  HRESULT DisableCommandHandler(message msg) {
+  void DisableCommand(const mew::string& command) { CommandObserve(command, &Main::DisableCommandHandler); }
+  HRESULT DisableCommandHandler(mew::message msg) {
     msg["state"] = 0;
     return S_OK;
   }
@@ -117,19 +125,19 @@ class __declspec(novtable) CommandProvider : public TBase {
   &Main::DeprecatedHandler), msg); return S_OK;
   }
   */
-  void CommandWindowControl(const string& name, IWindow* window, ICommands* commands) {
-    string cmdShow = string::format(L"$1.Show(toggle)", name);
-    string cmdFocus = string::format(L"$1.Focus", name);
-    commands->Add(cmdShow, string::load(IDS_DESC_SHOW, name));
-    commands->Add(cmdFocus, string::load(IDS_DESC_FOCUS, name));
+  void CommandWindowControl(const mew::string& name, mew::ui::IWindow* window, mew::ICommands* commands) {
+    mew::string cmdShow = mew::string::format(L"$1.Show(toggle)", name);
+    mew::string cmdFocus = mew::string::format(L"$1.Focus", name);
+    commands->Add(cmdShow, mew::string::load(IDS_DESC_SHOW, name));
+    commands->Add(cmdFocus, mew::string::load(IDS_DESC_FOCUS, name));
     if (window) {
       // Show
-      CommandProcess(cmdShow, window, CommandShow);
-      message m;
+      CommandProcess(cmdShow, window, mew::ui::CommandShow);
+      mew::message m;
       m["window"] = window;
       CommandObserve(cmdShow, &Main::ObserveShow, m);
       // Focus
-      CommandProcess(cmdFocus, window, &IWindow::Focus);
+      CommandProcess(cmdFocus, window, &mew::ui::IWindow::Focus);
     } else {
       // Show
       DisableCommand(cmdShow);
@@ -138,9 +146,11 @@ class __declspec(novtable) CommandProvider : public TBase {
     }
   }
 
-  void RegisterForms(Templates& templates, ICommands* commands) {
+  void RegisterForms(Templates& templates, mew::ICommands* commands) {
     for (Templates::const_iterator i = m_forms.begin(); i != m_forms.end(); ++i) {
-      if (!i->window || !i->id) continue;
+      if (!i->window || !i->id) {
+        continue;
+      }
       CommandWindowControl(i->id, i->window, commands);
     }
   }

@@ -714,7 +714,7 @@ HRESULT Shell::SetStatusByUnknown(IUnknown* unk, Status status, bool unique) {
       ASSERT(!entry);
       entry.create(__uuidof(Entry), unk);
       leaf = ILFindLastID(entry->ID);
-    } catch (Error& e) {
+    } catch (mew::exceptions::Error& e) {
       TRACE(e.Message);
       return e.Code;
     }
@@ -825,7 +825,7 @@ HRESULT Shell::GetContents_FolderView(REFINTF ppInterface, int svgio) {
     try {
       ref<IEntryList> entries(__uuidof(EntryList), pDataObject);
       return entries->QueryInterface(ppInterface);
-    } catch (Error& e) {
+    } catch (mew::exceptions::Error& e) {
       return e.Code;
     }
   }
@@ -843,7 +843,7 @@ HRESULT Shell::GetContents_ShellView(REFINTF ppInterface, int svgio) {
   try {
     ref<IEntryList> entries(__uuidof(EntryList), pDataObject);
     return entries->QueryInterface(ppInterface);
-  } catch (Error& e) {
+  } catch (mew::exceptions::Error& e) {
     return e.Code;
   }
 }

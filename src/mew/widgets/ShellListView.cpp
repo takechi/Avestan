@@ -9,33 +9,33 @@
 #include "ShellNotify.h"
 #include "../server/main.hpp"
 
-//#define ENABLE_DEFAULT_GESTURE
+// #define ENABLE_DEFAULT_GESTURE
 
 namespace mew {
 template <>
-struct Event<EventFolderChanging> {
-  static void event(message& msg, IWindow* from, io::IEntry* where) {
+struct Event<mew::ui::EventFolderChanging> {
+  static void event(message& msg, mew::ui::IWindow* from, io::IEntry* where) {
     msg["from"] = from;
     msg["where"] = where;
   }
 };
 template <>
-struct Event<EventFolderChange> {
-  static void event(message& msg, IWindow* from, io::IEntry* where) {
+struct Event<mew::ui::EventFolderChange> {
+  static void event(message& msg, mew::ui::IWindow* from, io::IEntry* where) {
     msg["from"] = from;
     msg["where"] = where;
   }
 };
 template <>
-struct Event<EventExecuteEntry> {
-  static void event(message& msg, IWindow* from, io::IEntry* what) {
+struct Event<mew::ui::EventExecuteEntry> {
+  static void event(message& msg, mew::ui::IWindow* from, io::IEntry* what) {
     msg["from"] = from;
     msg["what"] = what;
   }
 };
 template <>
-struct Event<EventStatusText> {
-  static void event(message& msg, IWindow* from, string text) {
+struct Event<mew::ui::EventStatusText> {
+  static void event(message& msg, mew::ui::IWindow* from, string text) {
     msg["from"] = from;
     msg["text"] = text;
   }
@@ -676,7 +676,7 @@ class ShellListView
             Go(entry);
           else
             avesta::ILExecute(entry->ID, null, null, null, m_hWnd);
-        } catch (Error& e) {
+        } catch (mew::exceptions::Error& e) {
           MessageBox(e.Message.str(), NULL, MB_OK | MB_ICONERROR);
         }
       }
@@ -961,7 +961,7 @@ class ShellListView
 #endif
               AsyncGoAbsolute(moveto, GoReplace);
             }
-          } catch (Error&) {
+          } catch (mew::exceptions::Error&) {
           }
         }
       }
@@ -1007,14 +1007,16 @@ class ShellListView
     }
     STDMETHODIMP DragLeave() {
       ProcessDragLeave();
-      if (ref<IDropTarget> dst = QueryFolderDropTarget()) return dst->DragLeave();
+      if (ref<IDropTarget> dst = QueryFolderDropTarget()) {
+        return dst->DragLeave();
+      }
       return E_FAIL;
     }
     STDMETHODIMP Drop(IDataObject * src, DWORD key, POINTL pt, DWORD * effect) {
       return ProcessDrop(src, Shell::GetCurrentEntry(), pt, key, effect);
     }
   };
-}
-}
 
-AVESTA_EXPORT(ShellListView)
+  AVESTA_EXPORT(ShellListView)
+}
+}

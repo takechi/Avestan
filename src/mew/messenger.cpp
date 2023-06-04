@@ -109,7 +109,7 @@ class Messenger : public Root<implements<IMessenger, ISignal, IDisposable> > {
           MessageLock lock(m_orig, i->second.msg);
           i->second.fire(this);
         }
-      } catch (Error&) {
+      } catch (mew::exceptions::Error&) {
         throw;
       } catch (...) {  // FIXME:
         ASSERT(!"segfault on Invoker.Send(msg)");
@@ -292,6 +292,7 @@ class Messenger : public Root<implements<IMessenger, ISignal, IDisposable> > {
   }
 };
 
+AVESTA_EXPORT(Messenger)
+
 }  // namespace mew
 
-AVESTA_EXPORT(Messenger)

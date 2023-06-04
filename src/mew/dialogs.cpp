@@ -13,15 +13,16 @@ using namespace mew::ui;
 // File
 
 namespace {
-void CreateFileFilter(StringBuffer& buffer, const string& filter) {
+void CreateFileFilter(mew::StringBuffer& buffer, const mew::string& filter) {
   size_t len = filter.length();
   buffer.reserve(len + 2);
   PCTSTR src = filter.str();
   for (size_t i = 0; i < len; ++i) {
-    if (src[i] == _T('|'))
+    if (src[i] == _T('|')) {
       buffer.push_back(_T('\0'));
-    else
+    } else {
       buffer.push_back(src[i]);
+    }
   }
   buffer.push_back(_T('\0'));
   buffer.push_back(_T('\0'));
@@ -34,28 +35,33 @@ class FileDlg : public CFileDialogImpl<FileDlg> {
 
  public:
   FileDlg(BOOL bOpenFileDialog,  // TRUE for FileOpen, FALSE for FileSaveAs
-          PCTSTR lpszDefExt = NULL, PCTSTR lpszFileName = NULL, DWORD dwFlags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, PCTSTR lpszFilter = NULL, HWND hWndParent = NULL)
+          PCTSTR lpszDefExt = NULL, PCTSTR lpszFileName = NULL, DWORD dwFlags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+          PCTSTR lpszFilter = NULL, HWND hWndParent = NULL)
       : super(bOpenFileDialog, lpszDefExt, lpszFileName, dwFlags, lpszFilter, hWndParent) {}
   void OnInitDone(LPOFNOTIFY /*lpon*/) { GetParent().CenterWindow(); }
-  string GetFilePath() const { return string(m_szFileName); }
+  mew::string GetFilePath() const { return mew::string(m_szFileName); }
 };
 }  // namespace
 
 //==============================================================================
 
-string mew::ui::OpenDialog(HWND hwnd, string filter) {
-  StringBuffer buffer;
+mew::string mew::ui::OpenDialog(HWND hwnd, string filter) {
+  mew::StringBuffer buffer;
   CreateFileFilter(buffer, filter);
   FileDlg dlg(TRUE, 0, 0, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, buffer, hwnd);
-  if (dlg.DoModal() != IDOK) return null;
+  if (dlg.DoModal() != IDOK) {
+    return null;
+  }
   return dlg.GetFilePath();
 }
 
-string mew::ui::SaveDialog(HWND hwnd, string filter, PCTSTR strDefExt) {
-  StringBuffer buffer;
+mew::string mew::ui::SaveDialog(HWND hwnd, string filter, PCTSTR strDefExt) {
+  mew::StringBuffer buffer;
   CreateFileFilter(buffer, filter);
   FileDlg dlg(FALSE, strDefExt, 0, OFN_OVERWRITEPROMPT, buffer, hwnd);
-  if (dlg.DoModal() != IDOK) return null;
+  if (dlg.DoModal() != IDOK) {
+    return null;
+  }
   return dlg.GetFilePath();
 }
 
@@ -65,7 +71,7 @@ string mew::ui::SaveDialog(HWND hwnd, string filter, PCTSTR strDefExt) {
 namespace {
 class AboutDlg : public CDialogImpl<AboutDlg> {
  public:
-  io::Version m_Version;
+  mew::io::Version m_Version;
   CHyperLink m_link;
 
   enum { IDD = IDD_ABOUT };
@@ -108,12 +114,12 @@ class AboutDlg : public CDialogImpl<AboutDlg> {
     wsprintf(buffer, _T("(changed by %s)"), changer);
     SetDlgItemText(IDC_CHANGERTEXT, buffer);
     // icon
-    HICON hIconLarge = null;
+    HICON hIconLarge = nullptr;
     // string path = m_Version.GetPath();
     // ExtractIconEx(path.str(), 0, &hIconLarge, null, 1);
     // ASSERT(hIconLarge);
     hIconLarge = GetParent().GetIcon();
-    CWindowEx wndIcon = GetDlgItem(IDC_ABOUTICON);
+    mew::ui::CWindowEx wndIcon = GetDlgItem(IDC_ABOUTICON);
     ASSERT(wndIcon.IsWindow());
     wndIcon.SendMessage(STM_SETICON, (WPARAM)hIconLarge, 0);
     return TRUE;
@@ -149,12 +155,15 @@ void mew::ui::AboutDialog(HWND hwnd, string module) {
 namespace {
 class FontDlg : public WTL::CFontDialogImpl<FontDlg> {
   using super = WTL::CFontDialogImpl<FontDlg>;
-  string m_caption;
-  function m_apply;
+  mew::string m_caption;
+  mew::function m_apply;
   LOGFONT m_prev;
 
  public:
-  FontDlg(LOGFONT* info, string caption, function apply) : super(info, CF_APPLY | CF_NOVERTFONTS | CF_SCREENFONTS | CF_NOSCRIPTSEL), m_caption(caption), m_apply(apply) { memset(&m_prev, 0, sizeof(LOGFONT)); }
+  FontDlg(LOGFONT* info, mew::string caption, mew::function apply)
+      : super(info, CF_APPLY | CF_NOVERTFONTS | CF_SCREENFONTS | CF_NOSCRIPTSEL), m_caption(caption), m_apply(apply) {
+    memset(&m_prev, 0, sizeof(LOGFONT));
+  }
 
   BEGIN_MSG_MAP(FontDlg)
   MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
@@ -178,7 +187,7 @@ class FontDlg : public WTL::CFontDialogImpl<FontDlg> {
       memcpy(&m_prev, &m_lf, sizeof(LOGFONT));
       m_lf.lfCharSet = DEFAULT_CHARSET;
       HFONT hFont = ::CreateFontIndirect(&m_lf);
-      message m;
+      mew::message m;
       m["font"] = (INT_PTR)hFont;
       m_apply(m);
     }
@@ -187,11 +196,15 @@ class FontDlg : public WTL::CFontDialogImpl<FontDlg> {
 }  // namespace
 
 void mew::ui::FontDialog(HWND hwnd, HFONT hFont, string caption, function apply) {
-  if (!hFont) hFont = AtlGetDefaultGuiFont();
+  if (!hFont) {
+    hFont = AtlGetDefaultGuiFont();
+  }
   LOGFONT info;
   ::GetObject(hFont, sizeof(LOGFONT), &info);
   FontDlg dlg(&info, caption, apply);
-  if (dlg.DoModal(hwnd) == IDOK) dlg.Apply();
+  if (dlg.DoModal(hwnd) == IDOK) {
+    dlg.Apply();
+  }
 }
 
 //==============================================================================

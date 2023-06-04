@@ -25,9 +25,9 @@ struct MenuInfo : MENUINFO {
     cbSize = sizeof(MENUINFO);
     fMask = mask;
   }
-  ITreeItem* get_Root() const { return (ITreeItem*)dwMenuData; }
-  void set_Root(ITreeItem* value) { dwMenuData = (ULONG_PTR)value; }
-  __declspec(property(get = get_Root, put = set_Root)) ITreeItem* Menu;
+  mew::ui::ITreeItem* get_Root() const { return (mew::ui::ITreeItem*)dwMenuData; }
+  void set_Root(mew::ui::ITreeItem* value) { dwMenuData = (ULONG_PTR)value; }
+  __declspec(property(get = get_Root, put = set_Root)) mew::ui::ITreeItem* Menu;
 };
 
 struct MenuItemInfo : MENUITEMINFO {
@@ -36,45 +36,53 @@ struct MenuItemInfo : MENUITEMINFO {
     cbSize = sizeof(MENUITEMINFO);
     fMask = mask;
   }
-  ITreeItem* get_Root() const { return (ITreeItem*)dwItemData; }
-  void set_Root(ITreeItem* value) { dwItemData = (ULONG_PTR)value; }
-  __declspec(property(get = get_Root, put = set_Root)) ITreeItem* Menu;
+  mew::ui::ITreeItem* get_Root() const { return (mew::ui::ITreeItem*)dwItemData; }
+  void set_Root(mew::ui::ITreeItem* value) { dwItemData = (ULONG_PTR)value; }
+  __declspec(property(get = get_Root, put = set_Root)) mew::ui::ITreeItem* Menu;
 };
 
-static ITreeItem* Menu_FromHandle(HMENU hMenu) {
+static mew::ui::ITreeItem* Menu_FromHandle(HMENU hMenu) {
   MenuInfo info(MIM_MENUDATA);
   ::GetMenuInfo(hMenu, &info);
   return info.Menu;
 }
-static ITreeItem* Menu_FromHandle(HMENU hParentMenu, UINT index_or_command, BOOL isIndex) {
+static mew::ui::ITreeItem* Menu_FromHandle(HMENU hParentMenu, UINT index_or_command, BOOL isIndex) {
   if (!hParentMenu) {  // menu closing...
-    return null;
+    return mew::null;
   }
   MenuItemInfo info(MIIM_DATA);
   if (::GetMenuItemInfo(hParentMenu, index_or_command, isIndex, &info)) {
     return info.Menu;
   } else if (!isIndex) {  // by command, recursive search
-    return MenuProvider::FindByCommand(hParentMenu, index_or_command);
+    return mew::ui::MenuProvider::FindByCommand(hParentMenu, index_or_command);
   } else {  // by index, not found
-    return null;
+    return mew::null;
   }
 }
 static void Menu_Dispose(HMENU hMenu, bool destory = true) {
-  if (!::IsMenu(hMenu)) return;
+  if (!::IsMenu(hMenu)) {
+    return;
+  }
   // ToDo: 親子関係がある場合、本当は切り離してから削除しないといけない
   INT count = ::GetMenuItemCount(hMenu);
   ASSERT(count >= 0);
   for (INT i = 0; i < count; i++) {
     MenuItemInfo info(MIIM_DATA | MIIM_SUBMENU);
     if (::GetMenuItemInfo(hMenu, i, true, &info)) {
-      if (info.hSubMenu) Menu_Dispose(info.hSubMenu);
-      if (info.Menu) info.Menu->Release();
+      if (info.hSubMenu) {
+        Menu_Dispose(info.hSubMenu);
+      }
+      if (info.Menu) {
+        info.Menu->Release();
+      }
     }
   }
-  if (ITreeItem* pMenu = Menu_FromHandle(hMenu)) {
+  if (mew::ui::ITreeItem* pMenu = Menu_FromHandle(hMenu)) {
     pMenu->Release();
   }
-  if (destory) ::DestroyMenu(hMenu);
+  if (destory) {
+    ::DestroyMenu(hMenu);
+  }
 }
 static void Menu_MakeEmpty(HMENU hMenu) {
   while (::GetMenuItemCount(hMenu) > 0) {
@@ -88,25 +96,29 @@ static void Menu_MakeEmpty(HMENU hMenu) {
     ::DeleteMenu(hMenu, 0, MF_BYPOSITION);
   }
 }
-static HMENU Menu_Create(ITreeItem* pMenu, bool isPopup) {
+static HMENU Menu_Create(mew::ui::ITreeItem* pMenu, bool isPopup) {
   HMENU hMenu = isPopup ? ::CreatePopupMenu() : ::CreateMenu();
   MenuInfo info(MIM_STYLE | MIM_MENUDATA | MIM_HELPID);
   ::GetMenuInfo(hMenu, &info);
   info.dwStyle |= MNS_NOTIFYBYPOS;
   info.Menu = pMenu;
   info.dwContextHelpID = (DWORD)-1;  // dwContextHelpID にタイムスタンプ情報を保存する.
-  if (::SetMenuInfo(hMenu, &info)) pMenu->AddRef();
+  if (::SetMenuInfo(hMenu, &info)) {
+    pMenu->AddRef();
+  }
   return hMenu;
 }
-static void Menu_Insert(HMENU hMenu, int index,
-                        ITreeItem* pMenu) {  // オーナードローするので、dwTypeData（項目名）は、基本的には表示では使わない。
+static void Menu_Insert(
+    HMENU hMenu, int index,
+    mew::ui::ITreeItem* pMenu) {  // オーナードローするので、dwTypeData（項目名）は、基本的には表示では使わない。
   // しかし、ニーモニックを処理してくれるので設定しておく。
   ASSERT(pMenu);
   size_t count = pMenu->GetChildCount();
   for (size_t i = 0; i < count; ++i) {
-    ref<ITreeItem> child;
-    if FAILED (pMenu->GetChild(&child, i)) continue;
-    string text = child->Name;
+    mew::ref<mew::ui::ITreeItem> child;
+    if FAILED (pMenu->GetChild(&child, i)) {continue;
+    }
+    mew::string text = child->Name;
     MenuItemInfo info(MIIM_FTYPE | MIIM_DATA);
     info.fType = MFT_OWNERDRAW;
     info.Menu = child;
@@ -124,7 +136,9 @@ static void Menu_Insert(HMENU hMenu, int index,
       info.dwTypeData = const_cast<PTSTR>(text.str());
       info.wID = GetNextMenuID();
     }
-    if (::InsertMenuItem(hMenu, (index >= 0 ? index + i : -1), true, &info) && info.Menu) info.Menu->AddRef();
+    if (::InsertMenuItem(hMenu, (index >= 0 ? index + i : -1), true, &info) && info.Menu) {
+      info.Menu->AddRef();
+    }
   }
   // コマンド付き非終端メニュー
   if (pMenu->Command) {  // オーナードローにし、WM_MEASUREITEM でゼロを返すことで、
@@ -134,32 +148,38 @@ static void Menu_Insert(HMENU hMenu, int index,
     info.Menu = pMenu;
     info.fType = MFT_OWNERDRAW;
     info.fState = MFS_DEFAULT;
-    if (::InsertMenuItem(hMenu, (UINT)-1, true, &info)) info.Menu->AddRef();
+    if (::InsertMenuItem(hMenu, (UINT)-1, true, &info)) {
+      info.Menu->AddRef();
+    }
   }
 }
-static void Menu_Reset(HMENU hMenu, ITreeItem* pMenu) {
+static void Menu_Reset(HMENU hMenu, mew::ui::ITreeItem* pMenu) {
   Menu_MakeEmpty(hMenu);
   Menu_Insert(hMenu, -1, pMenu);
 }
-static HMENU Menu_CreatePopup(ITreeItem* pMenu) {
+static HMENU Menu_CreatePopup(mew::ui::ITreeItem* pMenu) {
   HMENU hMenu = Menu_Create(pMenu, true);
   Menu_Reset(hMenu, pMenu);
   return hMenu;
 }
 static void Menu_InvokeCommand(HMENU hMenu, UINT wID) {
-  if (ITreeItem* pMenu = Menu_FromHandle(hMenu, wID, false)) {
-    if (ICommand* command = pMenu->Command) command->Invoke();
+  if (mew::ui::ITreeItem* pMenu = Menu_FromHandle(hMenu, wID, false)) {
+    if (mew::ICommand* command = pMenu->Command) {
+      command->Invoke();
+    }
   }
 }
 static void Menu_OnMenuCommand(UINT index_and_command, HMENU hParentMenu) {
   // 98ではHIWORDらしい。LOWORDならまだ救いようがあるのに。
   UINT index = module::isNT ? index_and_command : HIWORD(index_and_command);
-  if (ITreeItem* pMenu = Menu_FromHandle(hParentMenu, index, true)) {
-    if (ICommand* command = pMenu->Command) command->Invoke();
+  if (mew::ui::ITreeItem* pMenu = Menu_FromHandle(hParentMenu, index, true)) {
+    if (mew::ICommand* command = pMenu->Command) {
+      command->Invoke();
+    }
   }
 }
 static void Menu_OnInitMenuPopup(HMENU hMenu, UINT index, BOOL isSysMenu) {
-  if (ITreeItem* pMenu = Menu_FromHandle(hMenu)) {
+  if (mew::ui::ITreeItem* pMenu = Menu_FromHandle(hMenu)) {
     UINT32 last = ::GetMenuContextHelpId(hMenu);
     UINT32 now = pMenu->OnUpdate();
     if ((INT32)(now - last) > 0) {
@@ -173,10 +193,10 @@ static void Menu_OnInitMenuPopup(HMENU hMenu, UINT index, BOOL isSysMenu) {
     MenuItemInfo info(MIIM_DATA | MIIM_SUBMENU);
     if (::GetMenuItemInfo(hMenu, i, true, &info) && info.Menu) {
       MenuItemInfo state(MIIM_STATE);
-      if (ICommand* command = info.Menu->Command) {
+      if (mew::ICommand* command = info.Menu->Command) {
         UINT32 uState = command->QueryState(info.Menu);
-        state.fState |= ((uState & ENABLED) ? MFS_ENABLED : MFS_DISABLED);
-        state.fState |= ((uState & CHECKED) ? MFS_CHECKED : MFS_UNCHECKED);
+        state.fState |= ((uState & mew::ENABLED) ? MFS_ENABLED : MFS_DISABLED);
+        state.fState |= ((uState & mew::CHECKED) ? MFS_CHECKED : MFS_UNCHECKED);
       } else if (!info.Menu->HasChildren()) {
         state.fState = MFS_DISABLED;
       }
@@ -191,19 +211,21 @@ static void Menu_OnMenuSelect(UINT index_or_command, UINT flags, HMENU hParentMe
   }
 }
 static bool Menu_OnMeasureItem(UINT wID, LPMEASUREITEMSTRUCT measure, IImageList* imagelist) {
-  if (measure->CtlType != ODT_MENU) return false;
+  if (measure->CtlType != ODT_MENU) {
+    return false;
+  }
   if (measure->itemID == ID_DEFAULT_MENU_ITEM) {
     measure->itemWidth = 0;
     measure->itemHeight = 0;
   } else {
-    ITreeItem* item = (ITreeItem*)measure->itemData;
-    string text;
+    mew::ui::ITreeItem* item = (mew::ui::ITreeItem*)measure->itemData;
+    mew::string text;
     int nImage = -2;
     if (item) {
       text = item->Name;
       nImage = item->Image;
     }
-    SIZE sz = theme::MenuMeasureItem(text.str(), imagelist, nImage);
+    SIZE sz = mew::theme::MenuMeasureItem(text.str(), imagelist, nImage);
     measure->itemWidth = sz.cx;
     measure->itemHeight = sz.cy;
   }
@@ -211,36 +233,54 @@ static bool Menu_OnMeasureItem(UINT wID, LPMEASUREITEMSTRUCT measure, IImageList
 }
 inline static DWORD ODS2Status(DWORD ods) {
   DWORD status = 0;
-  if (ods & ODS_FOCUS) status |= FOCUSED;
-  if (ods & ODS_CHECKED) status |= CHECKED;
-  if (ods & ODS_HOTLIGHT) status |= HOT;
-  if (ods & ODS_SELECTED) status |= SELECTED;
-  if (!(ods & (ODS_GRAYED | ODS_DISABLED))) status |= ENABLED;
+  if (ods & ODS_FOCUS) {
+    status |= mew::FOCUSED;
+  }
+  if (ods & ODS_CHECKED) {
+    status |= mew::CHECKED;
+  }
+  if (ods & ODS_HOTLIGHT) {
+    status |= mew::HOT;
+  }
+  if (ods & ODS_SELECTED) {
+    status |= mew::SELECTED;
+  }
+  if (!(ods & (ODS_GRAYED | ODS_DISABLED))) {
+    status |= mew::ENABLED;
+  }
   return status;
 }
 static bool Menu_OnDrawItem(UINT wID, DRAWITEMSTRUCT* draw, IImageList* imagelist) {
-  if (draw->CtlType != ODT_MENU) return false;
-  if (draw->itemID == ID_DEFAULT_MENU_ITEM) return true;
-  ITreeItem* item = (ITreeItem*)draw->itemData;
-  string text;
+  if (draw->CtlType != ODT_MENU) {
+    return false;
+  }
+  if (draw->itemID == ID_DEFAULT_MENU_ITEM) {
+    return true;
+  }
+  mew::ui::ITreeItem* item = (mew::ui::ITreeItem*)draw->itemData;
+  mew::string text;
   int nImage = -2;
   if (item) {
     text = item->Name;
     nImage = item->Image;
   }
-  theme::MenuDrawItem(draw->hDC, draw->rcItem, ODS2Status(draw->itemState), text.str(), imagelist, nImage);
+  mew::theme::MenuDrawItem(draw->hDC, draw->rcItem, ODS2Status(draw->itemState), text.str(), imagelist, nImage);
   return true;
 }
 
-HRESULT Dispatch_WM_MENUCOMMAND(HWND hWnd, ICommand** ppCommand) {
+HRESULT Dispatch_WM_MENUCOMMAND(HWND hWnd, mew::ICommand** ppCommand) {
   // WM_MENUCOMMAND は非同期で送られるが、強制的に同期させる
   MSG msg;
-  if (!::PeekMessage(&msg, hWnd, WM_MENUCOMMAND, WM_MENUCOMMAND, PM_NOREMOVE)) return E_FAIL;
+  if (!::PeekMessage(&msg, hWnd, WM_MENUCOMMAND, WM_MENUCOMMAND, PM_NOREMOVE)) {
+    return E_FAIL;
+  }
   while (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
     if (msg.hwnd == hWnd && msg.message == WM_MENUCOMMAND) {
       // 98ではHIWORDらしい。LOWORDならまだ救いようがあるのに。
       UINT index = module::isNT ? msg.wParam : HIWORD(msg.wParam);
-      if (ITreeItem* pMenu = Menu_FromHandle((HMENU)msg.lParam, index, true)) return pMenu->Command.copyto(ppCommand);
+      if (mew::ui::ITreeItem* pMenu = Menu_FromHandle((HMENU)msg.lParam, index, true)) {
+        return pMenu->Command.copyto(ppCommand);
+      }
       return E_UNEXPECTED;
     }
     TranslateMessage(&msg);
@@ -250,18 +290,25 @@ HRESULT Dispatch_WM_MENUCOMMAND(HWND hWnd, ICommand** ppCommand) {
 }
 }  // namespace
 
+namespace mew {
+namespace ui {
+
 ref<ICommand> MenuProvider::PopupMenu(ITreeItem* pMenu, HWND hWnd, UINT tpm, int x, int y, const RECT* rcExclude) {
   ref<ICommand> command;
   if (HMENU hMenu = Menu_CreatePopup(pMenu)) {
     ref<IUnknown> addref(pMenu);
     UINT cmd = ui::PopupMenu(hMenu, tpm, x, y, hWnd, rcExclude);
-    if (cmd) Dispatch_WM_MENUCOMMAND(hWnd, &command);
+    if (cmd) {
+      Dispatch_WM_MENUCOMMAND(hWnd, &command);
+    }
     DisposeMenu(hMenu);
   }
   return command;
 }
 HMENU MenuProvider::ConstructMenu(ITreeItem* pMenu, HMENU hMenu, int index) {
-  if (!hMenu) hMenu = Menu_Create(pMenu, false);
+  if (!hMenu) {
+    hMenu = Menu_Create(pMenu, false);
+  }
   Menu_Insert(hMenu, index, pMenu);
   return hMenu;
 }
@@ -322,14 +369,23 @@ BOOL MenuProvider::HandleMenuMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
   return false;
 }
 ref<ITreeItem> MenuProvider::FindByCommand(HMENU hMenu, UINT wID) {
-  if (!hMenu) return null;
+  if (!hMenu) {
+    return null;
+  }
   INT count = ::GetMenuItemCount(hMenu);
   for (INT i = 0; i < count; i++) {
     MenuItemInfo info(MIIM_DATA | MIIM_SUBMENU | MIIM_ID);
     if (::GetMenuItemInfo(hMenu, i, true, &info)) {
-      if (info.Menu && info.wID == wID) return info.Menu;
-      if (ITreeItem* ret = FindByCommand(info.hSubMenu, wID)) return ret;
+      if (info.Menu && info.wID == wID) {
+        return info.Menu;
+      }
+      if (ITreeItem* ret = FindByCommand(info.hSubMenu, wID)) {
+        return ret;
+      }
     }
   }
   return null;
 }
+
+}  // namespace ui
+}  // namespace mew

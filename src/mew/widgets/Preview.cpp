@@ -7,13 +7,13 @@
 #include "shell.hpp"
 #include "drawing.hpp"
 
-using namespace io;
-using namespace drawing;
+using namespace mew::io;
+using namespace mew::drawing;
 
 //==============================================================================
 
 namespace {
-using PreviewBase = WindowImplBase;
+using PreviewBase = mew::ui::WindowImplBase;
 
 const DWORD MEW_WS_PREVIEW = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 const DWORD MEW_WS_EX_PREVIEW = WS_EX_OVERLAPPEDWINDOW | WS_EX_TOOLWINDOW;
@@ -21,22 +21,22 @@ const DWORD MEW_WS_EX_PREVIEW = WS_EX_OVERLAPPEDWINDOW | WS_EX_TOOLWINDOW;
 class Drawable {
  public:
   virtual ~Drawable() {}
-  virtual string GetText(IWindow* owner) { return null; }
-  virtual void Draw(IWindow* owner, DC dc, const Size& screen) = 0;
+  virtual mew::string GetText(mew::ui::IWindow* owner) { return mew::null; }
+  virtual void Draw(mew::ui::IWindow* owner, DC dc, const mew::Size& screen) = 0;
 };
 
 class MessageDrawable : public Drawable {
  private:
-  string m_text;
+  mew::string m_text;
   DWORD m_flags;
 
  public:
-  MessageDrawable(string text, DWORD flags = DT_CENTER | DT_NOPREFIX) : m_text(text), m_flags(flags) {}
-  virtual void Draw(IWindow* owner, DC dc, const Size& screen) {
-    Rect bounds(0, 0, screen.w, screen.h);
+  MessageDrawable(mew::string text, DWORD flags = DT_CENTER | DT_NOPREFIX) : m_text(text), m_flags(flags) {}
+  virtual void Draw(mew::ui::IWindow* owner, DC dc, const mew::Size& screen) {
+    mew::Rect bounds(0, 0, screen.w, screen.h);
     dc.FillRect(&bounds, ::GetSysColorBrush(COLOR_WINDOW));
     if (m_flags & DT_CENTER) {
-      Rect rc = bounds;
+      mew::Rect rc = bounds;
       dc.DrawText(m_text.str(), m_text.length(), &rc, m_flags | DT_CALCRECT);
       rc.x = (bounds.w - rc.w) / 2;
       rc.y = (bounds.h - rc.h) / 2;
@@ -49,22 +49,22 @@ class MessageDrawable : public Drawable {
 
 class NotSupported : public MessageDrawable {
  public:
-  NotSupported(string name) : MessageDrawable(string::load(IDS_PREVIEW_ERROR, name)) {}
+  NotSupported(mew::string name) : MessageDrawable(mew::string::load(IDS_PREVIEW_ERROR, name)) {}
 };
 
 class NowLoading : public MessageDrawable {
  public:
-  NowLoading(string name) : MessageDrawable(string::load(IDS_PREVIEW_LOADING, name)) {}
+  NowLoading(mew::string name) : MessageDrawable(mew::string::load(IDS_PREVIEW_LOADING, name)) {}
 };
 
 class Image : public Drawable {
  private:
   CBitmap m_bitmap;
-  Size m_size;
+  mew::Size m_size;
   int m_depth;
 
  private:
-  Image(HBITMAP hBitmap, Size sz, Gdiplus::PixelFormat format) : m_bitmap(hBitmap), m_size(sz) {
+  Image(HBITMAP hBitmap, mew::Size sz, Gdiplus::PixelFormat format) : m_bitmap(hBitmap), m_size(sz) {
     using namespace Gdiplus;
     switch (format) {
       case PixelFormat1bppIndexed:
@@ -109,15 +109,17 @@ class Image : public Drawable {
  public:
   static Drawable* FromFile(PCWSTR filename) {
     CAutoPtr<Gdiplus::Image> image(Gdiplus::Image::FromFile(filename));
-    if (!image || image->GetLastStatus() != Gdiplus::Ok) return null;
-    Rect rc(0, 0, image->GetWidth(), image->GetHeight());
+    if (!image || image->GetLastStatus() != Gdiplus::Ok) {
+      return nullptr;
+    }
+    mew::Rect rc(0, 0, image->GetWidth(), image->GetHeight());
 
-    DC dcScreen = GetDC(null);
+    DC dcScreen = GetDC(nullptr);
     CBitmapHandle bitmap;
     bitmap.CreateCompatibleBitmap(dcScreen, rc.w, rc.h);
     DC dc;
     dc.CreateCompatibleDC(dcScreen);
-    ReleaseDC(null, dcScreen);
+    ReleaseDC(nullptr, dcScreen);
     CBitmap old = dc.SelectBitmap(bitmap);
     dc.FillSolidRect(&rc, RGB(255, 255, 255));
     {
@@ -128,24 +130,29 @@ class Image : public Drawable {
     dc.DeleteDC();
     return new Image(bitmap, rc.size, image->GetPixelFormat());
   }
-  virtual string GetText(IWindow* owner) {
+  virtual mew::string GetText(mew::ui::IWindow* owner) {
     int scale = (int)(100.0 * GetScale(owner, owner->ClientSize));
-    return string::format(L"$1 x $2 x $3 ($4%)", m_size.w, m_size.h, m_depth, scale);
+    return mew::string::format(L"$1 x $2 x $3 ($4%)", m_size.w, m_size.h, m_depth, scale);
   }
-  double GetScale(IWindow* owner, const Size& sz) const {
+  double GetScale(mew::ui::IWindow* owner, const mew::Size& sz) const {
     const double RATIO = 0.5;
     double rW = (double)sz.w / m_size.w;
     double rH = (double)sz.h / m_size.h;
     double r;
-    if (::IsZoomed(owner->Handle))
-      r = math::min(rW, rH);
-    else
+    if (::IsZoomed(owner->Handle)) {
+      r = mew::math::min(rW, rH);
+    } else {
       r = rW * RATIO + rH * (1.0 - RATIO);
-    if (r > 1.0) r = 1.0;
+    }
+    if (r > 1.0) {
+      r = 1.0;
+    }
     return r;
   }
-  virtual void Draw(IWindow* owner, DC dc, const Size& screen) {
-    if (screen.empty()) return;
+  virtual void Draw(mew::ui::IWindow* owner, DC dc, const mew::Size& screen) {
+    if (screen.empty()) {
+      return;
+    }
     double r = GetScale(owner, screen);
     int w = (int)(m_size.w * r);
     int h = (int)(m_size.h * r);
@@ -158,7 +165,7 @@ class Image : public Drawable {
     dc.SetStretchBltMode(HALFTONE);
     dc.StretchBlt(x, y, w, h, srcdc, 0, 0, m_size.w, m_size.h, SRCCOPY);
     if (dc.ExcludeClipRect(x, y, x + w, y + h) != NULLREGION) {
-      Rect rc(0, 0, screen.w, screen.h);
+      mew::Rect rc(0, 0, screen.w, screen.h);
       dc.FillSolidRect(&rc, RGB(255, 255, 255));
     }
     srcdc.DeleteDC();
@@ -173,19 +180,19 @@ class Text : public Drawable {
 
  public:
   static Drawable* FromFile(PCWSTR filename) {
-    HANDLE handle = ::CreateFile(filename, GENERIC_READ, FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE, null,
-                                 OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, null);
+    HANDLE handle = ::CreateFile(filename, GENERIC_READ, FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
+                                 OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
     if (handle && handle != INVALID_HANDLE_VALUE) {
       Text* p = new Text();
       p->m_length = 0;
-      ::ReadFile(handle, p->m_text, MAX_TEXT, &p->m_length, null);
+      ::ReadFile(handle, p->m_text, MAX_TEXT, &p->m_length, nullptr);
       ::CloseHandle(handle);
       return p;
     }
-    return null;
+    return nullptr;
   }
-  virtual void Draw(IWindow* owner, DC dc, const Size& screen) {
-    Rect rc(0, 0, screen.w, screen.h);
+  virtual void Draw(mew::ui::IWindow* owner, DC dc, const mew::Size& screen) {
+    mew::Rect rc(0, 0, screen.w, screen.h);
     dc.FillRect(&rc, ::GetSysColorBrush(COLOR_WINDOW));
     ::DrawTextA(dc, m_text, m_length, &rc, DT_NOPREFIX | DT_EXPANDTABS);
     // 一行なら、以下がベスト。
@@ -196,13 +203,13 @@ class Text : public Drawable {
 class Executable {
  public:
   static Drawable* FromFile(PCWSTR filename) {
-    io::Version ver;
+    mew::io::Version ver;
     if (ver.Open(filename)) {
       PCTSTR name = ver.QueryValue(_T("ProductName"));
       PCTSTR version = ver.QueryValue(_T("FileVersion"));
       PCTSTR author = ver.QueryValue(_T("LegalCopyright"));
       PCTSTR comment = ver.QueryValue(_T("Comments"));
-      string text = string::format(
+      mew::string text = mew::string::format(
           L"名前\t\t: $1\n"
           L"バージョン\t: $2\n"
           L"著作者\t\t: $3\n"
@@ -211,7 +218,7 @@ class Executable {
       ver.Close();
       return new MessageDrawable(text, DT_NOPREFIX | DT_EXPANDTABS);
     }
-    return null;
+    return nullptr;
   }
 };
 
@@ -240,14 +247,17 @@ static bool operator<(const Loader& lhs, PCWSTR rhs) { return _wcsicmp(lhs.exten
 static bool operator==(const Loader& lhs, PCWSTR rhs) { return _wcsicmp(lhs.extension, rhs) == 0; }
 
 LoaderProc GetLoader(PCWSTR extension) {
-  if (str::empty(extension)) return null;
+  if (mew::str::empty(extension)) {
+    return mew::null;
+  }
   const Loader* begin = LOADER_MAP;
   const Loader* end = begin + lengthof(LOADER_MAP);
-  const Loader* found = algorithm::binary_search(begin, end, extension + 1);
-  if (found != end)
+  const Loader* found = mew::algorithm::binary_search(begin, end, extension + 1);
+  if (found != end) {
     return found->proc;
-  else
-    return null;
+  } else {
+    return mew::null;
+  }
 }
 }  // namespace
 
@@ -436,14 +446,18 @@ class Preview : public WindowImpl<CWindowImplEx<Preview, PreviewBase>, implement
   void HandleUpdateLayout() {
     if (IsWindowVisible()) {
       Load();
-      if (m_linked && m_drawable) UpdateTitle(m_linked, m_drawable->GetText(this));
+      if (m_linked && m_drawable) {
+        UpdateTitle(m_linked, m_drawable->GetText(this));
+      }
     }
   }
 
  public:  // IPreview
   HRESULT GetContents(REFINTF pp) { return objcpy(m_entry, pp); }
   HRESULT SetContents(IUnknown* p) {
-    if (objcmp(m_entry, p)) return S_OK;
+    if (objcmp(m_entry, p)) {
+      return S_OK;
+    }
     Invalidate();
     if (ref<IEntry> entry = cast(p)) {
       SetEntry(entry);
@@ -460,24 +474,36 @@ class Preview : public WindowImpl<CWindowImplEx<Preview, PreviewBase>, implement
     m_entry = entry;
     m_linked.clear();
     m_drawable.Free();
-    if (!m_entry) return;
-    if (!IsWindowVisible()) return;
+    if (!m_entry) {
+      return;
+    }
+    if (!IsWindowVisible()) {
+      return;
+    }
     Load();
   }
   static bool CanPreview(IEntry* entry) {
     string path = entry->Path;
     PCWSTR filename = path.str();
-    if (!path) return false;
+    if (!path) {
+      return false;
+    }
     DWORD attrs = GetFileAttributes(filename);
-    if (attrs == -1 || (attrs & FILE_ATTRIBUTE_DIRECTORY)) return false;
-    if (!GetLoader(::PathFindExtension(filename))) return false;
+    if (attrs == -1 || (attrs & FILE_ATTRIBUTE_DIRECTORY)) {
+      return false;
+    }
+    if (!GetLoader(::PathFindExtension(filename))) {
+      return false;
+    }
     return true;
   }
 
   /// @result スワップされたらtrue。
   template <typename T>
   static bool AutoPtrSwapIfNull(CAutoPtr<T>& lhs, CAutoPtr<T>& rhs) {
-    if (::InterlockedCompareExchangePointer((void**)&lhs.m_p, rhs, null)) return false;
+    if (::InterlockedCompareExchangePointer((void**)&lhs.m_p, rhs, null)) {
+      return false;
+    }
     rhs.Detach();
     return true;
   }
@@ -489,7 +515,9 @@ class Preview : public WindowImpl<CWindowImplEx<Preview, PreviewBase>, implement
 
   /// @result 更新されたらtrue。
   bool Load() {
-    if (m_drawable || !m_entry) return false;
+    if (m_drawable || !m_entry) {
+      return false;
+    }
     m_linked.clear();
     m_entry->GetLinked(&m_linked);
     if (!CanPreview(m_linked)) {
@@ -510,24 +538,34 @@ class Preview : public WindowImpl<CWindowImplEx<Preview, PreviewBase>, implement
   volatile void AsyncLoad() {
     // 読み込み中に変化する場合があるため、ローカル変数に保存しておく。
     ref<IEntry> linked = m_linked;
-    if (!linked) return;
+    if (!linked) {
+      return;
+    }
     CAutoPtr<Drawable> drawable;
     try {
       string path = linked->Path;
       if (!!path) {
         PCWSTR filename = path.str();
         PCWSTR extension = ::PathFindExtension(filename);
-        if (LoaderProc loader = GetLoader(extension)) drawable.Attach(loader(filename));
+        if (LoaderProc loader = GetLoader(extension)) {
+          drawable.Attach(loader(filename));
+        }
       }
     } catch (...) {
     }
-    if (!drawable) drawable.Attach(new NotSupported(linked->Name));
+    if (!drawable) {
+      drawable.Attach(new NotSupported(linked->Name));
+    }
     //
     ASSERT(drawable);
     string text = drawable->GetText(this);
     // すでに別のファイルの読み込みを求められている。
-    if (linked != ((volatile Preview*)this)->m_linked.get()) return;
-    if (!IsWindow()) return;
+    if (linked != ((volatile Preview*)this)->m_linked.get()) {
+      return;
+    }
+    if (!IsWindow()) {
+      return;
+    }
     AutoPtrSwap(m_drawable, drawable);
     ::SetEvent(m_complete);
     UpdateTitle(linked, text);
@@ -538,13 +576,15 @@ class Preview : public WindowImpl<CWindowImplEx<Preview, PreviewBase>, implement
     return 0;
   }
   void UpdateTitle(IEntry* linked, const string& text) {
-    if (text) this->Name = string::format(L"$1 : $2", linked->Name, text);
+    if (text) {
+      this->Name = string::format(L"$1 : $2", linked->Name, text);
+    }
   }
 };
+
+AVESTA_EXPORT(Preview)
 
 }  // namespace ui
 }  // namespace mew
 
 //==============================================================================
-
-AVESTA_EXPORT(Preview)

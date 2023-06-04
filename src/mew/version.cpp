@@ -14,7 +14,7 @@ using namespace mew::io;
 
 Version::Version() : m_VersionInfo(null) {}
 Version::~Version() { Close(); }
-string Version::GetPath() const { return m_Path; }
+mew::string Version::GetPath() const { return m_Path; }
 bool Version::Open(string filename) {
   m_Path = filename;
   Close();

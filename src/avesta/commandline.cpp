@@ -9,7 +9,7 @@ using namespace avesta;
 //==============================================================================
 
 namespace {
-class CommandLine : public Root<implements<ICommandLine> > {
+class CommandLine : public mew::Root<mew::implements<avesta::ICommandLine> > {
  private:
   struct Argv {
     PTSTR Option;
@@ -21,7 +21,7 @@ class CommandLine : public Root<implements<ICommandLine> > {
 
  public:
   CommandLine(PCTSTR commandLine) {
-    m_text.assign(commandLine, commandLine + str::length(commandLine) + 1);
+    m_text.assign(commandLine, commandLine + mew::str::length(commandLine) + 1);
     if (!m_text.empty()) ParseArgv(&m_text[0], m_args);
     Reset();
   }
@@ -67,7 +67,7 @@ class CommandLine : public Root<implements<ICommandLine> > {
           break;
         default:
           // その他は文字として扱う
-          end = str::inc(end);
+          end = mew::str::inc(end);
       }
     }
   }
@@ -75,7 +75,7 @@ class CommandLine : public Root<implements<ICommandLine> > {
     struct Argv arg;
     if (argv[0] == _T('-') || argv[0] == _T('/')) {  // オプションと値の分離
       TCHAR* strOption = argv + 1;
-      TCHAR* strValue = str::find_some_of(argv, _T(":="));
+      TCHAR* strValue = mew::str::find_some_of(argv, _T(":="));
       if (strValue) {  // 引数付きオプション
         *strValue = _T('\0');
         strValue++;
@@ -84,10 +84,10 @@ class CommandLine : public Root<implements<ICommandLine> > {
       } else {  // 引数なしオプション
         strValue++;
         arg.Option = strOption;
-        arg.Value = null;
+        arg.Value = nullptr;
       }
     } else {  // オプションなし；主にファイルパス
-      arg.Option = null;
+      arg.Option = nullptr;
       arg.Value = argv;
     }
     return arg;
@@ -97,7 +97,9 @@ class CommandLine : public Root<implements<ICommandLine> > {
 
 //==============================================================================
 
-ref<ICommandLine> avesta::ParseCommandLine(PCWSTR args) {
-  if (str::empty(args)) return null;
-  return objnew<CommandLine>(args);
+mew::ref<ICommandLine> avesta::ParseCommandLine(PCWSTR args) {
+  if (mew::str::empty(args)) {
+    return mew::null;
+  }
+  return mew::objnew<CommandLine>(args);
 }

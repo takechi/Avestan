@@ -9,64 +9,73 @@
 #include "shell.hpp"
 #include "drawing.hpp"
 
-using namespace drawing;
+using namespace mew::drawing;
 static bool ProcessMouseGesture(HWND hwnd, const MSG* msg);
 
 //==============================================================================
 
 namespace {
 template <class TFinal, class TList>
-class __declspec(novtable) DockBase : public WindowImpl<CWindowImplEx<TFinal, WindowImplBase>, TList> {
+class __declspec(novtable) DockBase
+    : public mew::ui::WindowImpl<mew::ui::CWindowImplEx<TFinal, mew::ui::WindowImplBase>, TList> {
  protected:
-  CWindowEx m_wndLastFocus;
+  mew::ui::CWindowEx m_wndLastFocus;
 
  public:
-  Size GetBorder() const { return Size::Zero; }
+  mew::Size GetBorder() const { return mew::Size::Zero; }
 
  public:
   struct CompareDockStyle {
-    bool operator()(IWindow* lhs, IWindow* rhs) const { return lhs->Dock > rhs->Dock; }
+    bool operator()(mew::ui::IWindow* lhs, mew::ui::IWindow* rhs) const { return lhs->Dock > rhs->Dock; }
   };
-  static void Move(HDWP& hDWP, IWindow* view, int x, int y, int w, int h) {
+  static void Move(HDWP& hDWP, mew::ui::IWindow* view, int x, int y, int w, int h) {
     ASSERT(view);
     ASSERT(view->Handle);
-    hDWP = ::DeferWindowPos(hDWP, view->Handle, null, x, y, w, h, SWP_NOZORDER | SWP_NOACTIVATE);
+    hDWP = ::DeferWindowPos(hDWP, view->Handle, nullptr, x, y, w, h, SWP_NOZORDER | SWP_NOACTIVATE);
   }
   void HandleUpdateLayout() {
-    if (IsIconic() || !Visible) return;
+    if (IsIconic() || !Visible) {
+      return;
+    }
     UpdateLayout(ClientArea);
   }
-  void UpdateLayout(Rect rc) {
-    if (IsIconic() || !Visible) return;
-    Size border = final.GetBorder();
-    using Views = mew::array_set<ref<IWindow>, false, CompareDockStyle>;
+  void UpdateLayout(mew::Rect rc) {
+    if (IsIconic() || !Visible) {
+      return;
+    }
+    mew::Size border = final.GetBorder();
+    using Views = mew::array_set<mew::ref<IWindow>, false, CompareDockStyle>;
     Views views;
     for (CWindowEx w = GetWindow(GW_CHILD); w; w = w.GetWindow(GW_HWNDNEXT)) {
-      ref<IWindow> view;
-      if (FAILED(QueryInterfaceInWindow(w, &view)) || !view->Visible || view->Dock == DirNone) continue;
+      mew::ref<IWindow> view;
+      if (FAILED(QueryInterfaceInWindow(w, &view)) || !view->Visible || view->Dock == mew::ui::DirNone) {
+        continue;
+      }
       views.insert(view);
     }
-    if (views.empty()) return;
+    if (views.empty()) {
+      return;
+    }
     HDWP hDWP = ::BeginDeferWindowPos(views.size());
     for (Views::const_iterator i = views.begin(); i != views.end(); ++i) {
-      Rect bounds = (*i)->Bounds;
+      mew::Rect bounds = (*i)->Bounds;
       switch ((*i)->Dock) {
-        case DirCenter:
+        case mew::ui::DirCenter:
           Move(hDWP, *i, rc.x, rc.y, rc.w, rc.h);
           break;
-        case DirWest:
+        case mew::ui::DirWest:
           Move(hDWP, *i, rc.x, rc.y, bounds.w, rc.h);
           rc.left += bounds.w + border.w;
           break;
-        case DirEast:
+        case mew::ui::DirEast:
           Move(hDWP, *i, rc.right - bounds.w, rc.y, bounds.w, rc.h);
           rc.right -= bounds.w + border.w;
           break;
-        case DirNorth:
+        case mew::ui::DirNorth:
           Move(hDWP, *i, rc.x, rc.y, rc.w, bounds.h);
           rc.top += bounds.h + border.h;
           break;
-        case DirSouth:
+        case mew::ui::DirSouth:
           Move(hDWP, *i, rc.x, rc.bottom - bounds.h, rc.w, bounds.h);
           rc.bottom -= bounds.h + border.h;
           break;
@@ -96,8 +105,8 @@ class __declspec(novtable) DockBase : public WindowImpl<CWindowImplEx<TFinal, Wi
     } else {
       m_wndLastFocus = NULL;
       for (CWindowEx w = GetWindow(GW_CHILD); w; w = w.GetWindow(GW_HWNDNEXT)) {
-        ref<IWindow> p;
-        if (SUCCEEDED(QueryInterfaceInWindow(w, &p)) && p->Dock == DirCenter) {
+        mew::ref<mew::ui::IWindow> p;
+        if (SUCCEEDED(QueryInterfaceInWindow(w, &p)) && p->Dock == mew::ui::DirCenter) {
           m_wndLastFocus = w.m_hWnd;
           p->Focus();
           break;
@@ -116,24 +125,26 @@ namespace ui {
 
 //==============================================================================
 
-class DockPanel : public DockBase<DockPanel, implements<IWindow, ISignal, IDisposable> >, public WTLEX::CSplitter<DockPanel> {
+class DockPanel : public DockBase<DockPanel, implements<IWindow, ISignal, IDisposable>>, public WTLEX::CSplitter<DockPanel> {
  public:
   void DoCreate(CWindowEx parent) { __super::DoCreate(parent); }
   Size GetBorder() const { return m_Border; }
   static int Distance(const Point& pt, const Rect& rc) {
     int dx, dy;
-    if (pt.x < rc.left)
+    if (pt.x < rc.left) {
       dx = rc.left - pt.x;
-    else if (pt.x > rc.right)
+    } else if (pt.x > rc.right) {
       dx = pt.x - rc.right;
-    else
+    } else {
       dx = 0;
-    if (pt.y < rc.top)
+    }
+    if (pt.y < rc.top) {
       dy = rc.top - pt.y;
-    else if (pt.y > rc.bottom)
+    } else if (pt.y > rc.bottom) {
       dy = pt.y - rc.bottom;
-    else
+    } else {
       dy = 0;
+    }
     return dx + dy;
   }
 
@@ -149,7 +160,9 @@ class DockPanel : public DockBase<DockPanel, implements<IWindow, ISignal, IDispo
   END_MSG_MAP()
 
   HRESULT Send(message msg) {
-    if (!m_hWnd) return E_FAIL;
+    if (!m_hWnd) {
+      return E_FAIL;
+    }
     return __super::Send(msg);
   }
   LRESULT OnPaint(UINT, WPARAM, LPARAM, BOOL&) {
@@ -172,7 +185,9 @@ class DockPanel : public DockBase<DockPanel, implements<IWindow, ISignal, IDispo
     switch (uMsg) {
       case WM_CREATE:
       case WM_DESTROY:
-        if (::GetParent((HWND)lParam) == m_hWnd) PostMessage(MEW_ECHO_UPDATE);
+        if (::GetParent((HWND)lParam) == m_hWnd) {
+          PostMessage(MEW_ECHO_UPDATE);
+        }
         break;
     }
     bHandled = false;
@@ -220,7 +235,7 @@ class DockPanel : public DockBase<DockPanel, implements<IWindow, ISignal, IDispo
 
 //==============================================================================
 
-class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, IDisposable, IDropTarget> >, public MenuProvider {
+class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, IDisposable, IDropTarget>>, public MenuProvider {
  private:  // variables
   ref<ITreeItem> m_root;
   bool m_tasktray;
@@ -229,7 +244,9 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
   HWND Create(HWND hParent, PCTSTR name, PCTSTR classname, Direction dock = DirNone, DWORD dwStyle = 0, DWORD dwExStyle = 0) {
     set_Dock(dock);
 
-    if (GetWndClassInfo().m_lpszOrigName == NULL) GetWndClassInfo().m_lpszOrigName = GetWndClassName();
+    if (GetWndClassInfo().m_lpszOrigName == NULL) {
+      GetWndClassInfo().m_lpszOrigName = GetWndClassName();
+    }
     GetWndClassInfo().m_wc.lpszClassName = (!str::empty(classname) ? classname : _T("mew.ui.Form"));
     ATOM atom = GetWndClassInfo().Register(&m_pfnSuperWindowProc);
 
@@ -258,31 +275,37 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
     if (!hWndParent || hWndParent == ::GetDesktopWindow()) {
       if (version.Open(path.str())) {
         classname = version.QueryValue(_T("ProductName"));
-        if (classname)
+        if (classname) {
           name = classname;
-        else
+        } else {
           name = path.FindLeaf();
+        }
       }
     }
     //
     HWND hWnd =
         Create(hWndParent, name, classname, DirNone, WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, WS_EX_WINDOWEDGE);
-    if (!hWnd) throw RuntimeError(string(IDS_ERR_CREATEWINDOW), AtlHresultFromLastError());
+    if (!hWnd) {
+      throw mew::exceptions::RuntimeError(string(IDS_ERR_CREATEWINDOW), AtlHresultFromLastError());
+    }
     // ÉEÉBÉìÉhÉEÉAÉCÉRÉìÇEXEÇ∆ìØÇ∂Ç‡ÇÃÇ…Ç∑ÇÈ.
     HICON hIconSmall = null, hIconLarge = null;
     io::Path pathIcon = path;
     pathIcon.Append(L"..\\..\\usr\\main.ico");
-    if (PathFileExists(pathIcon))
+    if (PathFileExists(pathIcon)) {
       ExtractIconEx(pathIcon, 0, &hIconLarge, &hIconSmall, 1);
-    else
+    } else {
       ExtractIconEx(path, 0, &hIconLarge, &hIconSmall, 1);
+    }
     SetIcon(hIconLarge, true);
     SetIcon(hIconSmall, false);
   }
 
  public:  // ISignal
   bool SupportsEvent(EventCode code) const throw() {
-    if (__super::SupportsEvent(code)) return true;
+    if (__super::SupportsEvent(code)) {
+      return true;
+    }
     switch (code) {
       case EventMouseWheel:
         return true;
@@ -330,21 +353,29 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
   END_MSG_MAP()
 
   HRESULT Send(message msg) {
-    if (!m_hWnd) return false;
+    if (!m_hWnd) {
+      return false;
+    }
     switch (msg.code) {
       case CommandMaximize:
         if (IsWindowEnabled()) {
           this->Visible = true;
-          if (!IsZoomed()) PostMessage(WM_SYSCOMMAND, SC_MAXIMIZE, -1);
+          if (!IsZoomed()) {
+            PostMessage(WM_SYSCOMMAND, SC_MAXIMIZE, -1);
+          }
         }
         break;
       case CommandMinimize:
-        if (IsWindowEnabled() && !IsIconic()) PostMessage(WM_SYSCOMMAND, SC_MINIMIZE, -1);
+        if (IsWindowEnabled() && !IsIconic()) {
+          PostMessage(WM_SYSCOMMAND, SC_MINIMIZE, -1);
+        }
         break;
       case CommandRestore:
         if (IsWindowEnabled()) {
           this->Visible = true;
-          if ((IsZoomed() || IsIconic())) PostMessage(WM_SYSCOMMAND, SC_RESTORE, -1);
+          if ((IsZoomed() || IsIconic())) {
+            PostMessage(WM_SYSCOMMAND, SC_RESTORE, -1);
+          }
         }
         break;
       case CommandResize:
@@ -400,7 +431,9 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
       case WM_MBUTTONDBLCLK:
       case WM_XBUTTONDBLCLK:
         // É}ÉEÉXÉWÉFÉXÉ`ÉÉÉTÉ|Å[Ég.
-        if (ProcessMouseGesture(m_hWnd, msg)) return true;
+        if (ProcessMouseGesture(m_hWnd, msg)) {
+          return true;
+        }
         break;
       default:
         break;
@@ -411,7 +444,9 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
   bool OnUpdateUIState(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT&) {
     SendMessageToDescendants(uMsg, wParam, lParam, ::IsWindowVisible);
     CWindowEx focus = ::GetFocus();
-    if (IsChild(focus) && (focus.GetStyle() & WS_CHILD)) m_wndLastFocus = focus;
+    if (IsChild(focus) && (focus.GetStyle() & WS_CHILD)) {
+      m_wndLastFocus = focus;
+    }
     return false;
   }
   bool OnBroadcastMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT&) {
@@ -420,7 +455,9 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
   }
   bool OnNotifyTaskTray(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT&) {
     ASSERT(m_tasktray);
-    if (lParam == WM_MOUSEMOVE) return true;
+    if (lParam == WM_MOUSEMOVE) {
+      return true;
+    }
     switch (lParam) {
       case WM_RBUTTONUP:
       case WM_CONTEXTMENU: {
@@ -430,10 +467,11 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
         break;
       }
       case WM_LBUTTONDOWN:
-        if (!Visible || IsIconic())
+        if (!Visible || IsIconic()) {
           Send(CommandRestore);
-        else
+        } else {
           Send(CommandMinimize);
+        }
         break;
       default:
         break;
@@ -442,7 +480,9 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
   }
   void PopupSystemContextMenu(Point pt) {
     CMenuHandle menu = GetSystemMenu(false);
-    if (!menu) return;
+    if (!menu) {
+      return;
+    }
     // ëOâÒégÇ¡ÇΩÇ∆Ç´ÇÃóLå¯ê´Ç™écÇ¡ÇƒÇ¢ÇÈÇÃÇ≈ÅAé©ëOÇ≈On/OffÇê›íËÇ∑ÇÈ
     if (IsIconic()) {
       menu.EnableMenuItem(SC_MAXIMIZE, MF_BYCOMMAND | MF_ENABLED);
@@ -467,7 +507,9 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
     SetForegroundWindow(m_hWnd);
     if (UINT wID = menu.TrackPopupMenu(TPM_LEFTBUTTON | TPM_RIGHTBUTTON | TPM_RETURNCMD, pt.x, pt.y, m_hWnd, null)) {
       if (ref<ITreeItem> item = FindByCommand(menu, wID)) {
-        if (ref<ICommand> command = item->Command) command->Invoke();
+        if (ref<ICommand> command = item->Command) {
+          command->Invoke();
+        }
       } else {
         PostMessage(WM_SYSCOMMAND, wID, MAKELPARAM(pt.x, pt.y));
       }
@@ -481,8 +523,12 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
     Point where(Point(GET_XY_LPARAM(lParam)));
     ScreenToClient(&where);  // WM_MOUSEWHEELÇÃÉ}ÉEÉXà íuÇÕÉXÉNÉäÅ[Éìç¿ïWån.
     UINT32 state = GET_KEYSTATE_WPARAM(wParam);
-    if (IsKeyPressed(VK_MENU)) state |= ModifierAlt;
-    if (IsKeyPressed(VK_LWIN) || IsKeyPressed(VK_RWIN)) state |= ModifierWindows;
+    if (IsKeyPressed(VK_MENU)) {
+      state |= ModifierAlt;
+    }
+    if (IsKeyPressed(VK_LWIN) || IsKeyPressed(VK_RWIN)) {
+      state |= ModifierWindows;
+    }
     INT32 wheel = GET_WHEEL_DELTA_WPARAM(wParam);
     InvokeEvent<EventMouseWheel>(this, where, state, wheel);
     return 0;
@@ -536,7 +582,9 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
     }
     for (; hWnd; hWnd = ::GetAncestor(hWnd, GA_PARENT)) {
       ref<IDropTarget> pDropTarget;
-      if (QueryDropTargetInWindow(hWnd, &pDropTarget, (const POINT&)ptScreen)) return pDropTarget;
+      if (QueryDropTargetInWindow(hWnd, &pDropTarget, (const POINT&)ptScreen)) {
+        return pDropTarget;
+      }
     }
     return null;
   }
@@ -555,14 +603,23 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
     m_dwDropEffect = *pdwEffect;
     m_pDropData = pDataObject;
     m_dwDragKeys = 0;
-    if (IsKeyPressed(VK_LBUTTON)) m_dwDragKeys |= MouseButtonLeft;
-    if (IsKeyPressed(VK_RBUTTON)) m_dwDragKeys |= MouseButtonRight;
+    if (IsKeyPressed(VK_LBUTTON)) {
+      m_dwDragKeys |= MouseButtonLeft;
+    }
+    if (IsKeyPressed(VK_RBUTTON)) {
+      m_dwDragKeys |= MouseButtonRight;
+    }
     key |= m_dwDragKeys;
-    if (bDragFullWindows && !m_pDropTargetHelper)
+    if (bDragFullWindows && !m_pDropTargetHelper) {
       CoCreateInstance(CLSID_DragDropHelper, null, CLSCTX_INPROC_SERVER, IID_IDropTargetHelper, (LPVOID*)&m_pDropTargetHelper);
-    if (bDragFullWindows && m_pDropTargetHelper) m_pDropTargetHelper->DragEnter(m_hWnd, pDataObject, (POINT*)&pt, *pdwEffect);
+    }
+    if (bDragFullWindows && m_pDropTargetHelper) {
+      m_pDropTargetHelper->DragEnter(m_hWnd, pDataObject, (POINT*)&pt, *pdwEffect);
+    }
     if (m_drop = QueryDropTargetToDescent(pt)) {
-      if (!bDragFullWindows) ::LockWindowUpdate(NULL);
+      if (!bDragFullWindows) {
+        ::LockWindowUpdate(NULL);
+      }
       m_drop->DragEnter(pDataObject, key, pt, pdwEffect);
     }
     // Ç±Ç±Ç≈ãëî€Ç∑ÇÈÇ∆ç°å„ÇÃDragOverÇ™åƒÇŒÇÍÇ»Ç¢ÇÃÇ≈ÅAÇ∆ÇËÇ†Ç¶Ç∏Ç∑Ç◊ÇƒÇéÛÇØì¸ÇÍÇÈ
@@ -574,7 +631,9 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
     SystemParametersInfo(SPI_GETDRAGFULLWINDOWS, 0, &bDragFullWindows, 0);
 
     key |= m_dwDragKeys;
-    if (bDragFullWindows && m_pDropTargetHelper) m_pDropTargetHelper->DragOver((POINT*)&pt, *pdwEffect);
+    if (bDragFullWindows && m_pDropTargetHelper) {
+      m_pDropTargetHelper->DragOver((POINT*)&pt, *pdwEffect);
+    }
     ref<IDropTarget> pDropTarget = QueryDropTargetToDescent(pt);
     if (!objcmp(pDropTarget, m_drop)) {
       if (m_drop) m_drop->DragLeave();
@@ -586,7 +645,9 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
           m_drop.clear();
           return hr;
         }
-        if (!bDragFullWindows) ::LockWindowUpdate(NULL);
+        if (!bDragFullWindows) {
+          ::LockWindowUpdate(NULL);
+        }
         return m_drop->DragOver(key, pt, pdwEffect);
       } else {
         return E_NOTIMPL;
@@ -596,13 +657,16 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
       if (m_drop) {
         HRESULT hr = m_drop->DragOver(key, pt, pdwEffect);
         return hr;
-      } else
+      } else {
         return E_NOTIMPL;
+      }
     }
   }
   STDMETHODIMP DragLeave() {
     DisposeDragDrop();
-    if (m_pDropTargetHelper) m_pDropTargetHelper->DragLeave();
+    if (m_pDropTargetHelper) {
+      m_pDropTargetHelper->DragLeave();
+    }
     return S_OK;
   }
   STDMETHODIMP Drop(IDataObject* pDataObject, DWORD key, POINTL pt, DWORD* pdwEffect) {
@@ -620,14 +684,18 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
     } else {
       TRACE(_T("info: Drop() - no drop target"));
     }
-    if (m_pDropTargetHelper) m_pDropTargetHelper->Drop(pDataObject, (POINT*)&pt, *pdwEffect);
+    if (m_pDropTargetHelper) {
+      m_pDropTargetHelper->Drop(pDataObject, (POINT*)&pt, *pdwEffect);
+    }
     return hr;
   }
 
  public:  // Extension
   bool get_TaskTray() { return m_tasktray; }
   void set_TaskTray(bool value) {
-    if (m_tasktray == value) return;
+    if (m_tasktray == value) {
+      return;
+    }
     if (m_tasktray && !value) {  // disable
       NOTIFYICONDATA icon = {sizeof(NOTIFYICONDATA)};
       icon.hWnd = m_hWnd;
@@ -653,7 +721,9 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
 
   CopyMode get_AutoCopy() { return m_CopyMode; }
   void set_AutoCopy(CopyMode value) {
-    if (m_CopyMode == value) return;
+    if (m_CopyMode == value) {
+      return;
+    }
     m_CopyMode = value;
     switch (m_CopyMode) {
       case CopyNone:
@@ -679,16 +749,19 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
         OnClipboardChange();
         break;
     }
-    if (m_hwndNextCopy) ::SendMessage(m_hwndNextCopy, uMsg, wParam, lParam);
+    if (m_hwndNextCopy) {
+      ::SendMessage(m_hwndNextCopy, uMsg, wParam, lParam);
+    }
     return true;
   }
   bool OnChangeCBChain(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT&) {
     HWND hwndRemove = (HWND)wParam;
     HWND hwndNext = (HWND)lParam;
-    if (m_hwndNextCopy == hwndRemove)
+    if (m_hwndNextCopy == hwndRemove) {
       m_hwndNextCopy = hwndNext;
-    else if (m_hwndNextCopy)
+    } else if (m_hwndNextCopy) {
       ::SendMessage(m_hwndNextCopy, WM_CHANGECBCHAIN, wParam, lParam);
+    }
     return true;
   }
   void OnClipboardChange() {
@@ -733,11 +806,11 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
   }
 };
 
-}  // namespace ui
-}  // namespace mew
-
 AVESTA_EXPORT(DockPanel)
 AVESTA_EXPORT(Form)
+
+}  // namespace ui
+}  // namespace mew
 
 //==============================================================================
 
@@ -746,37 +819,37 @@ const int GESTURE_SKIP_DISTANCE = 10;  // [px] Ç±ÇÃãóó£à»â∫ÇÃÉ}ÉEÉXà⁄ìÆÇÕä¥ímÇµÇ
 const int GESTURE_WAIT_TIME = 300;  // [msec] Ç±ÇÍà»è„éûä‘Ç™åoÇ¡ÇΩèÍçáÇÕêVÇΩÇ»ÉWÉFÉXÉ`ÉÉÇ∆Ç›Ç»Ç∑ÅiÅ™Å™Ç»Ç«Åj
 
 struct GestureDesc {
-  CWindowEx owner;
-  CWindowEx window;
-  Point cursor;
+  mew::ui::CWindowEx owner;
+  mew::ui::CWindowEx window;
+  mew::Point cursor;
   DWORD lastTime;
   UINT16 lastMods;
-  std::vector<Gesture> history;
-  ref<IGesture> gesture;
+  std::vector<mew::ui::Gesture> history;
+  mew::ref<mew::ui::IGesture> gesture;
 };
 
-static Gesture MessageToGesture(const MSG* msg) {
+static mew::ui::Gesture MessageToGesture(const MSG* msg) {
   switch (msg->message) {
     case WM_LBUTTONDOWN:
     case WM_LBUTTONUP:
     case WM_LBUTTONDBLCLK:
-      return GestureButtonLeft;
+      return mew::ui::GestureButtonLeft;
     case WM_RBUTTONDOWN:
     case WM_RBUTTONUP:
     case WM_RBUTTONDBLCLK:
-      return GestureButtonRight;
+      return mew::ui::GestureButtonRight;
     case WM_MBUTTONDOWN:
     case WM_MBUTTONUP:
     case WM_MBUTTONDBLCLK:
-      return GestureButtonMiddle;
+      return mew::ui::GestureButtonMiddle;
     case WM_XBUTTONDOWN:
     case WM_XBUTTONUP:
     case WM_XBUTTONDBLCLK:
-      return GET_XBUTTON_WPARAM(msg->wParam) == XBUTTON1 ? GestureButtonX1 : GestureButtonX2;
+      return GET_XBUTTON_WPARAM(msg->wParam) == XBUTTON1 ? mew::ui::GestureButtonX1 : mew::ui::GestureButtonX2;
     case WM_MOUSEWHEEL:
-      return GET_WHEEL_DELTA_WPARAM(msg->wParam) > 0 ? GestureWheelUp : GestureWheelDown;
+      return GET_WHEEL_DELTA_WPARAM(msg->wParam) > 0 ? mew::ui::GestureWheelUp : mew::ui::GestureWheelDown;
     default:
-      return (Gesture)-1;
+      return (mew::ui::Gesture)-1;
   }
 }
 static size_t MessageToClicks(const MSG* msg) {
@@ -797,10 +870,16 @@ static size_t MessageToClicks(const MSG* msg) {
 }
 
 HRESULT EndGesture(GestureDesc& desc) {
-  if (!desc.gesture) return S_FALSE;
-  if (::GetCapture() == desc.owner) ::ReleaseCapture();
+  if (!desc.gesture) {
+    return S_FALSE;
+  }
+  if (::GetCapture() == desc.owner) {
+    ::ReleaseCapture();
+  }
   HRESULT hr = S_OK;
-  if (desc.gesture) hr = desc.gesture->OnGestureFinish(0, 0, 0);
+  if (desc.gesture) {
+    hr = desc.gesture->OnGestureFinish(0, 0, 0);
+  }
   desc.history.clear();
   desc.gesture.clear();
   return hr;
@@ -818,13 +897,15 @@ void OnGestureUpdate(GestureDesc& desc) {
 // ÉWÉFÉXÉ`ÉÉÇ™ê≥èÌÇ…äÆóπÇµÇΩèÍçáÇ…åƒÇŒÇÍÇÈÅB
 HRESULT OnGestureFinish(GestureDesc& desc) {
   ASSERT(desc.gesture);
-  if (!desc.gesture) return E_FAIL;
+  if (!desc.gesture) {
+    return E_FAIL;
+  }
   ASSERT(!desc.history.empty());
   return desc.gesture->OnGestureFinish(desc.lastMods, desc.history.size(), &desc.history[0]);
 }
 
-void OnGestureButton(GestureDesc& desc, Gesture what) {
-  Point pt;
+void OnGestureButton(GestureDesc& desc, mew::ui::Gesture what) {
+  mew::Point pt;
   ::GetCursorPos(&pt);
   desc.cursor = pt;
   desc.history.push_back(what);
@@ -833,10 +914,12 @@ void OnGestureButton(GestureDesc& desc, Gesture what) {
 }
 
 void OnGestureUp(GestureDesc& desc, const MSG* msg) {
-  if (!desc.gesture) return;
+  if (!desc.gesture) {
+    return;
+  }
   ::ReleaseCapture();
   if (FAILED(OnGestureFinish(desc)) && desc.history.size() == 1) {  // ÉWÉFÉXÉ`ÉÉÇ™ñ≥Ç¢ÇÃÇ≈ÅAí èÌÇÃâEÉNÉäÉbÉN
-    Point pt = desc.cursor;
+    mew::Point pt = desc.cursor;
     desc.window.ScreenToClient(&pt);
     LPARAM lParamClient = MAKELPARAM(pt.x, pt.y);
     // Å·ÉeÉNÉjÉbÉNÅ‚
@@ -870,21 +953,24 @@ void OnGestureUp(GestureDesc& desc, const MSG* msg) {
   EndGesture(desc);
 }
 
-static Gesture CalcDirection(int dx, int dy) {
-  static const Gesture DIR[2][2] = {{GestureNorth, GestureWest}, {GestureEast, GestureSouth}};
+static mew::ui::Gesture CalcDirection(int dx, int dy) {
+  static const mew::ui::Gesture DIR[2][2] = {{mew::ui::GestureNorth, mew::ui::GestureWest},
+                                             {mew::ui::GestureEast, mew::ui::GestureSouth}};
   return DIR[dy + dx > 0 ? 1 : 0][dy - dx > 0 ? 1 : 0];
 }
 
 void OnGestureKey(GestureDesc& desc, WPARAM, LPARAM) {
-  if (desc.history.empty()) return;
-  UINT16 modifiers = GetCurrentModifiers();
+  if (desc.history.empty()) {
+    return;
+  }
+  UINT16 modifiers = mew::ui::GetCurrentModifiers();
   if (modifiers != desc.lastMods) {
     desc.lastMods = modifiers;
     OnGestureUpdate(desc);
   }
 }
 void OnGestureMouseMove(GestureDesc& desc, WPARAM, LPARAM lParam) {
-  Point pt;
+  mew::Point pt;
   ::GetCursorPos(&pt);
 
   int dx = pt.x - desc.cursor.x, dy = pt.y - desc.cursor.y;
@@ -892,7 +978,7 @@ void OnGestureMouseMove(GestureDesc& desc, WPARAM, LPARAM lParam) {
     return;
   }
 
-  Gesture dir = CalcDirection(dx, dy);
+  mew::ui::Gesture dir = CalcDirection(dx, dy);
   desc.cursor = pt;
 
   DWORD dwTimeNow = ::GetTickCount();
@@ -905,41 +991,48 @@ void OnGestureMouseMove(GestureDesc& desc, WPARAM, LPARAM lParam) {
   desc.lastTime = dwTimeNow;
 }
 
-inline bool QueryGestureInWindow(HWND hWnd, IGesture** ppGesture, Point ptScreen, size_t length, const Gesture gesture[]) {
-  QueryGestureStruct param = {ppGesture, ptScreen, length, gesture};
-  return SendMessage(hWnd, MEW_QUERY_GESTURE, 0, (LPARAM)&param) != 0;
+inline bool QueryGestureInWindow(HWND hWnd, mew::ui::IGesture** ppGesture, mew::Point ptScreen, size_t length,
+                                 const mew::ui::Gesture gesture[]) {
+  mew::ui::QueryGestureStruct param = {ppGesture, ptScreen, length, gesture};
+  return SendMessage(hWnd, mew::ui::MEW_QUERY_GESTURE, 0, (LPARAM)&param) != 0;
 }
 
-inline ref<IGesture> QueryGestureToAncestor(HWND hwnd, const GestureDesc& desc) {
-  for (CWindowEx w = hwnd; w; w = ::GetAncestor(w, GA_PARENT)) {
-    ref<IGesture> gesture;
+inline mew::ref<mew::ui::IGesture> QueryGestureToAncestor(HWND hwnd, const GestureDesc& desc) {
+  for (mew::ui::CWindowEx w = hwnd; w; w = ::GetAncestor(w, GA_PARENT)) {
+    mew::ref<mew::ui::IGesture> gesture;
     if (QueryGestureInWindow(w, &gesture, desc.cursor, desc.history.size(), &desc.history[0]) && gesture &&
         SUCCEEDED(gesture->OnGestureAccept(hwnd, desc.cursor, desc.history.size(), &desc.history[0]))) {
       ::SetFocus(hwnd);
       return gesture;
     }
   }
-  return null;
+  return mew::null;
 }
 }  // namespace
 
 static bool ProcessMouseGesture(HWND hwnd, const MSG* msg) {
-  const Gesture start = MessageToGesture(msg);
+  const mew::ui::Gesture start = MessageToGesture(msg);
   const size_t clicks = MessageToClicks(msg);
-  if (start == (Gesture)-1 || clicks == 0) return false;
+  if (start == (mew::ui::Gesture)-1 || clicks == 0) {
+    return false;
+  }
 
   GestureDesc desc;
   desc.cursor.assign(GET_XY_LPARAM(msg->lParam));
   desc.owner = hwnd;
   desc.window = msg->hwnd;
   desc.window.ClientToScreen(&desc.cursor);
-  for (size_t i = 0; i < clicks; ++i) desc.history.push_back(start);
+  for (size_t i = 0; i < clicks; ++i) {
+    desc.history.push_back(start);
+  }
 
-  if (!(desc.gesture = QueryGestureToAncestor(msg->hwnd, desc))) return false;
+  if (!(desc.gesture = QueryGestureToAncestor(msg->hwnd, desc))) {
+    return false;
+  }
 
   ::SetCapture(desc.owner);
   desc.lastTime = ::GetTickCount();
-  desc.lastMods = GetCurrentModifiers();
+  desc.lastMods = mew::ui::GetCurrentModifiers();
   OnGestureUpdate(desc);
 
   while (desc.gesture) {
@@ -961,7 +1054,9 @@ static bool ProcessMouseGesture(HWND hwnd, const MSG* msg) {
       case WM_RBUTTONUP:
       case WM_MBUTTONUP:
       case WM_XBUTTONUP:
-        if (MessageToGesture(&msg_) == start) OnGestureUp(desc, &msg_);
+        if (MessageToGesture(&msg_) == start) {
+          OnGestureUp(desc, &msg_);
+        }
         break;
       case WM_LBUTTONDOWN:
       case WM_RBUTTONDOWN:

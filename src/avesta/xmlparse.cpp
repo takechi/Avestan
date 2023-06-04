@@ -75,8 +75,8 @@ struct VirtualKeyVerifier {
 
 //==============================================================================
 
-UINT8 avesta::XmlAttrKey(xml::XMLAttributes& attr) {
-  if (string key = attr[ATTR_KEY]) {
+UINT8 avesta::XmlAttrKey(mew::xml::XMLAttributes& attr) {
+  if (mew::string key = attr[ATTR_KEY]) {
     const VirtualKey* begin = VIRTUALKEYS;
     const VirtualKey* end = begin + lengthof(VIRTUALKEYS);
     const VirtualKey* found = binary_search(begin, end, key.str());
@@ -87,46 +87,50 @@ UINT8 avesta::XmlAttrKey(xml::XMLAttributes& attr) {
 
 //==============================================================================
 
-string avesta::XmlAttrText(xml::XMLAttributes& attr) {
-  if (string text = attr[ATTR_TEXT])
+mew::string avesta::XmlAttrText(mew::xml::XMLAttributes& attr) {
+  if (mew::string text = attr[ATTR_TEXT]) {
     return text.replace(L'_', L'&');
-  else
-    return null;
+  } else {
+    return mew::null;
+  }
 }
 
 //==============================================================================
 
-int avesta::XmlAttrImage(xml::XMLAttributes& attr) {
-  if (string img = attr[ATTR_IMAGE])
-    return str::atoi(img.str());
-  else
+int avesta::XmlAttrImage(mew::xml::XMLAttributes& attr) {
+  if (mew::string img = attr[ATTR_IMAGE]) {
+    return mew::str::atoi(img.str());
+  } else {
     return -2;
+  }
 }
 
 //==============================================================================
 
-UINT16 avesta::XmlAttrModifiers(xml::XMLAttributes& attr) {
-  string s = attr[ATTR_MODIFIER];
+UINT16 avesta::XmlAttrModifiers(mew::xml::XMLAttributes& attr) {
+  mew::string s = attr[ATTR_MODIFIER];
   PCWSTR m = s.str();
   UINT16 mod = 0;
-  if (!m) return mod;
+  if (!m) {
+    return mod;
+  }
   for (; *m != L'\0'; ++m) {
     switch (*m) {
       case 'a':
       case 'A':
-        mod |= ModifierAlt;
+        mod |= mew::ui::ModifierAlt;
         break;
       case 'c':
       case 'C':
-        mod |= ModifierControl;
+        mod |= mew::ui::ModifierControl;
         break;
       case 's':
       case 'S':
-        mod |= ModifierShift;
+        mod |= mew::ui::ModifierShift;
         break;
       case 'w':
       case 'W':
-        mod |= ModifierWindows;
+        mod |= mew::ui::ModifierWindows;
         break;
       default:
         ASSERT(!L"INVALID_MODIFIER");
@@ -143,27 +147,27 @@ static const struct NameToCLSID {
   LPCWSTR name;
   CLSID clsid;
 
-  friend bool operator==(const NameToCLSID& lhs, const string& rhs) { return lhs.name == rhs; }
-  friend bool operator<(const NameToCLSID& lhs, const string& rhs) { return lhs.name < rhs; }
+  friend bool operator==(const NameToCLSID& lhs, const mew::string& rhs) { return lhs.name == rhs; }
+  friend bool operator<(const NameToCLSID& lhs, const mew::string& rhs) { return lhs.name < rhs; }
 } CLSIDs[] = {
-    {L"Display", __uuidof(Display)},
-    {L"FolderList", __uuidof(TabPanel)},
+    {L"Display", __uuidof(mew::ui::Display)},
+    {L"FolderList", __uuidof(mew::ui::TabPanel)},
     {L"FolderTree", __uuidof(FolderTree)},
-    {L"Form", __uuidof(Form)},
-    {L"LinkBar", __uuidof(LinkBar)},
-    {L"Main", __uuidof(DockPanel)},
-    {L"MenuBar", __uuidof(MenuBar)},
+    {L"Form", __uuidof(mew::ui::Form)},
+    {L"LinkBar", __uuidof(mew::ui::LinkBar)},
+    {L"Main", __uuidof(mew::ui::DockPanel)},
+    {L"MenuBar", __uuidof(mew::ui::MenuBar)},
     // { L"Panel", __uuidof(Panel) },
-    {L"Preview", __uuidof(Preview)},
-    {L"ReBar", __uuidof(ReBar)},
-    {L"StatusBar", __uuidof(StatusBar)},
-    {L"System", __uuidof(Display)}, /* alias */
-    {L"ToolBar", __uuidof(ToolBar)},
+    {L"Preview", __uuidof(mew::ui::Preview)},
+    {L"ReBar", __uuidof(mew::ui::ReBar)},
+    {L"StatusBar", __uuidof(mew::ui::StatusBar)},
+    {L"System", __uuidof(mew::ui::Display)}, /* alias */
+    {L"ToolBar", __uuidof(mew::ui::ToolBar)},
     //{ L"TreeView", __uuidof(TreeView) },
 };
 }  // namespace
 
-REFCLSID avesta::ToCLSID(const string& value) {
+REFCLSID avesta::ToCLSID(const mew::string& value) {
   const NameToCLSID* begin = CLSIDs;
   const NameToCLSID* end = begin + lengthof(CLSIDs);
   const NameToCLSID* found = binary_search(begin, end, value);
@@ -172,25 +176,26 @@ REFCLSID avesta::ToCLSID(const string& value) {
 
 //==============================================================================
 
-Navigation ParseNavigate(PCWSTR s, Navigation defaultNavi) {
-  if (str::empty(s))
+avesta::Navigation ParseNavigate(PCWSTR s, avesta::Navigation defaultNavi) {
+  if (mew::str::empty(s)) {
     return defaultNavi;
-  else if (wcsicmp(s, L"goto") == 0)
-    return NaviGoto;
-  else if (wcsicmp(s, L"goto-always") == 0)
-    return NaviGotoAlways;
-  else if (wcsicmp(s, L"open") == 0)
-    return NaviOpen;
-  else if (wcsicmp(s, L"open-always") == 0)
-    return NaviOpenAlways;
-  else if (wcsicmp(s, L"append") == 0)
-    return NaviAppend;
-  else if (wcsicmp(s, L"reserve") == 0)
-    return NaviReserve;
-  else if (wcsicmp(s, L"switch") == 0)
-    return NaviSwitch;
-  else if (wcsicmp(s, L"replace") == 0)
-    return NaviReplace;
-  else
+  } else if (wcsicmp(s, L"goto") == 0) {
+    return avesta::NaviGoto;
+  } else if (wcsicmp(s, L"goto-always") == 0) {
+    return avesta::NaviGotoAlways;
+  } else if (wcsicmp(s, L"open") == 0) {
+    return avesta::NaviOpen;
+  } else if (wcsicmp(s, L"open-always") == 0) {
+    return avesta::NaviOpenAlways;
+  } else if (wcsicmp(s, L"append") == 0) {
+    return avesta::NaviAppend;
+  } else if (wcsicmp(s, L"reserve") == 0) {
+    return avesta::NaviReserve;
+  } else if (wcsicmp(s, L"switch") == 0) {
+    return avesta::NaviSwitch;
+  } else if (wcsicmp(s, L"replace") == 0) {
+    return avesta::NaviReplace;
+  } else {
     return defaultNavi;
+  }
 }

@@ -7,7 +7,7 @@
 //==============================================================================
 
 namespace {
-class FormReader : public XMLHandlerImpl {
+class FormReader : public mew::xml::XMLHandlerImpl {
  private:
   Templates m_forms;
   int m_current;
@@ -20,11 +20,11 @@ class FormReader : public XMLHandlerImpl {
     return S_OK;
   }
 
-  HRESULT StartElement(PCWSTR name, size_t cch, XMLAttributes& attr) {
+  HRESULT StartElement(PCWSTR name, size_t cch, mew::xml::XMLAttributes& attr) {
     Template t;
     t.parent = m_current;
-    t.type = string(name, cch);
-    t.clsid = ToCLSID(string(name, cch));
+    t.type = mew::string(name, cch);
+    t.clsid = avesta::ToCLSID(mew::string(name, cch));
     t.id = attr[L"id"];
     // t.name = attr[L"name"];
     t.keyboard = attr[L"keyboard"];
@@ -52,10 +52,12 @@ class FormReader : public XMLHandlerImpl {
 };
 }  // namespace
 
-HRESULT FormTemplate(string xmlfile, IXMLReader* sax, Templates& forms) {
+HRESULT FormTemplate(mew::string xmlfile, mew::xml::IXMLReader* sax, Templates& forms) {
   HRESULT hr;
   FormReader reader;
-  if FAILED (hr = sax->Parse(&reader, xmlfile)) return hr;
+  if FAILED (hr = sax->Parse(&reader, xmlfile)) {
+    return hr;
+  }
   return reader.CopyTo(forms);
 }
 
@@ -73,161 +75,185 @@ HRESULT FormGenerate(Templates& forms) {
   for (int i = 0; i < (int)forms.size(); ++i) {
     Template& t = forms[i];
     //
-    if (t.type == FORMTYPE_FORM)
+    if (t.type == FORMTYPE_FORM) {
       indexForm = i;
-    else if (t.type == FORMTYPE_PANEL)
+    } else if (t.type == FORMTYPE_PANEL) {
       indexPanel = i;
-    else if (t.type == FORMTYPE_MAIN)
+    } else if (t.type == FORMTYPE_MAIN) {
       indexMain = i;
+    }
     //
-    ref<IWindow> parent;
-    if (t.parent >= 0) parent = forms[t.parent].window;
+    mew::ref<mew::ui::IWindow> parent;
+    if (t.parent >= 0) {
+      parent = forms[t.parent].window;
+    }
     t.window.create(t.clsid, parent);
     t.window->Name = t.id;
     // dock
-    if (i == indexPanel || i == indexMain)
-      t.window->Dock = DirCenter;
-    else if (t.parent == indexForm) {
-      if (i < indexPanel)
-        t.window->Dock = DirNorth;
-      else
-        t.window->Dock = DirSouth;
+    if (i == indexPanel || i == indexMain) {
+      t.window->Dock = mew::ui::DirCenter;
+    } else if (t.parent == indexForm) {
+      if (i < indexPanel) {
+        t.window->Dock = mew::ui::DirNorth;
+      } else {
+        t.window->Dock = mew::ui::DirSouth;
+      }
     } else if (t.parent == indexPanel) {
-      if (i < indexMain)
-        t.window->Dock = DirWest;
-      else
-        t.window->Dock = DirEast;
-      t.window->Bounds = Rect(0, 0, 160, 160);
+      if (i < indexMain) {
+        t.window->Dock = mew::ui::DirWest;
+      } else {
+        t.window->Dock = mew::ui::DirEast;
+      }
+      t.window->Bounds = mew::Rect(0, 0, 160, 160);
     }
   }
   return S_OK;
 }
 
 HRESULT FormDispose(Templates& forms) {
-  for (Templates::iterator i = forms.begin(); i != forms.end(); ++i) i->window.dispose();
+  for (Templates::iterator i = forms.begin(); i != forms.end(); ++i) {
+    i->window.dispose();
+  }
   return S_OK;
 }
 
 namespace {
 template <typename T>
-ref<T> LoadResource(string relname, ICommands* commands, IXMLReader* sax, ref<T> (*fn)(string, ICommands*, IXMLReader*),
-                    UINT errmsg) {
-  if (!relname) return null;
+mew::ref<T> LoadResource(mew::string relname, mew::ICommands* commands, mew::xml::IXMLReader* sax,
+                         mew::ref<T> (*fn)(mew::string, mew::ICommands*, mew::xml::IXMLReader*), UINT errmsg) {
+  if (!relname) {
+    return mew::null;
+  }
   TRACE(L"LoadResource($1)", relname);
   RelativePath path(relname, L"..\\..\\usr");
   if (!PathFileExists(path)) {
     // file not found
-    WarningBox(/*m_forms*/ null, string::format(L"$1 が見つかりません", relname));
-    return null;
+    ave::WarningBox(/*m_forms*/ mew::null, mew::string::format(L"$1 が見つかりません", relname));
+    return mew::null;
   }
-  if (ref<T> res = fn(path, commands, sax)) return res;
+  if (mew::ref<T> res = fn(mew::string(path), commands, sax)) {
+    return res;
+  }
   // error
-  WarningBox(/*m_forms*/ null, string::load(IDS_ERR_LOAD_GESTURE, relname));
-  return null;
+  ave::WarningBox(/*m_forms*/ mew::null, mew::string::load(IDS_ERR_LOAD_GESTURE, relname));
+  return mew::null;
 }
 
-ref<IImageList> GetShellImageList(int size) {
-  ref<IImageList> imagelist;
+mew::ref<IImageList> GetShellImageList(int size) {
+  mew::ref<IImageList> imagelist;
   afx::ExpGetImageList(size, &imagelist);
   return imagelist;
 }
 
-ref<IImageList> LoadImageList(string relname) {
+mew::ref<IImageList> LoadImageList(mew::string relname) {
   static const WCHAR SHELLICON_PREFIX[] = L"shell:";
   static const size_t SHELLICON_PREFIX_LEN = 6;
   LPCWSTR buffer = relname.str();
   ASSERT(buffer);
-  if (str::compare_nocase(buffer, SHELLICON_PREFIX, SHELLICON_PREFIX_LEN) == 0)
-    return GetShellImageList(str::atoi(buffer + SHELLICON_PREFIX_LEN));
+  if (mew::str::compare_nocase(buffer, SHELLICON_PREFIX, SHELLICON_PREFIX_LEN) == 0) {
+    return GetShellImageList(mew::str::atoi(buffer + SHELLICON_PREFIX_LEN));
+  }
   RelativePath path(relname, L"..\\..\\usr");
   if (!PathFileExists(path)) {
     // file not found
-    WarningBox(/*m_forms*/ null, string::format(L"$1 が見つかりません", relname));
-    return null;
+    ave::WarningBox(/*m_forms*/ mew::null, mew::string::format(L"$1 が見つかりません", relname));
+    return mew::null;
   }
   try {
-    return ref<IImageList>(__uuidof(ImageList), string(path));
-  } catch (Error&) {
-    WarningBox(/*m_forms*/ null, string::load(IDS_ERR_LOAD_IMAGE, relname));
-    return null;
+    return mew::ref<IImageList>(__uuidof(ImageList), mew::string(path));
+  } catch (mew::exceptions::Error&) {
+    ave::WarningBox(/*m_forms*/ mew::null, mew::string::load(IDS_ERR_LOAD_IMAGE, relname));
+    return mew::null;
   }
 }
 
 template <typename T>
-void SetWindowExtension(IWindow* window, string relname, ICommands* commands, IXMLReader* sax,
-                        ref<T> (*fn)(string, ICommands*, IXMLReader*), UINT errmsg) {
-  if (!window) return;
-  if (ref<T> extension = LoadResource(relname, commands, sax, fn, errmsg)) {
+void SetWindowExtension(mew::ui::IWindow* window, mew::string relname, mew::ICommands* commands, mew::xml::IXMLReader* sax,
+                        mew::ref<T> (*fn)(mew::string, mew::ICommands*, mew::xml::IXMLReader*), UINT errmsg) {
+  if (!window) {
+    return;
+  }
+  if (mew::ref<T> extension = LoadResource(relname, commands, sax, fn, errmsg)) {
     VERIFY_HRESULT(window->SetExtension(__uuidof(T), extension));
   }
 }
 
-ref<IEditableTreeItem> LoadLinkTreeFromDirectory(PCTSTR dir, function fn) {
+mew::ref<mew::ui::IEditableTreeItem> LoadLinkTreeFromDirectory(PCTSTR dir, mew::function fn) {
   WIN32_FIND_DATA find;
-  io::Path basedir(dir);
+  mew::io::Path basedir(dir);
   basedir.Append(_T("*.*"));
   HANDLE hFind = ::FindFirstFile(basedir, &find);
-  if (hFind == INVALID_HANDLE_VALUE) return null;
-  ref<IEditableTreeItem> root(__uuidof(DefaultTreeItem));
+  if (hFind == INVALID_HANDLE_VALUE) {
+    return mew::null;
+  }
+  mew::ref<mew::ui::IEditableTreeItem> root(__uuidof(mew::ui::DefaultTreeItem));
   do {
-    if (lstrcmp(find.cFileName, _T(".")) == 0) continue;
-    if (lstrcmp(find.cFileName, _T("..")) == 0) continue;
-    io::Path fullpath(dir);
+    if (lstrcmp(find.cFileName, _T(".")) == 0) {
+      continue;
+    }
+    if (lstrcmp(find.cFileName, _T("..")) == 0) {
+      continue;
+    }
+    mew::io::Path fullpath(dir);
     fullpath.Append(find.cFileName);
     try {
-      ref<IFolder> pSubMenu(__uuidof(FolderMenu), string(fullpath));
-      cast<ISignal>(pSubMenu)->Connect(EventInvoke, fn);
+      mew::ref<mew::io::IFolder> pSubMenu(__uuidof(mew::io::FolderMenu), mew::string(fullpath));
+      mew::cast<mew::ISignal>(pSubMenu)->Connect(mew::EventInvoke, fn);
       root->AddChild(pSubMenu);
-    } catch (Error& e) {
+    } catch (mew::exceptions::Error& e) {
       TRACE(e.Message);
     }
   } while (::FindNextFile(hFind, &find));
   ::FindClose(hFind);
   return root;
 }
-ref<ITreeItem> LoadLinkTree(string relname, function onOpen, IXMLReader* sax) {
+mew::ref<mew::ui::ITreeItem> LoadLinkTree(mew::string relname, mew::function onOpen, mew::xml::IXMLReader* sax) {
   RelativePath xml(relname, L"..\\..\\usr");
-  ref<ITreeItem> root;
+  mew::ref<mew::ui::ITreeItem> root;
   if (PathIsDirectory(xml)) {  // link from directory
     return LoadLinkTreeFromDirectory(xml, onOpen);
   } else if (PathFileExists(xml)) {  // link from xml
-    return XmlLoadLinks(xml, onOpen, sax);
+    return XmlLoadLinks(mew::string(xml), onOpen, sax);
   }
-  return null;
+  return mew::null;
 }
 
-HRESULT OnOpenEntry(message msg) {
+HRESULT OnOpenEntry(mew::message msg) {
   theAvesta->OpenOrExecute(msg["what"]);
   return S_OK;
 }
 
 // 読み込み失敗用ダミーツリー
-ref<ITreeItem> CreateDummyTree(string relname) {
-  ref<IEditableTreeItem> root(__uuidof(DefaultTreeItem));
-  ref<IEditableTreeItem> disable(__uuidof(DefaultTreeItem));
-  disable->Name = string::load(IDS_ERR_OPENFILE, relname);
+mew::ref<mew::ui::ITreeItem> CreateDummyTree(mew::string relname) {
+  mew::ref<mew::ui::IEditableTreeItem> root(__uuidof(mew::ui::DefaultTreeItem));
+  mew::ref<mew::ui::IEditableTreeItem> disable(__uuidof(mew::ui::DefaultTreeItem));
+  disable->Name = mew::string::load(IDS_ERR_OPENFILE, relname);
   root->AddChild(disable);
   return root;
 }
 
-void ReloadForm(Template& t, ICommands* commands, IXMLReader* sax) {
-  if (!t.window) return;
+void ReloadForm(Template& t, mew::ICommands* commands, mew::xml::IXMLReader* sax) {
+  if (!t.window) {
+    return;
+  }
   SetWindowExtension(t.window, t.keyboard, commands, sax, XmlLoadKeymap, IDS_ERR_LOAD_KEYMAP);
   SetWindowExtension(t.window, t.mouse, commands, sax, XmlLoadGesture, IDS_ERR_LOAD_GESTURE);
-  if (ref<ITree> tree = cast(t.window)) {
+  if (mew::ref<mew::ui::ITree> tree = cast(t.window)) {
     if (t.icon) {
       tree->ImageList = LoadImageList(t.icon);
     }
     if (t.item) {
       tree->Root = (t.type == L"LinkBar") ? LoadLinkTree(t.item, OnOpenEntry, sax)
                                           : LoadResource(t.item, commands, sax, XmlLoadTreeItem, IDS_ERR_LOAD_COMMAND);
-      if (!tree->Root) tree->Root = CreateDummyTree(t.item);
+      if (!tree->Root) {
+        tree->Root = CreateDummyTree(t.item);
+      }
     }
   }
 }
 }  // namespace
 
-HRESULT FormReload(Templates& forms, ICommands* commands, IXMLReader* sax) {
+HRESULT FormReload(Templates& forms, mew::ICommands* commands, mew::xml::IXMLReader* sax) {
   for (Templates::iterator i = forms.begin(); i != forms.end(); ++i) {
     ReloadForm(*i, commands, sax);
   }

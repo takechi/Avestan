@@ -134,7 +134,7 @@ class WindowMessageSource : public SignalImpl<DynamicLife<TBase> > {
       try {
         InvokeEvent<EventData>(static_cast<IWindow*>(this), data);
         ::PostThreadMessage(::GetCurrentThreadId(), WM_UPDATEUISTATE, 0, 0);
-      } catch (Error&) {
+      } catch (mew::exceptions::Error&) {
       }
     }
     return 0;
@@ -183,14 +183,18 @@ class __declspec(novtable) WindowImpl : public Root<TImplements, TMixin>, public
       hWndParent = window->Handle;
     }
     if (!::IsWindow(hWndParent) || ::GetWindowThreadProcessId(hWndParent, null) != ::GetCurrentThreadId()) {
-      throw ArgumentError(string::load(IDS_ERR_INVALIDPARENT), E_INVALIDARG);
+      throw mew::exceptions::ArgumentError(string::load(IDS_ERR_INVALIDPARENT), E_INVALIDARG);
     }
     //
     final.DoCreate(hWndParent);
-    if (!m_hWnd) throw RuntimeError(string(IDS_ERR_CREATEWINDOW), AtlHresultFromLastError());
+    if (!m_hWnd) {
+      throw mew::exceptions::RuntimeError(string(IDS_ERR_CREATEWINDOW), AtlHresultFromLastError());
+    }
   }
   void Dispose() throw() {
-    if (m_msgr && IsWindow()) DestroyWindow();
+    if (m_msgr && IsWindow()) {
+      DestroyWindow();
+    }
     m_msgr.dispose();
   }
   HRESULT Connect(EventCode code, function fn, message msg = null) throw() {

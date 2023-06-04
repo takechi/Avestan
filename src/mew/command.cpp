@@ -20,31 +20,33 @@ struct Event<EventQueryState> {
 namespace {
 //==============================================================================
 
-class Command : public Root<implements<ICommand, ISignal>, mixin<SignalImpl, DynamicLife> > {
+class Command : public mew::Root<mew::implements<mew::ICommand, mew::ISignal>, mew::mixin<mew::SignalImpl, mew::DynamicLife> > {
  private:  // variables
-  string m_Name;
-  string m_Description;
+  mew::string m_Name;
+  mew::string m_Description;
 
  public:  // Object
-  Command(string name, string description) : m_Name(name), m_Description(description) { m_msgr.create(__uuidof(Messenger)); }
+  Command(mew::string name, mew::string description) : m_Name(name), m_Description(description) {
+    m_msgr.create(__uuidof(mew::Messenger));
+  }
   void Dispose() throw() { m_msgr.dispose(); }
 
  public:  // ICommand
-  string get_Description() { return m_Description; }
+  mew::string get_Description() { return m_Description; }
   UINT32 QueryState(IUnknown* owner) {
-    message reply = InvokeEvent<EventQueryState>(this, owner);
-    return reply["state"] | (UINT32)(ENABLED);
+    mew::message reply = InvokeEvent<mew::EventQueryState>(this, owner);
+    return reply["state"] | (UINT32)(mew::ENABLED);
   }
   void Invoke() {
     TRACE(L"info: Command.Invoke[name=$1, desc=$2]", m_Name, m_Description);
-    InvokeEvent<EventInvoke>(static_cast<ICommand*>(this));
+    InvokeEvent<mew::EventInvoke>(static_cast<ICommand*>(this));
   }
 
  public:  // ISignal
-  HRESULT Connect(EventCode code, function fn, message msg = null) throw() {
+  HRESULT Connect(mew::EventCode code, mew::function fn, mew::message msg = mew::null) throw() {
     switch (code) {
-      case EventInvoke:
-      case EventQueryState:
+      case mew::EventInvoke:
+      case mew::EventQueryState:
         return __super::Connect(code, fn, msg);
       default:
         ASSERT(!"warning: Unsupported event code.");
@@ -53,33 +55,37 @@ class Command : public Root<implements<ICommand, ISignal>, mixin<SignalImpl, Dyn
   }
 
   struct Compare {
-    bool operator()(const string& lhs, const string& rhs) const { return lhs.compare_nocase(rhs) < 0; }
+    bool operator()(const mew::string& lhs, const mew::string& rhs) const { return lhs.compare_nocase(rhs) < 0; }
     bool operator()(const Command* lhs, const Command* rhs) const { return operator()(lhs->m_Name, rhs->m_Name); }
-    bool operator()(const string& lhs, const Command* rhs) const { return operator()(lhs, rhs->m_Name); }
-    bool operator()(const Command* lhs, const string& rhs) const { return operator()(lhs->m_Name, rhs); }
+    bool operator()(const mew::string& lhs, const Command* rhs) const { return operator()(lhs, rhs->m_Name); }
+    bool operator()(const Command* lhs, const mew::string& rhs) const { return operator()(lhs->m_Name, rhs); }
   };
 };
 
 //==============================================================================
 
-class CompoundCommand : public Root<implements<ICommand> > {
+class CompoundCommand : public mew::Root<mew::implements<mew::ICommand> > {
  private:  // variables
-  string m_Name;
-  array<ICommand> m_Commands;
+  mew::string m_Name;
+  mew::array<mew::ICommand> m_Commands;
 
  public:  // Object
-  CompoundCommand(string name) : m_Name(name) {}
+  CompoundCommand(mew::string name) : m_Name(name) {}
 
  public:  // ICommand
-  string get_Description() { return m_Name; }
+  mew::string get_Description() { return m_Name; }
   UINT32 QueryState(IUnknown* owner) {
     UINT32 check = 0;
-    for (array<ICommand>::iterator i = m_Commands.begin(); i != m_Commands.end(); ++i) {
+    for (mew::array<mew::ICommand>::iterator i = m_Commands.begin(); i != m_Commands.end(); ++i) {
       UINT32 state = (*i)->QueryState(owner);
-      if (!(state & ENABLED)) return check;
-      if (state & CHECKED) check = CHECKED;
+      if (!(state & mew::ENABLED)) {
+        return check;
+      }
+      if (state & mew::CHECKED) {
+        check = mew::CHECKED;
+      }
     }
-    return ENABLED | check;
+    return mew::ENABLED | check;
   }
   void Invoke() {
     TRACE(_T("info: CompoundCommand.Invoke[name=$1]"), m_Name);
@@ -134,9 +140,13 @@ class Commands : public Root<implements<ICommands> > {
     return S_OK;
   }
   HRESULT Alias(string alias, string name) {
-    if (!alias) return E_POINTER;
+    if (!alias) {
+      return E_POINTER;
+    }
     Map::iterator i = m_map.find(name);
-    if (i == m_map.end()) return E_INVALIDARG;
+    if (i == m_map.end()) {
+      return E_INVALIDARG;
+    }
     m_map[alias] = i->second;
     return S_OK;
   }
@@ -162,7 +172,9 @@ class Commands : public Root<implements<ICommands> > {
         if (!cmd) cmd.attach(new CompoundCommand(name));
         cmd->AddCommand(j->second);
       }
-      if (!cmd) return E_INVALIDARG;
+      if (!cmd) {
+        return E_INVALIDARG;
+      }
       // TODO: 複合コマンドを登録する。しかし、ここで勝手に登録すると、解放されなくなってしまう。
       // 複合コマンド専用にAddRef()しない配列を用意して、弱参照として扱うべきか？
       // Add(name);
@@ -175,19 +187,23 @@ class Commands : public Root<implements<ICommands> > {
   HRESULT SetHandler(string name, function fn, message msg) {
     HRESULT hr;
     ref<ISignal> src;
-    if FAILED (hr = Find(&src, name)) return hr;
+    if FAILED (hr = Find(&src, name)) {
+      return hr;
+    }
     return src->Connect(EventInvoke, fn, msg);
   }
   HRESULT SetObserver(string name, function fn, message msg) {
     HRESULT hr;
     ref<ISignal> src;
-    if FAILED (hr = Find(&src, name)) return hr;
+    if FAILED (hr = Find(&src, name)) {
+      return hr;
+    }
     return src->Connect(EventQueryState, fn, msg);
   }
 };
 
+AVESTA_EXPORT(Commands)
+
 }  // namespace mew
 
 //==============================================================================
-
-AVESTA_EXPORT(Commands)

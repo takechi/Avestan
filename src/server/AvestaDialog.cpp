@@ -7,22 +7,26 @@
 // common
 
 namespace {
-string GetDirectoryOfView(IShellListView* view) {
-  if (ref<IEntry> entry = GetFolderOfView(view)) {
-    string path = entry->Path;
-    if (!!path)
+mew::string GetDirectoryOfView(mew::ui::IShellListView* view) {
+  if (mew::ref<mew::io::IEntry> entry = ave::GetFolderOfView(view)) {
+    mew::string path = entry->Path;
+    if (!!path) {
       return path;
-    else
-      theAvesta->Notify(NotifyError, string::load(IDS_ERR_VIRTUALFOLDER, entry->Name));
-  } else
-    theAvesta->Notify(NotifyError, string::load(IDS_BAD_FODLER));
-  return null;
+    } else {
+      theAvesta->Notify(avesta::NotifyError, mew::string::load(IDS_ERR_VIRTUALFOLDER, entry->Name));
+    }
+  } else {
+    theAvesta->Notify(avesta::NotifyError, mew::string::load(IDS_BAD_FODLER));
+  }
+  return mew::null;
 }
 
-bool Recheck(IShellListView* view, string path) {
+bool Recheck(mew::ui::IShellListView* view, mew::string path) {
   // ダイアログを表示している間にフォルダビューが無効 or パスが変わる可能性があるため、もう一度チェックする.
-  if (path == GetPathOfView(view)) return true;
-  theAvesta->Notify(NotifyWarning, string::load(IDS_ERR_BADFOLDER));
+  if (path == ave::GetPathOfView(view)) {
+    return true;
+  }
+  theAvesta->Notify(avesta::NotifyWarning, mew::string::load(IDS_ERR_BADFOLDER));
   return false;
 }
 }  // namespace
@@ -31,27 +35,29 @@ bool Recheck(IShellListView* view, string path) {
 // New
 
 namespace {
-class NewFileDlg : public Dialog {
+class NewFileDlg : public avesta::Dialog {
  public:
-  string m_location;
+  mew::string m_location;
   TCHAR m_extension[MAX_PATH];
   TCHAR m_names[MAX_PATH];
   bool m_select;
 
  public:
   NewFileDlg() {
-    str::clear(m_extension);
-    str::clear(m_names);
+    mew::str::clear(m_extension);
+    mew::str::clear(m_names);
     m_select = true;
   }
-  INT_PTR Go(string location) {
+  INT_PTR Go(mew::string location) {
     m_location = location;
     return __super::Go(IDD_NEWFILE);
   }
 
  protected:
   virtual bool OnCreate() {
-    if (!__super::OnCreate()) return false;
+    if (!__super::OnCreate()) {
+      return false;
+    }
     SetText(IDC_NEW_PATH, m_location.str());
     SetText(IDC_NEW_EXT, m_extension);
     afx::Edit_SubclassSingleLineTextBox(GetItem(IDC_NEW_EXT), NULL, theAvesta->EditOptions | afx::EditTypeMultiName);
@@ -69,7 +75,9 @@ class NewFileDlg : public Dialog {
     switch (what) {
       case IDOK:
         GetText(IDC_NEW_EXT, m_extension, MAX_PATH);
-        if (m_extension[0] != __T('\0') && m_extension[0] != _T('.')) str::prepend(m_extension, _T("."));
+        if (m_extension[0] != __T('\0') && m_extension[0] != _T('.')) {
+          mew::str::prepend(m_extension, _T("."));
+        }
         GetText(IDC_NEW_NAME, m_names, MAX_PATH);
         m_select = GetChecked(IDC_NEW_SELECT);
         m_location.clear();
@@ -85,14 +93,16 @@ class NewFileDlg : public Dialog {
 
 #define FORBIDDEN_PATH_CHARS L"\\/:\"<>|*?\t\r\n"
 
-void CreateFileOrFolder(std::vector<string>& newfiles, const string& path, PCWSTR names, PCWSTR extension) {
+void CreateFileOrFolder(std::vector<mew::string>& newfiles, const mew::string& path, PCWSTR names, PCWSTR extension) {
   // セミコロンは本来ファイルパス用の文字として使えるが、ここではパス区切りとして扱うことにする。
   const PCWSTR SEPARATOR = FORBIDDEN_PATH_CHARS L";";
   const PCWSTR TRIM = FORBIDDEN_PATH_CHARS L"; ";
-  const bool isEmptyExtension = str::empty(extension);
-  for (StringSplit token(names, SEPARATOR, TRIM);;) {
-    string leaf = token.next();
-    if (!leaf) break;
+  const bool isEmptyExtension = mew::str::empty(extension);
+  for (mew::StringSplit token(names, SEPARATOR, TRIM);;) {
+    mew::string leaf = token.next();
+    if (!leaf) {
+      break;
+    }
     WCHAR file[MAX_PATH];
     path.copyto(file, MAX_PATH);
     PathAppendW(file, leaf.str());
@@ -120,7 +130,7 @@ void CreateFileOrFolder(std::vector<string>& newfiles, const string& path, PCWST
     if (SUCCEEDED(hr))
       newfiles.push_back(file);
     else
-      theAvesta->Notify(NotifyWarning, string::format(L"$1 の作成に失敗しました", file));
+      theAvesta->Notify(avesta::NotifyWarning, mew::string::format(L"$1 の作成に失敗しました", file));
   }
 }
 
@@ -130,14 +140,15 @@ enum AfterCreateEffect {
   AfterCreateRename,
 };
 
-static void CreateAndSelect(IShellListView* view, const string& path, PCWSTR names, PCWSTR extension, AfterCreateEffect after) {
-  std::vector<string> newfiles;
-  if (str::empty(names)) names = theAvesta->GetDefaultNewName();
+static void CreateAndSelect(mew::ui::IShellListView* view, const mew::string& path, PCWSTR names, PCWSTR extension,
+                            AfterCreateEffect after) {
+  std::vector<mew::string> newfiles;
+  if (mew::str::empty(names)) names = theAvesta->GetDefaultNewName();
 
   CreateFileOrFolder(newfiles, path, names, extension);
   if (after == AfterCreateNone || newfiles.empty()) return;
 
-  view->Send(CommandSelectNone);
+  view->Send(mew::ui::CommandSelectNone);
   // 10回回っても選択できないようならばあきらめる
   for (int count = 0; count < 10; ++count) {
     // ファイルシステムへの変更に時間がかかるため、すぐには選択できない場合がある。
@@ -149,30 +160,36 @@ static void CreateAndSelect(IShellListView* view, const string& path, PCWSTR nam
     for (size_t i = 0; i < newfiles.size(); ++i) {
       PCWSTR newfile = newfiles[i].str();
       PCWSTR newname = PathFindFileName(newfile);
-      VERIFY_HRESULT(view->SetStatus(string(newname), SELECTED, unique));
+      VERIFY_HRESULT(view->SetStatus(mew::string(newname), mew::SELECTED, unique));
       unique = false;
     }
-    ref<IEntryList> entries;
-    if (SUCCEEDED(view->GetContents(&entries, SELECTED)) && entries->Count == newfiles.size()) {  // unique選択でいったん選択数がゼロになるため、個数のみの判別で十分なはず。
+    mew::ref<mew::io::IEntryList> entries;
+    if (SUCCEEDED(view->GetContents(&entries, mew::SELECTED)) &&
+        entries->Count == newfiles.size()) {  // unique選択でいったん選択数がゼロになるため、個数のみの判別で十分なはず。
       TRACE(_T("info: 新規作成ファイルの選択に $1 回のループが必要でした"), count);
-      if (after == AfterCreateRename) view->Send(CommandRename);
+      if (after == AfterCreateRename) {
+        view->Send(mew::ui::CommandRename);
+      }
       break;
     }
   }
 }
 }  // namespace
 
-void NewFolder(IShellListView* view) {
-  if (string path = GetDirectoryOfView(view)) CreateAndSelect(view, path, null, null, AfterCreateRename);
+void NewFolder(mew::ui::IShellListView* view) {
+  if (mew::string path = GetDirectoryOfView(view)) {
+    CreateAndSelect(view, path, nullptr, nullptr, AfterCreateRename);
+  }
 }
 
-void DlgNew(IShellListView* view) {
-  string path = GetDirectoryOfView(view);
+void DlgNew(mew::ui::IShellListView* view) {
+  mew::string path = GetDirectoryOfView(view);
   if (!path) return;
   static NewFileDlg dlg;
-  ref<IUnknown> unk(view);  // AddRef()のため
+  mew::ref<IUnknown> unk(view);  // AddRef()のため
   if (dlg.Go(path) == IDOK) {
-    if (Recheck(view, path)) CreateAndSelect(view, path, dlg.m_names, dlg.m_extension, (dlg.m_select ? AfterCreateSelect : AfterCreateNone));
+    if (Recheck(view, path))
+      CreateAndSelect(view, path, dlg.m_names, dlg.m_extension, (dlg.m_select ? AfterCreateSelect : AfterCreateNone));
   }
 }
 
@@ -180,9 +197,11 @@ void DlgNew(IShellListView* view) {
 // Select & Pattern
 
 namespace {
-static void DoSelect(IShellListView* view, const string& path, PCTSTR pattern) {
-  bool unique = !ui::IsKeyPressed(VK_CONTROL);
-  if (unique) view->Send(CommandSelectNone);
+static void DoSelect(mew::ui::IShellListView* view, const mew::string& path, PCTSTR pattern) {
+  bool unique = !mew::ui::IsKeyPressed(VK_CONTROL);
+  if (unique) {
+    view->Send(mew::ui::CommandSelectNone);
+  }
 
   TCHAR buf[MAX_PATH];
   PathCombine(buf, path.str(), L"*.*");
@@ -191,10 +210,16 @@ static void DoSelect(IShellListView* view, const string& path, PCTSTR pattern) {
   HANDLE hFind = ::FindFirstFile(buf, &find);
   if (hFind != INVALID_HANDLE_VALUE) {
     do {
-      if (lstrcmp(find.cFileName, _T(".")) == 0) continue;
-      if (lstrcmp(find.cFileName, _T("..")) == 0) continue;
-      if (!afx::PatternEquals(pattern, find.cFileName)) continue;
-      if SUCCEEDED (view->SetStatus(string(find.cFileName), SELECTED, unique)) {
+      if (lstrcmp(find.cFileName, _T(".")) == 0) {
+        continue;
+      }
+      if (lstrcmp(find.cFileName, _T("..")) == 0) {
+        continue;
+      }
+      if (!afx::PatternEquals(pattern, find.cFileName)) {
+        continue;
+      }
+      if SUCCEEDED (view->SetStatus(mew::string(find.cFileName), mew::SELECTED, unique)) {
         ++count;
         unique = false;
       }
@@ -202,19 +227,21 @@ static void DoSelect(IShellListView* view, const string& path, PCTSTR pattern) {
     ::FindClose(hFind);
   }
   if (count == 0) {  // 指定されたパターンが一つも見つからなかった。
-    theAvesta->Notify(NotifyWarning, string::load(IDS_WARN_NOSELECT));
+    theAvesta->Notify(avesta::NotifyWarning, mew::string::load(IDS_WARN_NOSELECT));
   }
 }
 }  // namespace
 
-void DlgSelect(IShellListView* view) {
-  static string theLastPattern;
+void DlgSelect(mew::ui::IShellListView* view) {
+  static mew::string theLastPattern;
 
-  string path = GetDirectoryOfView(view);
-  if (!path) return;
+  mew::string path = GetDirectoryOfView(view);
+  if (!path) {
+    return;
+  }
 
-  ref<IUnknown> addref(view);
-  string pattern;
+  mew::ref<IUnknown> addref(view);
+  mew::string pattern;
   if SUCCEEDED (avesta::NameDialog(&pattern, path, theLastPattern, IDD_SELECT)) {
     if (pattern && Recheck(view, path)) {
       theLastPattern = pattern;
@@ -223,13 +250,17 @@ void DlgSelect(IShellListView* view) {
   }
 }
 
-void DlgPattern(IShellListView* view) {
-  string path = GetDirectoryOfView(view);
-  if (!path) return;
+void DlgPattern(mew::ui::IShellListView* view) {
+  mew::string path = GetDirectoryOfView(view);
+  if (!path) {
+    return;
+  }
 
-  ref<IUnknown> addref(view);
-  string mask;
+  mew::ref<IUnknown> addref(view);
+  mew::string mask;
   if SUCCEEDED (avesta::NameDialog(&mask, path, view->PatternMask, IDD_PATTERN)) {
-    if (Recheck(view, path)) view->PatternMask = mask;
+    if (Recheck(view, path)) {
+      view->PatternMask = mask;
+    }
   }
 }

@@ -61,7 +61,9 @@ class CTypedList : public TBase {
   }
   void DeleteAllColumn() {
     int nColumnCount = GetColumnCount();
-    for (int i = 0; i < nColumnCount; i++) DeleteColumn(0);
+    for (int i = 0; i < nColumnCount; i++) {
+      DeleteColumn(0);
+    }
   }
   void MakeEmpty() {
     DeleteAllItems();
@@ -70,7 +72,9 @@ class CTypedList : public TBase {
   // SelectedColumn ‚ÍAXPˆÈã‚ð—v‹.
   INT32 GetSelectedColumn() const throw() { return m_SelectedColumn; }
   void SetSelectedColumn(INT32 column) throw() {
-    if (column < 0 || column >= GetColumnCount()) column = -1;
+    if (column < 0 || column >= GetColumnCount()) {
+      column = -1;
+    }
     m_SelectedColumn = column;
     __super::SetSelectedColumn(m_SelectedColumn);
   }
@@ -79,7 +83,7 @@ class CTypedList : public TBase {
 //==============================================================================
 
 template <class TFinal, class TParam, class TClient = CListViewCtrl, class TWinTraits = ATL::CControlWinTraits>
-class __declspec(novtable) CTypedListImpl : public CWindowImplEx<TFinal, CTypedList<TParam, TClient>, TWinTraits> {
+class __declspec(novtable) CTypedListImpl : public mew::ui::CWindowImplEx<TFinal, CTypedList<TParam, TClient>, TWinTraits> {
  public:
   using ParamType = TParam;
 
@@ -95,7 +99,7 @@ class __declspec(novtable) CTypedListImpl : public CWindowImplEx<TFinal, CTypedL
   void OnInsertItem(int index) {}
   void OnDeleteItem(int index) {}
   void OnExecuteItem() {}
-  bool OnContextMenu(Point ptScreen) { return false; }
+  bool OnContextMenu(mew::Point ptScreen) { return false; }
   void OnGetDispInfo(LVITEMW& item, ParamType param) { TRESPASS(); }
   int CompareElement(ParamType lhs, ParamType rhs, int column) { return lhs < rhs; }
 
@@ -113,10 +117,11 @@ class __declspec(novtable) CTypedListImpl : public CWindowImplEx<TFinal, CTypedL
     bool ascending;
     switch (flags) {
       case SortDefault:
-        if (GetSelectedColumn() == column)
+        if (GetSelectedColumn() == column) {
           ascending = !m_SortedAscending;
-        else
+        } else {
           ascending = true;
+        }
         break;
       case SortAscending:
         ascending = true;
@@ -194,7 +199,9 @@ class __declspec(novtable) CTypedListImpl : public CWindowImplEx<TFinal, CTypedL
     return 0;
   }
   LRESULT OnExecuteItem(int, LPNMHDR, BOOL&) {
-    if (GetSelectedCount() > 0) final.OnExecuteItem();
+    if (GetSelectedCount() > 0) {
+      final.OnExecuteItem();
+    }
     return 0;
   }
   template <typename DISPINFO>
@@ -240,24 +247,28 @@ class CTypedTree : public TBase {
   }
   void SetItem(const Item& item) { __super::SetItem(const_cast<Item*>(&item)); }
   void DeleteChildren(HTREEITEM hParent) {
-    if (!hParent)
+    if (!hParent) {
       MakeEmpty();
-    else
+    } else {
       Expand(hParent, TVE_COLLAPSE | TVE_COLLAPSERESET);
+    }
   }
   void MakeEmpty() { DeleteAllItems(); }
   template <class Op>
   bool ForEach(HTREEITEM hParent, Op op) {
     for (HTREEITEM hChild = GetChildItem(hParent); hChild; hChild = GetNextSiblingItem(hChild)) {
-      if (!op(hChild)) return false;
+      if (!op(hChild)) {
+        return false;
+      }
     }
     return true;
   }
   WTL::CImageList SetImageList(IImageList* pImageList, int what = TVSIL_NORMAL) {
-    if (ref<mew::drawing::IImageList2> image2 = cast(pImageList))
+    if (mew::ref<mew::drawing::IImageList2> image2 = mew::cast(pImageList)) {
       return __super::SetImageList(image2->Normal, what);
-    else
+    } else {
       return __super::SetImageList((HIMAGELIST)pImageList, what);
+    }
   }
   WTL::CImageList SetImageList(HIMAGELIST hImageList, int what = TVSIL_NORMAL) {
     return __super::SetImageList(hImageList, what);
@@ -267,7 +278,7 @@ class CTypedTree : public TBase {
 //==============================================================================
 
 template <class TFinal, class TParam, class TClient = CTreeViewCtrl, class TWinTraits = ATL::CControlWinTraits>
-class __declspec(novtable) CTypedTreeImpl : public CWindowImplEx<TFinal, CTypedTree<TParam, TClient>, TWinTraits> {
+class __declspec(novtable) CTypedTreeImpl : public mew::ui::CWindowImplEx<TFinal, CTypedTree<TParam, TClient>, TWinTraits> {
  public:  // overridable
   using ParamType = typename CTypedTree<TParam, TClient>::ParamType;
   using Item = typename CTypedTree<TParam, TClient>::Item;
@@ -296,7 +307,9 @@ class __declspec(novtable) CTypedTreeImpl : public CWindowImplEx<TFinal, CTypedT
     item.pszText = LPSTR_TEXTCALLBACK;
     item.iImage = item.iSelectedImage = I_IMAGECALLBACK;
     HTREEITEM hItem = __super::InsertItem(hParent, item);
-    if (hItem) final.OnInsertItem(hItem, param);
+    if (hItem) {
+      final.OnInsertItem(hItem, param);
+    }
     return hItem;
   }
   void SetItem(const Item& item) { __super::SetItem(item); }
@@ -343,13 +356,13 @@ class __declspec(novtable) CTypedTreeImpl : public CWindowImplEx<TFinal, CTypedT
     return 0;
   }
   LRESULT OnContextMenu(UINT, WPARAM, LPARAM lParam, BOOL&) {
-    Point ptScreen(GET_XY_LPARAM(lParam));
+    mew::Point ptScreen(GET_XY_LPARAM(lParam));
     HTREEITEM hItem;
     if (ptScreen.x == -1 || ptScreen.y == -1) {
       hItem = GetSelectedItem();
       RECT rc;
       GetItemRect(hItem, &rc, true);
-      Point pt(rc.left, rc.bottom);
+      mew::Point pt(rc.left, rc.bottom);
       ClientToScreen(&pt);
       ptScreen = pt;
     } else {
@@ -437,9 +450,12 @@ class __declspec(novtable) CTypedTreeImpl : public CWindowImplEx<TFinal, CTypedT
       final.OnQueryName(disp.item.hItem, (ParamType)disp.item.lParam, name);
       disp.item.pszText = const_cast<PWSTR>(name);
     }
-    if (disp.item.mask & TVIF_IMAGE) final.OnQueryImage(disp.item.hItem, (ParamType)disp.item.lParam, false, disp.item.iImage);
-    if (disp.item.mask & TVIF_SELECTEDIMAGE)
+    if (disp.item.mask & TVIF_IMAGE) {
+      final.OnQueryImage(disp.item.hItem, (ParamType)disp.item.lParam, false, disp.item.iImage);
+    }
+    if (disp.item.mask & TVIF_SELECTEDIMAGE) {
       final.OnQueryImage(disp.item.hItem, (ParamType)disp.item.lParam, true, disp.item.iSelectedImage);
+    }
     disp.item.mask |= TVIF_DI_SETITEM;
     return 0;
   }
@@ -469,13 +485,16 @@ class CTypedTab : public TBase {
   }
   ParamType GetItemData(int nItem) const {
     Item item(TCIF_PARAM);
-    if (__super::GetItem(nItem, &item))
+    if (__super::GetItem(nItem, &item)) {
       return item.Param;
-    else
+    } else {
       return ParamType(0);
+    }
   }
   int InsertItem(const Item& item, int index = -1) {
-    if (index < 0) index = GetItemCount();
+    if (index < 0) {
+      index = GetItemCount();
+    }
     int result = __super::InsertItem(index, const_cast<Item*>(&item));
     ASSERT(result >= 0);
     return result;
@@ -495,7 +514,7 @@ class CTypedTab : public TBase {
 //==============================================================================
 
 template <class TFinal, class TParam, class TClient = CTabCtrl, class TWinTraits = ATL::CControlWinTraits>
-class __declspec(novtable) CTypedTabImpl : public CWindowImplEx<TFinal, CTypedTab<TParam, TClient>, TWinTraits> {
+class __declspec(novtable) CTypedTabImpl : public mew::ui::CWindowImplEx<TFinal, CTypedTab<TParam, TClient>, TWinTraits> {
  public:
   using ParamType = TParam;
 
@@ -513,7 +532,9 @@ class __declspec(novtable) CTypedTabImpl : public CWindowImplEx<TFinal, CTypedTa
     int count = GetItemCount();
     for (int i = 0; i < count; ++i) {
       Item item(TCIF_PARAM);
-      if (GetItem(i, &item) && item.Param == param) return i;
+      if (GetItem(i, &item) && item.Param == param) {
+        return i;
+      }
     }
     return -1;
   }
@@ -614,7 +635,9 @@ class CTypedToolBar : public TBase {
   int IndexFromParam(TParam param) {
     int count = GetButtonCount();
     for (int i = 0; i < count; ++i) {
-      if (GetItemData(i) == param) return i;
+      if (GetItemData(i) == param) {
+        return i;
+      }
     }
     return -1;
   }
@@ -626,10 +649,11 @@ class CTypedToolBar : public TBase {
   bool SetStateOf(int index, UINT state, bool value) {
     TBBUTTONINFO info = {sizeof(TBBUTTONINFO), TBIF_BYINDEX | TBIF_STATE};
     GetButtonInfo(index, &info);
-    if (value)
+    if (value) {
       info.fsState |= state;
-    else
+    } else {
       info.fsState &= ~state;
+    }
     SetButtonInfo(index, &info);
     return true;
   }
@@ -644,18 +668,23 @@ class CTypedToolBar : public TBase {
   bool SetChecked(int index, bool check) {
     TBBUTTONINFO info = {sizeof(TBBUTTONINFO), TBIF_BYINDEX | TBIF_STATE};
     GetButtonInfo(index, &info);
-    if ((info.fsState & TBSTATE_ENABLED) == 0) return false;
-    if (check)
+    if ((info.fsState & TBSTATE_ENABLED) == 0) {
+      return false;
+    }
+    if (check) {
       info.fsState |= TBSTATE_CHECKED;
-    else
+    } else {
       info.fsState &= ~TBSTATE_CHECKED;
+    }
     SetButtonInfo(index, &info);
     return true;
   }
   bool ReverseCheck(int index) {
     TBBUTTONINFO info = {sizeof(TBBUTTONINFO), TBIF_BYINDEX | TBIF_STATE};
     GetButtonInfo(index, &info);
-    if ((info.fsState & TBSTATE_ENABLED) == 0) return false;
+    if ((info.fsState & TBSTATE_ENABLED) == 0) {
+      return false;
+    }
     info.fsState ^= TBSTATE_CHECKED;
     SetButtonInfo(index, &info);
     return (info.fsState & TBSTATE_CHECKED) != 0;
@@ -675,15 +704,20 @@ class CTypedToolBar : public TBase {
   }
   void MakeEmpty() {
     int nCount = GetButtonCount();
-    if (nCount == 0) return;
-    SuppressRedraw redraw(m_hWnd);
-    for (int i = 0; i < nCount; i++) VERIFY(DeleteButton(0));
+    if (nCount == 0) {
+      return;
+    }
+    mew::ui::SuppressRedraw redraw(m_hWnd);
+    for (int i = 0; i < nCount; i++) {
+      VERIFY(DeleteButton(0));
+    }
   }
   WTL::CImageList SetImageList(IImageList* pImageList, int index = 0) {
-    if (ref<mew::drawing::IImageList2> image2 = cast(pImageList))
+    if (mew::ref<mew::drawing::IImageList2> image2 = mew::cast(pImageList)) {
       return SetImageList(image2->Normal, index);
-    else
+    } else {
       return SetImageList((HIMAGELIST)pImageList, index);
+    }
   }
   WTL::CImageList SetImageList(HIMAGELIST hImageList, int index = 0) {
     return (HIMAGELIST)SendMessage(TB_SETIMAGELIST, (WPARAM)index, (LPARAM)hImageList);
@@ -699,7 +733,9 @@ class CReBar : public TBase {
     REBARBANDINFO band = {sizeof(REBARBANDINFO), RBBIM_CHILD};
     int count = GetBandCount();
     for (int i = 0; i < count; ++i) {
-      if (GetBandInfo(i, &band) && band.hwndChild == hWnd) return i;
+      if (GetBandInfo(i, &band) && band.hwndChild == hWnd) {
+        return i;
+      }
     }
     return -1;
   }

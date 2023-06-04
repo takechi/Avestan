@@ -22,7 +22,7 @@ class MessageHook {
   bool m_needsUpdateUIState;
 
  public:
-  MessageHook() : m_hHookMSG(null), m_hwndLastWheel(null), m_needsUpdateUIState(true) {
+  MessageHook() : m_hHookMSG(nullptr), m_hwndLastWheel(nullptr), m_needsUpdateUIState(true) {
     ASSERT(!Get());
     DWORD dwThreadID = ::GetCurrentThreadId();
     HMODULE hModule = ::GetModuleHandle(NULL);
@@ -37,16 +37,18 @@ class MessageHook {
       m_hHookMSG = NULL;
       ::UnhookWindowsHookEx(tmp);
     }
-    ::TlsSetValue(theThreadStateId, null);
+    ::TlsSetValue(theThreadStateId, nullptr);
   }
 
   int Loop(HWND hwnd) {
     ASSERT(::IsWindow(hwnd));
-    if (!::IsWindowVisible(hwnd)) ::ShowWindow(hwnd, SW_SHOW);
+    if (!::IsWindowVisible(hwnd)) {
+      ::ShowWindow(hwnd, SW_SHOW);
+    }
 
     while (::IsWindow(hwnd)) {
       MSG msg;
-      if (::PeekMessage(&msg, null, 0, 0, PM_REMOVE)) {
+      if (::PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
         ::TranslateMessage(&msg);
         ::DispatchMessage(&msg);
       } else if (m_needsUpdateUIState) {  // メッセージキューが空になったので、WM_UPDATEUISTATE をポストする。
@@ -128,17 +130,20 @@ class MessageHook {
     // WM_MOUSEWHEELのマウス位置はスクリーン座標系なので、修正する必要なし.
     POINT pt = {GET_XY_LPARAM(msg.lParam)};
     HWND hwnd = ::WindowFromPoint(pt);
-    if (hwnd && ::GetWindowThreadProcessId(hwnd, NULL) == ::GetCurrentThreadId() && ::IsWindowEnabled(hwnd))
+    if (hwnd && ::GetWindowThreadProcessId(hwnd, NULL) == ::GetCurrentThreadId() && ::IsWindowEnabled(hwnd)) {
       m_hwndLastWheel = msg.hwnd = hwnd;
-    else if (::IsWindow(m_hwndLastWheel))
+    } else if (::IsWindow(m_hwndLastWheel)) {
       msg.hwnd = m_hwndLastWheel;
-    else
-      m_hwndLastWheel = null;
+    } else {
+      m_hwndLastWheel = nullptr;
+    }
   }
 };
 
 bool RemoveThread(int at) {
-  if (at >= theNumThreads) return false;
+  if (at >= theNumThreads) {
+    return false;
+  }
   ::CloseHandle(theThreads[at]);
   memmove(theThreads + at, theThreads + at + 1, sizeof(HANDLE));
   --theNumThreads;
@@ -149,10 +154,14 @@ bool RemoveThread(int at) {
 HANDLE Thread::New(Routine fn, void* args) {
   ASSERT(fn);
   if (::GetCurrentThreadId() == theMainThreadId) {
-    if (theNumThreads >= MAX_THREADS) return null;
+    if (theNumThreads >= MAX_THREADS) {
+      return nullptr;
+    }
     unsigned id;
-    HANDLE handle = (HANDLE)_beginthreadex(null, 0, fn, args, 0, &id);
-    if (!handle) return null;
+    HANDLE handle = (HANDLE)_beginthreadex(nullptr, 0, fn, args, 0, &id);
+    if (!handle) {
+      return nullptr;
+    }
     theThreads[theNumThreads++] = handle;
     return handle;
   } else {
@@ -170,12 +179,14 @@ int MessageLoop() {
     // ローカル変数にコピーするが、常に nCount == theNumThreads
     const size_t nCount = theNumThreads;
 
-    if (nCount == 0) return 0;
+    if (nCount == 0) {
+      return 0;
+    }
 
     DWORD ret = ::MsgWaitForMultipleObjects((DWORD)nCount, theThreads, false, INFINITE, QS_ALLINPUT);
     if (ret == WAIT_OBJECT_0 + nCount) {  // メッセージによる起床
       MSG msg;
-      while (::PeekMessage(&msg, null, 0, 0, PM_REMOVE)) {
+      while (::PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
         switch (msg.message) {
           case WM_APP:
             Thread::New((Thread::Routine)msg.wParam, (void*)msg.lParam);
@@ -190,7 +201,9 @@ int MessageLoop() {
       // 複数のウィンドウを同時に閉じた場合に発生しやすい。
       for (int i = theNumThreads - 1; i >= 0; --i) {
         DWORD code;
-        if (!::GetExitCodeThread(theThreads[i], &code) || code != STILL_ACTIVE) RemoveThread(i);
+        if (!::GetExitCodeThread(theThreads[i], &code) || code != STILL_ACTIVE) {
+          RemoveThread(i);
+        }
       }
     }
   }

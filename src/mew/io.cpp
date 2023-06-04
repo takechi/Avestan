@@ -11,7 +11,9 @@ using namespace mew::io;
 
 void mew::io::StreamReadExact(IStream* stream, void* buffer, size_t size) {
   size_t done = StreamReadSome(stream, buffer, size);
-  if (done != size) throw IOError(_T(__FUNCTION__), STG_E_READFAULT);
+  if (done != size) {
+    throw mew::exceptions::IOError(_T(__FUNCTION__), STG_E_READFAULT);
+  }
   // throw IOError(string::load(IDS_ERR_READ_LACK), STG_E_READFAULT);
 }
 
@@ -19,13 +21,17 @@ size_t mew::io::StreamReadSome(IStream* stream, void* buffer, size_t size) {
   ASSERT(stream);
   ULONG done = 0;
   HRESULT hr = stream->Read(buffer, size, &done);
-  if FAILED (hr) throw IOError(_T(__FUNCTION__), hr);
+  if FAILED (hr) {
+    throw mew::exceptions::IOError(_T(__FUNCTION__), hr);
+  }
   return done;
 }
 
 void mew::io::StreamWriteExact(IStream* stream, const void* buffer, size_t size) {
   size_t done = StreamWriteSome(stream, buffer, size);
-  if (done != size) throw IOError(_T(__FUNCTION__), STG_E_MEDIUMFULL);
+  if (done != size) {
+    throw mew::exceptions::IOError(_T(__FUNCTION__), STG_E_MEDIUMFULL);
+  }
   // throw IOError(string::load(IDS_ERR_WRITE_LACK), STG_E_MEDIUMFULL);
 }
 
@@ -33,14 +39,18 @@ size_t mew::io::StreamWriteSome(IStream* stream, const void* buffer, size_t size
   ASSERT(stream);
   ULONG done = 0;
   HRESULT hr = stream->Write(buffer, size, &done);
-  if FAILED (hr) throw IOError(_T(__FUNCTION__), hr);
+  if FAILED (hr) {
+    throw mew::exceptions::IOError(_T(__FUNCTION__), hr);
+  }
   return done;
 }
 
 inline void StreamSeek(IStream* stream, STREAM_SEEK origin, INT64 param, UINT64* newpos) {
   ASSERT(stream);
   HRESULT hr = stream->Seek((LARGE_INTEGER&)param, origin, (ULARGE_INTEGER*)newpos);
-  if FAILED (hr) throw IOError(_T(__FUNCTION__), hr);
+  if FAILED (hr) {
+    throw mew::exceptions::IOError(_T(__FUNCTION__), hr);
+  }
 }
 
 void mew::io::StreamSeekAbs(IStream* stream, UINT64 pos, UINT64* newpos) {
@@ -69,7 +79,7 @@ void mew::io::StreamWriteObject(IStream* stream, IUnknown* obj) {
     StreamWriteExact(stream, &clsid, sizeof(CLSID));
     serial->Serialize(*stream);
   } else {
-    throw CastError(string::load(IDS_ERR_FLATTENABLE, obj));
+    throw mew::exceptions::CastError(string::load(IDS_ERR_FLATTENABLE, obj));
   }
 }
 
@@ -259,10 +269,14 @@ static void CreateFileStream(REFINTF pp, IUnknown* arg, DWORD stgm, UINT nErrorI
   if (string path = PathFromArg(arg)) {
     ref<IStream> stream;
     HRESULT hr;
-    if FAILED (hr = SHCreateStreamOnFile(path.str(), stgm, &stream)) throw IOError(string::load(IDS_ERR_OPENFILE, path), hr);
-    if FAILED (hr = stream.copyto(pp)) throw CastError(string::load(IDS_ERR_NOINTERFACE, stream, pp.iid), hr);
+    if FAILED (hr = SHCreateStreamOnFile(path.str(), stgm, &stream)) {
+      throw mew::exceptions::IOError(string::load(IDS_ERR_OPENFILE, path), hr);
+    }
+    if FAILED (hr = stream.copyto(pp)) {
+      throw mew::exceptions::CastError(string::load(IDS_ERR_NOINTERFACE, stream, pp.iid), hr);
+    }
   } else {
-    throw ArgumentError(string::load(nErrorID));
+    throw mew::exceptions::ArgumentError(string::load(nErrorID));
   }
 }
 }  // namespace
@@ -288,11 +302,13 @@ AVESTA_EXPORT_FUNC(FileWriter)
 void CreateReader(REFINTF pp, IUnknown* arg) throw(...) {
   HRESULT hr;
   if (ref<IStream> stream = cast(arg)) {
-    if FAILED (hr = stream.copyto(pp)) throw CastError(string::load(IDS_ERR_NOINTERFACE, stream, pp.iid), hr);
+    if FAILED (hr = stream.copyto(pp)) {
+      throw mew::exceptions::CastError(string::load(IDS_ERR_NOINTERFACE, stream, pp.iid), hr);
+    }
   }
-  //else if(ref<IBuffer> buffer = cast(arg)) {
-  //  CreateMemoryReader(pp, arg);
-  //}
+  // else if(ref<IBuffer> buffer = cast(arg)) {
+  //   CreateMemoryReader(pp, arg);
+  // }
   else {
     CreateFileReader(pp, arg);
   }
@@ -306,11 +322,13 @@ AVESTA_EXPORT_FUNC(Reader)
 void CreateWriter(REFINTF pp, IUnknown* arg) throw(...) {
   HRESULT hr;
   if (ref<IStream> stream = cast(arg)) {
-    if FAILED (hr = stream.copyto(pp)) throw CastError(string::load(IDS_ERR_NOINTERFACE, stream, pp.iid), hr);
+    if FAILED (hr = stream.copyto(pp)) {
+      throw mew::exceptions::CastError(string::load(IDS_ERR_NOINTERFACE, stream, pp.iid), hr);
+    }
   }
-  //else if(ref<IBuffer> buffer = cast(arg)) {
-  //  CreateMemoryWriter(pp, arg);
-  //}
+  // else if(ref<IBuffer> buffer = cast(arg)) {
+  //   CreateMemoryWriter(pp, arg);
+  // }
   else {
     CreateFileWriter(pp, arg);
   }

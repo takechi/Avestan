@@ -105,9 +105,9 @@ class XMLMessageLoader : public XMLHandlerImpl {
     TypeCode code = 0;
     if (string var = attr[L"code"]) {
       PCWSTR str = var.str();
-      if (str[0] == L'#')
+      if (str[0] == L'#') {
         code = str::atoi(str + 1);
-      else {
+      } else {
         WCHAR buf[4];
         wcsncpy(buf, str, 4);
         code = (UINT32)(str[0] << 24) | (UINT32)(str[1] << 16) | (UINT32)(str[2] << 8) | (UINT32)(str[3]);
@@ -119,7 +119,9 @@ class XMLMessageLoader : public XMLHandlerImpl {
     Guid name;
     if (string var = attr[L"name"]) {
       PCWSTR str = var.str();
-      if (str::atoguid(name, str)) return name;
+      if (str::atoguid(name, str)) {
+        return name;
+      }
       size_t length = wcslen(str);
       if (str[0] == '#') {
         return Guid(str::atoi(str + 1));
@@ -141,7 +143,9 @@ class XMLMessageLoader : public XMLHandlerImpl {
   HRESULT StartElement(PCWSTR name, size_t cch, XMLAttributes& attr) {
     if (equals(name, cch, L"Message")) {
       message msg(GetCodeAttr(attr));
-      if (!m_stack.empty()) m_stack.back()[GetNameAttr(attr)] = msg;
+      if (!m_stack.empty()) {
+        m_stack.back()[GetNameAttr(attr)] = msg;
+      }
       m_stack.push_back(msg);
     } else {
       TypeCode code = NameToType(name, cch);
@@ -153,13 +157,16 @@ class XMLMessageLoader : public XMLHandlerImpl {
   }
   HRESULT EndElement(PCWSTR name, size_t cch) {
     if (equals(name, cch, L"Message")) {
-      if (m_stack.size() > 1) m_stack.pop_back();
+      if (m_stack.size() > 1) {
+        m_stack.pop_back();
+      }
     } else if (NameToType(name, cch)) {
       variant var(m_var.type, m_var.text);
-      if (m_stack.empty())
+      if (m_stack.empty()) {
         m_stack.push_back(var);
-      else
+      } else {
         m_stack.back()[m_var.name] = var;
+      }
     } else {
       TRACE(_T("warning: –¢’m‚ÌƒGƒŒƒƒ“ƒg : $1"), string(name, cch));
     }
@@ -173,7 +180,9 @@ class XMLMessageLoader : public XMLHandlerImpl {
 
  public:
   HRESULT GetProduct(REFINTF pp) {
-    if (m_stack.size() != 1) return E_FAIL;
+    if (m_stack.size() != 1) {
+      return E_FAIL;
+    }
     return m_stack.front()->QueryInterface(pp);
   }
 };
@@ -188,17 +197,25 @@ static void WriteVariant(IXMLWriter* sax, const variant& var, PCWSTR name) {
   }
   // else
   PCWSTR type = TypeToName(var.type);
-  if (!type) throw ArgumentError(string::load(IDS_ERR_XMLMSG_TYPECODE, name, (string)var), var.type);
+  if (!type) {
+    throw mew::exceptions::ArgumentError(string::load(IDS_ERR_XMLMSG_TYPECODE, name, (string)var), var.type);
+  }
   sax->StartElement(type);
-  if (name) sax->Attribute(L"name", name);
+  if (name) {
+    sax->Attribute(L"name", name);
+  }
   string chars(var);
   sax->Characters(chars.str());
   sax->EndElement();
 }
 static void WriteMessage(IXMLWriter* sax, const message& msg, PCWSTR name) {
   sax->StartElement(L"Message");
-  if (name) sax->Attribute(L"name", name);
-  if (EventCode code = msg.code) sax->Attribute(L"code", ToString<TypeCode>(code));
+  if (name) {
+    sax->Attribute(L"name", name);
+  }
+  if (EventCode code = msg.code) {
+    sax->Attribute(L"code", ToString<TypeCode>(code));
+  }
   Guid key;
   variant var;
   for (ref<IEnumVariant> pEnum = msg->Enumerate(); pEnum && pEnum->Next(&key, &var);) {
@@ -211,10 +228,14 @@ static void WriteMessage(IXMLWriter* sax, const message& msg, PCWSTR name) {
 message mew::xml::LoadMessage(IUnknown* src, IXMLReader* sax_) {
   Stream stream(__uuidof(io::Reader), src);
   ref<IXMLReader> sax(sax_);
-  if (!sax) sax.create(__uuidof(XMLReader));
+  if (!sax) {
+    sax.create(__uuidof(XMLReader));
+  }
   XMLMessageLoader handler;
   HRESULT hr = sax->Parse(&handler, stream);
-  if FAILED (hr) return null;
+  if FAILED (hr) {
+    return null;
+  }
   message msg;
   handler.GetProduct(&msg);
   return msg;
@@ -223,9 +244,13 @@ message mew::xml::LoadMessage(IUnknown* src, IXMLReader* sax_) {
 HRESULT mew::xml::SaveMessage(const message& msg, IUnknown* dst, IXMLWriter* sax_) {
   ASSERT(msg);
   Stream stream(__uuidof(io::Writer), dst);
-  if (!msg) return E_INVALIDARG;
+  if (!msg) {
+    return E_INVALIDARG;
+  }
   ref<IXMLWriter> sax(sax_);
-  if (!sax) sax.create(__uuidof(XMLWriter));
+  if (!sax) {
+    sax.create(__uuidof(XMLWriter));
+  }
   sax->StartDocument(stream);
   WriteMessage(sax, msg, null);
   sax->EndDocument();

@@ -14,8 +14,8 @@ namespace {
 void CopyBits(void *dst, int dststride, const void *src, int srcstride, size_t bpp, size_t width, size_t height) {
   ASSERT(dst);
   ASSERT(src);
-  ASSERT(width * bpp <= (size_t)math::abs(srcstride));
-  ASSERT(width * bpp <= (size_t)math::abs(dststride));
+  ASSERT(width * bpp <= (size_t)mew::math::abs(srcstride));
+  ASSERT(width * bpp <= (size_t)mew::math::abs(dststride));
 
   if (dststride >= 0 && dststride == srcstride) {
     memcpy(dst, src, srcstride * height);
@@ -31,7 +31,7 @@ void CopyBits(void *dst, int dststride, const void *src, int srcstride, size_t b
 }
 }  // namespace
 
-class ImageList : public Root<implements<mew::drawing::IImageList2, IImageList> > {
+class ImageList : public mew::Root<mew::implements<mew::drawing::IImageList2, IImageList> > {
  private:
   WTL::CImageList m_normal;
   WTL::CImageList m_disabled;
@@ -63,54 +63,64 @@ class ImageList : public Root<implements<mew::drawing::IImageList2, IImageList> 
         info.bmiHeader.biPlanes = 1;
         info.bmiHeader.biBitCount = 32;
         info.bmiHeader.biCompression = BI_RGB;
-        BYTE *dst = null;
+        BYTE *dst = nullptr;
         int dststride = ((w * bpp + 3) & ~3);
-        bitmap.CreateDIBSection(null, &info, DIB_RGB_COLORS, (void **)&dst, null, 0);
+        bitmap.CreateDIBSection(nullptr, &info, DIB_RGB_COLORS, (void **)&dst, nullptr, 0);
         CopyBits(dst + dststride * (h - 1), -dststride, bits.Scan0, bits.Stride, bpp, w, h);
         image->UnlockBits(&bits);
-        ImageList_Add(imagelist, bitmap, null);
+        ImageList_Add(imagelist, bitmap, nullptr);
         return imagelist;
       }
     }
 
     // アルファなしビットマップ
     WTL::CBitmap bitmap;
-    if (image->GetHBITMAP(SysColor(COLOR_3DFACE), &bitmap.m_hBitmap) != Gdiplus::Ok) return null;
-    ImageList_Add(imagelist, bitmap, null);
+    if (image->GetHBITMAP(SysColor(COLOR_3DFACE), &bitmap.m_hBitmap) != Gdiplus::Ok) {
+      return nullptr;
+    }
+    ImageList_Add(imagelist, bitmap, nullptr);
     return imagelist;
   }
   static HIMAGELIST LoadImageList(PCWSTR filename) {
     CAutoPtr<Gdiplus::Bitmap> image(new Gdiplus::Bitmap(filename));
-    if (!image || image->GetLastStatus() != Gdiplus::Ok) return null;
+    if (!image || image->GetLastStatus() != Gdiplus::Ok) {
+      return nullptr;
+    }
     return LoadImageList(image);
   }
   static HIMAGELIST LoadImageList(IStream *stream) {
     CAutoPtr<Gdiplus::Bitmap> image(new Gdiplus::Bitmap(stream));
-    if (!image || image->GetLastStatus() != Gdiplus::Ok) return null;
+    if (!image || image->GetLastStatus() != Gdiplus::Ok) {
+      return nullptr;
+    }
     return LoadImageList(image);
   }
   static HIMAGELIST LoadImageListOfPostfix(PCWSTR path, PCWSTR postfix, PCWSTR extension) {
     WCHAR buffer[MAX_PATH];
-    str::copy(buffer, path);
+    mew::str::copy(buffer, path);
     ::PathRemoveExtension(buffer);
-    str::append(buffer, postfix);
-    str::append(buffer, extension);
+    mew::str::append(buffer, postfix);
+    mew::str::append(buffer, extension);
     return LoadImageList(buffer);
   }
-  ImageList(HIMAGELIST hNormal = null, HIMAGELIST hDisabled = null, HIMAGELIST hHot = null)
+  ImageList(HIMAGELIST hNormal = nullptr, HIMAGELIST hDisabled = nullptr, HIMAGELIST hHot = nullptr)
       : m_normal(hNormal), m_disabled(hDisabled), m_hot(hHot) {}
   void __init__(IUnknown *arg) {
-    if (string filename = cast(arg)) {
+    if (mew::string filename = mew::cast(arg)) {
       PCWSTR path = filename.str();
       m_normal = LoadImageList(path);
-      if (!m_normal) throw IOError(string::load(IDS_ERR_IMAGELIST, filename), STG_E_FILENOTFOUND);
+      if (!m_normal) {
+        throw mew::exceptions::IOError(mew::string::load(IDS_ERR_IMAGELIST, filename), STG_E_FILENOTFOUND);
+      }
       PCWSTR extension = ::PathFindExtension(path);
       m_disabled = LoadImageListOfPostfix(path, L"-disable", extension);
       m_hot = LoadImageListOfPostfix(path, L"-hot", extension);
     } else if (arg) {
-      ref<IStream> stream(__uuidof(io::Reader), arg);
+      mew::ref<IStream> stream(__uuidof(mew::io::Reader), arg);
       m_normal = LoadImageList(stream);
-      if (!m_normal) throw IOError(string::load(IDS_ERR_IMAGELIST, L"[stream]"), STG_E_FILENOTFOUND);
+      if (!m_normal) {
+        throw mew::exceptions::IOError(mew::string::load(IDS_ERR_IMAGELIST, L"[stream]"), STG_E_FILENOTFOUND);
+      }
       // m_disabled = null;
       // m_hot = null;
     } else {
@@ -118,9 +128,15 @@ class ImageList : public Root<implements<mew::drawing::IImageList2, IImageList> 
     }
   }
   void Dispose() throw() {
-    if (m_normal) m_normal.Destroy();
-    if (m_disabled) m_disabled.Destroy();
-    if (m_hot) m_hot.Destroy();
+    if (m_normal) {
+      m_normal.Destroy();
+    }
+    if (m_disabled) {
+      m_disabled.Destroy();
+    }
+    if (m_hot) {
+      m_hot.Destroy();
+    }
   }
 
   inline static HRESULT call(int *pResult, int result) {
@@ -140,8 +156,8 @@ class ImageList : public Root<implements<mew::drawing::IImageList2, IImageList> 
     return result ? S_OK : AtlHresultFromLastError();
   }
   static HRESULT FromHIMAGELIST(HIMAGELIST hNormal, HIMAGELIST hDisabled, HIMAGELIST hHot, REFIID iid, void **ppv) {
-    if (!ppv) return E_POINTER;
-    return objnew<ImageList>(hNormal, hDisabled, hHot)->QueryInterface(iid, ppv);
+    if (!ppv) {return E_POINTER;}
+    return mew::objnew<ImageList>(hNormal, hDisabled, hHot)->QueryInterface(iid, ppv);
   }
 
  public:  // IImageList
@@ -153,7 +169,7 @@ class ImageList : public Root<implements<mew::drawing::IImageList2, IImageList> 
     return call(pi, ImageList_AddMasked(m_normal, hbmImage, crMask));
   }
   HRESULT __stdcall Draw(IMAGELISTDRAWPARAMS *pimldp) {
-    if (!pimldp) return E_POINTER;
+    if (!pimldp) {return E_POINTER;}
     IMAGELISTDRAWPARAMS params = *pimldp;
     params.himl = m_normal;
     return call(ImageList_DrawIndirect(&params));
@@ -175,13 +191,13 @@ class ImageList : public Root<implements<mew::drawing::IImageList2, IImageList> 
   HRESULT __stdcall GetImageRect(int i, RECT *prc) {
     IMAGEINFO info;
     HRESULT hr = GetImageInfo(i, &info);
-    if FAILED (hr) return hr;
-    if (prc) *prc = info.rcImage;
+    if FAILED (hr) {return hr;}
+    if (prc) {*prc = info.rcImage;}
     return S_OK;
   }
   HRESULT __stdcall GetIconSize(int *cx, int *cy) { return call(ImageList_GetIconSize(m_normal, cx, cy)); }
   HRESULT __stdcall SetIconSize(int cx, int cy) {
-    if (m_normal) return call(m_normal.SetIconSize(cx, cy));
+    if (m_normal) {return call(m_normal.SetIconSize(cx, cy));}
     m_normal.Create(cx, cy, ILC_COLOR32, 10, 10);
     return S_OK;
   }
@@ -204,7 +220,7 @@ class ImageList : public Root<implements<mew::drawing::IImageList2, IImageList> 
   }
   HRESULT __stdcall DragShowNolock(BOOL fShow) { return call(ImageList_DragShowNolock(fShow)); }
   HRESULT __stdcall GetDragImage(POINT *ppt, POINT *pptHotspot, REFIID iid, PVOID *ppv) {
-    return FromHIMAGELIST(ImageList_GetDragImage(ppt, pptHotspot), null, null, iid, ppv);
+    return FromHIMAGELIST(ImageList_GetDragImage(ppt, pptHotspot), nullptr, nullptr, iid, ppv);
   }
   HRESULT __stdcall GetItemFlags(int i, DWORD *dwFlags) { return E_NOTIMPL; }
   HRESULT __stdcall GetOverlayImage(int iOverlay, int *piIndex) { return E_NOTIMPL; }

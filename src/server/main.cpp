@@ -27,8 +27,8 @@ struct CommandEntry {
   PCTSTR Description;
 };
 
-inline ref<ICommands> CreateCommands(const CommandEntry entries[], size_t num) {
-  ref<ICommands> table(__uuidof(Commands));
+inline mew::ref<mew::ICommands> CreateCommands(const CommandEntry entries[], size_t num) {
+  mew::ref<mew::ICommands> table(__uuidof(mew::Commands));
   for (size_t i = 0; i < num; ++i) {
     table->Add(entries[i].Name, entries[i].Description);
   }
@@ -63,25 +63,27 @@ const bool useRedirectToMyDocuments = true;
 //==============================================================================
 
 template <class TBase>
-class __declspec(novtable) MainBase : public StaticLife<TBase>, public Avesta {
+class __declspec(novtable) MainBase : public mew::StaticLife<TBase>, public Avesta {
  public:
   Templates m_forms;
 
-  IWindow* get_display() const { return m_forms[0].window; }
-  __declspec(property(get = get_display)) IWindow* m_display;
+  mew::ui::IWindow* get_display() const { return m_forms[0].window; }
+  __declspec(property(get = get_display)) mew::ui::IWindow* m_display;
 
-  ref<IForm> m_form;        ///< メインフレームウィンドウ.
-  ref<ITabPanel> m_tab;     ///< メインビューコンテナ.
-  ref<ITree> m_status;      ///< ステータスバー.
-  ref<ITreeView> m_tree;    ///< フォルダツリー.
-  ref<IPreview> m_preview;  ///< プレビュー.
-  ref<ICallback> m_callback;
+  mew::ref<mew::ui::IForm> m_form;        ///< メインフレームウィンドウ.
+  mew::ref<mew::ui::ITabPanel> m_tab;     ///< メインビューコンテナ.
+  mew::ref<mew::ui::ITree> m_status;      ///< ステータスバー.
+  mew::ref<mew::ui::ITreeView> m_tree;    ///< フォルダツリー.
+  mew::ref<mew::ui::IPreview> m_preview;  ///< プレビュー.
+  mew::ref<ICallback> m_callback;
 
  protected:  // status
   DWORD m_StatusLastModify;
   DWORD m_Notify;
-  void SetStatusText(DWORD priority, string text) {
-    if (!m_status) return;
+  void SetStatusText(DWORD priority, mew::string text) {
+    if (!m_status) {
+      return;
+    }
     // TODO: メッセージキュー化
     HWND hwndStatus = m_status->Handle;
     int len = SendMessage(hwndStatus, SB_GETTEXTLENGTH, 1, 0);
@@ -94,21 +96,22 @@ class __declspec(novtable) MainBase : public StaticLife<TBase>, public Avesta {
       // m_status->Name = text;
     }
   }
-  string FormatViewStatusText(IShellListView* view, string text) {
+  mew::string FormatViewStatusText(mew::ui::IShellListView* view, mew::string text) {
     ASSERT(view);
-    if (m_callback)
+    if (m_callback) {
       return m_callback->StatusText(text, view);
-    else
+    } else {
       return text;
+    }
   }
 };
 
 //==============================================================================
 
-class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
-                         mixin<FolderListContainer, TaskTrayProvider, CommandProvider, MainBase> > {
+class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, mew::ui::IKeymap, mew::ui::IWallPaper>,
+                              mew::mixin<FolderListContainer, TaskTrayProvider, CommandProvider, MainBase> > {
  private:
-  ref<IShellStorage> m_storage;
+  mew::ref<mew::ui::IShellStorage> m_storage;
 
   MRUList m_mru;
 
@@ -123,27 +126,28 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
     m_StatusLastModify = ::GetTickCount();
     m_Notify = 0;
     m_EditOptions = 0;
-    m_MiddleClick = ModifierNone;
+    m_MiddleClick = mew::ui::ModifierNone;
   }
   ~Main() {
     ASSERT(theAvesta == this);
-    theAvesta = null;
+    theAvesta = nullptr;
   }
-  static string GetConfigPath() { return RelativePath(_T("var\\config.xml")); }
+  static mew::string GetConfigPath() { return RelativePath(_T("var\\config.xml")); }
 #ifdef _M_X64
-  static string GetStoragePath() { return RelativePath(_T("var\\settings64.dat")); }
-  static string GetDefaultSaveName() { return RelativePath(_T("var\\default64.ave")); }
+  static mew::string GetStoragePath() { return RelativePath(_T("var\\settings64.dat")); }
+  static mew::string GetDefaultSaveName() { return RelativePath(_T("var\\default64.ave")); }
 #else
   static string GetStoragePath() { return RelativePath(_T("var\\settings.dat")); }
   static string GetDefaultSaveName() { return RelativePath(_T("var\\default.ave")); }
 #endif
-  static Direction GetDock(message& msg, PCSTR name, Direction defaultValue) {
+  static mew::ui::Direction GetDock(mew::message& msg, PCSTR name, mew::ui::Direction defaultValue) {
     int dock = msg[name];
-    dock &= (DirCenter | DirWest | DirEast | DirNorth | DirSouth);
-    if (dock == 0 && defaultValue != DirNone)
+    dock &= (mew::ui::DirCenter | mew::ui::DirWest | mew::ui::DirEast | mew::ui::DirNorth | mew::ui::DirSouth);
+    if (dock == 0 && defaultValue != mew::ui::DirNone) {
       return defaultValue;
-    else
-      return (Direction)dock;
+    } else {
+      return (mew::ui::Direction)dock;
+    }
   }
   static bool IsMinimizeShowCommand(INT sw) {
     switch (sw) {
@@ -157,8 +161,10 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
         return false;
     }
   }
-  static bool SetFont(IWindow* window, HFONT font, int index = 0) {
-    if (!window || !font) return false;
+  static bool SetFont(mew::ui::IWindow* window, HFONT font, int index = 0) {
+    if (!window || !font) {
+      return false;
+    }
     ::SendMessage(window->Handle, WM_SETFONT, (WPARAM)font, index);
     return true;
   }
@@ -166,10 +172,10 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
     m_dropLocation = m_form->Location;
 
     try {
-      message msg = LoadMessage(GetConfigPath());
+      mew::message msg = mew::xml::LoadMessage(GetConfigPath());
       bool isSameResolution = (m_display->Bounds == msg["Display.Bounds"]);
       if (m_tree) {
-        m_tree->Bounds = msg["Tree.Bounds"] | Rect(0, 0, 200, 200);
+        m_tree->Bounds = msg["Tree.Bounds"] | mew::Rect(0, 0, 200, 200);
         m_tree->Visible = msg["Tree.Visible"] | true;
       }
       if (m_status) {
@@ -179,34 +185,40 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
         if (isSameResolution) m_preview->Bounds = msg["Preview.Bounds"];
         m_preview->Visible = msg["Preview.Visible"] | true;
       }
-      m_tab->InsertPosition = (InsertTo)(msg["Tab.Insert"] | 1);
-      m_tab->Arrange = (ArrangeType)(msg["Tab.Arrange"] | 0);
+      m_tab->InsertPosition = (mew::ui::InsertTo)(msg["Tab.Insert"] | 1);
+      m_tab->Arrange = (mew::ui::ArrangeType)(msg["Tab.Arrange"] | 0);
       LoadFromMessage(msg);
       m_EditOptions = msg["Keybind"] | 0;
       m_MiddleClick = msg["MiddleClick"] | 0;
-      m_form->AutoCopy = (CopyMode)(msg["AutoCopy"] | 0);
-      WallPaperFile = msg["Folder.BkFile"] | string();
+      m_form->AutoCopy = (mew::ui::CopyMode)(msg["AutoCopy"] | 0);
+      WallPaperFile = msg["Folder.BkFile"] | mew::string();
       TaskTray_Load(msg);
       for (Templates::const_iterator i = m_forms.begin(); i != m_forms.end(); ++i) {
-        if (ref<IPersistMessage> persist = cast(i->window)) {
+        if (mew::ref<mew::IPersistMessage> persist = cast(i->window)) {
           LoadPersistMessage(persist, msg, CW2AEX<16>(i->id.str()));
         }
       }
       maximized = msg["Form.Maximize"];
       if (isSameResolution) {  // 解像度が変わっていない場合のみ。
         m_form->Bounds = msg["Form.Bounds"];
-        if (!IsMinimizeShowCommand(sw) && maximized) sw = SW_SHOWMAXIMIZED;
+        if (!IsMinimizeShowCommand(sw) && maximized) {
+          sw = SW_SHOWMAXIMIZED;
+        }
         m_dropLocation = msg["Drop.Location"] | m_dropLocation;
       }
       SetAlwaysTop(msg["Form.AlwaysTop"] | false);
-    } catch (Error&) {
+    } catch (mew::exceptions::Error&) {
       // config.xml が無いのかな？
     }
     // フォント.
-    if (m_tab && m_fonts[FontTab]) SetFont(m_tab, m_fonts[FontTab]);
-    if (m_status && m_fonts[FontStatus]) SetFont(m_status, m_fonts[FontStatus]);
+    if (m_tab && m_fonts[avesta::FontTab]) {
+      SetFont(m_tab, m_fonts[avesta::FontTab]);
+    }
+    if (m_status && m_fonts[avesta::FontStatus]) {
+      SetFont(m_status, m_fonts[avesta::FontStatus]);
+    }
     // Python
-    if (m_booleans[BoolPython]) {
+    if (m_booleans[avesta::BoolPython]) {
       // チェックのためのロード
       if (HINSTANCE hPython = LoadLibrary(_T("python311"))) {
         thePygmy = LoadLibrary(_T("pygmy.pyd"));
@@ -227,10 +239,10 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
             _T("「いいえ」の場合には、python 拡張を無効にします。");
         switch (::MessageBox(NULL, errormsg, _T("Avesta"), MB_YESNO | MB_ICONINFORMATION)) {
           case IDYES:
-            m_booleans[BoolPython] = true;
+            m_booleans[avesta::BoolPython] = true;
             break;
           case IDNO:
-            m_booleans[BoolPython] = false;
+            m_booleans[avesta::BoolPython] = false;
             break;
         }
         m_callback.create(__uuidof(DefaultCallback));
@@ -240,19 +252,21 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
     }
     //
     try {
-      Stream stream(__uuidof(io::FileReader), GetStoragePath());
+      mew::Stream stream(__uuidof(mew::io::FileReader), GetStoragePath());
       GUID version;
       stream >> version;
       if (version == STORAGE_VERSION_1) {
         stream >> m_storage;
         stream >> m_mru;
       }
-    } catch (Error&) {
+    } catch (mew::exceptions::Error&) {
     }
-    if (!m_storage) m_storage.create(__uuidof(ShellStorage));
+    if (!m_storage) {
+      m_storage.create(__uuidof(ShellStorage));
+    }
   }
   void SaveStatus() {
-    message msg;
+    mew::message msg;
     WINDOWPLACEMENT place = {sizeof(WINDOWPLACEMENT)};
     HWND hwnd = m_form->Handle;
     ::GetWindowPlacement(hwnd, &place);
@@ -260,7 +274,7 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
         (place.showCmd == SW_MAXIMIZE || (IsMinimizeShowCommand(place.showCmd) && (place.flags & WPF_RESTORETOMAXIMIZED) != 0));
     RECT rc;
     SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0);
-    Rect bounds(place.rcNormalPosition);
+    mew::Rect bounds(place.rcNormalPosition);
     bounds.x += rc.left;
     bounds.y += rc.top;
     msg["Display.Bounds"] = m_display->Bounds;
@@ -288,23 +302,23 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
     SaveToMessage(msg);
     TaskTray_Save(msg);
     for (Templates::const_iterator i = m_forms.begin(); i != m_forms.end(); ++i) {
-      if (ref<IPersistMessage> persist = cast(i->window)) {
+      if (mew::ref<mew::IPersistMessage> persist = cast(i->window)) {
         SavePersistMessage(persist, msg, CW2AEX<16>(i->id.str()));
       }
     }
     //
     try {
-      SaveMessage(msg, Stream(__uuidof(io::FileWriter), GetConfigPath()));
-    } catch (Error&) {
+      mew::xml::SaveMessage(msg, mew::Stream(__uuidof(mew::io::FileWriter), GetConfigPath()));
+    } catch (mew::exceptions::Error&) {
     }
     //
-    if (ref<ISerializable> serial = cast(m_storage)) {
+    if (mew::ref<mew::ISerializable> serial = cast(m_storage)) {
       try {
-        Stream stream(__uuidof(io::FileWriter), GetStoragePath());
+        mew::Stream stream(__uuidof(mew::io::FileWriter), GetStoragePath());
         stream << STORAGE_VERSION_1;
         stream << serial;
         stream << m_mru;
-      } catch (Error&) {
+      } catch (mew::exceptions::Error&) {
       }
     }
   }
@@ -322,9 +336,11 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
     }
   }
 
-  HRESULT HandleOtherFocus(message m) {
-    if (m_booleans[BoolQuietProgress] && m_form) {
-      if (HWND hwnd = ::GetAncestor((HWND)(INT_PTR)m["hwnd"], GA_ROOT)) avesta::FileOperationHack(hwnd, m_form->Handle);
+  HRESULT HandleOtherFocus(mew::message m) {
+    if (m_booleans[avesta::BoolQuietProgress] && m_form) {
+      if (HWND hwnd = ::GetAncestor((HWND)(INT_PTR)m["hwnd"], GA_ROOT)) {
+        avesta::FileOperationHack(hwnd, m_form->Handle);
+      }
     }
     return S_OK;
   }
@@ -335,30 +351,31 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
       bool maximized = false;
       LoadStatus(sw, maximized);
 
-      ::RegisterDragDrop(m_form->Handle, cast<IDropTarget>(m_form));
+      ::RegisterDragDrop(m_form->Handle, mew::cast<IDropTarget>(m_form));
       m_form->SetExtension(__uuidof(IDropTarget), OID);
 
       m_ParseCommandLineTime = GetTickCount();
       ParseCommandLine(args);
 
-      if (!CurrentView() && m_booleans[BoolRestoreCond]) {  // 起動時に開くフォルダが与えられていなければ、状態を復元する
+      if (!CurrentView() &&
+          m_booleans[avesta::BoolRestoreCond]) {  // 起動時に開くフォルダが与えられていなければ、状態を復元する
         // 起動中はOpenNotifyを無効化
-        bool tmp = m_booleans[BoolOpenNotify];
-        m_booleans[BoolOpenNotify] = false;
-        string error;
+        bool tmp = m_booleans[avesta::BoolOpenNotify];
+        m_booleans[avesta::BoolOpenNotify] = false;
+        mew::string error;
         DoOpen(GetDefaultSaveName(), error);
-        m_booleans[BoolOpenNotify] = tmp;
+        m_booleans[avesta::BoolOpenNotify] = tmp;
       }
 
       if (!CurrentView()) {  // 一つのフォルダを開いていない場合、キャプションが空のままになっている。
-        UpdateCaption(null);
+        UpdateCaption(mew::null);
       }
 
       ShowForm(sw, maximized);
 
       // main loop
       m_display->Update(true);
-    } catch (Error&) {
+    } catch (mew::exceptions::Error&) {
       Dispose();
       throw;
     }
@@ -379,133 +396,157 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
   }
 
  public:  // Avesta
-  HRESULT OptionCheckBox(message = null) {
-    m_booleans[BoolCheckBox] = !m_booleans[BoolCheckBox];
-    for (each<IShellListView> i = EnumFolders(StatusNone); i.next();) i->CheckBox = m_booleans[BoolCheckBox];
+  HRESULT OptionCheckBox(mew::message = mew::null) {
+    m_booleans[avesta::BoolCheckBox] = !m_booleans[avesta::BoolCheckBox];
+    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone); i.next();) {
+      i->CheckBox = m_booleans[avesta::BoolCheckBox];
+    }
     return S_OK;
   }
-  HRESULT OptionFullRowSelect(message = null) {
-    m_booleans[BoolFullRowSelect] = !m_booleans[BoolFullRowSelect];
-    for (each<IShellListView> i = EnumFolders(StatusNone); i.next();) i->FullRowSelect = m_booleans[BoolFullRowSelect];
+  HRESULT OptionFullRowSelect(mew::message = mew::null) {
+    m_booleans[avesta::BoolFullRowSelect] = !m_booleans[avesta::BoolFullRowSelect];
+    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone); i.next();) {
+      i->FullRowSelect = m_booleans[avesta::BoolFullRowSelect];
+    }
     return S_OK;
   }
-  HRESULT OptionGridLine(message = null) {
-    m_booleans[BoolGridLine] = !m_booleans[BoolGridLine];
-    for (each<IShellListView> i = EnumFolders(StatusNone); i.next();) i->GridLine = m_booleans[BoolGridLine];
+  HRESULT OptionGridLine(mew::message = mew::null) {
+    m_booleans[avesta::BoolGridLine] = !m_booleans[avesta::BoolGridLine];
+    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone); i.next();) {
+      i->GridLine = m_booleans[avesta::BoolGridLine];
+    }
     return S_OK;
   }
-  HRESULT OptionRenameExtension(message = null) {
-    m_booleans[BoolRenameExtension] = !m_booleans[BoolRenameExtension];
-    for (each<IShellListView> i = EnumFolders(StatusNone); i.next();) i->RenameExtension = m_booleans[BoolRenameExtension];
+  HRESULT OptionRenameExtension(mew::message = mew::null) {
+    m_booleans[avesta::BoolRenameExtension] = !m_booleans[avesta::BoolRenameExtension];
+    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone); i.next();) {
+      i->RenameExtension = m_booleans[avesta::BoolRenameExtension];
+    }
     return S_OK;
   }
-  HRESULT OptionPython(message = null) {
-    m_booleans[BoolPython] = !m_booleans[BoolPython];
-    InfoBox(m_form, L"再起動後有効になります");
+  HRESULT OptionPython(mew::message = mew::null) {
+    m_booleans[avesta::BoolPython] = !m_booleans[avesta::BoolPython];
+    ave::InfoBox(m_form, L"再起動後有効になります");
     return S_OK;
   }
-  HRESULT OptionBoolean(message msg) {
+  HRESULT OptionBoolean(mew::message msg) {
     m_booleans[msg.code] = !m_booleans[msg.code];
     return S_OK;
   }
-  HRESULT ObserveBoolean(message msg) {
-    msg["state"] = ENABLED | (m_booleans[msg.code] ? CHECKED : 0);
+  HRESULT ObserveBoolean(mew::message msg) {
+    msg["state"] = mew::ENABLED | (m_booleans[msg.code] ? mew::CHECKED : 0);
     return S_OK;
   }
   bool GetAlwaysTop() const {
-    if (!m_form) return false;
+    if (!m_form) {
+      return false;
+    }
     return 0 != (::GetWindowLong(m_form->Handle, GWL_EXSTYLE) & WS_EX_TOPMOST);
   }
   void SetAlwaysTop(bool top) {
-    if (!m_form) return;
+    if (!m_form) {
+      return;
+    }
     ::SetWindowPos(m_form->Handle, top ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOMOVE);
   }
-  HRESULT OptionAlwaysTop(message = null) {
-    if (!m_form) return E_FAIL;
+  HRESULT OptionAlwaysTop(mew::message = mew::null) {
+    if (!m_form) {
+      return E_FAIL;
+    }
     SetAlwaysTop(!GetAlwaysTop());
     return S_OK;
   }
-  HRESULT ObserveAlwaysTop(message msg) {
-    if (!m_form) return E_FAIL;
-    msg["state"] = ENABLED | (GetAlwaysTop() ? CHECKED : 0);
+  HRESULT ObserveAlwaysTop(mew::message msg) {
+    if (!m_form) {
+      return E_FAIL;
+    }
+    msg["state"] = mew::ENABLED | (GetAlwaysTop() ? mew::CHECKED : 0);
     return S_OK;
   }
-  ref<IShellListView> FindFolder(IEntry* entry) {
-    if (!entry) return null;
-    for (each<IShellListView> i = EnumFolders(StatusNone); i.next();) {
-      ref<IEntry> e;
-      i->GetFolder(&e);
-      if (entry->Equals(e, IEntry::PATH)) return i;
+  mew::ref<mew::ui::IShellListView> FindFolder(mew::io::IEntry* entry) {
+    if (!entry) {
+      return mew::null;
     }
-    return null;
+    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone); i.next();) {
+      mew::ref<mew::io::IEntry> e;
+      i->GetFolder(&e);
+      if (entry->Equals(e, mew::io::IEntry::PATH)) {
+        return i;
+      }
+    }
+    return mew::null;
   }
-  ref<IShellListView> OpenEntry(IEntry* entry, Navigation navi, Navigation* naviResult = null) {
+  mew::ref<mew::ui::IShellListView> OpenEntry(mew::io::IEntry* entry, avesta::Navigation navi,
+                                              avesta::Navigation* naviResult = nullptr) {
     ASSERT(entry);
-    if (string filepath = entry->Path) {
+    if (mew::string filepath = entry->Path) {
       if (PathMatchSpec(filepath.str(),
                         _T("*.ave"))) {  // *.ave ファイル用の特別処理
-        string error;
+        mew::string error;
         if (m_tab && FAILED(DoOpen(filepath, error))) {
-          WarningBox(m_form, string::format(_T("読み込みに失敗しました。\n\n$1"), error));
+          ave::WarningBox(m_form, mew::string::format(_T("読み込みに失敗しました。\n\n$1"), error));
         }
-        return null;
+        return mew::null;
       }
     }
     return OpenFolder(entry, navi, naviResult);
   }
-  ref<IShellListView> OpenPath(string path, Navigation navi) {
+  mew::ref<mew::ui::IShellListView> OpenPath(mew::string path, avesta::Navigation navi) {
     try {
-      return OpenEntry(ref<IEntry>(__uuidof(Entry), path), navi);
-    } catch (Error& e) {
-      theAvesta->Notify(NotifyError, string::format(_T("error: '$1' を開けませんでした ($2)"), path, e.Message));
-      return null;
+      return OpenEntry(mew::ref<mew::io::IEntry>(__uuidof(mew::io::Entry), path), navi);
+    } catch (mew::exceptions::Error& e) {
+      theAvesta->Notify(avesta::NotifyError, mew::string::format(_T("error: '$1' を開けませんでした ($2)"), path, e.Message));
+      return mew::null;
     }
   }
-  ref<IShellListView> OpenFolder(IEntry* folder, Navigation navi, Navigation* naviResult = null) {
-    extern ref<IShellListView> CreateFolderList(IList * parent, IEntry * folder);
+  mew::ref<mew::ui::IShellListView> OpenFolder(mew::io::IEntry* folder, avesta::Navigation navi,
+                                               avesta::Navigation* naviResult = nullptr) {
+    extern mew::ref<mew::ui::IShellListView> CreateFolderList(mew::ui::IList * parent, mew::io::IEntry * folder);
     try {
       if (!folder) {
         TRACE(L"error: OpenFolder(null)");
-        return null;
+        return mew::null;
       }
-      ref<IEntry> resolved;
+      mew::ref<mew::io::IEntry> resolved;
       folder->GetLinked(&resolved);
       if (!resolved->Exists()) {
         TRACE(L"error: OpenFolder(not-existing)");
-        return null;
+        return mew::null;
       }
       if (!resolved->IsFolder()) {
-        ref<IEntry> parentEntry;
+        mew::ref<mew::io::IEntry> parentEntry;
         if SUCCEEDED (resolved->GetParent(&parentEntry)) {
-          ref<IShellListView> view = OpenFolder(parentEntry, navi);
+          mew::ref<mew::ui::IShellListView> view = OpenFolder(parentEntry, navi);
           if (view) {
-            view->SetStatus(resolved, SELECTED, true);
+            view->SetStatus(resolved, mew::SELECTED, true);
           }
           return view;
         }
         TRACE(L"error: OpenFolder(non-folder)");
-        return null;
+        return mew::null;
       }
-      if (useRedirectToMyDocuments) resolved = RedirectToMyDocuments(resolved);
+      if (useRedirectToMyDocuments) {
+        resolved = RedirectToMyDocuments(resolved);
+      }
       //
-      ref<IShellListView> current = CurrentView();
+      mew::ref<mew::ui::IShellListView> current = CurrentView();
       bool locked = false;
       if (current) {
-        ref<IList> parent;
+        mew::ref<mew::ui::IList> parent;
         if SUCCEEDED (QueryParent(current, &parent)) {
           DWORD status = 0;
           parent->GetStatus(current, &status);
-          locked = (status & CHECKED) != 0;
+          locked = (status & mew::CHECKED) != 0;
         }
       }
-      Navigation naviModified = theAvesta->NavigateVerb(current, resolved, locked, navi);
+      avesta::Navigation naviModified = theAvesta->NavigateVerb(current, resolved, locked, navi);
       // check goto navigate
       switch (naviModified) {
-        case NaviGoto:
-        case NaviGotoAlways: {  // FIXME: m_callback を無効化することで、
+        case avesta::NaviGoto:
+        case avesta::NaviGotoAlways: {  // FIXME: m_callback を無効化することで、
           // NaviGotoを再評価することを避けている。美しくない！
-          ref<ICallback> reserve = m_callback;
-          m_callback = null;
+          mew::ref<ICallback> reserve = m_callback;
+          m_callback = mew::null;
           current->Go(resolved);
           m_callback = reserve;
           return current;
@@ -514,27 +555,29 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
           break;
       }
       // open navigate
-      ref<IShellListView> view;
-      if (!m_booleans[BoolOpenDups]) view = FindFolder(resolved);
+      mew::ref<mew::ui::IShellListView> view;
+      if (!m_booleans[avesta::BoolOpenDups]) {
+        view = FindFolder(resolved);
+      }
       if (view) {  // 既に開いていた
       } else {     // 新たに開く
         view = CreateFolderList(m_tab, folder);
         if (!view) {
           TRACE(L"OpenFolder failed.");
-          return null;
+          return mew::null;
         }
-        SetFont(view, m_fonts[FontAddress], 0);
-        SetFont(view, m_fonts[FontList], 1);
-        view->CheckBox = m_booleans[BoolCheckBox];
-        view->FullRowSelect = m_booleans[BoolFullRowSelect];
-        view->GridLine = m_booleans[BoolGridLine];
-        view->RenameExtension = m_booleans[BoolRenameExtension];
-        view->Connect(EventClose, function(this, &Main::OnViewClose));
-        view->Connect(EventFolderChange, function(this, &Main::HandleViewChdir));
+        SetFont(view, m_fonts[avesta::FontAddress], 0);
+        SetFont(view, m_fonts[avesta::FontList], 1);
+        view->CheckBox = m_booleans[avesta::BoolCheckBox];
+        view->FullRowSelect = m_booleans[avesta::BoolFullRowSelect];
+        view->GridLine = m_booleans[avesta::BoolGridLine];
+        view->RenameExtension = m_booleans[avesta::BoolRenameExtension];
+        view->Connect(mew::ui::EventClose, mew::function(this, &Main::OnViewClose));
+        view->Connect(mew::ui::EventFolderChange, mew::function(this, &Main::HandleViewChdir));
         if (m_status) {
-          view->Connect(EventStatusText, function(this, &Main::OnViewText));
+          view->Connect(mew::ui::EventStatusText, mew::function(this, &Main::OnViewText));
         }
-        view->SetExtension(__uuidof(IShellStorage), m_storage);
+        view->SetExtension(__uuidof(mew::ui::IShellStorage), m_storage);
         view->SetExtension(__uuidof(IGesture), OID);
         view->SetExtension(__uuidof(IKeymap), OID);
         SetWallPaperToView(view, resolved);
@@ -542,59 +585,65 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
       }
       //
       switch (naviModified) {
-        case NaviOpen:
-        case NaviOpenAlways:
-          m_tab->SetStatus(view, SELECTED, true);
+        case avesta::NaviOpen:
+        case avesta::NaviOpenAlways:
+          m_tab->SetStatus(view, mew::SELECTED, true);
           break;
-        case NaviAppend:
-          m_tab->SetStatus(view, SELECTED);
+        case avesta::NaviAppend:
+          m_tab->SetStatus(view, mew::SELECTED);
           break;
-        case NaviReserve:
+        case avesta::NaviReserve:
           break;
-        case NaviSwitch:
-          m_tab->SetStatus(view, SELECTED);
-          m_tab->SetStatus(view, FOCUSED);
+        case avesta::NaviSwitch:
+          m_tab->SetStatus(view, mew::SELECTED);
+          m_tab->SetStatus(view, mew::FOCUSED);
           break;
-        case NaviReplace: {
-          ref<IWindow> current_;
-          m_tab->GetContents(&current_, FOCUSED);
-          m_tab->SetStatus(view, SELECTED);
-          m_tab->SetStatus(view, FOCUSED);
+        case avesta::NaviReplace: {
+          mew::ref<mew::ui::IWindow> current_;
+          m_tab->GetContents(&current_, mew::FOCUSED);
+          m_tab->SetStatus(view, mew::SELECTED);
+          m_tab->SetStatus(view, mew::FOCUSED);
           if (current_) {
-            m_tab->SetStatus(current_, UNCHECKED);
-            m_tab->SetStatus(current_, UNSELECTED);
+            m_tab->SetStatus(current_, mew::UNCHECKED);
+            m_tab->SetStatus(current_, mew::UNSELECTED);
           }
           break;
         }
         default:
           break;
       }
-      if (m_booleans[BoolOpenNotify] && view) m_tab->SetStatus(view, HOT);
-      if (naviResult) *naviResult = naviModified;
+      if (m_booleans[avesta::BoolOpenNotify] && view) {
+        m_tab->SetStatus(view, mew::HOT);
+      }
+      if (naviResult) {
+        *naviResult = naviModified;
+      }
       //
       WindowVisibleTrue();
       m_tab->Focus();
       return view;
-    } catch (Error& e) {
-      ErrorBox(m_form, e.Message);
-      return null;
+    } catch (mew::exceptions::Error& e) {
+      ave::ErrorBox(m_form, e.Message);
+      return mew::null;
     }
   }
 
-  HRESULT OpenOrExecute(IEntry* entry) {
-    ref<IEntry> resolved;
+  HRESULT OpenOrExecute(mew::io::IEntry* entry) {
+    mew::ref<mew::io::IEntry> resolved;
     entry->GetLinked(&resolved);
     if (resolved->IsFolder() && !PathIsExe(resolved->Path.str()) &&
-        OpenFolder(resolved, NaviOpen)) {  // OK. succeeded to open as folder
+        OpenFolder(resolved, avesta::NaviOpen)) {  // OK. succeeded to open as folder
       return S_OK;
     } else {  // not a folder. execute as file.
       return avesta::ILExecute(entry->ID);
     }
   }
 
-  ref<IEditableTreeItem> CreateMRUTreeItem() { return ref<CommandTreeItem>::from(new CommandTreeItem(m_mru)); }
-  ref<IEditableTreeItem> CreateFolderTreeItem(Direction dir) {
-    return null;
+  mew::ref<mew::ui::IEditableTreeItem> CreateMRUTreeItem() {
+    return mew::ref<CommandTreeItem>::from(new CommandTreeItem(m_mru));
+  }
+  mew::ref<mew::ui::IEditableTreeItem> CreateFolderTreeItem(mew::ui::Direction dir) {
+    return mew::null;
     // switch(dir)
     //{
     // case DirNorth:
@@ -611,9 +660,11 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
  private:
   void InitCommands();
 
-  int FindFormByType(REFINTF pp, LPCWSTR type) const {
+  int FindFormByType(mew::REFINTF pp, LPCWSTR type) const {
     for (size_t i = 0; i < m_forms.size(); ++i) {
-      if (m_forms[i].type == type && SUCCEEDED(m_forms[i].window.copyto(pp))) return (int)i;
+      if (m_forms[i].type == type && SUCCEEDED(m_forms[i].window.copyto(pp))) {
+        return (int)i;
+      }
     }
     return -1;
   }
@@ -633,10 +684,11 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
 
     m_dropmode = BoolUnknown;
 
-    ref<IXMLReader> sax(__uuidof(XMLReader));
+    mew::ref<mew::xml::IXMLReader> sax(__uuidof(mew::xml::XMLReader));
 
-    if FAILED (hr = FormTemplate(RelativePath(L"usr\\form.xml"), sax, m_forms))
-      throw LogicError(string::load(IDS_ERR_BADFORM), hr);
+    if FAILED (hr = FormTemplate(mew::string(RelativePath(L"usr\\form.xml")), sax, m_forms)) {
+      throw mew::exceptions::LogicError(mew::string::load(IDS_ERR_BADFORM), hr);
+    }
 
     FormGenerate(m_forms);
     FindFormByType(&m_form, L"Form");
@@ -645,28 +697,34 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
     FindFormByType(&m_status, L"StatusBar");
     FindFormByType(&m_preview, L"Preview");
 
-    if (!m_display) throw LogicError(string::load(IDS_ERR_FORMS_NO_DISPLAY), E_INVALIDARG);
-    if (!m_form) throw LogicError(string::load(IDS_ERR_FORMS_NO_FORM), E_INVALIDARG);
-    if (!m_tab) throw LogicError(string::load(IDS_ERR_FORMS_NO_TAB), E_INVALIDARG);
+    if (!m_display) {
+      throw mew::exceptions::LogicError(mew::string::load(IDS_ERR_FORMS_NO_DISPLAY), E_INVALIDARG);
+    }
+    if (!m_form) {
+      throw mew::exceptions::LogicError(mew::string::load(IDS_ERR_FORMS_NO_FORM), E_INVALIDARG);
+    }
+    if (!m_tab) {
+      throw mew::exceptions::LogicError(mew::string::load(IDS_ERR_FORMS_NO_TAB), E_INVALIDARG);
+    }
 
     // display
-    m_display->Connect(EventOtherFocus, function(this, &Main::HandleOtherFocus));
+    m_display->Connect(mew::ui::EventOtherFocus, mew::function(this, &Main::HandleOtherFocus));
 
     // form
-    HandleEvent(m_form, EventDispose, m_display, CommandClose);
-    HandleEvent(m_form, EventClose, &Main::OnFormClose);
-    HandleEvent(m_form, EventData, &Main::OnFormData);
-    HandleEvent(m_form, EventMouseWheel, &Main::OnFormWheel);
+    HandleEvent(m_form, mew::ui::EventDispose, m_display, mew::ui::CommandClose);
+    HandleEvent(m_form, mew::ui::EventClose, &Main::OnFormClose);
+    HandleEvent(m_form, mew::ui::EventData, &Main::OnFormData);
+    HandleEvent(m_form, mew::ui::EventMouseWheel, &Main::OnFormWheel);
     TaskTray_InitComponents(m_form);
 
     // tabs
     m_tab->SetMinMaxTabWidth(GetProfileSint32(_T("Style"), _T("TabWidthMin"), 0),
                              GetProfileSint32(_T("Style"), _T("TabWidthMax"), INT_MAX));
-    m_tab->Connect(EventItemFocus, function(this, &Main::HandleTabFocus));
+    m_tab->Connect(mew::ui::EventItemFocus, mew::function(this, &Main::HandleTabFocus));
 
     if (m_tree) {  // tree
-      HandleEvent(cast<ISignal>(m_tree->Root), EventInvoke, &Main::OnOpenEntry);
-      HandleEvent(m_tree, EventItemFocus, &Main::OnTreeItemFocus);
+      HandleEvent(mew::cast<mew::ISignal>(m_tree->Root), mew::EventInvoke, &Main::OnOpenEntry);
+      HandleEvent(m_tree, mew::ui::EventItemFocus, &Main::OnTreeItemFocus);
     }
 
     if (m_status) {  // status
@@ -682,11 +740,11 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
 
     ReloadResource(sax);
   }
-  void Notify(DWORD priority, string msg) {
+  void Notify(DWORD priority, mew::string msg) {
     // sound
-    if (priority >= NotifyError) {  // error
+    if (priority >= avesta::NotifyError) {  // error
       MessageBeep(MB_ICONEXCLAMATION);
-    } else if (priority >= NotifyWarning) {  // warning
+    } else if (priority >= avesta::NotifyWarning) {  // warning
       MessageBeep(0);
     }
     //
@@ -694,34 +752,47 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
       SetStatusText(priority, msg);
     }
   }
-  HRESULT SyncDescendants(io::IEntry* pFolder) {
-    if (!m_storage) return E_UNEXPECTED;
+  HRESULT SyncDescendants(mew::io::IEntry* pFolder) {
+    if (!m_storage) {
+      return E_UNEXPECTED;
+    }
     return m_storage->SyncDescendants(pFolder);
   }
-  Navigation NavigateVerb(IShellListView* folder, IEntry* where, bool locked, Navigation defaultVerb) {
-    if (!where) return defaultVerb;
-    if (!m_callback) return defaultVerb;
-    ref<IEntry> current;
-    if (folder) folder->GetFolder(&current);
-    return m_callback->NavigateVerb(current, where, GetCurrentModifiers(), locked, defaultVerb);
+  avesta::Navigation NavigateVerb(mew::ui::IShellListView* folder, mew::io::IEntry* where, bool locked,
+                                  avesta::Navigation defaultVerb) {
+    if (!where) {
+      return defaultVerb;
+    }
+    if (!m_callback) {
+      return defaultVerb;
+    }
+    mew::ref<mew::io::IEntry> current;
+    if (folder) {
+      folder->GetFolder(&current);
+    }
+    return m_callback->NavigateVerb(current, where, mew::ui::GetCurrentModifiers(), locked, defaultVerb);
   }
 
  public:
-  HRESULT AvestaExecute(IEntry* entry) {
+  HRESULT AvestaExecute(mew::io::IEntry* entry) {
     ASSERT(entry);
     ASSERT(m_callback);
-    if (!entry) return E_INVALIDARG;
-    if (!m_callback) return E_UNEXPECTED;
+    if (!entry) {
+      return E_INVALIDARG;
+    }
+    if (!m_callback) {
+      return E_UNEXPECTED;
+    }
 
     // TODO: current は string 型で十分だが、
     // pygmy.dll の互換性のため IEntry を使っている。
     // 次のメジャーバージョンアップで変更すること。
-    ref<IEntry> current = CurrentFolder();
+    mew::ref<mew::io::IEntry> current = CurrentFolder();
 
-    if (string path = entry->Path) {
-      if (str::equals_nocase(io::PathFindLeaf(path), L"avesta.dll")) {
-        switch (::MessageBox(m_form->Handle, string::format(L"$1 に置き換えますか？", path).str(), L"Avestaアップデート確認",
-                             MB_YESNOCANCEL | MB_ICONINFORMATION)) {
+    if (mew::string path = entry->Path) {
+      if (mew::str::equals_nocase(mew::io::PathFindLeaf(path), L"avesta.dll")) {
+        switch (::MessageBox(m_form->Handle, mew::string::format(L"$1 に置き換えますか？", path).str(),
+                             L"Avestaアップデート確認", MB_YESNOCANCEL | MB_ICONINFORMATION)) {
           case IDYES:
             Restart(path.str());
             return S_OK;
@@ -733,37 +804,43 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
       }
     }
 
-    string verb = m_callback->ExecuteVerb(current, entry, GetCurrentModifiers());
+    mew::string verb = m_callback->ExecuteVerb(current, entry, mew::ui::GetCurrentModifiers());
 
-    return avesta::ILExecute(entry->ID, verb.str(), null, (current ? current->Path.str() : null));
+    return avesta::ILExecute(entry->ID, verb.str(), nullptr, (current ? current->Path.str() : nullptr));
   }
 
  public:  // event handlers
-  HRESULT ObserveMRU(message m) {
-    m["state"] = (m_mru.get_Count() > 0 ? ENABLED : 0);
+  HRESULT ObserveMRU(mew::message m) {
+    m["state"] = (m_mru.get_Count() > 0 ? mew::ENABLED : 0);
     return S_OK;
   }
 
-  HRESULT ObserveShow(message m) {
-    if (ref<IWindow> w = m["window"]) {
-      m["state"] = (ENABLED | (w->Visible ? CHECKED : 0));
+  HRESULT ObserveShow(mew::message m) {
+    if (mew::ref<mew::ui::IWindow> w = m["window"]) {
+      m["state"] = (mew::ENABLED | (w->Visible ? mew::CHECKED : 0));
     }
     return S_OK;
   }
-  void UpdateCaption(IShellListView* current) {
-    if (!m_form || !m_callback) return;
-    ref<IEntry> entry;
-    string name, path;
+  void UpdateCaption(mew::ui::IShellListView* current) {
+    if (!m_form || !m_callback) {
+      return;
+    }
+    mew::ref<mew::io::IEntry> entry;
+    mew::string name, path;
     if (current && SUCCEEDED(current->GetFolder(&entry)) && !!(name = entry->Name)) {
       path = entry->Path;
     }
-    string caption = m_callback->Caption(name, path);
+    mew::string caption = m_callback->Caption(name, path);
     m_form->Name = caption;
-    if (m_booleans[BoolTreeAutoReflect]) ProcessTreeReflect();
+    if (m_booleans[avesta::BoolTreeAutoReflect]) {
+      ProcessTreeReflect();
+    }
   }
-  HRESULT HandleViewChdir(message msg) {
-    if (!m_form) return E_FAIL;
-    ref<IShellListView> from = msg["from"];
+  HRESULT HandleViewChdir(mew::message msg) {
+    if (!m_form) {
+      return E_FAIL;
+    }
+    mew::ref<mew::ui::IShellListView> from = msg["from"];
     if (objcmp(from, CurrentView())) {
       PlayNavigateSound();
       UpdateCaption(from);
@@ -771,35 +848,45 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
     return S_OK;
   }
   void PlayNavigateSound() {
-    if (!m_form || !m_form->Visible) return;
+    if (!m_form || !m_form->Visible) {
+      return;
+    }
     static bool init = false;
     if (!init) {
       init = true;
       TCHAR path[MAX_PATH];
-      if (SUCCEEDED(afx::ExpGetNavigateSound(path)) && PathFileExists(path)) m_NavigateSoundPath = path;
+      if (SUCCEEDED(afx::ExpGetNavigateSound(path)) && PathFileExists(path)) {
+        m_NavigateSoundPath = path;
+      }
     }
-    if (m_NavigateSoundPath) PlaySound(m_NavigateSoundPath.str(), NULL, SND_FILENAME | SND_ASYNC | SND_NOWAIT);
+    if (m_NavigateSoundPath) {
+      PlaySound(m_NavigateSoundPath.str(), NULL, SND_FILENAME | SND_ASYNC | SND_NOWAIT);
+    }
   }
-  HRESULT HandleTabFocus(message msg) {
-    if (!m_form) return E_FAIL;
-    ref<IShellListView> current = msg["what"];
+  HRESULT HandleTabFocus(mew::message msg) {
+    if (!m_form) {
+      return E_FAIL;
+    }
+    mew::ref<mew::ui::IShellListView> current = msg["what"];
     UpdateCaption(current);
     if (!current) {  // 最後のタブが閉じられたので、ステータスバーをクリアする.
-      SetStatusText(NotifyInfo, null);
-      UpdatePreview(null);
+      SetStatusText(avesta::NotifyInfo, mew::null);
+      UpdatePreview(nullptr);
     }
     return S_OK;
   }
 
-  void UpdatePreview(IShellListView* view) {
-    if (!m_preview || !m_form) return;
-    ref<IEntry> entry;
+  void UpdatePreview(mew::ui::IShellListView* view) {
+    if (!m_preview || !m_form) {
+      return;
+    }
+    mew::ref<mew::io::IEntry> entry;
     if (view && view->SelectedCount > 0) {
-      ref<IEntryList> entries;
+      mew::ref<mew::io::IEntryList> entries;
       if (HWND hwnd = ::FindWindowEx(::FindWindowEx(view->Handle, NULL, _T("SHELLDLL_DefView"), NULL), NULL,
                                      _T("SysListView32"), NULL)) {
         int index = -1;
-        if (IsKeyPressed(VK_LBUTTON)) {  // マウス左ボタン押下げ中＝ドラッグ選択中？
+        if (mew::ui::IsKeyPressed(VK_LBUTTON)) {  // マウス左ボタン押下げ中＝ドラッグ選択中？
           LVHITTESTINFO hit;
           ::GetCursorPos(&hit.pt);
           ::ScreenToClient(hwnd, &hit.pt);
@@ -818,7 +905,7 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
         }
       }
       if (!entry) {
-        if (SUCCEEDED(view->GetContents(&entries, FOCUSED)) && entries->Count > 0) {
+        if (SUCCEEDED(view->GetContents(&entries, mew::FOCUSED)) && entries->Count > 0) {
           entries->GetAt(&entry, 0);
         }
       }
@@ -826,55 +913,64 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
     m_preview->SetContents(entry);
   }
 
-  HRESULT FileOpen(message msg) {
-    ref<IShellListView> current;
+  HRESULT FileOpen(mew::message msg) {
+    mew::ref<mew::ui::IShellListView> current;
     if (msg.code == 1 && !!(current = CurrentView())) {
-      ref<IEntry> currentPath;
+      mew::ref<mew::io::IEntry> currentPath;
       current->GetFolder(&currentPath);
-      if (ref<IEntry> folder = PathDialog(currentPath ? currentPath->Path : null)) current->Go(folder);
+      if (mew::ref<mew::io::IEntry> folder = avesta::PathDialog(currentPath ? currentPath->Path : mew::null)) {
+        current->Go(folder);
+      }
     } else {
-      if (ref<IEntry> folder = PathDialog()) {
-        OpenFolder(folder, NaviOpen);
+      if (mew::ref<mew::io::IEntry> folder = avesta::PathDialog()) {
+        OpenFolder(folder, avesta::NaviOpen);
       }
     }
     return S_OK;
   }
-  HRESULT FileMRU(message msg = null) {
-    if (ref<IEntry> folder = m_mru.Pop()) {
-      OpenFolder(folder, NaviOpen);
+  HRESULT FileMRU(mew::message msg = mew::null) {
+    if (mew::ref<mew::io::IEntry> folder = m_mru.Pop()) {
+      OpenFolder(folder, avesta::NaviOpen);
     } else {
-      theAvesta->Notify(NotifyWarning, string::load(IDS_NO_MRU));
+      theAvesta->Notify(avesta::NotifyWarning, mew::string::load(IDS_NO_MRU));
     }
     return S_OK;
   }
-  HRESULT OnFormData(message msg) {
-    if (string data = msg["data"]) ParseCommandLine(data.str());
+  HRESULT OnFormData(mew::message msg) {
+    if (mew::string data = msg["data"]) {
+      ParseCommandLine(data.str());
+    }
     return S_OK;
   }
-  HRESULT OnFormWheel(message msg) {
-    if (!m_form || !m_tab) return E_FAIL;
+  HRESULT OnFormWheel(mew::message msg) {
+    if (!m_form || !m_tab) {
+      return E_FAIL;
+    }
     INT32 wheel = msg["wheel"];
-    if (wheel < 0)
-      m_tab->Send(CommandGoDown);
-    else
-      m_tab->Send(CommandGoUp);
+    if (wheel < 0) {
+      m_tab->Send(mew::ui::CommandGoDown);
+    } else {
+      m_tab->Send(mew::ui::CommandGoUp);
+    }
     return S_OK;
   }
-  HRESULT OnViewText(message msg) {
-    if (!m_tab) return E_FAIL;
-    ref<IShellListView> from = msg["from"];
+  HRESULT OnViewText(mew::message msg) {
+    if (!m_tab) {
+      return E_FAIL;
+    }
+    mew::ref<mew::ui::IShellListView> from = msg["from"];
     ASSERT(from);
-    string text = msg["text"];
-    ref<IShellListView> current = CurrentView();
+    mew::string text = msg["text"];
+    mew::ref<mew::ui::IShellListView> current = CurrentView();
     if (current && objcmp(current, from)) {
-      SetStatusText(NotifyInfo, FormatViewStatusText(current, text));
+      SetStatusText(avesta::NotifyInfo, FormatViewStatusText(current, text));
       UpdatePreview(current);
     }
     return S_OK;
   }
-  HRESULT OnViewClose(message msg) {
-    if (ref<IShellListView> view = msg["from"]) {
-      ref<IEntry> entry;
+  HRESULT OnViewClose(mew::message msg) {
+    if (mew::ref<mew::ui::IShellListView> view = msg["from"]) {
+      mew::ref<mew::io::IEntry> entry;
       if SUCCEEDED (view->GetFolder(&entry)) {
         m_mru.Push(entry);
       }
@@ -882,31 +978,35 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
     return S_OK;
   }
 
-  HRESULT OnFormClose(message msg) {
+  HRESULT OnFormClose(mew::message msg) {
     if (m_form) {
       DropMode(false);
-      m_form->Name = string::load(theMainResult == 0 ? IDS_CLOSING : IDS_RESTARTING);
+      m_form->Name = mew::string::load(theMainResult == 0 ? IDS_CLOSING : IDS_RESTARTING);
       ::RevokeDragDrop(m_form->Handle);
     }
-    if (m_booleans[BoolRestoreCond]) {
-      string error;
-      string savename = GetDefaultSaveName();
-      if (DoSave(savename, error) < 1) ::DeleteFile(savename.str());
+    if (m_booleans[avesta::BoolRestoreCond]) {
+      mew::string error;
+      mew::string savename = GetDefaultSaveName();
+      if (DoSave(savename, error) < 1) {
+        ::DeleteFile(savename.str());
+      }
     }
     m_callback.dispose();
-    ForwardToAll(CommandSave);
+    ForwardToAll(mew::ui::CommandSave);
     SaveStatus();
     return E_FAIL;  // detach
   }
-  HRESULT OnOpenEntry(message msg) {
+  HRESULT OnOpenEntry(mew::message msg) {
     OpenOrExecute(msg["what"]);
     return S_OK;
   }
-  HRESULT OnTreeItemFocus(message msg) {
+  HRESULT OnTreeItemFocus(mew::message msg) {
     ASSERT(m_tree);
-    if (!m_booleans[BoolTreeAutoSync] || !m_tree->Visible) return S_OK;
-    if (ref<IFolder> folder = msg["what"]) {
-      if (ref<IShellListView> current = CurrentView()) {
+    if (!m_booleans[avesta::BoolTreeAutoSync] || !m_tree->Visible) {
+      return S_OK;
+    }
+    if (mew::ref<mew::io::IFolder> folder = msg["what"]) {
+      if (mew::ref<mew::ui::IShellListView> current = CurrentView()) {
         afx::SetModifierState(0, 0);
         current->Go(folder->Entry);
         afx::RestoreModifierState(0);
@@ -924,9 +1024,15 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
     HANDLE hFind = ::FindFirstFile(buf, &find);
     if (hFind != INVALID_HANDLE_VALUE) {
       do {
-        if ((find.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) continue;
-        if (lstrcmp(find.cFileName, _T(".")) == 0) continue;
-        if (lstrcmp(find.cFileName, _T("..")) == 0) continue;
+        if ((find.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
+          continue;
+        }
+        if (lstrcmp(find.cFileName, _T(".")) == 0) {
+          continue;
+        }
+        if (lstrcmp(find.cFileName, _T("..")) == 0) {
+          continue;
+        }
         TCHAR subdir[MAX_PATH];
         PathCombine(subdir, start, find.cFileName);
         RecursiveDelete(subdir, leaf);
@@ -934,22 +1040,24 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
       ::FindClose(hFind);
     }
   }
-  HRESULT ProcessThumbSize(message msg) {
+  HRESULT ProcessThumbSize(mew::message msg) {
     DWORD size = msg.code;
-    if (size < 1 || 1024 < size) return E_FAIL;
+    if (size < 1 || 1024 < size) {
+      return E_FAIL;
+    }
     HRESULT hr = afx::ExpSetThumbnailSize(size);
     if (hr == S_OK) {
-      if (ref<IShellListView> view = CurrentView()) {
-        ref<IEntry> entry;
+      if (mew::ref<mew::ui::IShellListView> view = CurrentView()) {
+        mew::ref<mew::io::IEntry> entry;
         view->GetFolder(&entry);
-        string path = entry->Path;
+        mew::string path = entry->Path;
         if (!!path) {
           TCHAR msg_[1024];
           wsprintf(msg_,
                    _T("キャッシュを更新するため、\"%s\" 以下のすべての ")
                    _T("Thumbs.db ファイルを消去します。\n\nよろしいですか？"),
                    path.str());
-          if (QuestionBox(m_form, msg_, MB_OKCANCEL) == IDOK) {
+          if (ave::QuestionBox(m_form, msg_, MB_OKCANCEL) == IDOK) {
             CWaitCursor wait;
             RecursiveDelete(path.str(), _T("Thumbs.db"));
           }
@@ -959,65 +1067,83 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
     InvokeCommand(_T("Current.Mode.Thumbnail"));
     return S_OK;
   }
-  HRESULT ObserveThumbSize(message msg) {
+  HRESULT ObserveThumbSize(mew::message msg) {
     DWORD size = msg.code;
-    if (size < 1 || 1024 < size) return E_FAIL;
-    msg["state"] = (ENABLED | (size == afx::ExpGetThumbnailSize() ? CHECKED : 0));
+    if (size < 1 || 1024 < size) {
+      return E_FAIL;
+    }
+    msg["state"] = (mew::ENABLED | (size == afx::ExpGetThumbnailSize() ? mew::CHECKED : 0));
     return S_OK;
   }
-  HRESULT ObserveGo(message msg) {
+  HRESULT ObserveGo(mew::message msg) {
     bool cango = false;
-    if (ref<IShellListView> current = CurrentView()) cango = (current->Go((Direction)(int)msg.code, 0) > 0);
-    msg["state"] = (cango ? ENABLED : 0);
+    if (mew::ref<mew::ui::IShellListView> current = CurrentView()) {
+      cango = (current->Go((mew::ui::Direction)(int)msg.code, 0) > 0);
+    }
+    msg["state"] = (cango ? mew::ENABLED : 0);
     return S_OK;
   }
-  HRESULT ProcessArrange(message msg) {
-    if (!m_tab) return E_FAIL;
-    m_tab->Arrange = (ArrangeType)(int)msg.code;
+  HRESULT ProcessArrange(mew::message msg) {
+    if (!m_tab) {
+      return E_FAIL;
+    }
+    m_tab->Arrange = (mew::ui::ArrangeType)(int)msg.code;
     return S_OK;
   }
-  HRESULT ObserveArrange(message msg) {
-    if (!m_tab) return E_FAIL;
-    msg["state"] = (ENABLED | ((m_tab->Arrange == (ArrangeType)(int)msg.code) ? CHECKED : 0));
+  HRESULT ObserveArrange(mew::message msg) {
+    if (!m_tab) {
+      return E_FAIL;
+    }
+    msg["state"] = (mew::ENABLED | ((m_tab->Arrange == (mew::ui::ArrangeType)(int)msg.code) ? mew::CHECKED : 0));
     return S_OK;
   }
-  HRESULT ProcessKeybind(message msg) {
+  HRESULT ProcessKeybind(mew::message msg) {
     m_EditOptions = ((m_EditOptions & ~afx::KeybindMask) | msg.code);
     return S_OK;
   }
-  HRESULT ObserveKeybind(message msg) {
-    msg["state"] = (ENABLED | (((m_EditOptions & afx::KeybindMask) == msg.code) ? CHECKED : 0));
+  HRESULT ObserveKeybind(mew::message msg) {
+    msg["state"] = (mew::ENABLED | (((m_EditOptions & afx::KeybindMask) == msg.code) ? mew::CHECKED : 0));
     return S_OK;
   }
-  HRESULT ProcessMiddleClick(message msg) {
+  HRESULT ProcessMiddleClick(mew::message msg) {
     m_MiddleClick = msg.code;
     return S_OK;
   }
-  HRESULT ObserveMiddleClick(message msg) {
-    msg["state"] = (ENABLED | ((m_MiddleClick == msg.code) ? CHECKED : 0));
+  HRESULT ObserveMiddleClick(mew::message msg) {
+    msg["state"] = (mew::ENABLED | ((m_MiddleClick == msg.code) ? mew::CHECKED : 0));
     return S_OK;
   }
-  HRESULT ProcessAutoCopy(message msg) {
-    if (m_form) m_form->AutoCopy = (CopyMode)(int)msg.code;
+  HRESULT ProcessAutoCopy(mew::message msg) {
+    if (m_form) {
+      m_form->AutoCopy = (mew::ui::CopyMode)(int)msg.code;
+    }
     return S_OK;
   }
-  HRESULT ObserveAutoCopy(message msg) {
-    msg["state"] = (ENABLED | ((m_form->AutoCopy == (CopyMode)(int)msg.code) ? CHECKED : 0));
+  HRESULT ObserveAutoCopy(mew::message msg) {
+    msg["state"] = (mew::ENABLED | ((m_form->AutoCopy == (mew::ui::CopyMode)(int)msg.code) ? mew::CHECKED : 0));
     return S_OK;
   }
-  HRESULT ProcessTreeRefresh(message = null) {
-    if (m_tree) m_tree->Update();
+  HRESULT ProcessTreeRefresh(mew::message = mew::null) {
+    if (m_tree) {
+      m_tree->Update();
+    }
     return S_OK;
   }
-  bool CanTreeSync(IFolder** ppFolder = null) {
-    if (!m_tree || !::IsWindowVisible(m_tree->Handle) || GetComponentCount(AvestaFolder) == 0) return false;
-    ref<IFolder> folder;
-    if FAILED (m_tree->GetContents(&folder, FOCUSED)) return false;
-    if (ppFolder) folder->QueryInterface(ppFolder);
+  bool CanTreeSync(mew::io::IFolder** ppFolder = nullptr) {
+    if (!m_tree || !::IsWindowVisible(m_tree->Handle) || GetComponentCount(avesta::AvestaFolder) == 0) {
+      return false;
+    }
+    mew::ref<mew::io::IFolder> folder;
+    if FAILED (m_tree->GetContents(&folder, mew::FOCUSED)) {
+      return false;
+    }
+    if (ppFolder) {
+      folder->QueryInterface(ppFolder);
+    }
     return true;
   }
-  HRESULT ProcessTreeSync(message = null) {
-    ref<IFolder> folder;
+  HRESULT ProcessTreeSync(mew::message = mew::null) {
+    mew::ref<mew::io::IFolder> folder;
     if (CanTreeSync(&folder)) {
       afx::SetModifierState(0, 0);
       CurrentView()->Go(folder->Entry);
@@ -1025,68 +1151,85 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
     }
     return S_OK;
   }
-  HRESULT ObserveTreeSync(message msg) {
-    msg["state"] = (CanTreeSync() ? ENABLED : 0);
+  HRESULT ObserveTreeSync(mew::message msg) {
+    msg["state"] = (CanTreeSync() ? mew::ENABLED : 0);
     return S_OK;
   }
-  bool CanTreeReflect(IEntry** ppEntry = null) {
-    if (!m_tree || !::IsWindowVisible(m_tree->Handle) || GetComponentCount(AvestaFolder) == 0) return false;
-    if (ppEntry) return SUCCEEDED(CurrentView()->GetFolder(ppEntry));
+  bool CanTreeReflect(mew::io::IEntry** ppEntry = nullptr) {
+    if (!m_tree || !::IsWindowVisible(m_tree->Handle) || GetComponentCount(avesta::AvestaFolder) == 0) {
+      return false;
+    }
+    if (ppEntry) {
+      return SUCCEEDED(CurrentView()->GetFolder(ppEntry));
+    }
     return true;
   }
-  ref<IEntry> RedirectToMyDocuments(IEntry* entry) {
+  mew::ref<mew::io::IEntry> RedirectToMyDocuments(mew::io::IEntry* entry) {
     ASSERT(entry);
-    if (!entry) return null;
-    string path = entry->Path;
-    if (!path) return entry;  // virtual-folder
-    IEntry* entryMyDocuments = GetMyDocuments();
-    string pathMyDocuments = entryMyDocuments->Path;
+    if (!entry) {
+      return mew::null;
+    }
+    mew::string path = entry->Path;
+    if (!path) {
+      return entry;  // virtual-folder
+    }
+    mew::io::IEntry* entryMyDocuments = GetMyDocuments();
+    mew::string pathMyDocuments = entryMyDocuments->Path;
     PCTSTR szPath = path.str(), szMyDocuments = pathMyDocuments.str();
     size_t lengthMyDocuments = pathMyDocuments.length();
-    if (str::compare(szPath, szMyDocuments, lengthMyDocuments) != 0) return entry;  // not My Documents path
+    if (mew::str::compare(szPath, szMyDocuments, lengthMyDocuments) != 0) {
+      return entry;  // not My Documents path
+    }
     PCTSTR relative = szPath + lengthMyDocuments;
-    ref<IEntry> newEntry;
-    if FAILED (entryMyDocuments->ParseDisplayName(&newEntry, relative)) return entry;
+    mew::ref<mew::io::IEntry> newEntry;
+    if FAILED (entryMyDocuments->ParseDisplayName(&newEntry, relative)) {
+      return entry;
+    }
     TRACE(_T("info: RedirectToMyDocuments($1)"), entry->Path);
     return newEntry;
   }
-  HRESULT ProcessTreeReflect(message = null) {
-    ref<IEntry> entry;
+  HRESULT ProcessTreeReflect(mew::message = mew::null) {
+    mew::ref<mew::io::IEntry> entry;
     if (CanTreeReflect(&entry)) {
-      m_tree->SetStatus(useRedirectToMyDocuments ? RedirectToMyDocuments(entry) : entry, FOCUSED);
+      m_tree->SetStatus(useRedirectToMyDocuments ? RedirectToMyDocuments(entry) : entry, mew::FOCUSED);
     }
     return S_OK;
   }
-  HRESULT ObserveTreeReflect(message msg) {
-    msg["state"] = (CanTreeReflect() ? ENABLED : 0);
+  HRESULT ObserveTreeReflect(mew::message msg) {
+    msg["state"] = (CanTreeReflect() ? mew::ENABLED : 0);
     return S_OK;
   }
   struct Tab {
     int index;
-    ref<IUnknown> obj;
+    mew::ref<IUnknown> obj;
     TCHAR path[MAX_PATH];
 
     friend bool operator<(const Tab& lhs, const Tab& rhs) {
-      int i = str::compare_nocase(lhs.path, rhs.path);
-      if (i != 0)
+      int i = mew::str::compare_nocase(lhs.path, rhs.path);
+      if (i != 0) {
         return i < 0;
-      else
+      } else {
         return lhs.index < rhs.index;  // stable-sort
+      }
     }
   };
-  HRESULT ProcessTabSort(message = null) {
-    if (!m_tab) return false;
+  HRESULT ProcessTabSort(mew::message = mew::null) {
+    if (!m_tab) {
+      return false;
+    }
 
     std::vector<Tab> tabs;
     //
-    for (each<IShellListView> i = EnumFolders(StatusNone); i.next();) {
+    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone); i.next();) {
       Tab tab;
       tab.index = tabs.size();
       tab.obj = i;
-      if (ref<IEntry> entry = ave::GetFolderOfView(i)) {
+      if (mew::ref<mew::io::IEntry> entry = ave::GetFolderOfView(i)) {
         entry->Path.copyto(tab.path, MAX_PATH);
-        for (PTSTR c = tab.path; *c; c = str::inc(c)) {
-          if (*c == _T('\\')) *c = (TCHAR)1;  // NULL文字でない、小さな数字に置換する
+        for (PTSTR c = tab.path; *c; c = mew::str::inc(c)) {
+          if (*c == _T('\\')) {
+            *c = (TCHAR)1;  // NULL文字でない、小さな数字に置換する
+          }
         }
       }
       tabs.push_back(tab);
@@ -1094,84 +1237,105 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
     //
     std::sort(tabs.begin(), tabs.end());
     // いったん隠しておくと、いちいちレイアウトが行われないため、高速化する。
-    SetWindowPos(m_tab->Handle, null, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_HIDEWINDOW);
+    SetWindowPos(m_tab->Handle, nullptr, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_HIDEWINDOW);
     // せいぜい一桁なので、ヘタレなソート方法でごめんなさい
     bool done = false;
     while (!done) {
       done = true;
       for (size_t i = 0; i < tabs.size(); ++i) {
         HRESULT hr = m_tab->MoveTab(tabs[i].obj, i);
-        if FAILED (hr) break;
-        if (hr == S_OK) done = false;
+        if FAILED (hr) {
+          break;
+        }
+        if (hr == S_OK) {
+          done = false;
+        }
       }
     }
-    SetWindowPos(m_tab->Handle, null, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+    SetWindowPos(m_tab->Handle, nullptr, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
     m_tab->Update();
     return S_OK;
   }
-  HRESULT ProcessTabMove(message msg) {
-    if (!m_tab) return false;
+  HRESULT ProcessTabMove(mew::message msg) {
+    if (!m_tab) {
+      return false;
+    }
     int from = CurrentFolderIndex();
     if (from < 0) {
-      theAvesta->Notify(NotifyWarning, string::load(IDS_WARN_NOTAB));
+      theAvesta->Notify(avesta::NotifyWarning, mew::string::load(IDS_WARN_NOTAB));
       return S_OK;
     }
     int to = from + (int)msg.code;
-    if (to < 0)
-      to = GetComponentCount(AvestaFolder) - 1;
-    else if (to >= (int)GetComponentCount(AvestaFolder))
+    if (to < 0) {
+      to = GetComponentCount(avesta::AvestaFolder) - 1;
+    } else if (to >= (int)GetComponentCount(avesta::AvestaFolder)) {
       to = 0;
-    if (m_tab->MoveTab(from, to) != S_OK) theAvesta->Notify(NotifyError, string::load(IDS_ERR_TABMOVE));
+    }
+    if (m_tab->MoveTab(from, to) != S_OK) {
+      theAvesta->Notify(avesta::NotifyError, mew::string::load(IDS_ERR_TABMOVE));
+    }
     return S_OK;
   }
-  HRESULT WindowVisibleTrue(message = null) {
-    if (!m_form) return false;
+  HRESULT WindowVisibleTrue(mew::message = mew::null) {
+    if (!m_form) {
+      return false;
+    }
     HWND hWnd = m_form->Handle;
-    if (!IsWindowEnabled(hWnd)) return S_OK;
-    if (IsIconic(hWnd))
-      m_form->Send(CommandRestore);
-    else
+    if (!IsWindowEnabled(hWnd)) {
+      return S_OK;
+    }
+    if (IsIconic(hWnd)) {
+      m_form->Send(mew::ui::CommandRestore);
+    } else {
       SetForegroundWindow(hWnd);
+    }
     return S_OK;
   }
-  HRESULT WindowVisibleToggle(message = null) {
-    if (!m_form) return false;
+  HRESULT WindowVisibleToggle(mew::message = mew::null) {
+    if (!m_form) {
+      return false;
+    }
     HWND hWnd = m_form->Handle;
-    if (!IsWindowEnabled(hWnd)) return S_OK;
-    if (IsIconic(hWnd))
-      m_form->Send(CommandRestore);
-    else if (GetForegroundWindow() == hWnd)
-      m_form->Send(CommandMinimize);
-    else
+    if (!IsWindowEnabled(hWnd)) {
+      return S_OK;
+    }
+    if (IsIconic(hWnd)) {
+      m_form->Send(mew::ui::CommandRestore);
+    } else if (GetForegroundWindow() == hWnd) {
+      m_form->Send(mew::ui::CommandMinimize);
+    } else {
       SetForegroundWindow(hWnd);
+    }
     return S_OK;
   }
 
  private:  // Commands
-  HRESULT ExplorerImport(message msg) {
+  HRESULT ExplorerImport(mew::message msg) {
     ImportExplorer(msg.code != 0);
     return S_OK;
   }
-  HRESULT ProcessRecycleBin(message = null) {
-    SHEmptyRecycleBin(m_form->Handle, null, 0);
+  HRESULT ProcessRecycleBin(mew::message = mew::null) {
+    SHEmptyRecycleBin(m_form->Handle, nullptr, 0);
     return S_OK;
   }
-  HRESULT ObserveRecycleBin(message msg) {
+  HRESULT ObserveRecycleBin(mew::message msg) {
     SHQUERYRBINFO info = {sizeof(SHQUERYRBINFO)};
-    if SUCCEEDED (SHQueryRecycleBin(null, &info)) {
+    if SUCCEEDED (SHQueryRecycleBin(nullptr, &info)) {
       bool isEmpty = (info.i64NumItems == 0);
-      msg["state"] = (isEmpty ? 0 : ENABLED);
-      if (ref<IEditableTreeItem> menu = msg["owner"]) {
-        if (string name = menu->Name) {
+      msg["state"] = (isEmpty ? 0 : mew::ENABLED);
+      if (mew::ref<mew::ui::IEditableTreeItem> menu = msg["owner"]) {
+        if (mew::string name = menu->Name) {
           TCHAR buffer[MAX_PATH];
           name.copyto(buffer, MAX_PATH);
-          PTSTR tab = str::find(buffer, _T('\t'));
+          PTSTR tab = mew::str::find(buffer, _T('\t'));
           if (!tab) {
             const TCHAR magic[] = _T("{*}");
             const size_t length_of_magic = lengthof(magic) - 1;
-            size_t len = str::length(buffer);
+            size_t len = mew::str::length(buffer);
             PTSTR appendpos = buffer + len - length_of_magic;
-            if (len >= length_of_magic && str::equals(appendpos, magic)) tab = appendpos;
+            if (len >= length_of_magic && mew::str::equals(appendpos, magic)) {
+              tab = appendpos;
+            }
           }
           if (tab) {
             TCHAR postfix[36] = _T("\t(");
@@ -1181,7 +1345,7 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
               StrFormatByteSize64(info.i64Size, postfix + 2, 31);
               lstrcat(postfix, _T(")"));
             }
-            str::copy(tab, postfix);
+            mew::str::copy(tab, postfix);
             menu->Name = buffer;
           }
         }
@@ -1189,11 +1353,11 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
     }
     return S_OK;
   }
-  HRESULT ProcessFolderOptionsShow(message = null) {
+  HRESULT ProcessFolderOptionsShow(mew::message = mew::null) {
     // プロトタイプがいまいちよく分からないので、ShellExecute経由で呼ぶ
-    ShellExecute(m_form->Handle, null, _T("rundll32.exe"), _T("shell32.dll,Options_RunDLL 0"), null, SW_SHOW);
+    ShellExecute(m_form->Handle, nullptr, _T("rundll32.exe"), _T("shell32.dll,Options_RunDLL 0"), nullptr, SW_SHOW);
     // このままだと、このアプリケーションよりも背面に表示してしまうので……
-    HWND hFolderOptions = null;
+    HWND hFolderOptions = nullptr;
     for (int i = 0; i < 10 && !hFolderOptions; ++i) {
       Sleep(100);
       hFolderOptions = ::FindWindow(_T("#32770"), _T("フォルダ オプション"));
@@ -1205,19 +1369,21 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
     return S_OK;
   }
 
-  HRESULT ProcessSyncFileDialog(message = null) {
-    if (string path = CurrentPath()) {
-      if FAILED (avesta::FileDialogSetPath(path.str())) Notify(NotifyWarning, string::load(IDS_ERR_NOFILEDIALOG));
+  HRESULT ProcessSyncFileDialog(mew::message = mew::null) {
+    if (mew::string path = CurrentPath()) {
+      if FAILED (avesta::FileDialogSetPath(path.str())) {
+        Notify(avesta::NotifyWarning, mew::string::load(IDS_ERR_NOFILEDIALOG));
+      }
     }
     return S_OK;
   }
 
   ///
   struct EntryAndStatus {
-    ref<IShellListView> view;
-    ref<IEntry> entry;
+    mew::ref<mew::ui::IShellListView> view;
+    mew::ref<mew::io::IEntry> entry;
     DWORD status;
-    string mask;
+    mew::string mask;
   };
   class OptionOnOpen {
    private:
@@ -1230,16 +1396,16 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
   ///
   class OptionOnMultiOpen : public OptionOnOpen {
    private:
-    ref<ITabPanel> m_tab;
-    InsertTo m_ins;
+    mew::ref<mew::ui::ITabPanel> m_tab;
+    mew::ui::InsertTo m_ins;
     const bool m_OpenDups;
 
    public:
-    OptionOnMultiOpen(ITabPanel* tab) : m_OpenDups(theAvesta->OpenDups) {
+    OptionOnMultiOpen(mew::ui::ITabPanel* tab) : m_OpenDups(theAvesta->OpenDups) {
       theAvesta->OpenDups = true;
       m_tab = tab;
       m_ins = tab->InsertPosition;
-      tab->InsertPosition = InsertTail;
+      tab->InsertPosition = mew::ui::InsertTail;
     }
     ~OptionOnMultiOpen() {
       m_tab->InsertPosition = m_ins;
@@ -1247,36 +1413,42 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
     }
   };
   ///
-  int OpenMultipleFolders(std::vector<EntryAndStatus>& entries, Navigation navi) {
+  int OpenMultipleFolders(std::vector<EntryAndStatus>& entries, avesta::Navigation navi) {
     int count = 0;
     if (true) {
       OptionOnMultiOpen ins(m_tab);
       for (std::vector<EntryAndStatus>::iterator i = entries.begin(); i != entries.end(); ++i) {
         if (i->view = OpenFolder(i->entry, navi)) {
-          navi = NaviAppend;
+          navi = avesta::NaviAppend;
           ++count;
         }
       }
     }
-    if (m_booleans[BoolTreeAutoReflect]) ProcessTreeReflect();
+    if (m_booleans[avesta::BoolTreeAutoReflect]) {
+      ProcessTreeReflect();
+    }
     return count;
   }
   ///
-  int OpenMultipleEntries(IEntryList* entries, Navigation navi) {
-    if (!entries) return 0;
+  int OpenMultipleEntries(mew::io::IEntryList* entries, avesta::Navigation navi) {
+    if (!entries) {
+      return 0;
+    }
     int count = 0;
     if (const int leafs = entries->Count) {
       OptionOnMultiOpen ins(m_tab);
       for (int i = 0; i < leafs; ++i) {
-        ref<IEntry> entry;
-        if FAILED (entries->GetAt(&entry, i)) continue;
-        Navigation naviResult;
-        if (ref<IWindow> view = OpenEntry(entry, navi, &naviResult)) {
+        mew::ref<mew::io::IEntry> entry;
+        if FAILED (entries->GetAt(&entry, i)) {
+          continue;
+        }
+        avesta::Navigation naviResult;
+        if (mew::ref<mew::ui::IWindow> view = OpenEntry(entry, navi, &naviResult)) {
           switch (naviResult) {
-            case NaviOpen:
-            case NaviOpenAlways:
-            case NaviReplace:
-              navi = NaviAppend;
+            case avesta::NaviOpen:
+            case avesta::NaviOpenAlways:
+            case avesta::NaviReplace:
+              navi = avesta::NaviAppend;
               break;
             default:
               navi = naviResult;
@@ -1286,20 +1458,24 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
         }
       }
     }
-    if (m_booleans[BoolTreeAutoReflect]) ProcessTreeReflect();
+    if (m_booleans[avesta::BoolTreeAutoReflect]) {
+      ProcessTreeReflect();
+    }
     return count;
   }
 
   bool AskCloseAll() {
-    ref<IWindow> current = CurrentView();
-    if (!current) return true;
+    mew::ref<mew::ui::IWindow> current = CurrentView();
+    if (!current) {
+      return true;
+    }
     // 現在少なくともひとつ以上のフォルダが開かれている
-    switch (QuestionBox(m_form,
+    switch (ave::QuestionBox(m_form,
                         L"フォルダリストを開きます。\n\n現在 "
                         L"開かれているフォルダをすべて閉じますか？",
                         MB_YESNOCANCEL)) {
       case IDYES:
-        ForwardToAll(CommandClose);
+        ForwardToAll(mew::ui::CommandClose);
         m_display->Update();
         break;
       case IDNO:
@@ -1312,7 +1488,7 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
     return true;
   }
 
-  HRESULT DoOpenVersion(Stream stream, string& error, INT version) {
+  HRESULT DoOpenVersion(mew::Stream stream, mew::string& error, INT version) {
     size_t size;
     stream >> size;
     using Entries = std::vector<EntryAndStatus>;
@@ -1322,29 +1498,41 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
       EntryAndStatus item;
       stream >> item.entry;
       stream >> item.status;
-      if (version >= 2) stream >> item.mask;
+      if (version >= 2) {
+        stream >> item.mask;
+      }
       entries.push_back(item);
     }
     //
-    if (entries.empty() || !AskCloseAll()) return 0;
+    if (entries.empty() || !AskCloseAll()) {
+      return 0;
+    }
     //
     int count = 0;
     if (true) {
       OptionOnOpen sup;
-      count = OpenMultipleFolders(entries, NaviOpen);
+      count = OpenMultipleFolders(entries, avesta::NaviOpen);
       for (Entries::iterator i = entries.begin(); i != entries.end(); ++i) {
-        if (!(i->status & SELECTED)) m_tab->SetStatus(i->view, UNSELECTED);
-        if (i->status & CHECKED) m_tab->SetStatus(i->view, CHECKED);
-        if (version >= 2 && i->mask) i->view->PatternMask = i->mask;
+        if (!(i->status & mew::SELECTED)) {
+          m_tab->SetStatus(i->view, mew::UNSELECTED);
+        }
+        if (i->status & mew::CHECKED) {
+          m_tab->SetStatus(i->view, mew::CHECKED);
+        }
+        if (version >= 2 && i->mask) {
+          i->view->PatternMask = i->mask;
+        }
       }
     }
-    if (m_booleans[BoolTreeAutoReflect]) ProcessTreeReflect();
+    if (m_booleans[avesta::BoolTreeAutoReflect]) {
+      ProcessTreeReflect();
+    }
     return count;
   }
   /// @return 開いたフォルダの個数. エラーの場合は負数.
-  HRESULT DoOpen(string filename, string& error) {
+  HRESULT DoOpen(mew::string filename, mew::string& error) {
     try {
-      Stream stream(__uuidof(io::FileReader), filename);
+      mew::Stream stream(__uuidof(mew::io::FileReader), filename);
       GUID version;
       stream >> version;
       if (version == STATUS_VERSION_1) {
@@ -1355,17 +1543,17 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
         error = _T("作業状況ファイルの形式が不正です");
         return E_FAIL;
       }
-    } catch (Error& e) {
+    } catch (mew::exceptions::Error& e) {
       error = e.Message.str();
       return e.Code;
     }
   }
   /// @return 保存したフォルダの個数. エラーの場合は負数.
-  HRESULT DoSave(string filename, string& error) {
+  HRESULT DoSave(mew::string filename, mew::string& error) {
     using Entries = std::vector<EntryAndStatus>;
     Entries entries;
     entries.reserve(10);
-    for (each<IShellListView> i = EnumFolders(StatusNone); i.next();) {
+    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone); i.next();) {
       EntryAndStatus item;
       item.view = i;
       item.mask = i->PatternMask;
@@ -1375,17 +1563,17 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
       }
     }
     if (entries.empty()) {
-      error = string::load(IDS_ERR_NOFOLDER);
+      error = mew::string::load(IDS_ERR_NOFOLDER);
       return E_ABORT;
     }
     if (!filename) {
-      filename = ui::SaveDialog(m_form->Handle, string::load(IDS_FILEFILTER), _T(".ave"));
+      filename = mew::ui::SaveDialog(m_form->Handle, mew::string::load(IDS_FILEFILTER), _T(".ave"));
       if (!filename) {
         return 0;
       }
     }
     try {
-      Stream stream(__uuidof(io::FileWriter), filename);
+      mew::Stream stream(__uuidof(mew::io::FileWriter), filename);
       stream << STATUS_VERSION_2;
       stream << (size_t)entries.size();
       for (Entries::iterator i = entries.begin(); i != entries.end(); ++i) {
@@ -1394,60 +1582,60 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
         stream << i->mask;
       }
       return entries.size();
-    } catch (Error& e) {
+    } catch (mew::exceptions::Error& e) {
       error = e.Message.str();
       return e.Code;
     }
   }
-  HRESULT FileLoad(message) {
-    if (string filename = ui::OpenDialog(m_form->Handle, string::load(IDS_FILEFILTER))) {
-      string error;
+  HRESULT FileLoad(mew::message) {
+    if (mew::string filename = mew::ui::OpenDialog(m_form->Handle, mew::string::load(IDS_FILEFILTER))) {
+      mew::string error;
       if FAILED (DoOpen(filename, error)) {
-        WarningBox(m_form, string::format(_T("読み込みに失敗しました。\n\n$1"), error));
+        ave::WarningBox(m_form, mew::string::format(_T("読み込みに失敗しました。\n\n$1"), error));
       }
     }
     return S_OK;
   }
-  HRESULT FileSave(message) {
-    string error;
-    if FAILED (DoSave(null, error)) {
-      WarningBox(m_form, string::format(_T("保存に失敗しました。\n\n$1"), error));
+  HRESULT FileSave(mew::message) {
+    mew::string error;
+    if FAILED (DoSave(mew::null, error)) {
+      ave::WarningBox(m_form, mew::string::format(_T("保存に失敗しました。\n\n$1"), error));
     }
     return S_OK;
   }
-  HRESULT OptionReload(message = null) {
+  HRESULT OptionReload(mew::message = mew::null) {
     ReloadResource();
     return S_OK;
   }
-  void ReloadResource(IXMLReader* sax = null) {
+  void ReloadResource(mew::xml::IXMLReader* sax = nullptr) {
     ResetGlobalVariables();
-    ref<IXMLReader> sax0;
+    mew::ref<mew::xml::IXMLReader> sax0;
     if (!sax) {
-      sax0.create(__uuidof(XMLReader));
+      sax0.create(__uuidof(mew::xml::XMLReader));
       sax = sax0;
     }
     //
     FormReload(m_forms, m_commands, sax);
     SpoilKeymapAndGesture(m_tab);
   }
-  HRESULT OptionWallPaper(message) {
-    ref<IWallPaperDialog> dlg(__uuidof(WallPaperDialog), m_tab);
-    dlg->AddTarget(this, string::load(IDS_WALLPAPER_FOLDER));
+  HRESULT OptionWallPaper(mew::message) {
+    mew::ref<mew::ui::IWallPaperDialog> dlg(__uuidof(mew::ui::WallPaperDialog), m_tab);
+    dlg->AddTarget(this, mew::string::load(IDS_WALLPAPER_FOLDER));
     for (Templates::const_iterator i = m_forms.begin(); i != m_forms.end(); ++i) {
-      if (ref<IWallPaper> wallpaper = cast(i->window)) {
+      if (mew::ref<IWallPaper> wallpaper = cast(i->window)) {
         dlg->AddTarget(wallpaper, i->id);
       }
     }
     dlg->Go();
     return S_OK;
   }
-  HRESULT OptionInsert(message msg) {
-    m_tab->InsertPosition = (InsertTo)(int)msg.code;
+  HRESULT OptionInsert(mew::message msg) {
+    m_tab->InsertPosition = (mew::ui::InsertTo)(int)msg.code;
     return S_OK;
   }
 
-#define MEW_MSG_BEGIN(name)   \
-  HRESULT name(message msg) { \
+#define MEW_MSG_BEGIN(name)        \
+  HRESULT name(mew::message msg) { \
     switch (msg.code) {
 #define MEW_MSG_END() \
   default:            \
@@ -1458,46 +1646,54 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
 #define MEW_COMMAND_STATE(code, enabled, checked) \
   case code: {                                    \
     UINT32 state = 0;                             \
-    if (enabled) state |= ENABLED;                \
-    if (checked) state |= CHECKED;                \
+    if (enabled) {                                \
+      state |= mew::ENABLED;                      \
+    }                                             \
+    if (checked) {                                \
+      state |= mew::CHECKED;                      \
+    }                                             \
     msg["state"] = state;                         \
     break;                                        \
   }
 
   MEW_MSG_BEGIN(ObserveInsert)
-  MEW_COMMAND_STATE(InsertHead, true, m_tab->InsertPosition == InsertHead);
-  MEW_COMMAND_STATE(InsertTail, true, m_tab->InsertPosition == InsertTail);
-  MEW_COMMAND_STATE(InsertPrev, true, m_tab->InsertPosition == InsertPrev);
-  MEW_COMMAND_STATE(InsertNext, true, m_tab->InsertPosition == InsertNext);
+  MEW_COMMAND_STATE(mew::ui::InsertHead, true, m_tab->InsertPosition == mew::ui::InsertHead);
+  MEW_COMMAND_STATE(mew::ui::InsertTail, true, m_tab->InsertPosition == mew::ui::InsertTail);
+  MEW_COMMAND_STATE(mew::ui::InsertPrev, true, m_tab->InsertPosition == mew::ui::InsertPrev);
+  MEW_COMMAND_STATE(mew::ui::InsertNext, true, m_tab->InsertPosition == mew::ui::InsertNext);
   MEW_MSG_END()
 
-  HRESULT ObserveMode(message msg) {
+  HRESULT ObserveMode(mew::message msg) {
     UINT32 state = 0;
-    if (ref<IShellListView> current = CurrentView()) state = ENABLED | (current->Style == (int)msg.code ? CHECKED : 0);
-    msg["state"] = state;
-    return S_OK;
-  }
-  HRESULT ObserveClipboard(message msg) {
-    UINT32 state = 0;
-    if (CurrentView()) state = (::IsClipboardFormatAvailable(msg.code) ? ENABLED : 0);
-    msg["state"] = state;
-    return S_OK;
-  }
-  HRESULT ObserveClipToSelect(message msg) {
-    UINT32 state = 0;
-    if (IShellListView* current = CurrentView()) {
-      state = ((current->SelectedCount > 0 && ::IsClipboardFormatAvailable(msg.code)) ? ENABLED : 0);
+    if (mew::ref<mew::ui::IShellListView> current = CurrentView()) {
+      state = mew::ENABLED | (current->Style == (int)msg.code ? mew::CHECKED : 0);
     }
     msg["state"] = state;
     return S_OK;
   }
-  HRESULT SystemAbout(message = null) {
-    WCHAR path[MAX_PATH];
-    ::GetModuleFileName(module::Handle, path, MAX_PATH);
-    ui::AboutDialog(m_form->Handle, path);
+  HRESULT ObserveClipboard(mew::message msg) {
+    UINT32 state = 0;
+    if (CurrentView()) {
+      state = (::IsClipboardFormatAvailable(msg.code) ? mew::ENABLED : 0);
+    }
+    msg["state"] = state;
     return S_OK;
   }
-  void Restart(PCWSTR newAvesta = null) {
+  HRESULT ObserveClipToSelect(mew::message msg) {
+    UINT32 state = 0;
+    if (mew::ui::IShellListView* current = CurrentView()) {
+      state = ((current->SelectedCount > 0 && ::IsClipboardFormatAvailable(msg.code)) ? mew::ENABLED : 0);
+    }
+    msg["state"] = state;
+    return S_OK;
+  }
+  HRESULT SystemAbout(mew::message = mew::null) {
+    WCHAR path[MAX_PATH];
+    ::GetModuleFileName(module::Handle, path, MAX_PATH);
+    mew::ui::AboutDialog(m_form->Handle, path);
+    return S_OK;
+  }
+  void Restart(PCWSTR newAvesta = nullptr) {
     if (m_form) {
       try {
         if (theNewAvesta && newAvesta) {
@@ -1505,27 +1701,31 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
           *theNewAvesta = (PWSTR)::GlobalAlloc(GMEM_FIXED, sizeof(WCHAR) * (len + 1));
           lstrcpy(*theNewAvesta, newAvesta);
         }
-      } catch (Error&) {
+      } catch (mew::exceptions::Error&) {
       }
       theMainResult = 1;
       m_form->Close();
     }
   }
-  HRESULT SystemRestart(message = null) {
+  HRESULT SystemRestart(mew::message = mew::null) {
     Restart();
     return S_OK;
   }
 
  private:
-  void OpenFromCommandLine(PCTSTR value, Navigation navigate, bool link) {
+  void OpenFromCommandLine(PCTSTR value, avesta::Navigation navigate, bool link) {
     if (link) {
       TCHAR resolved[MAX_PATH];
       if FAILED (afx::SHResolveLink(value, resolved)) {
-        theAvesta->Notify(NotifyError, string::load(IDS_ERR_NOTLINK, value));
+        theAvesta->Notify(avesta::NotifyError, mew::string::load(IDS_ERR_NOTLINK, value));
       } else {
         PTSTR leaf = PathFindFileName(resolved);
-        if (leaf > resolved) *(leaf - 1) = _T('\0');
-        if (ref<IShellListView> view = OpenPath(resolved, navigate)) view->SetStatus(string(leaf), SELECTED, true);
+        if (leaf > resolved) {
+          *(leaf - 1) = _T('\0');
+        }
+        if (mew::ref<mew::ui::IShellListView> view = OpenPath(resolved, navigate)) {
+          view->SetStatus(mew::string(leaf), mew::SELECTED, true);
+        }
       }
     } else {
       OpenPath(value, navigate);
@@ -1534,26 +1734,32 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
 
  public:
   void ParseCommandLine(PCTSTR args) {
-    ref<ICommandLine> cmd = avesta::ParseCommandLine(args);
-    if (!cmd) return;
+    mew::ref<avesta::ICommandLine> cmd = avesta::ParseCommandLine(args);
+    if (!cmd) {
+      return;
+    }
 
     bool optLink = false;
-    Navigation optNavigate = NaviOpen;
+    avesta::Navigation optNavigate = avesta::NaviOpen;
 
     // 短時間の間に開かれた場合は、一度に開かれたとみなす
     DWORD now = GetTickCount();
-    if (now - m_ParseCommandLineTime < theAvesta->GetCommandLineInterval()) optNavigate = NaviAppend;
+    if (now - m_ParseCommandLineTime < theAvesta->GetCommandLineInterval()) {
+      optNavigate = avesta::NaviAppend;
+    }
     m_ParseCommandLineTime = now;
 
     PTSTR option, value;
     while (cmd->Next(&option, &value)) {
-      if (str::equals_nocase(option, _T("command"))) {  // -command
-        if (!value && !cmd->Next(&option, &value)) break;
-        if FAILED (InvokeCommand(value)) {
-          theAvesta->Notify(NotifyWarning, string::load(IDS_ERR_COMMAND_NOT_FOUND, value));
+      if (mew::str::equals_nocase(option, _T("command"))) {  // -command
+        if (!value && !cmd->Next(&option, &value)) {
+          break;
         }
-      } else if (str::equals_nocase(option, _T("link"))) {  // -link
-        if (value) {                                        // link は一度で効果消滅
+        if FAILED (InvokeCommand(value)) {
+          theAvesta->Notify(avesta::NotifyWarning, mew::string::load(IDS_ERR_COMMAND_NOT_FOUND, value));
+        }
+      } else if (mew::str::equals_nocase(option, _T("link"))) {  // -link
+        if (value) {                                             // link は一度で効果消滅
           OpenFromCommandLine(value, optNavigate, true);
           optLink = false;
         } else {  // 次のOpenコマンドまで効果が残る
@@ -1581,80 +1787,86 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
   STDMETHODIMP DragLeave() { return S_OK; }
   STDMETHODIMP Drop(IDataObject* pDataObject, DWORD key, POINTL pt, DWORD* pdwEffect) {
     try {
-      ref<IEntryList> entries(__uuidof(EntryList), pDataObject);
+      mew::ref<mew::io::IEntryList> entries(__uuidof(mew::io::EntryList), pDataObject);
       size_t count = entries->Count;
-      if (count == 0) return S_OK;
-      if (key & MouseButtonRight) {
+      if (count == 0) {
+        return S_OK;
+      }
+      if (key & mew::ui::MouseButtonRight) {
         CMenu menu;
         menu.CreatePopupMenu();
-        menu.AppendMenu(MF_STRING, NaviOpen, _T("新規に開く(&N)"));
-        menu.AppendMenu(MF_STRING, NaviAppend, _T("追加で開く(&A)"));
-        menu.AppendMenu(MF_STRING, NaviReserve, _T("非表示で開く(&H)"));
+        menu.AppendMenu(MF_STRING, avesta::NaviOpen, _T("新規に開く(&N)"));
+        menu.AppendMenu(MF_STRING, avesta::NaviAppend, _T("追加で開く(&A)"));
+        menu.AppendMenu(MF_STRING, avesta::NaviReserve, _T("非表示で開く(&H)"));
         menu.AppendMenu(MF_SEPARATOR);
         menu.AppendMenu(MF_STRING, static_cast<UINT_PTR>(0), _T("キャンセル"));
         menu.SetMenuDefaultItem(0, MF_BYPOSITION);
-        UINT cmd = menu.TrackPopupMenu(TPM_RIGHTBUTTON | TPM_RETURNCMD, pt.x, pt.y, m_form->Handle, null);
-        if (cmd != 0) OpenMultipleEntries(entries, (Navigation)cmd);
+        UINT cmd = menu.TrackPopupMenu(TPM_RIGHTBUTTON | TPM_RETURNCMD, pt.x, pt.y, m_form->Handle, nullptr);
+        if (cmd != 0) {
+          OpenMultipleEntries(entries, (avesta::Navigation)cmd);
+        }
         return S_OK;
       } else {  // Left Drag
-        OpenMultipleEntries(entries, NaviOpen);
+        OpenMultipleEntries(entries, avesta::NaviOpen);
       }
-    } catch (Error& e) {
+    } catch (mew::exceptions::Error& e) {
       return e.Code;
     }
     return S_OK;
   }
 
  public:  // IWallPaper
-  string get_WallPaperFile() { return m_WallPaper; }
-  void set_WallPaperFile(string value) {
+  mew::string get_WallPaperFile() { return m_WallPaper; }
+  void set_WallPaperFile(mew::string value) {
     m_WallPaper = ave::ResolvePath(value);
-    for (each<IShellListView> i = EnumFolders(StatusNone); i.next();) {
-      SetWallPaperToView(i, GetFolderOfView(i));
+    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone); i.next();) {
+      SetWallPaperToView(i, ave::GetFolderOfView(i));
     }
   }
-  UINT32 get_WallPaperAlign() { return DirMaskNS | DirMaskWE; }
+  UINT32 get_WallPaperAlign() { return mew::ui::DirMaskNS | mew::ui::DirMaskWE; }
   void set_WallPaperAlign(UINT32 value) {}
-  void SetWallPaperToView(IShellListView* view, IEntry* entry) {
+  void SetWallPaperToView(mew::ui::IShellListView* view, mew::io::IEntry* entry) {
     ASSERT(view);
-    string filename = m_WallPaper;
+    mew::string filename = m_WallPaper;
     if (m_callback && entry) {
       filename = ave::ResolvePath(m_callback->WallPaper(m_WallPaper, entry->Name, entry->Path));
     }
-    cast<IWallPaper>(view)->WallPaperFile = filename;
+    mew::cast<IWallPaper>(view)->WallPaperFile = filename;
   }
 
  private:
-  string m_WallPaper;
+  mew::string m_WallPaper;
 
-  HRESULT OptionFont_Tab(message m) {
-    HFONT font = FontFromMessage(FontTab, m);
+  HRESULT OptionFont_Tab(mew::message m) {
+    HFONT font = FontFromMessage(avesta::FontTab, m);
     SetFont(m_tab, font);
     return S_OK;
   }
-  HRESULT OptionFont_Address(message m) {
-    HFONT font = FontFromMessage(FontAddress, m);
-    for (each<IWindow> i = EnumFolders(StatusNone); i.next();) SetFont(i, font, 0);
+  HRESULT OptionFont_Address(mew::message m) {
+    HFONT font = FontFromMessage(avesta::FontAddress, m);
+    for (mew::each<mew::ui::IWindow> i = EnumFolders(mew::StatusNone); i.next();) SetFont(i, font, 0);
     return S_OK;
   }
-  HRESULT OptionFont_List(message m) {
-    HFONT font = FontFromMessage(FontList, m);
-    for (each<IWindow> i = EnumFolders(StatusNone); i.next();) SetFont(i, font, 1);
+  HRESULT OptionFont_List(mew::message m) {
+    HFONT font = FontFromMessage(avesta::FontList, m);
+    for (mew::each<mew::ui::IWindow> i = EnumFolders(mew::StatusNone); i.next();) SetFont(i, font, 1);
     return S_OK;
   }
-  HRESULT OptionFont_Status(message m) {
-    HFONT font = FontFromMessage(FontStatus, m);
+  HRESULT OptionFont_Status(mew::message m) {
+    HFONT font = FontFromMessage(avesta::FontStatus, m);
     SetFont(m_status, font);
     return S_OK;
   }
-  HRESULT OptionFont(message) {
-    if (!m_form) return E_FAIL;
+  HRESULT OptionFont(mew::message) {
+    if (!m_form) {
+      return E_FAIL;
+    }
     if (!m_form->Visible || m_tab->Count <= 0) {
-      WarningBox(m_form, L"処理の都合のため、一つ以上のフォルダを開いた状態で行ってください");
+      ave::WarningBox(m_form, L"処理の都合のため、一つ以上のフォルダを開いた状態で行ってください");
       return S_OK;
     }
 
-    ref<IExpose> expose(__uuidof(Expose));
+    mew::ref<mew::ui::IExpose> expose(__uuidof(mew::ui::Expose));
     expose->SetTitle(_T("フォント設定箇所を選んでください"));
     HWND hwndRoot = ::GetAncestor(m_form->Handle, GA_ROOT);
 
@@ -1666,23 +1878,23 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
     };
 
     if (m_tab) {
-      Rect rc;
+      mew::Rect rc;
       ::GetWindowRect(m_tab->Handle, &rc);
-      Rect tabrc = m_tab->GetTabRect(0);
+      mew::Rect tabrc = m_tab->GetTabRect(0);
       rc.bottom = rc.top + tabrc.h;
       afx::ScreenToClient(hwndRoot, &rc);
       expose->AddRect(ExposeTab, 0, rc, 'T');
     }
-    for (each<IShellListView> i = EnumFolders(StatusNone); i.next();) {
+    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone); i.next();) {
       if (i->Visible) {  // TODO: もうちょいどうにか
         if (HWND hComboBox = ::FindWindowEx(i->Handle, NULL, _T("ComboBoxEx32"), NULL)) {
-          Rect rc;
+          mew::Rect rc;
           ::GetWindowRect(hComboBox, &rc);
           afx::ScreenToClient(hwndRoot, &rc);
           expose->AddRect(ExposeAddress, 0, rc, 'A');
         }
         if (HWND hDefView = ::FindWindowEx(i->Handle, NULL, _T("SHELLDLL_DefView"), NULL)) {
-          Rect rc;
+          mew::Rect rc;
           ::GetWindowRect(hDefView, &rc);
           afx::ScreenToClient(hwndRoot, &rc);
           expose->AddRect(ExposeList, 0, rc, 'L');
@@ -1690,7 +1902,7 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
       }
     }
     if (m_status) {
-      Rect rc;
+      mew::Rect rc;
       ::GetWindowRect(m_status->Handle, &rc);
       afx::ScreenToClient(hwndRoot, &rc);
       expose->AddRect(ExposeStatus, 0, rc, 'S');
@@ -1700,18 +1912,20 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
     HRESULT hr = expose->Go(hwndRoot, theAvesta->GetExposeTime());
     switch (hr) {
       case ExposeTab:
-        FontDialog(m_form->Handle, m_fonts[FontTab], L"タブのフォント設定", function(this, &Main::OptionFont_Tab));
+        mew::ui::FontDialog(m_form->Handle, m_fonts[avesta::FontTab], L"タブのフォント設定",
+                            mew::function(this, &Main::OptionFont_Tab));
         break;
       case ExposeAddress:
-        FontDialog(m_form->Handle, m_fonts[FontAddress], L"アドレスバーのフォント設定",
-                   function(this, &Main::OptionFont_Address));
+        mew::ui::FontDialog(m_form->Handle, m_fonts[avesta::FontAddress], L"アドレスバーのフォント設定",
+                            mew::function(this, &Main::OptionFont_Address));
         break;
       case ExposeList:
-        FontDialog(m_form->Handle, m_fonts[FontList], L"ファイルリストのフォント設定", function(this, &Main::OptionFont_List));
+        mew::ui::FontDialog(m_form->Handle, m_fonts[avesta::FontList], L"ファイルリストのフォント設定",
+                            mew::function(this, &Main::OptionFont_List));
         break;
       case ExposeStatus:
-        FontDialog(m_form->Handle, m_fonts[FontStatus], L"ステータスバーのフォント設定",
-                   function(this, &Main::OptionFont_Status));
+        mew::ui::FontDialog(m_form->Handle, m_fonts[avesta::FontStatus], L"ステータスバーのフォント設定",
+                            mew::function(this, &Main::OptionFont_Status));
         break;
       default:
         break;
@@ -1724,32 +1938,42 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
   //
  private:
   ThreeStateBool m_dropmode;  //
-  Rect m_dropRestore;         // ドロップモード復元後
-  Point m_dropLocation;       // ドロップモードの位置
+  mew::Rect m_dropRestore;    // ドロップモード復元後
+  mew::Point m_dropLocation;  // ドロップモードの位置
  public:
   void DropMode(bool mode) {
-    if (!m_form || !m_tab) return;
+    if (!m_form || !m_tab) {
+      return;
+    }
     if (mode) {
-      if (m_dropmode != BoolUnknown) return;
+      if (m_dropmode != BoolUnknown) {
+        return;
+      }
 
       CWindow form(m_form->Handle);
-      if (form.IsIconic()) form.ShowWindow(SW_RESTORE);
+      if (form.IsIconic()) {
+        form.ShowWindow(SW_RESTORE);
+      }
 
       m_dropRestore = m_form->Bounds;
       FormComponentsHide(m_forms);
       m_dropmode = (GetAlwaysTop() ? BoolTrue : BoolFalse);
       form.ModifyStyleEx(0, WS_EX_TOOLWINDOW | WS_EX_APPWINDOW);
       // resize
-      Size sz = m_tab->DefaultSize;
-      sz.w = math::max(sz.w, 120);
+      mew::Size sz = m_tab->DefaultSize;
+      sz.w = mew::math::max(sz.w, 120);
       m_form->ClientSize = sz;
       m_form->Location = m_dropLocation;
       SetAlwaysTop(true);
     } else {
-      if (m_dropmode == BoolUnknown) return;
+      if (m_dropmode == BoolUnknown) {
+        return;
+      }
 
       CWindow form(m_form->Handle);
-      if (form.IsIconic()) form.ShowWindow(SW_RESTORE);
+      if (form.IsIconic()) {
+        form.ShowWindow(SW_RESTORE);
+      }
 
       m_dropLocation = m_form->Location;
       FormComponentsRestore(m_forms);
@@ -1759,7 +1983,7 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
       m_dropmode = BoolUnknown;
     }
   }
-  HRESULT ProcessDropMode(message) {
+  HRESULT ProcessDropMode(mew::message) {
     switch (m_dropmode) {
       case BoolTrue:
       case BoolFalse:
@@ -1771,8 +1995,8 @@ class Main : public Root<implements<IDropTarget, IGesture, IKeymap, IWallPaper>,
     }
     return S_OK;
   }
-  HRESULT ObserveDropMode(message msg) {
-    msg["state"] = ENABLED | (m_dropmode != BoolUnknown ? CHECKED : 0);
+  HRESULT ObserveDropMode(mew::message msg) {
+    msg["state"] = mew::ENABLED | (m_dropmode != BoolUnknown ? mew::CHECKED : 0);
     return S_OK;
   }
 };
@@ -1785,10 +2009,10 @@ extern "C" __declspec(dllexport) int AvestaMain(PCWSTR args, INT sw, PWSTR* newA
   thePygmy = NULL;
 
   AtlInitCommonControls(ICC_BAR_CLASSES | ICC_COOL_CLASSES | ICC_USEREX_CLASSES);
-  util::GdiInit gdi;
-  util::InitModule();
+  mew::util::GdiInit gdi;
+  mew::util::InitModule();
 
-  OleInitialize(null);
+  OleInitialize(nullptr);
 
   // ロード＆アンロードを繰り返しているようなので、あらかじめロードしておく。
   const PCWSTR PRELOADS[] = {
@@ -1797,25 +2021,30 @@ extern "C" __declspec(dllexport) int AvestaMain(PCWSTR args, INT sw, PWSTR* newA
   };
 
   HINSTANCE hPreloads[lengthof(PRELOADS)];
-  for (int i = 0; i < lengthof(PRELOADS); ++i) hPreloads[i] = ::LoadLibrary(PRELOADS[i]);
+  for (int i = 0; i < lengthof(PRELOADS); ++i) {
+    hPreloads[i] = ::LoadLibrary(PRELOADS[i]);
+  }
 
   try {
     Main main;
     theNewAvesta = newAvesta;
     main.Run(args, sw);
-  } catch (Error& e) {
+  } catch (mew::exceptions::Error& e) {
     MSG msg;
     while (::PeekMessage(&msg, NULL, WM_QUIT, WM_QUIT, PM_REMOVE)) {
     }
-    ::MessageBox(null, e.Message.str(), _T("FETAL ERROR"), MB_OK | MB_ICONERROR);
+    ::MessageBox(nullptr, e.Message.str(), _T("FETAL ERROR"), MB_OK | MB_ICONERROR);
   }
 
   theNewAvesta = NULL;
   while (FreeLibrary(thePygmy)) {
   }
 
-  for (int i = 0; i < lengthof(PRELOADS); ++i)
-    if (hPreloads[i]) ::FreeLibrary(hPreloads[i]);
+  for (int i = 0; i < lengthof(PRELOADS); ++i) {
+    if (hPreloads[i]) {
+      ::FreeLibrary(hPreloads[i]);
+    }
+  }
 
   OleUninitialize();
 
@@ -1853,16 +2082,20 @@ BOOL APIENTRY DllMain(HINSTANCE hModule, DWORD what, void*) {
 HMODULE avesta::GetDLL() { return module::Handle; }
 
 HWND avesta::GetForm() {
-  if (IWindow* form = static_cast<Main*>(theAvesta)->m_form) return form->Handle;
-  return null;
+  if (mew::ui::IWindow* form = static_cast<Main*>(theAvesta)->m_form) {
+    return form->Handle;
+  }
+  return nullptr;
 }
 
 HWND avesta::GetForm(DWORD dwThreadId) {
-  if (IWindow* form = static_cast<Main*>(theAvesta)->m_form) return form->Handle;
-  return null;
+  if (mew::ui::IWindow* form = static_cast<Main*>(theAvesta)->m_form) {
+    return form->Handle;
+  }
+  return nullptr;
 }
 
-HRESULT avesta::AvestaExecute(IEntry* entry) { return static_cast<Main*>(theAvesta)->AvestaExecute(entry); }
+HRESULT avesta::AvestaExecute(mew::io::IEntry* entry) { return static_cast<Main*>(theAvesta)->AvestaExecute(entry); }
 
 bool avesta::GetOption(BoolOption what) { return static_cast<Main*>(theAvesta)->m_booleans[what]; }
 

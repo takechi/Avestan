@@ -18,14 +18,14 @@ class SHFileOpHack : public CWindowImpl<SHFileOpHack> {
   };
 
   DWORD m_timeFrom;
-  Point m_ptFrom;
-  Point m_ptTo;
+  mew::Point m_ptFrom;
+  mew::Point m_ptTo;
   int m_index;
 
   static const int MAX_COUNT = 5;  // +1
   static HWND s_hwndProgress[MAX_COUNT];
 
-  static int GetUnused(HWND hwnd, const Rect& rcProgress, const Rect& rcDesktop) {
+  static int GetUnused(HWND hwnd, const mew::Rect& rcProgress, const mew::Rect& rcDesktop) {
     for (int i = 0; i < MAX_COUNT; ++i) {
       if (!::IsWindow(s_hwndProgress[i]) || !::IsWindowVisible(s_hwndProgress[i])) {
         s_hwndProgress[i] = hwnd;
@@ -34,8 +34,8 @@ class SHFileOpHack : public CWindowImpl<SHFileOpHack> {
     }
     return 0;
   }
-  static Point Destination(const Rect& rcProgress, const Rect& rcDesktop, int index) {
-    Point pt;
+  static mew::Point Destination(const mew::Rect& rcProgress, const mew::Rect& rcDesktop, int index) {
+    mew::Point pt;
     pt.x = rcDesktop.left + ((rcDesktop.w - rcProgress.w) * (MAX_COUNT - index) / MAX_COUNT);
     pt.y = rcDesktop.bottom - rcProgress.h;
     return pt;
@@ -44,7 +44,7 @@ class SHFileOpHack : public CWindowImpl<SHFileOpHack> {
  public:
   SHFileOpHack(HWND hwnd) {
     SubclassWindow(hwnd);
-    Rect rc, rcDesktop;
+    mew::Rect rc, rcDesktop;
     GetWindowRect(&rc);
     SystemParametersInfo(SPI_GETWORKAREA, 0, &rcDesktop, 0);
     m_index = GetUnused(hwnd, rc, rcDesktop);
@@ -82,13 +82,13 @@ class SHFileOpHack : public CWindowImpl<SHFileOpHack> {
   }
   LRESULT OnTimer(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     if (wParam == SLIP_TIMERID) {
-      Point pt;
+      mew::Point pt;
       INT t = ::GetTickCount() - m_timeFrom;
       if (t >= SLIP_DURATION) {
         EndAnimation();
         pt = m_ptTo;
       } else {
-        double a = math::cos((double)(SLIP_DURATION - t) / SLIP_DURATION * math::PI) / 2 + 0.5;
+        double a = mew::math::cos((double)(SLIP_DURATION - t) / SLIP_DURATION * mew::math::PI) / 2 + 0.5;
         pt.x = (int)(m_ptTo.x * a + m_ptFrom.x * (1.0 - a));
         pt.y = (int)(m_ptTo.y * a + m_ptFrom.y * (1.0 - a));
       }
@@ -100,22 +100,34 @@ class SHFileOpHack : public CWindowImpl<SHFileOpHack> {
   }
   LRESULT OnGetSubclass(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) { return 0x12345678; }
   void OnFinalMessage(HWND hwnd) {
-    if (s_hwndProgress[m_index] == hwnd) s_hwndProgress[m_index] = null;
+    if (s_hwndProgress[m_index] == hwnd) {
+      s_hwndProgress[m_index] = nullptr;
+    }
     delete this;
   }
 
   static DWORD GetFileOperationMode(HWND hwnd) {
     TCHAR clsname[7];
     ::GetClassName(hwnd, clsname, MAX_PATH);
-    if (lstrcmp(clsname, _T("#32770")) != 0) return 0;
+    if (lstrcmp(clsname, _T("#32770")) != 0) {
+      return 0;
+    }
     TCHAR wndtext[MAX_PATH];
     ::GetWindowText(hwnd, wndtext, MAX_PATH);
     TRACE(L"$1 / $2", clsname, wndtext);
-    if (lstrcmp(wndtext, _T("移動しています...")) == 0) return FO_MOVE;
-    if (lstrcmp(wndtext, _T("コピーしています...")) == 0) return FO_COPY;
-    if (lstrcmp(wndtext, _T("削除しています...")) == 0) return FO_DELETE;
+    if (lstrcmp(wndtext, _T("移動しています...")) == 0) {
+      return FO_MOVE;
+    }
+    if (lstrcmp(wndtext, _T("コピーしています...")) == 0) {
+      return FO_COPY;
+    }
+    if (lstrcmp(wndtext, _T("削除しています...")) == 0) {
+      return FO_DELETE;
+    }
     // TODO: これホント？見たことが無いのでタイトルがわかりません。
-    if (lstrcmp(wndtext, _T("名前を変更しています...")) == 0) return FO_RENAME;
+    if (lstrcmp(wndtext, _T("名前を変更しています...")) == 0) {
+      return FO_RENAME;
+    }
     return 0;  // non-SHOp
   }
 
@@ -127,7 +139,9 @@ HWND SHFileOpHack::s_hwndProgress[MAX_COUNT];
 
 HRESULT avesta::FileOperationHack(HWND hwndProgress, HWND hwndOwner) {
   DWORD op = SHFileOpHack::GetFileOperationMode(hwndProgress);
-  if (!op) return E_FAIL;
+  if (!op) {
+    return E_FAIL;
+  }
   // SHFileOperationウィンドウの構成
   // - #32770
   //    +- SysAnimate32
@@ -151,14 +165,18 @@ HRESULT avesta::FileOperationHack(HWND hwndProgress, HWND hwndOwner) {
 
 namespace {
 static bool IsEqualClassName(HWND hwnd, PCTSTR clsname) {
-  if (!hwnd) return false;
+  if (!hwnd) {
+    return false;
+  }
   TCHAR buffer[MAX_PATH] = _T("");
   ::GetClassName(hwnd, buffer, MAX_PATH);
-  return str::equals(buffer, clsname);
+  return mew::str::equals(buffer, clsname);
 }
 static BOOL CALLBACK EnumFileDialog(HWND hwnd, LPARAM lParam) {
   HWND hComboBox = NULL;
-  if (!::IsWindowVisible(hwnd)) return TRUE;
+  if (!::IsWindowVisible(hwnd)) {
+    return TRUE;
+  }
   if (IsEqualClassName(hwnd, _T("#32770")) && IsEqualClassName(::GetDlgItem(hwnd, 0x00000461), _T("SHELLDLL_DefView")) &&
       IsEqualClassName(hComboBox = ::GetDlgItem(hwnd, 0x0000047C), _T("ComboBoxEx32"))) {
     // トップレベル ファイルダイアログ
@@ -167,7 +185,7 @@ static BOOL CALLBACK EnumFileDialog(HWND hwnd, LPARAM lParam) {
   }
 
   // ファイルダイアログではないので子供を捜す
-  if (HWND hwndChild = FindWindowEx(hwnd, null, _T("#32770"), null)) {
+  if (HWND hwndChild = FindWindowEx(hwnd, nullptr, _T("#32770"), nullptr)) {
     if (IsEqualClassName(::GetDlgItem(hwndChild, 0x00000461), _T("SHELLDLL_DefView")) &&
         IsEqualClassName(hComboBox = ::GetDlgItem(hwndChild, 0x0000047C), _T("ComboBoxEx32"))) {
       *(HWND*)lParam = hComboBox;
@@ -177,7 +195,7 @@ static BOOL CALLBACK EnumFileDialog(HWND hwnd, LPARAM lParam) {
   return TRUE;
 }
 static HWND FindPathEditOfFileDialog() {
-  HWND hwnd = null;
+  HWND hwnd = nullptr;
   EnumWindows(EnumFileDialog, (LPARAM)&hwnd);
   return hwnd;
 }
@@ -185,7 +203,9 @@ static HWND FindPathEditOfFileDialog() {
 
 HRESULT avesta::FileDialogSetPath(PCWSTR path) {
   HWND hComboBox = FindPathEditOfFileDialog();
-  if (!hComboBox) return E_FAIL;
+  if (!hComboBox) {
+    return E_FAIL;
+  }
 
   WCHAR orig[MAX_PATH];
   ::SendMessage(hComboBox, WM_GETTEXT, MAX_PATH, (LPARAM)orig);

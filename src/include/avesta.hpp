@@ -6,9 +6,6 @@
 //#define AVESTA_PYTHON_INTERFACE
 
 namespace avesta {
-using namespace mew;
-using namespace mew::io;
-
 //==============================================================================
 // .
 
@@ -72,8 +69,8 @@ HRESULT RegGetAssocExe(PCWSTR extension, WCHAR exe[MAX_PATH]);
 //==============================================================================
 // Path and ITEMIDLIST.
 
-HRESULT ILExecute(LPCITEMIDLIST pidl, PCWSTR verb = NULL, PCWSTR args = null, PCWSTR dir = null, HWND hwnd = null);
-HRESULT PathExecute(PCWSTR path, PCWSTR verb = null, PCWSTR args = null, PCWSTR dir = null, HWND hwnd = null);
+HRESULT ILExecute(LPCITEMIDLIST pidl, PCWSTR verb = nullptr, PCWSTR args = nullptr, PCWSTR dir = nullptr, HWND hwnd = nullptr);
+HRESULT PathExecute(PCWSTR path, PCWSTR verb = nullptr, PCWSTR args = nullptr, PCWSTR dir = nullptr, HWND hwnd = nullptr);
 //HRESULT UrlDownload(PCWSTR url);
 
 //==============================================================================
@@ -84,7 +81,7 @@ __interface __declspec(uuid("7756E3FD-567D-4011-950F-4FC5F3AE75D4")) ICommandLin
   void Reset();
 };
 
-ref<ICommandLine> ParseCommandLine(PCWSTR args);
+mew::ref<ICommandLine> ParseCommandLine(PCWSTR args);
 
 //==============================================================================
 // ウィンドウ.
@@ -95,8 +92,8 @@ HRESULT WindowSetFocus(HWND hwnd);
 //==============================================================================
 // ダイアログ.
 
-ref<IEntry> PathDialog(string path = null);
-HRESULT NameDialog(IString** pp, string path, string name, UINT resID);
+mew::ref<mew::io::IEntry> PathDialog(mew::string path = mew::null);
+HRESULT NameDialog(mew::IString** pp, mew::string path, mew::string name, UINT resID);
 
 //==============================================================================
 // UI.
@@ -104,8 +101,8 @@ HRESULT NameDialog(IString** pp, string path, string name, UINT resID);
 class Thread {
  public:
   using Routine = unsigned int(__stdcall*)(void*);
-  static HANDLE New(Routine fn, void* args = null);
-  static int Run(Routine fn, void* args = null);
+  static HANDLE New(Routine fn, void* args = nullptr);
+  static int Run(Routine fn, void* args = nullptr);
   static int Loop(HWND hwnd);
   static bool IsLocalLoop();
 };
@@ -132,7 +129,7 @@ class Window {
   void Close();
   bool Show(INT sw);
   void Move(INT x, INT y, INT w, INT h);
-  void MoveToCenter(HWND hwnd = null);
+  void MoveToCenter(HWND hwnd = nullptr);
   void Resize(INT w, INT h);
 
  public:

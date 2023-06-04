@@ -49,7 +49,9 @@ class XMLWriter : public Root<implements<IXMLWriter> > {
 
  public:  // IXMLWriter
   void StartDocument(IStream* stream, PCWSTR encoding) {
-    if (m_stream) throw ArgumentError(_T("既に開かれています"), E_UNEXPECTED);
+    if (m_stream) {
+      throw mew::exceptions::ArgumentError(_T("既に開かれています"), E_UNEXPECTED);
+    }
     m_isTagClosed = true;
     m_hasChild = false;
     m_stream = stream;
@@ -77,23 +79,31 @@ class XMLWriter : public Root<implements<IXMLWriter> > {
     m_hasChild = false;
   }
   void EndElement() {
-    if (m_stack.empty()) throw ArgumentError(_T("EndElement()の呼び出しが、StartElement()と一致しません"), E_UNEXPECTED);
+    if (m_stack.empty()) {
+      throw mew::exceptions::ArgumentError(_T("EndElement()の呼び出しが、StartElement()と一致しません"), E_UNEXPECTED);
+    }
     if (!m_isTagClosed) {
       m_stream << "/>\r\n";
       m_isTagClosed = true;
     } else {
-      if (m_hasChild) Indent(m_stack.size() - 1);
+      if (m_hasChild) {
+        Indent(m_stack.size() - 1);
+      }
       m_stream << "</" << m_stack.back().str() << ">\r\n";
     }
     m_stack.pop_back();
     m_hasChild = true;
   }
   void Attribute(PCWSTR name, PCWSTR data) {
-    if (m_isTagClosed) throw ArgumentError(_T("属性はテキストより先に指定する必要があります"), E_UNEXPECTED);
+    if (m_isTagClosed) {
+      throw mew::exceptions::ArgumentError(_T("属性はテキストより先に指定する必要があります"), E_UNEXPECTED);
+    }
     m_stream << ' ' << name << "=\"" << data << '\"';
   }
   void Characters(PCWSTR chars) {
-    if (!chars) chars = L"";
+    if (!chars) {
+      chars = L"";
+    }
     if (!m_isTagClosed) {
       m_stream << '>';
       m_isTagClosed = true;
@@ -101,16 +111,22 @@ class XMLWriter : public Root<implements<IXMLWriter> > {
     m_stream << chars;
   }
   void ProcessingInstruction(PCWSTR target, PCWSTR data) {
-    if (!m_stream)
-      throw ArgumentError(_T("xml出力先が指定される以前に ProcessingInstruction が呼び出されました"), E_UNEXPECTED);
-    if (!m_stack.empty())
-      throw ArgumentError(_T("ProcessingInstruction はルートノードより先に宣言する必要があります"), E_UNEXPECTED);
+    if (!m_stream) {
+      throw mew::exceptions::ArgumentError(_T("xml出力先が指定される以前に ProcessingInstruction が呼び出されました"),
+                                           E_UNEXPECTED);
+    }
+    if (!m_stack.empty()) {
+      throw mew::exceptions::ArgumentError(_T("ProcessingInstruction はルートノードより先に宣言する必要があります"),
+                                           E_UNEXPECTED);
+    }
     m_stream << "<?" << target << ' ' << data << "?>\r\n";
   }
 
  private:
   void Indent(size_t size) {
-    for (size_t i = 0; i < size; i++) m_stream << '\t';
+    for (size_t i = 0; i < size; i++) {
+      m_stream << '\t';
+    }
   }
 };
 

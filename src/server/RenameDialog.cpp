@@ -4,46 +4,46 @@
 #include "main.hpp"
 
 namespace {
-class RenameDlg : public Dialog {
+class RenameDlg : public avesta::Dialog {
  private:
   struct PathAndLeaf {
-    string path;
-    string leaf;
+    mew::string path;
+    mew::string leaf;
   };
   std::vector<PathAndLeaf> m_src;
-  std::vector<string> m_dst;
+  std::vector<mew::string> m_dst;
   bool m_focusListView;
-  ref<IEntry> m_entry;
+  mew::ref<mew::io::IEntry> m_entry;
 
  public:
-  RenameDlg(size_t reserve, bool focusListView, IEntry* entry) {
+  RenameDlg(size_t reserve, bool focusListView, mew::io::IEntry* entry) {
     m_src.reserve(reserve);
     m_dst.reserve(reserve);
     m_focusListView = focusListView;
     m_entry = entry;
   }
   INT_PTR Go(UINT nID) { return __super::Go(nID); }
-  string GetSrcLeaf(size_t i) const { return m_src[i].leaf; }
-  string GetSrcPath(size_t i) const { return m_src[i].path; }
+  mew::string GetSrcLeaf(size_t i) const { return m_src[i].leaf; }
+  mew::string GetSrcPath(size_t i) const { return m_src[i].path; }
   size_t GetDstCount() const { return m_dst.size(); }
-  string GetDstLeaf(size_t i) const { return m_dst[i]; }
-  void AddDst(const string& name) { m_dst.push_back(name); }
-  void AddSrc(IEntryList* entries) {
+  mew::string GetDstLeaf(size_t i) const { return m_dst[i]; }
+  void AddDst(const mew::string& name) { m_dst.push_back(name); }
+  void AddSrc(mew::io::IEntryList* entries) {
     size_t count = entries->Count;
     for (size_t i = 0; i < count; ++i) {
-      ref<IEntry> entry;
+      mew::ref<mew::io::IEntry> entry;
       entries->GetAt(&entry, i);
       PathAndLeaf s;
-      s.leaf = entry->GetName(IEntry::LEAF_OR_NAME);
-      s.path = entry->GetName(IEntry::PATH);
+      s.leaf = entry->GetName(mew::io::IEntry::LEAF_OR_NAME);
+      s.path = entry->GetName(mew::io::IEntry::PATH);
       m_src.push_back(s);
     }
   }
   bool AddDestination(PCTSTR beg, PCTSTR end) {
     if (m_src.size() <= m_dst.size()) return false;
-    string path = GetSrcPath(m_dst.size());
+    mew::string path = GetSrcPath(m_dst.size());
     if (!path || ::PathIsDirectory(path.str())) {
-      m_dst.push_back(string(beg, end));
+      m_dst.push_back(mew::string(beg, end));
     } else {
       TCHAR newname[MAX_PATH] = _T("");
       memcpy(newname, beg, (end - beg) * sizeof(TCHAR));
@@ -74,21 +74,21 @@ class RenameDlg : public Dialog {
     if (index >= 0) ListView_EditLabel(hList, index);
   }
   static void GetLocation(PCTSTR text, int* index, int* beg, int* end) {
-    if (PCTSTR bra = str::find(text, L'<')) {
+    if (PCTSTR bra = mew::str::find(text, L'<')) {
       PCTSTR num = bra + 1;
-      while (*num != '\0' && !str::find(_T("0123456789>"), *num)) {
+      while (*num != '\0' && !mew::str::find(_T("0123456789>"), *num)) {
         ++num;
       }
-      *index = str::atoi(num);
+      *index = mew::str::atoi(num);
       *beg = bra - text;
-      if (PCTSTR cket = str::find(bra, L'>')) {
+      if (PCTSTR cket = mew::str::find(bra, L'>')) {
         *end = cket - text;
       } else {
-        *end = str::length(text);
+        *end = mew::str::length(text);
       }
     } else {
       *index = 1;  // default: 1 base index
-      *beg = *end = str::length(text);
+      *beg = *end = mew::str::length(text);
     }
   }
   void ReplaceAll(HWND hListView, HWND hEdit, bool preserveExtension) {
@@ -105,7 +105,7 @@ class RenameDlg : public Dialog {
       ++n;
     }
     TCHAR postfix[] = _T("%0?d");
-    postfix[2] = (TCHAR)('0' + math::max(width, n));
+    postfix[2] = (TCHAR)('0' + mew::math::max(width, n));
 
     for (size_t i = 0; i < count; ++i) {
       TCHAR src[MAX_PATH];
@@ -119,11 +119,11 @@ class RenameDlg : public Dialog {
         item.cchTextMax = MAX_PATH;
         ListView_GetItem(hListView, &item);
       }
-      str::copy(dst, szTemplate, beg);
+      mew::str::copy(dst, szTemplate, beg);
       wsprintf(dst + beg, postfix, index + i);
-      str::append(dst, szTemplate + end + 1);
+      mew::str::append(dst, szTemplate + end + 1);
       if (preserveExtension) {
-        str::append(dst, PathFindExtension(src));
+        mew::str::append(dst, PathFindExtension(src));
       }
       item.pszText = dst;
       ListView_SetItem(hListView, &item);
@@ -136,8 +136,10 @@ class RenameDlg : public Dialog {
     if (index < m_src.size()) {
       HWND hEdit = ListView_GetEditControl(GetItem(IDC_RENAMELIST));
       ASSERT(hEdit);
-      ref<IShellFolder> folder;
-      if SUCCEEDED (m_entry->QueryObject(&folder)) ::SHLimitInputEdit(hEdit, folder);
+      mew::ref<IShellFolder> folder;
+      if SUCCEEDED (m_entry->QueryObject(&folder)) {
+        ::SHLimitInputEdit(hEdit, folder);
+      }
       afx::Edit_SubclassSingleLineTextBox(hEdit, m_src[index].path.str(), theAvesta->EditOptions | afx::EditTypeFileName);
     }
   }
@@ -243,12 +245,13 @@ class RenameDlg : public Dialog {
     switch (what) {
       case IDOK:
         if (!ctrl) {  // by enter
-          if (GetKeyState(VK_CONTROL) & 0x8000)
+          if (GetKeyState(VK_CONTROL) & 0x8000) {
             End(IDOK);  // コントロールを押しながらの場合はダイアログをOK終了とみなす
-          else if (::GetFocus() == GetItem(IDC_REPLACE_EDIT))
-            ReplaceAll(GetItem(IDC_RENAMELIST), GetItem(IDC_REPLACE_EDIT), !IsKeyPressed(VK_SHIFT));
-          else
+          } else if (::GetFocus() == GetItem(IDC_REPLACE_EDIT)) {
+            ReplaceAll(GetItem(IDC_RENAMELIST), GetItem(IDC_REPLACE_EDIT), !mew::ui::IsKeyPressed(VK_SHIFT));
+          } else {
             EditLabel(GetItem(IDC_RENAMELIST));
+          }
         }
         break;
       case IDC_RENAME_OK:
@@ -258,24 +261,24 @@ class RenameDlg : public Dialog {
         End(IDCANCEL);
         break;
       case IDC_RENAME_REPLACE:
-        ReplaceAll(GetItem(IDC_RENAMELIST), GetItem(IDC_REPLACE_EDIT), !IsKeyPressed(VK_SHIFT));
+        ReplaceAll(GetItem(IDC_RENAMELIST), GetItem(IDC_REPLACE_EDIT), !mew::ui::IsKeyPressed(VK_SHIFT));
         break;
     }
   }
 };
 }  // namespace
 
-static HRESULT RenameFromClipboard(RenameDlg& dlg, IEntryList* entries) {
-  string text = afx::GetClipboardText();
+static HRESULT RenameFromClipboard(RenameDlg& dlg, mew::io::IEntryList* entries) {
+  mew::string text = afx::GetClipboardText();
   if (!text) {
-    theAvesta->Notify(NotifyError, string::load(IDS_ERR_CLIPNOTTEXT));
+    theAvesta->Notify(avesta::NotifyError, mew::string::load(IDS_ERR_CLIPNOTTEXT));
     return E_FAIL;
   }
   // query selected items
   dlg.AddSrc(entries);
   // parse text
   for (PCTSTR beg = text.str(); beg;) {
-    if (PCTSTR end = str::find_some_of(beg, _T("\r\n"))) {
+    if (PCTSTR end = mew::str::find_some_of(beg, _T("\r\n"))) {
       if (end - beg > 1) {  // 空文字行は無視
         dlg.AddDestination(beg, end);
       }
@@ -292,15 +295,17 @@ static HRESULT RenameFromClipboard(RenameDlg& dlg, IEntryList* entries) {
     }
   }
   size_t selectCount = entries->Count;
-  if (dlg.GetDstCount() == 1 && selectCount > 1) dlg.AutoNumbering(text.str());
+  if (dlg.GetDstCount() == 1 && selectCount > 1) {
+    dlg.AutoNumbering(text.str());
+  }
   if (dlg.GetDstCount() < selectCount) {
-    theAvesta->Notify(NotifyError, string::load(IDS_ERR_CLIPTEXTLACK));
+    theAvesta->Notify(avesta::NotifyError, mew::string::load(IDS_ERR_CLIPTEXTLACK));
     return E_FAIL;
   }
   return S_OK;
 }
 
-static HRESULT SimpleRename(RenameDlg& dlg, IEntryList* entries) {
+static HRESULT SimpleRename(RenameDlg& dlg, mew::io::IEntryList* entries) {
   size_t selectCount = entries->Count;
   // query selected items
   dlg.AddSrc(entries);
@@ -311,28 +316,39 @@ static HRESULT SimpleRename(RenameDlg& dlg, IEntryList* entries) {
   return S_OK;
 }
 
-void DlgRename(IShellListView* view, bool paste) {
+void DlgRename(mew::ui::IShellListView* view, bool paste) {
   ASSERT(view);
   HRESULT hr;
-  ref<IEntry> folder;
-  ref<IEntryList> entries;
+  mew::ref<mew::io::IEntry> folder;
+  mew::ref<mew::io::IEntryList> entries;
 
-  if (view->SelectedCount == 0) return;
-  if FAILED (view->GetFolder(&folder)) return;
-  if FAILED (view->GetContents(&entries, SELECTED)) return;
+  if (view->SelectedCount == 0) {
+    return;
+  }
+  if FAILED (view->GetFolder(&folder)) {
+    return;
+  }
+  if FAILED (view->GetContents(&entries, mew::SELECTED)) {
+    return;
+  }
 
   size_t count = entries->Count;
   RenameDlg dlg(count, !paste, folder);
 
-  if (paste)
+  if (paste) {
     hr = RenameFromClipboard(dlg, entries);
-  else
+  } else {
     hr = SimpleRename(dlg, entries);
-  if FAILED (hr) return;
+  }
+  if FAILED (hr) {
+    return;
+  }
 
   if (dlg.Go(IDD_RENAME) == IDOK) {
     for (size_t i = 0; i < count; ++i) {
-      if (!dlg.GetSrcLeaf(i)) continue;
+      if (!dlg.GetSrcLeaf(i)) {
+        continue;
+      }
       TCHAR srcpath[MAX_PATH] = _T(""), dstpath[MAX_PATH];
       dlg.GetSrcPath(i).copyto(srcpath);
       lstrcpyn(dstpath, srcpath, MAX_PATH);

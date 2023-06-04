@@ -11,16 +11,22 @@
 namespace {
 static size_t find_tail(PCSTR str, size_t length) throw() {
   for (size_t i = length; i > 0; --i) {
-    if (str[i - 1] != '\0') return i;
+    if (str[i - 1] != '\0') {
+      return i;
+    }
   }
   return 0;
 }
 static bool isPrintable(PCSTR str, size_t length) throw() {
   WORD dst[16];
-  if (!GetStringTypeExA(LOCALE_USER_DEFAULT, CT_CTYPE1, str, length, dst)) return false;
+  if (!GetStringTypeExA(LOCALE_USER_DEFAULT, CT_CTYPE1, str, length, dst)) {
+    return false;
+  }
   const WORD C1_PRINTABLE = C1_UPPER | C1_LOWER | C1_DIGIT | C1_SPACE | C1_PUNCT | C1_XDIGIT | C1_ALPHA;
   for (size_t i = 0; i < length; ++i) {
-    if ((dst[i] & C1_PRINTABLE) == 0) return false;
+    if ((dst[i] & C1_PRINTABLE) == 0) {
+      return false;
+    }
   }
   return true;
 }
@@ -49,10 +55,11 @@ ToString<Guid>::ToString(const Guid& value) throw() {
   } else {
     PCSTR str = (PCSTR)&value;
     size_t length = find_tail(str, sizeof(Guid));
-    if (0 < length && isPrintable(str, length))
+    if (0 < length && isPrintable(str, length)) {
       str::convert(m_str, str, 40);  // as string
-    else
+    } else {
       str::guidtoa(m_str, value, true);  // as GUID
+    }
   }
 }
 }  // namespace mew
@@ -62,16 +69,17 @@ ToString<Guid>::ToString(const Guid& value) throw() {
 #pragma warning(disable : 4702)  // TRESPASS() に制御がわたらないため
 
 #define MEW_CASE(exp, type_t)       \
-  case VariantType<type_t>::Code: { \
+  case mew::VariantType<type_t>::Code: { \
     exp(type_t)                     \
   }                                 \
     TRESPASS();
 
-#define MEW_EXPAND_INTRINSIC(exp)                                                                            \
-  MEW_CASE(exp, bool)                                                                                        \
-  MEW_CASE(exp, INT8)                                                                                        \
-  MEW_CASE(exp, UINT8) MEW_CASE(exp, INT16) MEW_CASE(exp, UINT16) MEW_CASE(exp, INT32) MEW_CASE(exp, UINT32) \
-      MEW_CASE(exp, INT64) MEW_CASE(exp, UINT64)
+#define MEW_EXPAND_INTRINSIC(exp) \
+  MEW_CASE(exp, bool)             \
+  MEW_CASE(exp, INT8)             \
+  MEW_CASE(exp, UINT8)            \
+  MEW_CASE(exp, INT16)            \
+  MEW_CASE(exp, UINT16) MEW_CASE(exp, INT32) MEW_CASE(exp, UINT32) MEW_CASE(exp, INT64) MEW_CASE(exp, UINT64)
 
 #define MEW_EXPAND_STRUCT(exp) \
   MEW_CASE(exp, Size)          \
@@ -87,26 +95,26 @@ ToString<Guid>::ToString(const Guid& value) throw() {
 
 namespace {
 void StringToPOD(PCWSTR s, bool& result) throw() {
-  result = s && (str::equals_nocase(s, _T("true")) || str::equals_nocase(s, _T("yes")));
+  result = s && (mew::str::equals_nocase(s, _T("true")) || mew::str::equals_nocase(s, _T("yes")));
 }
-void StringToPOD(PCWSTR s, INT8& result) throw() { result = (INT8)str::atoi(s); }
-void StringToPOD(PCWSTR s, INT16& result) throw() { result = (INT16)str::atoi(s); }
-void StringToPOD(PCWSTR s, INT32& result) throw() { result = str::atoi(s); }
-void StringToPOD(PCWSTR s, INT64& result) throw() { result = str::atoi64(s); }
-void StringToPOD(PCWSTR s, UINT8& result) throw() { result = (UINT8)str::atoi(s); }
-void StringToPOD(PCWSTR s, UINT16& result) throw() { result = (UINT16)str::atoi(s); }
-void StringToPOD(PCWSTR s, UINT32& result) throw() { result = str::atou(s); }
-void StringToPOD(PCWSTR s, UINT64& result) throw() { result = str::atoi64(s); }
-void StringToPOD(PCWSTR s, REAL32& result) throw() { result = (REAL32)str::atof(s); }
-void StringToPOD(PCWSTR s, REAL64& result) throw() { result = str::atof(s); }
-void StringToPOD(PCWSTR s, Size& result) throw() { _stscanf(s, _T("%d%d"), &result.cx, &result.cy); }
-void StringToPOD(PCWSTR s, Point& result) throw() { _stscanf(s, _T("%d%d"), &result.x, &result.y); }
-void StringToPOD(PCWSTR s, Color& result) throw() {
+void StringToPOD(PCWSTR s, INT8& result) throw() { result = (INT8)mew::str::atoi(s); }
+void StringToPOD(PCWSTR s, INT16& result) throw() { result = (INT16)mew::str::atoi(s); }
+void StringToPOD(PCWSTR s, INT32& result) throw() { result = mew::str::atoi(s); }
+void StringToPOD(PCWSTR s, INT64& result) throw() { result = mew::str::atoi64(s); }
+void StringToPOD(PCWSTR s, UINT8& result) throw() { result = (UINT8)mew::str::atoi(s); }
+void StringToPOD(PCWSTR s, UINT16& result) throw() { result = (UINT16)mew::str::atoi(s); }
+void StringToPOD(PCWSTR s, UINT32& result) throw() { result = mew::str::atou(s); }
+void StringToPOD(PCWSTR s, UINT64& result) throw() { result = mew::str::atoi64(s); }
+void StringToPOD(PCWSTR s, REAL32& result) throw() { result = (REAL32)mew::str::atof(s); }
+void StringToPOD(PCWSTR s, REAL64& result) throw() { result = mew::str::atof(s); }
+void StringToPOD(PCWSTR s, mew::Size& result) throw() { _stscanf(s, _T("%d%d"), &result.cx, &result.cy); }
+void StringToPOD(PCWSTR s, mew::Point& result) throw() { _stscanf(s, _T("%d%d"), &result.x, &result.y); }
+void StringToPOD(PCWSTR s, mew::Color& result) throw() {
   int c[4] = {0, 0, 0, 255};
   _stscanf(s, _T("%d%d%d%d"), &c[0], &c[1], &c[2], &c[3]);
-  result = Color((UINT8)c[0], (UINT8)c[1], (UINT8)c[2], (UINT8)c[3]);
+  result = mew::Color((UINT8)c[0], (UINT8)c[1], (UINT8)c[2], (UINT8)c[3]);
 }
-void StringToPOD(PCWSTR s, Rect& result) throw() {
+void StringToPOD(PCWSTR s, mew::Rect& result) throw() {
   _stscanf(s, _T("%d%d%d%d"), &result.left, &result.top, &result.right, &result.bottom);
 }
 }  // namespace
@@ -117,7 +125,7 @@ namespace {
 
 template <typename To>
 inline static bool ObjectToPOD(IUnknown* obj, To& result) throw() {
-  if (string str = cast(obj)) {
+  if (mew::string str = mew::cast(obj)) {
     StringToPOD(str.str(), result);
     return true;
   }
@@ -126,38 +134,41 @@ inline static bool ObjectToPOD(IUnknown* obj, To& result) throw() {
 
 /// int/real
 template <typename To>
-inline static void ConvertPOD(TypeCode from, const variant::Union& var, To& result) {
+inline static void ConvertPOD(mew::TypeCode from, const mew::variant::Union& var, To& result) {
 #define TO_ARITHMETIC(type_t)      \
   {                                \
     result = *(type_t*)var.buffer; \
     return;                        \
   }
   switch (from) {
-    case TypeNull:
+    case mew::TypeNull:
       result = 0;
       return;
-    case TypeUnknown:
-      if (ObjectToPOD<To>(var.unknown, result)) return;
+    case mew::TypeUnknown:
+      if (ObjectToPOD<To>(var.unknown, result)) {
+        return;
+      }
       break;
       MEW_EXPAND_INTRINSIC(TO_ARITHMETIC)
   }
-  throw CastError(string::load(IDS_ERR_VARIANT_CONVERSION, from, TypeCode(VariantType<To>::Code)));
+  throw mew::exceptions::CastError(
+      mew::string::load(IDS_ERR_VARIANT_CONVERSION, from, mew::TypeCode(mew::VariantType<To>::Code)));
 }
 
 /// bool
 template <>
-inline void ConvertPOD<bool>(TypeCode from, const variant::Union& var, bool& result) throw(...) {
+inline void ConvertPOD<bool>(mew::TypeCode from, const mew::variant::Union& var, bool& result) throw(...) {
 #define NOT_ZERO(type_t)                  \
   {                                       \
     result = (*(type_t*)var.buffer != 0); \
     return;                               \
   }
   switch (from) {
-    case TypeNull:  // Null ⇒ false
+    case mew::TypeNull:  // Null ⇒ false
       result = false;
       return;
-    case TypeUnknown:  // 0 ⇒ false
-      if (string str = cast(var.unknown)) {
+    case mew::TypeUnknown:  // 0 ⇒ false
+      if (mew::string str = mew::cast(var.unknown)) {
         StringToPOD(str.str(), result);
         return;
       }
@@ -165,79 +176,92 @@ inline void ConvertPOD<bool>(TypeCode from, const variant::Union& var, bool& res
       return;
       MEW_EXPAND_INTRINSIC(NOT_ZERO)
   }
-  throw CastError(string::load(IDS_ERR_VARIANT_CONVERSION, from, TypeCode(VariantType<bool>::Code)));
+  throw mew::exceptions::CastError(
+      mew::string::load(IDS_ERR_VARIANT_CONVERSION, from, mew::TypeCode(mew::VariantType<bool>::Code)));
 }
 
 /// Size
-inline static void ConvertPOD(TypeCode from, const variant::Union& var, Size& result) throw(...) {
-  using TResult = Size;
+inline static void ConvertPOD(mew::TypeCode from, const mew::variant::Union& var, mew::Size& result) throw(...) {
+  using TResult = mew::Size;
   switch (from) {
-    case TypeNull:
+    case mew::TypeNull:
       result = TResult::Zero;
       return;
-    case TypeSize:  // SizeとPointはメモリイメージが共通
-    case TypePoint:
+    case mew::TypeSize:  // SizeとPointはメモリイメージが共通
+    case mew::TypePoint:
       memcpy(&result, var.buffer, sizeof(result));
       return;
-    case TypeUnknown:
-      if (ObjectToPOD<TResult>(var.unknown, result)) return;
+    case mew::TypeUnknown:
+      if (ObjectToPOD<TResult>(var.unknown, result)) {
+        return;
+      }
       break;
   }
-  throw CastError(string::load(IDS_ERR_VARIANT_CONVERSION, from, TypeCode(VariantType<TResult>::Code)));
+  throw mew::exceptions::CastError(
+      mew::string::load(IDS_ERR_VARIANT_CONVERSION, from, mew::TypeCode(mew::VariantType<TResult>::Code)));
 }
 
 /// Point
-inline static void ConvertPOD(TypeCode from, const variant::Union& var, Point& result) throw(...) {
-  using TResult = Point;
+inline static void ConvertPOD(mew::TypeCode from, const mew::variant::Union& var, mew::Point& result) throw(...) {
+  using TResult = mew::Point;
   switch (from) {
-    case TypeNull:
+    case mew::TypeNull:
       result = TResult::Zero;
       return;
-    case TypeSize:  // SizeとPointはメモリイメージが共通
-    case TypePoint:
+    case mew::TypeSize:  // SizeとPointはメモリイメージが共通
+    case mew::TypePoint:
       memcpy(&result, var.buffer, sizeof(result));
       return;
-    case TypeUnknown:
-      if (ObjectToPOD<TResult>(var.unknown, result)) return;
+    case mew::TypeUnknown:
+      if (ObjectToPOD<TResult>(var.unknown, result)) {
+        return;
+      }
       break;
   }
-  throw CastError(string::load(IDS_ERR_VARIANT_CONVERSION, from, TypeCode(VariantType<TResult>::Code)));
+  throw mew::exceptions::CastError(
+      mew::string::load(IDS_ERR_VARIANT_CONVERSION, from, mew::TypeCode(mew::VariantType<TResult>::Code)));
 }
 
 /// Rect
-inline static void ConvertPOD(TypeCode from, const variant::Union& var, Rect& result) throw(...) {
-  using TResult = Rect;
+inline static void ConvertPOD(mew::TypeCode from, const mew::variant::Union& var, mew::Rect& result) throw(...) {
+  using TResult = mew::Rect;
   switch (from) {
-    case TypeNull:
+    case mew::TypeNull:
       result = TResult::Zero;
       return;
-    case TypeRect: {
+    case mew::TypeRect: {
       INT16* buf = (INT16*)var.buffer;
       result.assign(buf[0], buf[1], buf[2], buf[3]);
       return;
     }
-    case TypeUnknown:
-      if (ObjectToPOD<TResult>(var.unknown, result)) return;
+    case mew::TypeUnknown:
+      if (ObjectToPOD<TResult>(var.unknown, result)) {
+        return;
+      }
       break;
   }
-  throw CastError(string::load(IDS_ERR_VARIANT_CONVERSION, from, TypeCode(VariantType<TResult>::Code)));
+  throw mew::exceptions::CastError(
+      mew::string::load(IDS_ERR_VARIANT_CONVERSION, from, mew::TypeCode(mew::VariantType<TResult>::Code)));
 }
 
 /// Color
-inline static void ConvertPOD(TypeCode from, const variant::Union& var, Color& result) throw(...) {
-  using TResult = Color;
+inline static void ConvertPOD(mew::TypeCode from, const mew::variant::Union& var, mew::Color& result) throw(...) {
+  using TResult = mew::Color;
   switch (from) {
-    case TypeNull:
+    case mew::TypeNull:
       result = (Gdiplus::ARGB)TResult::Black;
       return;
-    case TypeColor:
+    case mew::TypeColor:
       memcpy(&result, var.buffer, sizeof(result));
       return;
-    case TypeUnknown:
-      if (ObjectToPOD<TResult>(var.unknown, result)) return;
+    case mew::TypeUnknown:
+      if (ObjectToPOD<TResult>(var.unknown, result)) {
+        return;
+      }
       break;
   }
-  throw CastError(string::load(IDS_ERR_VARIANT_CONVERSION, from, TypeCode(VariantType<TResult>::Code)));
+  throw mew::exceptions::CastError(
+      mew::string::load(IDS_ERR_VARIANT_CONVERSION, from, mew::TypeCode(mew::VariantType<TResult>::Code)));
 }
 #pragma warning(default : 4244)
 }  // namespace
@@ -264,7 +288,7 @@ void variant::ToPOD(TypeCode code, void* data, size_t size) const {
           }
       }
   }
-  throw CastError(string::load(IDS_ERR_VARIANT_CONVERSION, m_type, code));
+  throw mew::exceptions::CastError(string::load(IDS_ERR_VARIANT_CONVERSION, m_type, code));
 }
 void variant::ToUnknown(REFINTF ppInterface) const {
   switch (m_type) {
@@ -307,7 +331,7 @@ void variant::ToUnknown(REFINTF ppInterface) const {
         }
       }
   }
-  throw CastError(string::load(IDS_ERR_VARIANT_CONVERSION, m_type, ppInterface.iid));
+  throw mew::exceptions::CastError(string::load(IDS_ERR_VARIANT_CONVERSION, m_type, ppInterface.iid));
 }
 void variant::FromPOD(TypeCode code, const void* data, size_t size) {
   switch (code) {
@@ -320,7 +344,9 @@ void variant::FromPOD(TypeCode code, const void* data, size_t size) {
       break;
     }
     default:
-      if (size > INTERNAL_BUFFER_SIZE) throw ArgumentError(L"POD size is too large.");
+      if (size > INTERNAL_BUFFER_SIZE) {
+        throw mew::exceptions::ArgumentError(L"POD size is too large.");
+      }
       memcpy(m_var.buffer, data, size);
       break;
   }
@@ -366,7 +392,9 @@ void variant::load(IStream& stream) {
       case TypeUnknown: {
         ref<IUnknown> unk;
         stream >> unk;
-        if FAILED (unk.copyto(&m_var.unknown)) m_type = TypeNull;
+        if FAILED (unk.copyto(&m_var.unknown)) {
+          m_type = TypeNull;
+        }
         break;
       }
         MEW_EXPAND_ALL(VAR_LOAD)
@@ -374,7 +402,7 @@ void variant::load(IStream& stream) {
         io::StreamReadExact(&stream, m_var.buffer, INTERNAL_BUFFER_SIZE);
         break;
     }
-  } catch (Error&) {
+  } catch (mew::exceptions::Error&) {
     m_type = TypeNull;
     throw;
   }
@@ -425,7 +453,7 @@ void variant::FromString(TypeCode typecode, string str) {
     }
     default:
       Zero();
-      throw CastError(string::load(IDS_ERR_VARIANT_CONVERSION, str, typecode));
+      throw mew::exceptions::CastError(string::load(IDS_ERR_VARIANT_CONVERSION, str, typecode));
   }
   m_type = typecode;
 #undef FROM_STRING

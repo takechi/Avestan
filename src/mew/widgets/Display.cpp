@@ -12,8 +12,8 @@ using namespace mew::ui;
 //==============================================================================
 
 template <>
-struct Event<EventOtherFocus> {
-  static void event(message& msg, IDisplay* from, HWND hwnd) {
+struct mew::Event<EventOtherFocus> {
+  static void event(mew::message& msg, IDisplay* from, HWND hwnd) {
     msg["from"] = from;
     msg["hwnd"] = (INT_PTR)hwnd;
   }

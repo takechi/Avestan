@@ -13,9 +13,9 @@ class __declspec(novtable) TaskTrayProvider : public TBase {
   bool m_CloseToTray;
 
  private:
-  HRESULT TaskTray_HandleResize(message msg) {
+  HRESULT TaskTray_HandleResize(mew::message msg) {
     HWND hwnd = m_form->Handle;
-    if (!IsWindowEnabled(hwnd)) return S_OK;
+    if (!IsWindowEnabled(hwnd)) {return S_OK;}
     if (m_EnableTray && ::IsIconic(hwnd) &&
         m_form->Visible) {  // 復帰は、Form.CommandRestore で実装されているため処理する必要は無い
       m_form->Visible = false;
@@ -27,7 +27,7 @@ class __declspec(novtable) TaskTrayProvider : public TBase {
     }
     return S_OK;
   }
-  HRESULT TaskTray_HandleQueryClose(message msg) {
+  HRESULT TaskTray_HandleQueryClose(mew::message msg) {
     if (m_form && m_CloseToTray && m_form->Visible && theMainResult == 0) {  // cancel close and minimize to tasktray
       ShowWindow(m_form->Handle, SW_MINIMIZE);
       m_form->Visible = false;
@@ -43,46 +43,46 @@ class __declspec(novtable) TaskTrayProvider : public TBase {
     m_AlwaysTray = false;
     m_CloseToTray = false;
   }
-  void TaskTray_Load(message& msg) {
+  void TaskTray_Load(mew::message& msg) {
     m_EnableTray = msg["TaskTray"] | false;
     m_AlwaysTray = msg["AlwaysTray"] | false;
     m_CloseToTray = msg["CloseToTray"] | false;
     m_form->TaskTray = m_AlwaysTray;
   }
-  void TaskTray_Save(message& msg) {
+  void TaskTray_Save(mew::message& msg) {
     msg["TaskTray"] = m_EnableTray;
     msg["AlwaysTray"] = m_AlwaysTray;
     msg["CloseToTray"] = m_CloseToTray;
   }
-  void TaskTray_InitComponents(IWindow* form) {
-    HandleEvent(form, EventResize, &TaskTrayProvider::TaskTray_HandleResize);
-    HandleEvent(form, EventPreClose, &TaskTrayProvider::TaskTray_HandleQueryClose);
+  void TaskTray_InitComponents(mew::ui::IWindow* form) {
+    HandleEvent(form, mew::ui::EventResize, &TaskTrayProvider::TaskTray_HandleResize);
+    HandleEvent(form, mew::ui::EventPreClose, &TaskTrayProvider::TaskTray_HandleQueryClose);
   }
 
  public:  // Commands
-  HRESULT OptionTaskTray(message = null) {
+  HRESULT OptionTaskTray(mew::message = mew::null) {
     m_EnableTray = !m_EnableTray;
     return S_OK;
   }
-  HRESULT ObserveTaskTray(message msg) {
-    msg["state"] = ENABLED | (m_EnableTray ? CHECKED : 0);
+  HRESULT ObserveTaskTray(mew::message msg) {
+    msg["state"] = mew::ENABLED | (m_EnableTray ? mew::CHECKED : 0);
     return S_OK;
   }
-  HRESULT OptionAlwaysTray(message = null) {
+  HRESULT OptionAlwaysTray(mew::message = mew::null) {
     m_AlwaysTray = !m_AlwaysTray;
     m_form->TaskTray = m_AlwaysTray;
     return S_OK;
   }
-  HRESULT ObserveAlwaysTray(message msg) {
-    msg["state"] = ENABLED | (m_AlwaysTray ? CHECKED : 0);
+  HRESULT ObserveAlwaysTray(mew::message msg) {
+    msg["state"] = mew::ENABLED | (m_AlwaysTray ? mew::CHECKED : 0);
     return S_OK;
   }
-  HRESULT OptionCloseToTray(message = null) {
+  HRESULT OptionCloseToTray(mew::message = mew::null) {
     m_CloseToTray = !m_CloseToTray;
     return S_OK;
   }
-  HRESULT ObserveCloseToTray(message msg) {
-    msg["state"] = ENABLED | (m_CloseToTray ? CHECKED : 0);
+  HRESULT ObserveCloseToTray(mew::message msg) {
+    msg["state"] = mew::ENABLED | (m_CloseToTray ? mew::CHECKED : 0);
     return S_OK;
   }
 };

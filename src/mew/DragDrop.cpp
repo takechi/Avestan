@@ -65,7 +65,7 @@ class GlobalDst {
     HGLOBAL tmp = m_hGlobal;
     if (m_hGlobal) {
       ::GlobalUnlock(m_hGlobal);
-      m_hGlobal = null;
+      m_hGlobal = nullptr;
     }
     return tmp;
   }
@@ -90,7 +90,9 @@ const CLIPFORMAT CF_INETURL = CF_INETURLA;
 // tymed の変換は行うが、データ形式の変換は行わない
 static HRESULT DuplicateStgMedium(const STGMEDIUM* src, STGMEDIUM* dst, const FORMATETC* fmt, DWORD tymed = 0) {
   HRESULT hr;
-  if (tymed == 0 || (tymed & src->tymed) != 0) tymed = src->tymed;
+  if (tymed == 0 || (tymed & src->tymed) != 0) {
+    tymed = src->tymed;
+  }
   memset(dst, 0, sizeof(STGMEDIUM));
   if (src->tymed == tymed) {
     switch (src->tymed) {
@@ -125,7 +127,7 @@ static HRESULT DuplicateStgMedium(const STGMEDIUM* src, STGMEDIUM* dst, const FO
         switch (tymed) {
           case TYMED_HGLOBAL:  // IStream to hGlobal
           {
-            Stream stream;
+            mew::Stream stream;
             dst->hGlobal = StreamCreateOnHGlobal(&stream, 0, false);
             LARGE_INTEGER zero = {0, 0};
             src->pstm->Seek(zero, STREAM_SEEK_SET, NULL);
@@ -145,19 +147,26 @@ static HRESULT DuplicateStgMedium(const STGMEDIUM* src, STGMEDIUM* dst, const FO
         return OLE_E_CANTCONVERT;
     }
   }
-  if ((dst->pUnkForRelease = src->pUnkForRelease) != null) dst->pUnkForRelease->AddRef();
+  if ((dst->pUnkForRelease = src->pUnkForRelease) != nullptr) {
+    dst->pUnkForRelease->AddRef();
+  }
   dst->tymed = tymed;
   return S_OK;
 }
 
 // 分割しないと循環参照が生じるのかも？
 // 一緒にしてしまうと、アプリケーション終了時に固まることがある。
-class DropSource : public Root<implements<IDropSource>, mixin<StaticLife> > {
+class DropSource : public mew::Root<mew::implements<IDropSource>, mew::mixin<mew::StaticLife> > {
  public:  // IDropSource
   STDMETHODIMP QueryContinueDrag(BOOL bEscapePressed, DWORD mk) {
     // 「２つ以上のマウスボタンが押されていたら」をもっとスマートに判定できないか？
-    if (bEscapePressed || ((mk & MK_LBUTTON) && (mk & (MK_MBUTTON | MK_RBUTTON))) || ((mk & MK_MBUTTON) && (mk & (MK_LBUTTON | MK_RBUTTON))) || ((mk & MK_RBUTTON) && (mk & (MK_LBUTTON | MK_MBUTTON)))) return DRAGDROP_S_CANCEL;
-    if (!(mk & (MK_LBUTTON | MK_MBUTTON | MK_RBUTTON))) return DRAGDROP_S_DROP;
+    if (bEscapePressed || ((mk & MK_LBUTTON) && (mk & (MK_MBUTTON | MK_RBUTTON))) ||
+        ((mk & MK_MBUTTON) && (mk & (MK_LBUTTON | MK_RBUTTON))) || ((mk & MK_RBUTTON) && (mk & (MK_LBUTTON | MK_MBUTTON)))) {
+      return DRAGDROP_S_CANCEL;
+    }
+    if (!(mk & (MK_LBUTTON | MK_MBUTTON | MK_RBUTTON))) {
+      return DRAGDROP_S_DROP;
+    }
     return S_OK;
   }
   STDMETHODIMP GiveFeedback(DWORD dwEffect) { return DRAGDROP_S_USEDEFAULTCURSORS; }
@@ -184,7 +193,9 @@ class DragSource : public Root<implements<IDragSource, IDataObject> >  // IAsync
       ULONG dn = 0;
       HRESULT hr = m_owner->QueryFormats(m_iter, n, fmts, &dn);
       m_iter += dn;
-      if (done) *done = dn;
+      if (done) {
+        *done = dn;
+      }
       return hr;
     }
     STDMETHOD(Skip)(ULONG n) {
@@ -196,7 +207,9 @@ class DragSource : public Root<implements<IDragSource, IDataObject> >  // IAsync
       return S_OK;
     }
     STDMETHOD(Clone)(IEnumFORMATETC** ppObject) {
-      if (!ppObject) return E_POINTER;
+      if (!ppObject) {
+        return E_POINTER;
+      }
       *ppObject = new EnumFORMATETC(m_owner, m_iter);
       return S_OK;
     }
@@ -210,7 +223,9 @@ class DragSource : public Root<implements<IDragSource, IDataObject> >  // IAsync
    public:
     DataElement() { m_medium.tymed = TYMED_NULL; }
     ~DataElement() {
-      if (m_medium.tymed != TYMED_NULL) ::ReleaseStgMedium(&m_medium);
+      if (m_medium.tymed != TYMED_NULL) {
+        ::ReleaseStgMedium(&m_medium);
+      }
     }
     const FORMATETC& GetFormat() const { return m_format; }
     bool IsCompatible(const FORMATETC* fmt) const {
@@ -227,14 +242,18 @@ class DragSource : public Root<implements<IDragSource, IDataObject> >  // IAsync
       if (m_format.cfFormat == CF_TEXT || m_format.cfFormat == CF_UNICODETEXT) {
         return fmt->cfFormat == CF_TEXT || fmt->cfFormat == CF_UNICODETEXT;
       } else if (m_format.cfFormat == CF_SHELLIDLIST) {
-        return fmt->cfFormat == CF_SHELLIDLIST || fmt->cfFormat == CF_HDROP || fmt->cfFormat == CF_TEXT || fmt->cfFormat == CF_UNICODETEXT;
+        return fmt->cfFormat == CF_SHELLIDLIST || fmt->cfFormat == CF_HDROP || fmt->cfFormat == CF_TEXT ||
+               fmt->cfFormat == CF_UNICODETEXT;
       } else if (m_format.cfFormat == CF_INETURLA || m_format.cfFormat == CF_INETURLW) {
-        return fmt->cfFormat == CF_INETURLA || fmt->cfFormat == CF_INETURLW || fmt->cfFormat == CF_TEXT || fmt->cfFormat == CF_UNICODETEXT;
+        return fmt->cfFormat == CF_INETURLA || fmt->cfFormat == CF_INETURLW || fmt->cfFormat == CF_TEXT ||
+               fmt->cfFormat == CF_UNICODETEXT;
       } else
         return false;
     }
     HGLOBAL ConvertCopy(CLIPFORMAT fmt) const {
-      if (m_medium.tymed != TYMED_HGLOBAL) return null;
+      if (m_medium.tymed != TYMED_HGLOBAL) {
+        return nullptr;
+      }
       //
       ASSERT(m_format.cfFormat != fmt);
       if (m_format.cfFormat == CF_TEXT || m_format.cfFormat == CF_INETURLA) {
@@ -269,7 +288,7 @@ class DragSource : public Root<implements<IDragSource, IDataObject> >  // IAsync
           return afx::CIDAToTextW(src);
         }
       }
-      return null;
+      return nullptr;
     }
     HRESULT CopyTo(FORMATETC* fmt, STGMEDIUM* medium) {
       if (fmt->cfFormat == m_format.cfFormat) {
@@ -278,7 +297,9 @@ class DragSource : public Root<implements<IDragSource, IDataObject> >  // IAsync
         if (HGLOBAL hGlobal = ConvertCopy(fmt->cfFormat)) {
           TRACE(_T("ConvertCopy succeeded!!"));
           medium->hGlobal = hGlobal;
-          if ((medium->pUnkForRelease = m_medium.pUnkForRelease) != null) medium->pUnkForRelease->AddRef();
+          if ((medium->pUnkForRelease = m_medium.pUnkForRelease) != null) {
+            medium->pUnkForRelease->AddRef();
+          }
           medium->tymed = TYMED_HGLOBAL;
           return S_OK;
         }
@@ -287,7 +308,9 @@ class DragSource : public Root<implements<IDragSource, IDataObject> >  // IAsync
         if (HGLOBAL hGlobal = ConvertCopy(fmt->cfFormat)) {
           TRACE(_T("ConvertCopy succeeded!!"));
           CreateStreamOnHGlobal(hGlobal, true, &medium->pstm);
-          if ((medium->pUnkForRelease = m_medium.pUnkForRelease) != null) medium->pUnkForRelease->AddRef();
+          if ((medium->pUnkForRelease = m_medium.pUnkForRelease) != null) {
+            medium->pUnkForRelease->AddRef();
+          }
           medium->tymed = TYMED_ISTREAM;
           return S_OK;
         }
@@ -328,8 +351,12 @@ class DragSource : public Root<implements<IDragSource, IDataObject> >  // IAsync
     return (DropEffect)dwResult;
   }
   DropEffect DoDragDrop(DWORD dwSupportsEffect, HWND hWndDrag, POINT ptCursor) {
-    if (!m_helper) CoCreateInstance(CLSID_DragDropHelper, NULL, CLSCTX_INPROC_SERVER, IID_IDragSourceHelper, (void**)&m_helper);
-    if (m_helper) m_helper->InitializeFromWindow(hWndDrag, &ptCursor, this);
+    if (!m_helper) {
+      CoCreateInstance(CLSID_DragDropHelper, NULL, CLSCTX_INPROC_SERVER, IID_IDragSourceHelper, (void**)&m_helper);
+    }
+    if (m_helper) {
+      m_helper->InitializeFromWindow(hWndDrag, &ptCursor, this);
+    }
     return DoDragDrop(dwSupportsEffect);
   }
   DropEffect DoDragDrop(DWORD dwSupportsEffect, HBITMAP hBitmap, COLORREF colorkey, POINT ptHotspot) {
@@ -341,21 +368,31 @@ class DragSource : public Root<implements<IDragSource, IDataObject> >  // IAsync
     image.ptOffset = ptHotspot;
     image.hbmpDragImage = hBitmap;
     image.crColorKey = colorkey;
-    if (!m_helper) CoCreateInstance(CLSID_DragDropHelper, NULL, CLSCTX_INPROC_SERVER, IID_IDragSourceHelper, (void**)&m_helper);
-    if (m_helper) m_helper->InitializeFromBitmap(&image, this);
+    if (!m_helper) {
+      CoCreateInstance(CLSID_DragDropHelper, NULL, CLSCTX_INPROC_SERVER, IID_IDragSourceHelper, (void**)&m_helper);
+    }
+    if (m_helper) {
+      m_helper->InitializeFromBitmap(&image, this);
+    }
     return DoDragDrop(dwSupportsEffect);
   }
   HRESULT AddData(CLIPFORMAT cfFormat, const void* data, size_t size) {
-    if (!data || size == 0) return E_INVALIDARG;
+    if (!data || size == 0) {
+      return E_INVALIDARG;
+    }
     HGLOBAL hGlobal = ::GlobalAlloc(GMEM_MOVEABLE, size);
     memcpy(::GlobalLock(hGlobal), data, size);
     ::GlobalUnlock(hGlobal);
     HRESULT hr = AddGlobalData(cfFormat, hGlobal);
-    if FAILED (hr) ::GlobalFree(hGlobal);
+    if FAILED (hr) {
+      ::GlobalFree(hGlobal);
+    }
     return hr;
   }
   HRESULT AddGlobalData(CLIPFORMAT cfFormat, HGLOBAL hGlobal) {
-    if (!hGlobal) return E_INVALIDARG;
+    if (!hGlobal) {
+      return E_INVALIDARG;
+    }
     FORMATETC fmt;
     fmt.cfFormat = cfFormat;
     fmt.dwAspect = DVASPECT_CONTENT;
@@ -394,10 +431,14 @@ class DragSource : public Root<implements<IDragSource, IDataObject> >  // IAsync
   int FindFormat(const FORMATETC* fmt) const {
     int count = m_data.GetCount();
     for (int i = 0; i < count; ++i) {
-      if (m_data[i]->IsCompatible(fmt)) return i;
+      if (m_data[i]->IsCompatible(fmt)) {
+        return i;
+      }
     }
     for (int i = 0; i < count; ++i) {
-      if (m_data[i]->CanConvert(fmt)) return i;
+      if (m_data[i]->CanConvert(fmt)) {
+        return i;
+      }
     }
     return -1;
   }
@@ -405,40 +446,60 @@ class DragSource : public Root<implements<IDragSource, IDataObject> >  // IAsync
     size_t i = 0;
     for (; i < num; ++i) {
       size_t index = from + i;
-      if (index >= m_data.GetCount()) break;
+      if (index >= m_data.GetCount()) {
+        break;
+      }
       fmts[i] = m_data[index]->GetFormat();
     }
-    if (done) *done = i;
+    if (done) {
+      *done = i;
+    }
     return i == num ? S_OK : S_FALSE;
   }
 
   STDMETHOD(GetData)(FORMATETC* fmt, STGMEDIUM* medium) {
     TRACE(L"GetData");
-    if (!fmt || !medium) return E_POINTER;
-    if (!(DVASPECT_CONTENT & fmt->dwAspect)) return DV_E_DVASPECT;
+    if (!fmt || !medium) {
+      return E_POINTER;
+    }
+    if (!(DVASPECT_CONTENT & fmt->dwAspect)) {
+      return DV_E_DVASPECT;
+    }
     TRACE_FORMATS(fmt);
     int index = FindFormat(fmt);
-    if (index < 0) return DV_E_FORMATETC;
+    if (index < 0) {
+      return DV_E_FORMATETC;
+    }
     return m_data[index]->CopyTo(fmt, medium);
   }
   STDMETHOD(QueryGetData)(FORMATETC* fmt) {
     TRACE(L"QueryGetData");
-    if (!fmt) return E_POINTER;
-    if (!(DVASPECT_CONTENT & fmt->dwAspect)) return DV_E_DVASPECT;
+    if (!fmt) {
+      return E_POINTER;
+    }
+    if (!(DVASPECT_CONTENT & fmt->dwAspect)) {
+      return DV_E_DVASPECT;
+    }
     TRACE_FORMATS(fmt);
     return FindFormat(fmt) >= 0;
   }
   STDMETHOD(SetData)(FORMATETC* fmt, STGMEDIUM* medium, BOOL bRelease) {
-    if (!fmt || !medium) return E_POINTER;
+    if (!fmt || !medium) {
+      return E_POINTER;
+    }
     TRACE_FORMATS(fmt);
     CAutoPtr<DataElement> data(new DataElement());
     HRESULT hr = data->SetTo(fmt, medium, bRelease);
-    if FAILED (hr) return hr;
+    if FAILED (hr) {
+      return hr;
+    }
     m_data.Add(data);
     return S_OK;
   }
   STDMETHOD(EnumFormatEtc)(DWORD dwDirection, IEnumFORMATETC** ppEnumFormatEtc) {
-    if (!ppEnumFormatEtc) return E_POINTER;
+    if (!ppEnumFormatEtc) {
+      return E_POINTER;
+    }
     switch (dwDirection) {
       case DATADIR_GET:
         TRACE(L"EnumFormatEtc");
@@ -449,9 +510,15 @@ class DragSource : public Root<implements<IDragSource, IDataObject> >  // IAsync
         ATLTRACENOTIMPL(_T("DragSource::EnumFormatEtc(dwDirection)"));
     }
   }
-  STDMETHOD(GetDataHere)(FORMATETC* /* pFormatEtc */, STGMEDIUM* /* medium */) { ATLTRACENOTIMPL(_T("DragSource::GetDataHere")); }
-  STDMETHOD(GetCanonicalFormatEtc)(FORMATETC* /* pFormatEtcIn */, FORMATETC* /* pFormatEtcOut */) { ATLTRACENOTIMPL(_T("DragSource::GetCanonicalFormatEtc")); }
-  STDMETHOD(DAdvise)(FORMATETC* pFormatEtc, DWORD advf, IAdviseSink* pAdvSink, DWORD* pdwConnection) { ATLTRACENOTIMPL(_T("DragSource::DAdvise\n")); }
+  STDMETHOD(GetDataHere)(FORMATETC* /* pFormatEtc */, STGMEDIUM* /* medium */) {
+    ATLTRACENOTIMPL(_T("DragSource::GetDataHere"));
+  }
+  STDMETHOD(GetCanonicalFormatEtc)(FORMATETC* /* pFormatEtcIn */, FORMATETC* /* pFormatEtcOut */) {
+    ATLTRACENOTIMPL(_T("DragSource::GetCanonicalFormatEtc"));
+  }
+  STDMETHOD(DAdvise)(FORMATETC* pFormatEtc, DWORD advf, IAdviseSink* pAdvSink, DWORD* pdwConnection) {
+    ATLTRACENOTIMPL(_T("DragSource::DAdvise\n"));
+  }
   STDMETHOD(DUnadvise)(DWORD dwConnection) { ATLTRACENOTIMPL(_T("DragSource::DUnadvise\n")); }
   STDMETHOD(EnumDAdvise)(IEnumSTATDATA** ppenumAdvise) { ATLTRACENOTIMPL(_T("DragSource::EnumDAdvise\n")); }
 };

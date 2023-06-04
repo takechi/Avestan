@@ -14,7 +14,9 @@ HRESULT avesta::WindowClose(HWND hwnd) {
 }
 
 HRESULT avesta::WindowSetFocus(HWND hwnd) {
-  if (!::IsWindowEnabled(hwnd)) return S_FALSE;
+  if (!::IsWindowEnabled(hwnd)) {
+    return S_FALSE;
+  }
   afx::SetVisible(hwnd, true);
   ::SetFocus(hwnd);
   return S_OK;
@@ -33,13 +35,15 @@ enum {
 };
 }  // namespace
 
-Window::Window() : m_hwnd(null), m_flags(0) {}
+Window::Window() : m_hwnd(nullptr), m_flags(0) {}
 
 Window::~Window() { Dispose(); }
 
 Window* Window::FromHandle(HWND hwnd) {
   Window* self;
-  if (!::GetWindowSubclass(hwnd, MainProc, SubclassID, (DWORD_PTR*)&self)) return null;
+  if (!::GetWindowSubclass(hwnd, MainProc, SubclassID, (DWORD_PTR*)&self)) {
+    return nullptr;
+  }
   ASSERT(self->m_hwnd == hwnd);
   return self;
 }
@@ -51,22 +55,26 @@ Window* Window::FromHandleParent(HWND hwnd) {
       return window;
     }
   }
-  return null;
+  return nullptr;
 }
 
 bool Window::Attach(HWND hwnd) {
   ASSERT(!m_hwnd);
   m_flags = 0;
   m_hwnd = hwnd;
-  if (::SetWindowSubclass(m_hwnd, MainProc, SubclassID, (DWORD_PTR)this)) return true;
-  m_hwnd = null;
+  if (::SetWindowSubclass(m_hwnd, MainProc, SubclassID, (DWORD_PTR)this)) {
+    return true;
+  }
+  m_hwnd = nullptr;
   return false;
 }
 
 HWND Window::Detach() {
-  if (!m_hwnd || !::RemoveWindowSubclass(m_hwnd, MainProc, SubclassID)) return null;
+  if (!m_hwnd || !::RemoveWindowSubclass(m_hwnd, MainProc, SubclassID)) {
+    return nullptr;
+  }
   HWND hwnd = m_hwnd;
-  m_hwnd = null;
+  m_hwnd = nullptr;
   return hwnd;
 }
 
@@ -75,8 +83,10 @@ HWND Window::Create(WNDCLASSEX wc, HWND parent, DWORD dwStyle, DWORD dwStyleEx, 
   wc.lpfnWndProc = &Window::StartupProc;
   ::RegisterClassEx(&wc);
   m_flags = 0;
-  HWND hwnd = ::CreateWindowEx(dwStyleEx, wc.lpszClassName, null, dwStyle, x, y, w, h, parent, null, wc.hInstance, this);
-  if (!hwnd) return null;
+  HWND hwnd = ::CreateWindowEx(dwStyleEx, wc.lpszClassName, nullptr, dwStyle, x, y, w, h, parent, nullptr, wc.hInstance, this);
+  if (!hwnd) {
+    return nullptr;
+  }
   ASSERT(hwnd == m_hwnd);
   return hwnd;
 }
@@ -109,7 +119,7 @@ void Window::MoveToCenter(HWND hwnd) {
 
 void Window::Resize(INT w, INT h) {
   ASSERT(::IsWindow(m_hwnd));
-  ::SetWindowPos(m_hwnd, null, 0, 0, w, h, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
+  ::SetWindowPos(m_hwnd, nullptr, 0, 0, w, h, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
 }
 
 LRESULT Window::OnMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
@@ -124,7 +134,9 @@ LRESULT Window::OnMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
       if (lParam == 0) {  // by ShowWindow()
                           // Raise("onVisible", newtuple(wParam != 0));
       }
-      if (Window* parent = Window::FromHandle(::GetParent(m_hwnd))) parent->m_flags |= FLAG_LAYOUT;
+      if (Window* parent = Window::FromHandle(::GetParent(m_hwnd))) {
+        parent->m_flags |= FLAG_LAYOUT;
+      }
       break;
     case WM_SIZE:
       m_flags |= FLAG_LAYOUT;
@@ -134,19 +146,25 @@ LRESULT Window::OnMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
         case WM_CREATE:
         case WM_DESTROY:
           if (HWND hwnd = (HWND)lParam) {
-            if (::GetParent(hwnd) == m_hwnd && HasStyle(hwnd, WS_CHILD)) m_flags |= FLAG_LAYOUT;
+            if (::GetParent(hwnd) == m_hwnd && HasStyle(hwnd, WS_CHILD)) {
+              m_flags |= FLAG_LAYOUT;
+            }
           }
           break;
       }
       break;
     case WM_CLOSE:
-      if (!OnClose()) return false;
+      if (!OnClose()) {
+        return false;
+      }
       break;
     case WM_COMMAND:
       OnCommand(LOWORD(wParam), (HWND)lParam);
       return 0;
     case WM_CREATE:
-      if (::DefSubclassProc(m_hwnd, msg, wParam, lParam) != 0) return 1;
+      if (::DefSubclassProc(m_hwnd, msg, wParam, lParam) != 0) {
+        return 1;
+      }
       return OnCreate() ? 0 : 1;
     case WM_DESTROY:
       if (!(m_flags & FLAG_DYING)) {
@@ -167,7 +185,9 @@ LRESULT CALLBACK Window::MainProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPa
 
   LRESULT lResult = self->OnMessage(msg, wParam, lParam);
 
-  if (msg == WM_NCDESTROY) self->Detach();
+  if (msg == WM_NCDESTROY) {
+    self->Detach();
+  }
 
   return lResult;
 }
@@ -222,7 +242,9 @@ bool Window::Filter(MSG& msg) {
   if (::IsWindowEnabled(msg.hwnd) && Thread::IsLocalLoop()) {
     // if (ProcessMouseMessage(msg))
     //   return true;
-    if (Window* window = Window::FromHandleParent(msg.hwnd)) return window->OnFilter(msg);
+    if (Window* window = Window::FromHandleParent(msg.hwnd)) {
+      return window->OnFilter(msg);
+    }
   }
   return false;
 }

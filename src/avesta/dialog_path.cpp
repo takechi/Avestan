@@ -7,17 +7,19 @@ using namespace avesta;
 
 namespace {
 class PathDlg : public Dialog {
-  using MRUList = std::vector<string>;
+  using MRUList = std::vector<mew::string>;
 
  public:
   TCHAR m_path[MAX_PATH];
   MRUList m_mru;
-  ref<IEntry> m_entry;
+  mew::ref<mew::io::IEntry> m_entry;
 
  public:
-  PathDlg() { str::clear(m_path); }
-  INT_PTR Go(const string& path) {
-    if (path) path.copyto(m_path, MAX_PATH);
+  PathDlg() { mew::str::clear(m_path); }
+  INT_PTR Go(const mew::string& path) {
+    if (path) {
+      path.copyto(m_path, MAX_PATH);
+    }
     return __super::Go(IDD_OPENLOCATION);
   }
 
@@ -25,19 +27,23 @@ class PathDlg : public Dialog {
   template <class Iter>
   static void AddMRUListToComboBox(HWND hComboBox, Iter beg, Iter end) {
     for (Iter i = beg; i != end; ++i) {
-      string s = *i;
+      mew::string s = *i;
       COMBOBOXEXITEM item = {CBEIF_TEXT, -1, const_cast<PTSTR>(s.str())};
       ::SendMessage(hComboBox, CBEM_INSERTITEM, 0, (LPARAM)&item);
     }
   }
   MRUList::iterator MRUListContains(PCTSTR path) {
     for (MRUList::iterator i = m_mru.begin(); i != m_mru.end(); ++i) {
-      if ((*i).equals_nocase(path)) return i;
+      if ((*i).equals_nocase(path)) {
+        return i;
+      }
     }
     return m_mru.end();
   }
   void AddToMRUList(PCTSTR path) {
-    if (str::empty(path)) return;
+    if (mew::str::empty(path)) {
+      return;
+    }
     MRUList::iterator i = MRUListContains(path);
     if (i != m_mru.end()) {
       m_mru.erase(i);
@@ -52,7 +58,9 @@ class PathDlg : public Dialog {
 
  protected:
   bool OnCreate() {
-    if (!__super::OnCreate()) return false;
+    if (!__super::OnCreate()) {
+      return false;
+    }
     SetText(IDC_PATH, m_path);
     CComboBoxEx combo = GetItem(IDC_PATH);
     combo.SetExtendedStyle(CBES_EX_PATHWORDBREAKPROC, CBES_EX_PATHWORDBREAKPROC);
@@ -66,14 +74,15 @@ class PathDlg : public Dialog {
       case IDOK:
         GetText(IDC_PATH, m_path, MAX_PATH);
         try {
-          if (str::empty(m_path))
+          if (mew::str::empty(m_path)) {
             m_entry = theAvesta->GetMyDocuments();
-          else
-            m_entry.create(__uuidof(Entry), string(m_path));
+          } else {
+            m_entry.create(__uuidof(mew::io::Entry), mew::string(m_path));
+          }
           AddToMRUList(m_path);
           End(IDOK);
-        } catch (Error& e) {
-          WarningBox(m_hwnd, e.Message);
+        } catch (mew::exceptions::Error& e) {
+          ave::WarningBox(m_hwnd, e.Message);
         }
         break;
       case IDCANCEL:
@@ -84,13 +93,13 @@ class PathDlg : public Dialog {
 };
 }  // namespace
 
-ref<IEntry> avesta::PathDialog(string path) {
+mew::ref<mew::io::IEntry> avesta::PathDialog(mew::string path) {
   static PathDlg dlg;
   if (dlg.Go(path) == IDOK) {
-    ref<IEntry> entry = dlg.m_entry;
-    dlg.m_entry = null;
+    mew::ref<mew::io::IEntry> entry = dlg.m_entry;
+    dlg.m_entry = mew::null;
     return entry;
   }
   // cancel;
-  return null;
+  return mew::null;
 }
