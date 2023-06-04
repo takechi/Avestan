@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.26)
 
 project(Avestan)
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
@@ -104,7 +106,6 @@ add_library(server SHARED
   ${SOURCE_DIR}/avesta/xmlreader.cpp
   ${SOURCE_DIR}/avesta/xmlwriter.cpp
 
-
   ${SOURCE_DIR}/include/afx.hpp
   ${SOURCE_DIR}/include/application.hpp
   ${SOURCE_DIR}/include/avesta.hpp
@@ -155,7 +156,7 @@ add_library(server SHARED
 target_include_directories(server PRIVATE
   ${SOURCE_DIR}/server
   ${SOURCE_DIR}/include
-  ${SOURCE_DIR}/WTL91_5321_Final/include
+  ${SOURCE_DIR}/WTL10_10320_Release/include
   )
 target_link_libraries(server PRIVATE
   Gdiplus.lib
