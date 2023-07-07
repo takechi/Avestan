@@ -213,7 +213,7 @@ inline char* guidtoa(char* str, REFGUID value, bool brace = false) throw() {
   return str;
 }
 inline wchar_t* guidtoa(wchar_t* str, REFGUID value, bool brace = false) throw() {
-  swprintf(str, brace ? L"{%08X-%04X-%04X-%04X-%08X%04X}" : L"%08X-%04X-%04X-%04X-%08X%04X", value.Data1, value.Data2,
+  swprintf(str, 40, brace ? L"{%08X-%04X-%04X-%04X-%08X%04X}" : L"%08X-%04X-%04X-%04X-%08X%04X", value.Data1, value.Data2,
            value.Data3, MAKEWORD(value.Data4[1], value.Data4[0]),
            MAKEDWORD(value.Data4[5], value.Data4[4], value.Data4[3], value.Data4[2]), MAKEWORD(value.Data4[7], value.Data4[6]));
   return str;
@@ -222,8 +222,9 @@ inline wchar_t* guidtoa(wchar_t* str, REFGUID value, bool brace = false) throw()
 inline bool atoguid(GUID& guid, PCSTR str) {
   UINT v1, v[10];
   if (sscanf(str, "{%8X-%4X-%4X-%2X%2X-%2X%2X%2X%2X%2X%2X}", &v1, &v[0], &v[1], &v[2], &v[3], &v[4], &v[5], &v[6], &v[7], &v[8],
-             &v[9]) != 11)
+             &v[9]) != 11) {
     return false;
+  }
   guid.Data1 = v1;
   guid.Data2 = (WORD)v[0];
   guid.Data3 = (WORD)v[1];
