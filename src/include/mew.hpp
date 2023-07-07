@@ -251,7 +251,7 @@ class CriticalSection {
 
  public:
   CriticalSection() throw() { ::InitializeCriticalSection(&m_cs); }
-  ~CriticalSection() throw() { ::DeleteCriticalSection(&m_cs); }
+  ~CriticalSection() noexcept { ::DeleteCriticalSection(&m_cs); }
   void Lock() throw() { ::EnterCriticalSection(&m_cs); }
   void Unlock() throw() { ::LeaveCriticalSection(&m_cs); }
   BOOL TryLock() throw() { return ::TryEnterCriticalSection(&m_cs); }
@@ -268,7 +268,7 @@ class AutoLock {
 
  public:
   AutoLock(CriticalSection& cs) throw() : m_cs(cs) { m_cs.Lock(); }
-  ~AutoLock() throw() { m_cs.Unlock(); }
+  ~AutoLock() noexcept { m_cs.Unlock(); }
 
  private:  // non-copyable
   AutoLock(const AutoLock&);
