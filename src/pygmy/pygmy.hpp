@@ -114,18 +114,18 @@ struct StringTraits<wchar_t> {
     return PyUnicode_FromWideChar(buffer, len);
   }
   static PyObject* from(PyObject* obj) {
-    if (!obj)
+    if (!obj) {
       return NULL;
-    else if (PyObject* ret = PyUnicode_FromObject(obj))
+    } else if (PyObject* ret = PyUnicode_FromObject(obj)) {
       return ret;
-    else if (PyObject* str = PyObject_Str(obj)) {
+    } else if (PyObject* str = PyObject_Str(obj)) {
       PyObject* uni = PyUnicode_DecodeMBCS(PyString_AS_STRING(str), PyString_GET_SIZE(str), NULL);
       Py_DECREF(str);
       return uni;
     } else
       return NULL;
   }
-  static const wchar_t* str(PyObject* obj) { return obj ? reinterpret_cast<wchar_t*>(PyUnicode_2BYTE_DATA(obj)) : NULL; }
+  static const wchar_t* str(PyObject* obj) { return obj ? PyUnicode_AsWideCharString(obj, NULL) : NULL; }
   static size_t length(PyObject* obj) { return obj ? PyUnicode_GET_LENGTH(obj) : 0; }
   static bool empty(PyObject* obj) { return length(obj) == 0; }
 };
@@ -351,13 +351,19 @@ class Type : public Object {
   static bool is_type(PyObject* obj) { return obj && PyType_Check(obj); }
   Type() {}
   Type(const Object& rhs) {
-    if (is_type(rhs)) assign(rhs);
+    if (is_type(rhs)) {
+      assign(rhs);
+    }
   }
   explicit Type(PyObject* rhs) {
-    if (is_type(rhs)) assign(rhs);
+    if (is_type(rhs)) {
+      assign(rhs);
+    }
   }
   const char* name() const {
-    if (!m_self) return null;
+    if (!m_self) {
+      return null;
+    }
     return ((PyTypeObject*)m_self)->tp_name;
   }
 };
@@ -461,10 +467,14 @@ class Tuple : public Object {
   Tuple() {}
   Tuple(size_t size) { m_self = create(size); }
   Tuple(const Object& rhs) {
-    if (is_tuple(rhs)) assign(rhs);
+    if (is_tuple(rhs)) {
+      assign(rhs);
+    }
   }
   explicit Tuple(PyObject* rhs) {
-    if (is_tuple(rhs)) assign(rhs);
+    if (is_tuple(rhs)) {
+      assign(rhs);
+    }
   }
   void set(int index, PyObject* obj) {
     // PyTuple_SetItem : 参照カウントを増加させない
@@ -512,10 +522,14 @@ class List : public Object {
   List() {}
   List(size_t size) { m_self = create(size); }
   List(const Object& rhs) {
-    if (is_list(rhs)) assign(rhs);
+    if (is_list(rhs)) {
+      assign(rhs);
+    }
   }
   explicit List(PyObject* rhs) {
-    if (is_list(rhs)) assign(rhs);
+    if (is_list(rhs)) {
+      assign(rhs);
+    }
   }
   void set(int index, PyObject* obj) {
     // PyList_SetItem : 参照カウントを増加させない
@@ -571,11 +585,15 @@ class Dictionary : public Object {
   }
   Dictionary() {}
   Dictionary(const Object& rhs) {
-    if (is_dict(rhs)) assign(rhs);
+    if (is_dict(rhs)) {
+      assign(rhs);
+    }
   }
   Dictionary(const Dictionary& rhs) : Object(rhs) {}
   explicit Dictionary(PyObject* rhs) {
-    if (is_dict(rhs)) assign(rhs);
+    if (is_dict(rhs)) {
+      assign(rhs);
+    }
   }
   Proxy<char> operator[](const char* key) { return Proxy<char>(m_self, key); }
   Proxy<wchar_t> operator[](const wchar_t* key) { return Proxy<wchar_t>(m_self, key); }
@@ -585,11 +603,14 @@ class Dictionary : public Object {
 
 inline Object Object::apply(const Tuple& args, const Dictionary& kwds) const {
   ASSERT(m_self);
-  if (!m_self) return Object();
-  if (!args && kwds)
+  if (!m_self) {
+    return Object();
+  }
+  if (!args && kwds) {
     return Object::from(PyObject_Call(m_self, Tuple((size_t)0), kwds));
-  else
+  } else {
     return Object::from(PyObject_Call(m_self, args, kwds));
+  }
 }
 
 //============================================================================================================
@@ -613,13 +634,17 @@ class Module : public Object {
     assign(PyModule_Create(&moduleDef));
   }
   Object operator[](const char* name) const {
-    if (!m_self) return null;
+    if (!m_self) {
+      return null;
+    }
     // PyModule_GetDict : returns borrowed reference
     // PyDict_GetItemString : returns borrowed reference
     return Object(PyDict_GetItemString(PyModule_GetDict(m_self), name));
   }
   Object operator[](const wchar_t* name) const {
-    if (!m_self) return null;
+    if (!m_self) {
+      return null;
+    }
     // PyModule_GetDict : returns borrowed reference
     // PyDict_GetItem : returns borrowed reference
     return Object(PyDict_GetItem(PyModule_GetDict(m_self), StringW(name)));
@@ -666,7 +691,9 @@ class Host {
     PySys_ResetWarnOptions();
     char program[MAX_PATH];
     GetModuleFileNameA(0, program, MAX_PATH);
-    if (more) PathAppendA(program, more);
+    if (more) {
+      PathAppendA(program, more);
+    }
     PyConfig config;
     PyConfig_InitPythonConfig(&config);
     config.isolated = 1;
@@ -693,7 +720,9 @@ inline bool fetch_error(ErrorInfo& error) {
   PyObject *exception, *value, *traceback;
   PyErr_Fetch(&exception, &value, &traceback);
   PyErr_NormalizeException(&exception, &value, &traceback);
-  if (!exception) return false;
+  if (!exception) {
+    return false;
+  }
   error.exception.attach(exception);
   error.value.attach(value);
   // エラーの種類によっては、この呼び出しで segfault するため、try-catch で囲んでしまう.
