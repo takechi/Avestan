@@ -1,4 +1,4 @@
-// sequence.hpp
+﻿// sequence.hpp
 #pragma once
 
 #include "mew.hpp"

@@ -1,4 +1,4 @@
-// Tab.cpp
+ï»¿// Tab.cpp
 
 #include "stdafx.h"
 #include "../private.h"
@@ -9,12 +9,12 @@
 #include "drawing.hpp"
 #include <cfloat>
 
-#include "../server/main.hpp"  // ‚à‚¤‚®‚¿‚á‚®‚¿‚ácc
+#include "../server/main.hpp"  // ã‚‚ã†ãã¡ã‚ƒãã¡ã‚ƒâ€¦â€¦
 
 // #define ENABLE_DEFAULT_KEYMAP
 
-// ‚Ç‚¤‚µ‚Ä‚à•¡”‘I‘ğƒ^ƒu‚ªv‚¢’Ê‚è‚É“®‚©‚È‚¢‚Ì‚ÅAƒc[ƒ‹ƒo[‚ğg‚Á‚ÄÄÀ‘•‚·‚é
-// ƒ{ƒgƒ€ƒ^ƒu‚ğÀŒ»‚Å‚«‚È‚¢Bƒc[ƒ‹ƒo[‚ÆƒRƒ“ƒeƒi—Ìˆæ‚ğ•ª‚¯‚½‚Ù‚¤‚ª‚æ‚©‚Á‚½‚©‚àB
+// ã©ã†ã—ã¦ã‚‚è¤‡æ•°é¸æŠã‚¿ãƒ–ãŒæ€ã„é€šã‚Šã«å‹•ã‹ãªã„ã®ã§ã€ãƒ„ãƒ¼ãƒ«ãƒãƒ¼ã‚’ä½¿ã£ã¦å†å®Ÿè£…ã™ã‚‹
+// ãƒœãƒˆãƒ ã‚¿ãƒ–ã‚’å®Ÿç¾ã§ããªã„ã€‚ãƒ„ãƒ¼ãƒ«ãƒãƒ¼ã¨ã‚³ãƒ³ãƒ†ãƒŠé ˜åŸŸã‚’åˆ†ã‘ãŸã»ã†ãŒã‚ˆã‹ã£ãŸã‹ã‚‚ã€‚
 
 namespace {
 inline UINT MF_STRING_IF(bool exp) { return MF_STRING | (exp ? 0 : MF_DISABLED | MF_GRAYED); }
@@ -87,11 +87,11 @@ class TabCtrlLook {
     m_ColorActiveTab = ::GetSysColor(COLOR_BTNFACE);
     m_ColorActiveText = ::GetSysColor(COLOR_BTNTEXT);
     m_ColorInactiveText = mew::theme::DotNetInactiveTextColor();
-    if (mew::drawing::MaxColorDistance(m_ColorBkgnd, m_ColorInactiveText) < 16) {  // ”wŒi‚Æ”ñƒAƒNƒeƒBƒuF‚ª‹ß‚·‚¬‚é
+    if (mew::drawing::MaxColorDistance(m_ColorBkgnd, m_ColorInactiveText) < 16) {  // èƒŒæ™¯ã¨éã‚¢ã‚¯ãƒ†ã‚£ãƒ–è‰²ãŒè¿‘ã™ãã‚‹
       if (mew::drawing::MaxColorDistance(m_ColorBkgnd) < 128) {
-        m_ColorInactiveText = RGB(255, 255, 255);  // ”wŒi‚ª•‚É‹ß‚¢ê‡
+        m_ColorInactiveText = RGB(255, 255, 255);  // èƒŒæ™¯ãŒé»’ã«è¿‘ã„å ´åˆ
       } else {
-        m_ColorInactiveText = RGB(0, 0, 0);  // ”wŒi‚ª”’‚É‹ß‚¢ê‡
+        m_ColorInactiveText = RGB(0, 0, 0);  // èƒŒæ™¯ãŒç™½ã«è¿‘ã„å ´åˆ
       }
     }
   }
@@ -105,8 +105,8 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
                                    implements<ITabPanel, IList, IWindow, ISignal, IDisposable, IDropTarget> >,
                  public WTLEX::CSplitter<TabPanel> {
  private:
-  int m_SerialNumber;    ///< ‚·‚×‚Ä‚Ìƒ{ƒ^ƒ“‚ªˆÙ‚È‚éƒRƒ}ƒ“ƒh’l‚ğ‚Â‚½‚ß‚É
-  CWindowEx m_wndFocus;  ///< ƒtƒH[ƒJƒX‚ğ‚Á‚Ä‚¢‚éq‹ŸƒEƒBƒ“ƒhƒE.
+  int m_SerialNumber;    ///< ã™ã¹ã¦ã®ãƒœã‚¿ãƒ³ãŒç•°ãªã‚‹ã‚³ãƒãƒ³ãƒ‰å€¤ã‚’æŒã¤ãŸã‚ã«
+  CWindowEx m_wndFocus;  ///< ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã‚’æŒã£ã¦ã„ã‚‹å­ä¾›ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦.
   CToolTipCtrlT<CWindowEx> m_tip;
   TabCtrlLook m_look;
   InsertTo m_InsertPosition;
@@ -217,7 +217,7 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
     }
   }
   HRESULT DoGetStatus(size_t index, DWORD* out_status, size_t* out_index = null) {
-    ++index;  // 0‚Íƒ_ƒ~[ƒ{ƒ^ƒ“
+    ++index;  // 0ã¯ãƒ€ãƒŸãƒ¼ãƒœã‚¿ãƒ³
     if (index >= (size_t)GetItemCount()) {
       return E_INVALIDARG;
     }
@@ -247,7 +247,7 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
     }
   }
   HRESULT DoSetStatus(size_t index, Status status = SELECTED, bool unique = false) {
-    ++index;  // 0‚Íƒ_ƒ~[ƒ{ƒ^ƒ“
+    ++index;  // 0ã¯ãƒ€ãƒŸãƒ¼ãƒœã‚¿ãƒ³
     if (index >= (size_t)GetItemCount()) {
       return E_INVALIDARG;
     }
@@ -363,7 +363,7 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
       }
     }
   }
-  // ƒtƒH[ƒJƒXŒó•â‚ğ’T‚·
+  // ãƒ•ã‚©ãƒ¼ã‚«ã‚¹å€™è£œã‚’æ¢ã™
   CWindowEx FindFocusTarget(int start = 1, int sgn = 1) const {
     int count = GetItemCount() - 1;
     for (int i = 0; i < count; ++i) {
@@ -430,10 +430,10 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
         const int x = rcClient.left + h * width / horz + h * m_Border.w + padding;
         const int y = rcClient.top + v * height / vert + v * m_Border.h + padding;
         Rect bounds(x, y, x + width / horz, y + height / vert);
-        if (h == horz - 1) {  // ˆê”Ô‰E’[‚ÌƒyƒCƒ“‚ÍA˜g‚Ò‚Á‚½‚è‚É
+        if (h == horz - 1) {  // ä¸€ç•ªå³ç«¯ã®ãƒšã‚¤ãƒ³ã¯ã€æ ã´ã£ãŸã‚Šã«
           bounds.right = rcClient.right - padding;
         }
-        if (v == vert - 1) {  // ˆê”Ô‰º’[‚ÌƒyƒCƒ“‚ÍA˜g‚Ò‚Á‚½‚è‚É
+        if (v == vert - 1) {  // ä¸€ç•ªä¸‹ç«¯ã®ãƒšã‚¤ãƒ³ã¯ã€æ ã´ã£ãŸã‚Šã«
           bounds.bottom = rcClient.bottom - padding;
         }
         p->Bounds = bounds;
@@ -542,11 +542,11 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
   MESSAGE_HANDLER(WM_MBUTTONUP, OnMButtonUp)
   MESSAGE_HANDLER(WM_CONTEXTMENU, OnContextMenu)
   MESSAGE_HANDLER(WM_UPDATEUISTATE, OnUpdateUIState)
-  MESSAGE_HANDLER(OCM_COMMAND, OnCommand)  // ToolBarCtrl ƒŠƒtƒŒƒNƒVƒ‡ƒ“
+  MESSAGE_HANDLER(OCM_COMMAND, OnCommand)  // ToolBarCtrl ãƒªãƒ•ãƒ¬ã‚¯ã‚·ãƒ§ãƒ³
   REFLECTED_NOTIFY_CODE_HANDLER(NM_CUSTOMDRAW, OnCustomDraw)
-  // æ‚ÉƒXƒvƒŠƒbƒ^‚Éƒ}ƒEƒX‚ğˆ—‚³‚¹‚½Œãc
+  // å…ˆã«ã‚¹ãƒ—ãƒªãƒƒã‚¿ã«ãƒã‚¦ã‚¹ã‚’å‡¦ç†ã•ã›ãŸå¾Œâ€¦
   CHAIN_MSG_MAP_TO(ProcessSplitterMessage)
-  // ƒ{ƒ^ƒ“ã‚Å‚Ìƒ}ƒEƒXƒƒbƒZ[ƒW‚ğˆ—
+  // ãƒœã‚¿ãƒ³ä¸Šã§ã®ãƒã‚¦ã‚¹ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å‡¦ç†
   MESSAGE_HANDLER(WM_LBUTTONDOWN, OnLButtonDown)
   MESSAGE_HANDLER(WM_LBUTTONUP, OnLButtonUp)
   MESSAGE_HANDLER(WM_LBUTTONDBLCLK, OnLButtonDblClk)
@@ -557,7 +557,7 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
   MESSAGE_HANDLER(WM_CAPTURECHANGED, OnCaptureChanged)
   MESSAGE_HANDLER(WM_TIMER, OnTimer)
   MESSAGE_HANDLER(WM_PARENTNOTIFY, OnParentNotify)
-  MSG_LAMBDA(WM_RBUTTONDBLCLK, {})  // –Ê“|‚ğ”ğ‚¯‚é‚½‚ß‚Éˆ¬‚è‚Â‚Ô‚µ‚Ü‚·
+  MSG_LAMBDA(WM_RBUTTONDBLCLK, {})  // é¢å€’ã‚’é¿ã‘ã‚‹ãŸã‚ã«æ¡ã‚Šã¤ã¶ã—ã¾ã™
   // REFLECTED_NOTIFY_CODE_HANDLER(TBN_DROPDOWN, OnDropDown)
   CHAIN_MSG_MAP_TO(__super::HandleWindowMessage)
   END_MSG_MAP()
@@ -730,19 +730,19 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
   }
   bool HandleCreate(const CREATESTRUCT& cs) {
     // SetExtendedStyle(TBSTYLE_EX_DRAWDDARROWS);
-    ModifyClassStyle(CS_HREDRAW | CS_VREDRAW, CS_DBLCLKS);  // ‚¿‚ç‚Â‚­‚Ì‚ÅŠO‚·.
+    ModifyClassStyle(CS_HREDRAW | CS_VREDRAW, CS_DBLCLKS);  // ã¡ã‚‰ã¤ãã®ã§å¤–ã™.
     SetButtonStructSize();
     SetButtonWidth(32, 240);
-    // ƒ{ƒ^ƒ“‚Ì‚‚³‚ÌZo‚Ì‚½‚ß‚Éƒ_ƒ~[‚Ìƒ{ƒ^ƒ“‚ğ“ü‚ê‚é
-    // ƒZƒpƒŒ[ƒ^‚¾‚Æcü‚ª•`‰æ‚³‚ê‚é‚½‚ßA–³Œø‰»ó‘Ô‚Ì’Êíƒ{ƒ^ƒ“‚ğg—p‚·‚é
-    // ¶’[‚Ìƒ{ƒ^ƒ“‚ÍAdwData‚ªİ’è‚Å‚«‚È‚¢‚æ‚¤‚È‹C‚ª‚·‚éB
+    // ãƒœã‚¿ãƒ³ã®é«˜ã•ã®ç®—å‡ºã®ãŸã‚ã«ãƒ€ãƒŸãƒ¼ã®ãƒœã‚¿ãƒ³ã‚’å…¥ã‚Œã‚‹
+    // ã‚»ãƒ‘ãƒ¬ãƒ¼ã‚¿ã ã¨ç¸¦ç·šãŒæç”»ã•ã‚Œã‚‹ãŸã‚ã€ç„¡åŠ¹åŒ–çŠ¶æ…‹ã®é€šå¸¸ãƒœã‚¿ãƒ³ã‚’ä½¿ç”¨ã™ã‚‹
+    // å·¦ç«¯ã®ãƒœã‚¿ãƒ³ã¯ã€dwDataãŒè¨­å®šã§ããªã„ã‚ˆã†ãªæ°—ãŒã™ã‚‹ã€‚
     TBBUTTON btn = {I_IMAGENONE};
     btn.fsStyle = BTNS_AUTOSIZE;
     btn.iString = -1;
     InsertButton(-1, &btn);
     //
     OnSettingChange(AtlGetDefaultGuiFont());
-    // ƒc[ƒ‹ƒ`ƒbƒv
+    // ãƒ„ãƒ¼ãƒ«ãƒãƒƒãƒ—
     m_tip.Create(m_hWnd, NULL, NULL, TTS_ALWAYSTIP | TTS_NOPREFIX);
     return true;
   }
@@ -796,20 +796,20 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
           --checked;
         }
 
-        if (checked == 0) {  // Œ»İ—Bˆê‚ÌƒAƒNƒeƒBƒuƒrƒ…[‚ª•Â‚¶‚ç‚ê‚½ê‡
+        if (checked == 0) {  // ç¾åœ¨å”¯ä¸€ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãƒ“ãƒ¥ãƒ¼ãŒé–‰ã˜ã‚‰ã‚ŒãŸå ´åˆ
           int next = (index >= count - 1 ? count - 2 : index + 1);
           SetChecked(next, true);
           FocusChild(next);
-        } else if (m_wndFocus == w) {  // •¡”‘I‘ğó‘Ô‚ÅAƒtƒH[ƒJƒXƒrƒ…[‚ª•Â‚¶‚ç‚ê‚½
+        } else if (m_wndFocus == w) {  // è¤‡æ•°é¸æŠçŠ¶æ…‹ã§ã€ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ãƒ“ãƒ¥ãƒ¼ãŒé–‰ã˜ã‚‰ã‚ŒãŸ
           FocusChild(index + 1);
         }
         DeleteButton(index);
-        if (GetItemCount() <= 1) {  // ƒ_ƒ~[ˆÈŠO‚Ì‚·‚×‚Ä‚Ìƒ{ƒ^ƒ“‚ªíœ‚³‚ê‚½
+        if (GetItemCount() <= 1) {  // ãƒ€ãƒŸãƒ¼ä»¥å¤–ã®ã™ã¹ã¦ã®ãƒœã‚¿ãƒ³ãŒå‰Šé™¤ã•ã‚ŒãŸ
           SetFocusWindow(null);
         }
       }
     }
-    Update();  // “¯Šú‚¾‚Æ‚Ü‚¾V‚µ‚¢ƒEƒBƒ“ƒhƒE‚ª—LŒø‚Å‚È‚¢ê‡‚ª‚ ‚é.
+    Update();  // åŒæœŸã ã¨ã¾ã æ–°ã—ã„ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒæœ‰åŠ¹ã§ãªã„å ´åˆãŒã‚ã‚‹.
   }
   void HandleChildCreate_InsertTab(CWindowEx w) {
     TCHAR text[MAX_PATH];
@@ -824,7 +824,7 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
     item.fsStyle = BTNS_CHECK | BTNS_AUTOSIZE | BTNS_NOPREFIX;  // | BTNS_DROPDOWN;
     //
     int currentIndex = IndexFromParam(m_wndFocus);
-    if (currentIndex >= 1) {  // ƒAƒNƒeƒBƒu‚Ì‰E‚É’Ç‰Á
+    if (currentIndex >= 1) {  // ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã®å³ã«è¿½åŠ 
       switch (m_InsertPosition) {
         case InsertHead:
           VERIFY(InsertTab(1, item));
@@ -841,7 +841,7 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
         default:
           TRESPASS();
       }
-    } else {  // Å‰‚ÌƒAƒCƒeƒ€
+    } else {  // æœ€åˆã®ã‚¢ã‚¤ãƒ†ãƒ 
       VERIFY(InsertTab(-1, item));
       SetChecked(1, true);
       FocusChild(w);
@@ -982,10 +982,10 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
     //
     m_wndHot.clear();
     if (hotIndex.size() < 1 || (shown == 1 && hotIndex.size() == 1 &&
-                                GetChecked(hotIndex[0]))) {  // ‚½‚¾ˆê‚Â‚ª•\¦‚³‚ê‚Ä‚¢‚éê‡‚ÍA’Ê’m‚µ‚È‚­‚Ä‚à–¾ŠmB
+                                GetChecked(hotIndex[0]))) {  // ãŸã ä¸€ã¤ãŒè¡¨ç¤ºã•ã‚Œã¦ã„ã‚‹å ´åˆã¯ã€é€šçŸ¥ã—ãªãã¦ã‚‚æ˜ç¢ºã€‚
       return;
     }
-    // ‚¢‚Á‚½‚ñ‰B‚µ‚Ä‚¨‚­‚ÆA‚¢‚¿‚¢‚¿ƒŒƒCƒAƒEƒg‚ªs‚í‚ê‚È‚¢‚½‚ßA‚‘¬‰»‚·‚éB
+    // ã„ã£ãŸã‚“éš ã—ã¦ãŠãã¨ã€ã„ã¡ã„ã¡ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆãŒè¡Œã‚ã‚Œãªã„ãŸã‚ã€é«˜é€ŸåŒ–ã™ã‚‹ã€‚
     SetWindowPos(null, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_HIDEWINDOW);
     for (size_t i = 0; i < hotIndex.size(); ++i) {
       Rect rc = GetTabRectByIndex(hotIndex[i]);
@@ -1024,7 +1024,7 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
   }
   LRESULT OnSetFocus(UINT, WPARAM, LPARAM, BOOL&) {
     if (!m_wndFocus.IsWindow() ||
-        !GetChecked(IndexFromParam(m_wndFocus))) {  // ˆÈ‘OƒtƒH[ƒJƒX‚ğ‚Á‚Ä‚¢‚½ƒrƒ…[‚ª‚·‚Å‚É–³Œø‚É‚È‚Á‚Ä‚¢‚é
+        !GetChecked(IndexFromParam(m_wndFocus))) {  // ä»¥å‰ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã‚’æŒã£ã¦ã„ãŸãƒ“ãƒ¥ãƒ¼ãŒã™ã§ã«ç„¡åŠ¹ã«ãªã£ã¦ã„ã‚‹
       SetFocusWindow(FindFocusTarget());
     }
     if (m_wndFocus) {
@@ -1076,7 +1076,7 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
       GetItemRect(m_DraggingTab, &rc0);
       GetItemRect(index, &rc1);
       if ((m_DraggingTab < index && (rc0.left + rc1.right) / 2 < pt.x) ||
-          (m_DraggingTab > index && (rc0.right + rc1.left) / 2 > pt.x)) {  // ƒ`ƒƒƒ^ƒŠƒ“ƒO‚ğ–h‚®‚½‚ß‚Ì”»’è
+          (m_DraggingTab > index && (rc0.right + rc1.left) / 2 > pt.x)) {  // ãƒãƒ£ã‚¿ãƒªãƒ³ã‚°ã‚’é˜²ããŸã‚ã®åˆ¤å®š
         MoveTabInternal(m_DraggingTab, index);
         m_DraggingTab = index;
         m_DragSwap = true;
@@ -1102,12 +1102,12 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
     return 0;
   }
   LRESULT OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam,
-                        BOOL& bHandled) {  // ‰Eƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚Ä‚¢‚é‚Æ•sv‹c‚È“®ì‚ğ‚·‚é‚½‚ßA‚¢‚Â‚à‰Ÿ‚µ‚Ä‚¢‚È‚¢‚Æ‚İ‚È‚·
+                        BOOL& bHandled) {  // å³ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚Œã¦ã„ã‚‹ã¨ä¸æ€è­°ãªå‹•ä½œã‚’ã™ã‚‹ãŸã‚ã€ã„ã¤ã‚‚æŠ¼ã—ã¦ã„ãªã„ã¨ã¿ãªã™
     SetFocus();
     m_DraggingTab = -1;
     m_DragSwap = false;
     m_RButtonDown = false;
-    if (!(GET_KEYSTATE_WPARAM(wParam) & ~MK_LBUTTON) && GetItemCount() > 1) {  // ¶ƒ{ƒ^ƒ“‚Ì‚Ù‚©‚É‚Í‰½‚à‰Ÿ‚³‚ê‚Ä‚¢‚È‚¢
+    if (!(GET_KEYSTATE_WPARAM(wParam) & ~MK_LBUTTON) && GetItemCount() > 1) {  // å·¦ãƒœã‚¿ãƒ³ã®ã»ã‹ã«ã¯ä½•ã‚‚æŠ¼ã•ã‚Œã¦ã„ãªã„
       Point pt(GET_XY_LPARAM(lParam));
       int index = HitTest(&pt);
       if (index > 0) {
@@ -1147,7 +1147,7 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
     }
     m_DraggingTab = -1;
     m_DragSwap = false;
-    // if(GetCapture() != m_hWnd) // ƒLƒƒƒvƒ`ƒƒ‚·‚é‚ÆAƒc[ƒ‹ƒo[ƒRƒ“ƒgƒ[ƒ‹‚ªˆ«‚³‚ğ‚·‚é‚İ‚½‚¢
+    // if(GetCapture() != m_hWnd) // ã‚­ãƒ£ãƒ—ãƒãƒ£ã™ã‚‹ã¨ã€ãƒ„ãƒ¼ãƒ«ãƒãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ãŒæ‚ªã•ã‚’ã™ã‚‹ã¿ãŸã„
     //   SetCapture();
     if ((wParam & MK_LBUTTON) == 0) {
       m_RButtonDown = true;
@@ -1174,7 +1174,7 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
         ::ReleaseCapture();
       }
     } else {
-      if (m_RButtonDown) {  // ‰E‚ª‰Ÿ‚³‚êA‚»‚ÌŒã¶‚ª‰Ÿ‚³‚ê‚é‚±‚Æ‚È‚­‰E‚ª—£‚³‚ê‚½ê‡‚Ì‚İƒRƒ“ƒeƒLƒXƒgƒƒjƒ…[
+      if (m_RButtonDown) {  // å³ãŒæŠ¼ã•ã‚Œã€ãã®å¾Œå·¦ãŒæŠ¼ã•ã‚Œã‚‹ã“ã¨ãªãå³ãŒé›¢ã•ã‚ŒãŸå ´åˆã®ã¿ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆãƒ¡ãƒ‹ãƒ¥ãƒ¼
         PostMessage(WM_CONTEXTMENU, (WPARAM)m_hWnd, ::GetMessagePos());
       }
       m_RButtonDown = false;
@@ -1219,7 +1219,7 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
       if (!lockClose && IsLocked(info)) {
         close |= MF_DISABLED | MF_GRAYED;
       }
-      menu.AppendMenu(close, ID_CLOSE, L"•Â‚¶‚é(&C)");
+      menu.AppendMenu(close, ID_CLOSE, L"é–‰ã˜ã‚‹(&C)");
       // Show/Hide
       int show = MF_STRING;
       if ((checked == 1 && IsVisible(info)) || IsLocked(info)) {
@@ -1228,7 +1228,7 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
       if (IsVisible(info)) {
         show |= MF_CHECKED;
       }
-      menu.AppendMenu(show, ID_VIEW, L"•\¦(&V)");
+      menu.AppendMenu(show, ID_VIEW, L"è¡¨ç¤º(&V)");
       // Navigate Lock
       int lock = MF_STRING;
       if (!IsVisible(info)) {
@@ -1237,28 +1237,28 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
       if (IsLocked(info)) {
         lock |= MF_CHECKED;
       }
-      menu.AppendMenu(lock, ID_LOCK, L"ƒiƒrƒQ[ƒgƒƒbƒN(&L)");
+      menu.AppendMenu(lock, ID_LOCK, L"ãƒŠãƒ“ã‚²ãƒ¼ãƒˆãƒ­ãƒƒã‚¯(&L)");
       menu.AppendMenu(MF_SEPARATOR);
     }
     //
     if (count > 1) {
       if (index > 0) {
-        menu.AppendMenu(MF_STRING_IF(index > 1), ID_CLOSE_LEFT, L"¶‚ğ•Â‚¶‚é(&L)");
-        menu.AppendMenu(MF_STRING_IF(index < count - 1), ID_CLOSE_RIGHT, L"‰E‚ğ•Â‚¶‚é(&R)");
-        menu.AppendMenu(MF_STRING_IF(count > 2), ID_CLOSE_OTHERS, L"‚±‚êˆÈŠO‚ğ•Â‚¶‚é(&O)");
+        menu.AppendMenu(MF_STRING_IF(index > 1), ID_CLOSE_LEFT, L"å·¦ã‚’é–‰ã˜ã‚‹(&L)");
+        menu.AppendMenu(MF_STRING_IF(index < count - 1), ID_CLOSE_RIGHT, L"å³ã‚’é–‰ã˜ã‚‹(&R)");
+        menu.AppendMenu(MF_STRING_IF(count > 2), ID_CLOSE_OTHERS, L"ã“ã‚Œä»¥å¤–ã‚’é–‰ã˜ã‚‹(&O)");
       }
-      menu.AppendMenu(MF_STRING, ID_CLOSE_SHOWN, L"•\¦’†‚ğ•Â‚¶‚é(&S)");
-      menu.AppendMenu(MF_STRING_IF(checked < count - 1), ID_CLOSE_HIDDEN, L"”ñ•\¦‚ğ•Â‚¶‚é(&H)");
-      menu.AppendMenu(MF_STRING, ID_CLOSE_ALL, L"‚·‚×‚Ä•Â‚¶‚é(&A)");
+      menu.AppendMenu(MF_STRING, ID_CLOSE_SHOWN, L"è¡¨ç¤ºä¸­ã‚’é–‰ã˜ã‚‹(&S)");
+      menu.AppendMenu(MF_STRING_IF(checked < count - 1), ID_CLOSE_HIDDEN, L"éè¡¨ç¤ºã‚’é–‰ã˜ã‚‹(&H)");
+      menu.AppendMenu(MF_STRING, ID_CLOSE_ALL, L"ã™ã¹ã¦é–‰ã˜ã‚‹(&A)");
       menu.AppendMenu(MF_SEPARATOR);
     }
     if (checked > 0 && count > 2 && checked < count - 1) {
-      menu.AppendMenu(MF_STRING, ID_CHECKED_LEFT, L"¶‚Ö•\¦’†‚Ìƒ^ƒu‚ğW‚ß‚é");
-      menu.AppendMenu(MF_STRING, ID_CHECKED_RIGHT, L"‰E‚Ö•\¦’†‚Ìƒ^ƒu‚ğW‚ß‚é");
+      menu.AppendMenu(MF_STRING, ID_CHECKED_LEFT, L"å·¦ã¸è¡¨ç¤ºä¸­ã®ã‚¿ãƒ–ã‚’é›†ã‚ã‚‹");
+      menu.AppendMenu(MF_STRING, ID_CHECKED_RIGHT, L"å³ã¸è¡¨ç¤ºä¸­ã®ã‚¿ãƒ–ã‚’é›†ã‚ã‚‹");
     }
     if (locked > 0 && count > 2 && locked < count - 1) {
-      menu.AppendMenu(MF_STRING, ID_LOCKED_LEFT, L"¶‚ÖƒƒbƒN’†‚Ìƒ^ƒu‚ğW‚ß‚é");
-      menu.AppendMenu(MF_STRING, ID_LOCKED_RIGHT, L"‰E‚ÖƒƒbƒN’†‚Ìƒ^ƒu‚ğW‚ß‚é");
+      menu.AppendMenu(MF_STRING, ID_LOCKED_LEFT, L"å·¦ã¸ãƒ­ãƒƒã‚¯ä¸­ã®ã‚¿ãƒ–ã‚’é›†ã‚ã‚‹");
+      menu.AppendMenu(MF_STRING, ID_LOCKED_RIGHT, L"å³ã¸ãƒ­ãƒƒã‚¯ä¸­ã®ã‚¿ãƒ–ã‚’é›†ã‚ã‚‹");
     }
     if (menu.GetMenuItemCount() > 0) {
       MENUITEMINFO info = {sizeof(MENUITEMINFO), MIIM_TYPE};
@@ -1266,10 +1266,10 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
         menu.AppendMenu(MF_SEPARATOR);
       }
     }
-    menu.AppendMenu(MF_STRING | (m_Arrange == ArrangeHorz ? MF_CHECKED | MF_GRAYED : 0), ID_ARRANGE_HORZ, L"‰¡‚É•À‚×‚é(&H)");
-    menu.AppendMenu(MF_STRING | (m_Arrange == ArrangeVert ? MF_CHECKED | MF_GRAYED : 0), ID_ARRANGE_VERT, L"c‚É•À‚×‚é(&V)");
+    menu.AppendMenu(MF_STRING | (m_Arrange == ArrangeHorz ? MF_CHECKED | MF_GRAYED : 0), ID_ARRANGE_HORZ, L"æ¨ªã«ä¸¦ã¹ã‚‹(&H)");
+    menu.AppendMenu(MF_STRING | (m_Arrange == ArrangeVert ? MF_CHECKED | MF_GRAYED : 0), ID_ARRANGE_VERT, L"ç¸¦ã«ä¸¦ã¹ã‚‹(&V)");
     menu.AppendMenu(MF_STRING | (m_Arrange == ArrangeAuto ? MF_CHECKED | MF_GRAYED : 0), ID_ARRANGE_AUTO,
-                    L"©“®“I‚É•À‚×‚é(&A)");
+                    L"è‡ªå‹•çš„ã«ä¸¦ã¹ã‚‹(&A)");
     int cmd = menu.TrackPopupMenu(TPM_RIGHTBUTTON | TPM_RETURNCMD | flags, ptScreen.x, ptScreen.y, m_hWnd, NULL);
     switch (cmd) {
       case ID_CLOSE:
@@ -1426,9 +1426,9 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
     if (index >= 0) {
       if (m_RButtonDown || IsKeyPressed(VK_CONTROL) || IsKeyPressed(VK_RBUTTON)) {
         int checked = GetCheckedCount();
-        if (checked == 0) {  // ‘I‘ğ‚È‚µ‚É‚È‚Á‚Ä‚µ‚Ü‚¤ê‡‚ÍƒLƒƒƒ“ƒZƒ‹‚·‚é
+        if (checked == 0) {  // é¸æŠãªã—ã«ãªã£ã¦ã—ã¾ã†å ´åˆã¯ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã™ã‚‹
           SetChecked(index, true);
-          return 0;  // ‚±‚Ìê‡‚ÍHandleUpdateLayout()‚Í•K—v‚È‚¢‚Í‚¸cc
+          return 0;  // ã“ã®å ´åˆã¯HandleUpdateLayout()ã¯å¿…è¦ãªã„ã¯ãšâ€¦â€¦
         }
         CWindowEx w = GetItemData(index);
         if (GetChecked(index)) {
@@ -1436,7 +1436,7 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
         } else if (m_wndFocus == w) {
           FocusChild(FindFocusTarget());
         }
-      } else {  // CüƒL[‚È‚µ‚Å‚ÌƒNƒŠƒbƒN‚ÍA‚»‚ê‚Ì‚İ‚ğƒAƒNƒeƒBƒu‚É‚·‚é
+      } else {  // ä¿®é£¾ã‚­ãƒ¼ãªã—ã§ã®ã‚¯ãƒªãƒƒã‚¯ã¯ã€ãã‚Œã®ã¿ã‚’ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã«ã™ã‚‹
         SelectOnly(index);
       }
     }
@@ -1481,7 +1481,7 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
         }
         CDCHandle dc = draw->nmcd.hdc;
         RECT bounds = draw->nmcd.rc;
-        bounds.top += 4;  // Åã•”ƒsƒNƒZƒ‹‚Íƒ{[ƒ_[‚ªˆø‚©‚ê‚Ä‚¢‚é‚½‚ß‚¸‚ç‚·
+        bounds.top += 4;  // æœ€ä¸Šéƒ¨ãƒ”ã‚¯ã‚»ãƒ«ã¯ãƒœãƒ¼ãƒ€ãƒ¼ãŒå¼•ã‹ã‚Œã¦ã„ã‚‹ãŸã‚ãšã‚‰ã™
         TCHAR text[MAX_PATH];
         GetItemText_ByCommand(draw->nmcd.dwItemSpec, text, MAX_PATH);
         HWND hView = (HWND)draw->nmcd.lItemlParam;
@@ -1526,13 +1526,13 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
   }
 
  private:
-  // FIXME: ‚ ‚é’ö“x•¡G‚É‚È‚é‚Ì‚Í”ğ‚¯‚ç‚ê‚È‚¢‚ªA‚à‚¤‚¿‚å‚¢•ª‚©‚è‚â‚·‚­o—ˆ‚È‚¢‚à‚Ì‚©ccB
+  // FIXME: ã‚ã‚‹ç¨‹åº¦è¤‡é›‘ã«ãªã‚‹ã®ã¯é¿ã‘ã‚‰ã‚Œãªã„ãŒã€ã‚‚ã†ã¡ã‚‡ã„åˆ†ã‹ã‚Šã‚„ã™ãå‡ºæ¥ãªã„ã‚‚ã®ã‹â€¦â€¦ã€‚
   struct TempTabText {
     string text;
-    int level;  // Ø‚è‚»‚ë‚¦‚éƒŒƒxƒ‹Blevel < 0 ‚Ìê‡‚ÍA‘ã‚í‚è‚ÉnewTab.level‚ğQÆ‚·‚é‚±‚ÆB
+    int level;  // åˆ‡ã‚Šãã‚ãˆã‚‹ãƒ¬ãƒ™ãƒ«ã€‚level < 0 ã®å ´åˆã¯ã€ä»£ã‚ã‚Šã«newTab.levelã‚’å‚ç…§ã™ã‚‹ã“ã¨ã€‚
   };
-  /// @param index XV‚ª”­¶‚µ‚½ƒCƒ“ƒfƒbƒNƒX
-  /// @param name  ‚»‚ÌƒeƒLƒXƒg
+  /// @param index æ›´æ–°ãŒç™ºç”Ÿã—ãŸã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
+  /// @param name  ãã®ãƒ†ã‚­ã‚¹ãƒˆ
   string UpdateTabsText(int index, string name) {
     if (theAvesta->DistinguishTab) {
       const int count = GetItemCount();
@@ -1561,7 +1561,7 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
         }
         TempTabText& otherTab = names[i];
         if (newTab.text == otherTab.text) {
-          // ‚»‚à‚»‚à‘S‚­“¯‚¶–¼‘O
+          // ãã‚‚ãã‚‚å…¨ãåŒã˜åå‰
           otherTab.level = -1;
           continue;
         }
@@ -1658,7 +1658,7 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
           if (!w->Visible) {
             UINT AUTOACTIVATE_HOVER = 0;
             SystemParametersInfo(SPI_GETMOUSEHOVERTIME, 0, &AUTOACTIVATE_HOVER, 0);
-            // ‚»‚Ì‚Ü‚Üg‚¤‚Æ‘ÌŠ´“I‚É‚©‚È‚è’Z‚ß‚Ì‚È‚Ì‚ÅAƒc[ƒ‹ƒ`ƒbƒvƒzƒo[‚Ì2”{‚Ü‚½‚Í500ms ‚Ì’·‚¢‚Ù‚¤‚É‚·‚éB
+            // ãã®ã¾ã¾ä½¿ã†ã¨ä½“æ„Ÿçš„ã«ã‹ãªã‚ŠçŸ­ã‚ã®ãªã®ã§ã€ãƒ„ãƒ¼ãƒ«ãƒãƒƒãƒ—ãƒ›ãƒãƒ¼ã®2å€ã¾ãŸã¯500ms ã®é•·ã„ã»ã†ã«ã™ã‚‹ã€‚
             AUTOACTIVATE_HOVER *= 2;
             if (AUTOACTIVATE_HOVER < AUTOACTIVATE_HOVER_MIN) {
               AUTOACTIVATE_HOVER = AUTOACTIVATE_HOVER_MIN;
@@ -1717,7 +1717,7 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
     if (m_drop = QueryDropTargetInTab(pt)) {
       m_drop->DragEnter(pDataObject, key, pt, pdwEffect);
     }
-    // ‚±‚±‚Å‹‘”Û‚·‚é‚Æ¡Œã‚ÌDragOver‚ªŒÄ‚Î‚ê‚È‚¢‚Ì‚ÅA‚Æ‚è‚ ‚¦‚¸‚·‚×‚Ä‚ğó‚¯“ü‚ê‚é
+    // ã“ã“ã§æ‹’å¦ã™ã‚‹ã¨ä»Šå¾Œã®DragOverãŒå‘¼ã°ã‚Œãªã„ã®ã§ã€ã¨ã‚Šã‚ãˆãšã™ã¹ã¦ã‚’å—ã‘å…¥ã‚Œã‚‹
     *pdwEffect = DROPEFFECT_COPY | DROPEFFECT_MOVE | DROPEFFECT_LINK;
     return S_OK;
   }
@@ -1728,14 +1728,14 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
       afx::TipRelayEvent(m_tip, m_hWnd, pt.x, pt.y);
     }
 
-    // ƒ}ƒEƒXƒzƒo[
+    // ãƒã‚¦ã‚¹ãƒ›ãƒãƒ¼
     if (m_LastMousePos.x != pt.x || m_LastMousePos.y != pt.y) {
       m_LastMousePos = pt;
       m_LastMouseTime = dwCurrentTick;
     }
 
     ref<IDropTarget> pDropTarget = QueryDropTargetInTab(pt);
-    if (!objcmp(pDropTarget, m_drop)) {  // ƒ^[ƒQƒbƒg‚ª‘ã‚í‚Á‚½‚Ì‚ÅAIDropTarget‚ğƒGƒ~ƒ…ƒŒ[ƒg‚·‚é
+    if (!objcmp(pDropTarget, m_drop)) {  // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãŒä»£ã‚ã£ãŸã®ã§ã€IDropTargetã‚’ã‚¨ãƒŸãƒ¥ãƒ¬ãƒ¼ãƒˆã™ã‚‹
       if (m_drop) {
         m_drop->DragLeave();
       }

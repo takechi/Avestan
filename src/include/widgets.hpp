@@ -1,5 +1,5 @@
-/// @file widgets.hpp
-/// ƒEƒBƒWƒFƒbƒgŠK‘w.
+ï»¿/// @file widgets.hpp
+/// ã‚¦ã‚£ã‚¸ã‚§ãƒƒãƒˆéšå±¤.
 #pragma once
 
 #include "afx.hpp"
@@ -12,27 +12,27 @@ interface IEntry;
 __interface IEntryList;
 }  // namespace io
 
-/// ƒEƒBƒWƒFƒbƒgŠK‘w.
+/// ã‚¦ã‚£ã‚¸ã‚§ãƒƒãƒˆéšå±¤.
 namespace ui {
 enum InternalMessage {
   MEW_WM_FIRST = WM_USER + 1000,
 
   //======================================================================
-  // ”ñ“¯ŠúƒRƒ}ƒ“ƒhŒn
+  // éåŒæœŸã‚³ãƒãƒ³ãƒ‰ç³»
   //======================================================================
 
   MEW_ECHO_UPDATE,    // (void)wParam, (void)lParam
   MEW_ECHO_COPYDATA,  // (void)wParam, (IString*)lParam
 
   //======================================================================
-  // ’Ê’mŒn
+  // é€šçŸ¥ç³»
   //======================================================================
 
   MEW_NM_SHELL,     // SHChangeNotifyRegister
   MEW_NM_TASKTRAY,  // Shell_NotifyIcon
 
   //======================================================================
-  // ƒNƒGƒŠŒn
+  // ã‚¯ã‚¨ãƒªç³»
   //======================================================================
 
   MEW_QUERY_INTERFACE,  /// HRESULT QueryInterface(const IID* wParam, void** lParam)
@@ -41,7 +41,7 @@ enum InternalMessage {
 };
 
 //==============================================================================
-// ƒCƒ“ƒ^ƒtƒF[ƒX
+// ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹
 
 // basic windows
 interface __declspec(uuid("F9CC1F5C-8041-48D8-8F2E-C000FEAE0B46")) IWindow;
@@ -55,7 +55,7 @@ interface __declspec(uuid("4FC56D6B-3250-4636-8C97-439CBA76A7C8")) ITabPanel;
 interface __declspec(uuid("56795899-5291-4AFF-AC38-FABB00A63AF9")) IForm;
 interface __declspec(uuid("AAFCFDA5-87FA-4478-A341-DD68E645A93E")) IDisplay;
 
-// io windows : mew::io ‚ÉˆÚ“®‚·‚é‚©‚àB
+// io windows : mew::io ã«ç§»å‹•ã™ã‚‹ã‹ã‚‚ã€‚
 interface __declspec(uuid("9278A704-5BE3-4B73-92CE-D66DB650E9C8")) IPreview;
 interface __declspec(uuid("1943A27C-EA08-4C48-9FAA-9E193E3168EE")) IShellListView;
 __interface __declspec(uuid("60CFE2DB-365B-4972-88C5-2D2BDB922D02")) IShellStorage;
@@ -78,19 +78,19 @@ __interface __declspec(uuid("209A447F-DBEE-4178-B770-B73AD1B9719C")) IWallPaperD
 __interface __declspec(uuid("02B6F4BE-8EFD-4573-85AC-A3A7D2131A2A")) IExpose;
 
 //==============================================================================
-// ƒ_ƒCƒAƒƒOŠÖ”.
+// ãƒ€ã‚¤ã‚¢ãƒ­ã‚°é–¢æ•°.
 
-/// ƒo[ƒWƒ‡ƒ“î•ñ‚ğ•\¦‚·‚é.
+/// ãƒãƒ¼ã‚¸ãƒ§ãƒ³æƒ…å ±ã‚’è¡¨ç¤ºã™ã‚‹.
 void AboutDialog(HWND hwnd, string module = null);
-/// “Ç‚İ‚İƒtƒ@ƒCƒ‹–¼‚ğ–â‚¢‡‚í‚¹‚é.
+/// èª­ã¿è¾¼ã¿ãƒ•ã‚¡ã‚¤ãƒ«åã‚’å•ã„åˆã‚ã›ã‚‹.
 string OpenDialog(HWND hwnd, string filter);
-/// ‘‚«o‚µƒtƒ@ƒCƒ‹–¼‚ğ–â‚¢‡‚í‚¹‚é.
+/// æ›¸ãå‡ºã—ãƒ•ã‚¡ã‚¤ãƒ«åã‚’å•ã„åˆã‚ã›ã‚‹.
 string SaveDialog(HWND hwnd, string filter, PCTSTR strDefExt = null);
-/// ƒtƒHƒ“ƒg‘I‘ğƒ_ƒCƒAƒƒO.
+/// ãƒ•ã‚©ãƒ³ãƒˆé¸æŠãƒ€ã‚¤ã‚¢ãƒ­ã‚°.
 void FontDialog(HWND hwnd, HFONT hFont, string caption, function apply);
 
 //==============================================================================
-// ì¬‰Â”\‚ÈƒNƒ‰ƒX
+// ä½œæˆå¯èƒ½ãªã‚¯ãƒ©ã‚¹
 
 class __declspec(uuid("5EDC9069-65BC-4095-8E2C-1D2BAC74CF8C")) Display;
 class __declspec(uuid("EBB3ACF9-1AFA-45CF-ABF0-552F465F0375")) Form;
@@ -112,39 +112,39 @@ class __declspec(uuid("EE813675-A87E-467B-90CD-A17EA1543BF1")) WallPaperDialog;
 class __declspec(uuid("10106D22-9371-4F07-B57F-E96655CE5BF0")) Expose;
 
 //==============================================================================
-// ’è”
+// å®šæ•°
 
-/// ƒ}ƒEƒXƒ{ƒ^ƒ“‚ÆCüƒL[.
+/// ãƒã‚¦ã‚¹ãƒœã‚¿ãƒ³ã¨ä¿®é£¾ã‚­ãƒ¼.
 enum MouseAndModifier {
-  MouseButtonNone = 0x0000,    ///< ‚È‚µ.
-  MouseButtonLeft = 0x0001,    ///< ¶ƒ{ƒ^ƒ“.
-  MouseButtonRight = 0x0002,   ///< ‰Eƒ{ƒ^ƒ“.
-  MouseButtonMiddle = 0x0010,  ///< ’†ƒ{ƒ^ƒ“.
-  MouseButtonX1 = 0x0020,      ///< ’Ç‰Áƒ{ƒ^ƒ“1.
-  MouseButtonX2 = 0x0040,      ///< ’Ç‰Áƒ{ƒ^ƒ“2.
-  MouseButtonMask = 0x0073,    ///< ƒ}ƒEƒX‚Ìƒ{ƒ^ƒ“‚·‚×‚Ä.
+  MouseButtonNone = 0x0000,    ///< ãªã—.
+  MouseButtonLeft = 0x0001,    ///< å·¦ãƒœã‚¿ãƒ³.
+  MouseButtonRight = 0x0002,   ///< å³ãƒœã‚¿ãƒ³.
+  MouseButtonMiddle = 0x0010,  ///< ä¸­ãƒœã‚¿ãƒ³.
+  MouseButtonX1 = 0x0020,      ///< è¿½åŠ ãƒœã‚¿ãƒ³1.
+  MouseButtonX2 = 0x0040,      ///< è¿½åŠ ãƒœã‚¿ãƒ³2.
+  MouseButtonMask = 0x0073,    ///< ãƒã‚¦ã‚¹ã®ãƒœã‚¿ãƒ³ã™ã¹ã¦.
 
-  ModifierNone = 0x0000,     ///< ‚È‚µ.
-  ModifierShift = 0x0004,    ///< ƒVƒtƒgƒL[.
-  ModifierControl = 0x0008,  ///< ƒRƒ“ƒgƒ[ƒ‹ƒL[.
+  ModifierNone = 0x0000,     ///< ãªã—.
+  ModifierShift = 0x0004,    ///< ã‚·ãƒ•ãƒˆã‚­ãƒ¼.
+  ModifierControl = 0x0008,  ///< ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã‚­ãƒ¼.
   ModifierAlt = 0x0100,      ///< Alt.
   ModifierWindows = 0x0200,  ///< Windows.
-  ModifierMask = 0x030C,     ///< CüƒL[‚·‚×‚Ä.
+  ModifierMask = 0x030C,     ///< ä¿®é£¾ã‚­ãƒ¼ã™ã¹ã¦.
 };
 
-/// •ûŒüƒXƒ^ƒCƒ‹.
+/// æ–¹å‘ã‚¹ã‚¿ã‚¤ãƒ«.
 enum Direction {
-  DirNone = 0x0000,                 ///< •ûŒü‚È‚µ.
-  DirCenter = 0x0001,               ///< ’†‰›.
-  DirWest = 0x0010,                 ///< ¼E¶.
-  DirEast = 0x0020,                 ///< “ŒE‰E.
-  DirNorth = 0x0040,                ///< –kEã.
-  DirSouth = 0x0080,                ///< “ìE‰º.
-  DirMaskWE = DirWest | DirEast,    ///< “Œ¼E¶‰Eƒ}ƒXƒN.
-  DirMaskNS = DirNorth | DirSouth,  ///< “ì–kEã‰ºƒ}ƒXƒN.
+  DirNone = 0x0000,                 ///< æ–¹å‘ãªã—.
+  DirCenter = 0x0001,               ///< ä¸­å¤®.
+  DirWest = 0x0010,                 ///< è¥¿ãƒ»å·¦.
+  DirEast = 0x0020,                 ///< æ±ãƒ»å³.
+  DirNorth = 0x0040,                ///< åŒ—ãƒ»ä¸Š.
+  DirSouth = 0x0080,                ///< å—ãƒ»ä¸‹.
+  DirMaskWE = DirWest | DirEast,    ///< æ±è¥¿ãƒ»å·¦å³ãƒã‚¹ã‚¯.
+  DirMaskNS = DirNorth | DirSouth,  ///< å—åŒ—ãƒ»ä¸Šä¸‹ãƒã‚¹ã‚¯.
 };
 
-/// ƒ}ƒEƒXƒWƒFƒXƒ`ƒƒ.
+/// ãƒã‚¦ã‚¹ã‚¸ã‚§ã‚¹ãƒãƒ£.
 enum Gesture {
   GestureButtonLeft,
   GestureButtonRight,
@@ -160,9 +160,9 @@ enum Gesture {
 };
 
 //==============================================================================
-// ƒCƒ“ƒ^ƒtƒF[ƒX’è‹`.
+// ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹å®šç¾©.
 
-/// ƒEƒBƒ“ƒhƒE.
+/// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦.
 interface __declspec(novtable) IWindow : ISignal {
 #ifndef DOXYGEN
   virtual HWND get_Handle() = 0;
@@ -187,45 +187,45 @@ interface __declspec(novtable) IWindow : ISignal {
   void set_ClientSize(Size value) { afx::SetClientSize(get_Handle(), value); }
 #endif  // DOXYGEN
 
-  /// ƒEƒBƒ“ƒhƒEƒnƒ“ƒhƒ‹ [get].
+  /// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ« [get].
   __declspec(property(get = get_Handle)) HWND Handle;
-  /// –]‚Ü‚µ‚¢ƒTƒCƒY [get]. “Á‚É–]‚Ü‚µ‚¢ƒTƒCƒY‚ğ‚½‚È‚¢ê‡‚ÍASize::Zero ‚ğ•Ô‚·.
+  /// æœ›ã¾ã—ã„ã‚µã‚¤ã‚º [get]. ç‰¹ã«æœ›ã¾ã—ã„ã‚µã‚¤ã‚ºã‚’æŒãŸãªã„å ´åˆã¯ã€Size::Zero ã‚’è¿”ã™.
   __declspec(property(get = get_DefaultSize)) Size DefaultSize;
-  /// ƒhƒbƒLƒ“ƒOƒXƒ^ƒCƒ‹ [get, set].
+  /// ãƒ‰ãƒƒã‚­ãƒ³ã‚°ã‚¹ã‚¿ã‚¤ãƒ« [get, set].
   __declspec(property(get = get_Dock, put = set_Dock)) Direction Dock;
-  /// –¼‘O [get, set].
+  /// åå‰ [get, set].
   __declspec(property(get = get_Name, put = set_Name)) string Name;
-  /// ‰Â‹ó‘Ô [get, set].
+  /// å¯è¦–çŠ¶æ…‹ [get, set].
   __declspec(property(get = get_Visible, put = set_Visible)) bool Visible;
-  /// ƒEƒBƒ“ƒhƒEŠOÚ—Ìˆæ [get, set].
-  /// e‚ğ‚Âê‡‚ÍAeÀ•WŒn‚Å‚ÌˆÊ’u.
-  /// ƒ‹[ƒgƒEƒBƒ“ƒhƒE‚Ìê‡‚ÍAƒXƒNƒŠ[ƒ“À•WŒn‚Å‚ÌˆÊ’u.
+  /// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦å¤–æ¥é ˜åŸŸ [get, set].
+  /// è¦ªã‚’æŒã¤å ´åˆã¯ã€è¦ªåº§æ¨™ç³»ã§ã®ä½ç½®.
+  /// ãƒ«ãƒ¼ãƒˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®å ´åˆã¯ã€ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ç³»ã§ã®ä½ç½®.
   __declspec(property(get = get_Bounds, put = set_Bounds)) Rect Bounds;
-  /// ƒEƒBƒ“ƒhƒE¶ãˆÊ’u [get, set].
+  /// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦å·¦ä¸Šä½ç½® [get, set].
   __declspec(property(get = get_Location, put = set_Location)) Point Location;
-  /// ƒNƒ‰ƒCƒAƒ“ƒg—Ìˆæ [get].
+  /// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆé ˜åŸŸ [get].
   __declspec(property(get = get_ClientArea)) Rect ClientArea;
-  /// ƒNƒ‰ƒCƒAƒ“ƒg—Ìˆæ‚ÌƒTƒCƒY [get, set].
+  /// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆé ˜åŸŸã®ã‚µã‚¤ã‚º [get, set].
   __declspec(property(get = get_ClientSize, put = set_ClientSize)) Size ClientSize;
 
-  /// ƒƒbƒZ[ƒW‚ğ“¯Šú‘—M‚·‚é.
+  /// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’åŒæœŸé€ä¿¡ã™ã‚‹.
   virtual HRESULT Send(message msg) = 0;
-  /// ƒEƒBƒ“ƒhƒE‚ğ•Â‚¶‚é.
-  /// ‚·‚Å‚É”jŠüÏ‚İ‚Ìê‡‚Í‰½‚à‚µ‚È‚¢.
+  /// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’é–‰ã˜ã‚‹.
+  /// ã™ã§ã«ç ´æ£„æ¸ˆã¿ã®å ´åˆã¯ä½•ã‚‚ã—ãªã„.
   virtual void Close(bool sync = false) = 0;
-  /// Ä•`‰æ.
+  /// å†æç”».
   virtual void Update(bool sync = false) = 0;
-  /// Šg’£ƒnƒ“ƒhƒ‰‚ğæ“¾‚·‚é.
+  /// æ‹¡å¼µãƒãƒ³ãƒ‰ãƒ©ã‚’å–å¾—ã™ã‚‹.
   virtual HRESULT GetExtension(REFGUID which, REFINTF what) = 0;
-  /// Šg’£ƒnƒ“ƒhƒ‰‚ğİ’è‚·‚é.
-  /// @param which Šg’£‚Ìí—Ş. ­‚È‚­‚Æ‚àˆÈ‰º‚ÌŠg’£‚ÍÀ‘•‚·‚×‚«.
-  ///              - __uuidof(IGesture)     : ƒ}ƒEƒXƒWƒFƒXƒ`ƒƒ‚ğæ‚Áæ‚é.
-  ///              - __uuidof(IKeymap)      : ƒL[ƒ}ƒbƒv‚ğæ‚Áæ‚é.
-  ///              - __uuidof(IDropTarget)  : ƒhƒƒbƒvˆ—‚ğæ‚Áæ‚é.
-  /// @param what Ši’²ƒnƒ“ƒhƒ‰ƒIƒuƒWƒFƒNƒg.
+  /// æ‹¡å¼µãƒãƒ³ãƒ‰ãƒ©ã‚’è¨­å®šã™ã‚‹.
+  /// @param which æ‹¡å¼µã®ç¨®é¡. å°‘ãªãã¨ã‚‚ä»¥ä¸‹ã®æ‹¡å¼µã¯å®Ÿè£…ã™ã¹ã.
+  ///              - __uuidof(IGesture)     : ãƒã‚¦ã‚¹ã‚¸ã‚§ã‚¹ãƒãƒ£ã‚’ä¹—ã£å–ã‚‹.
+  ///              - __uuidof(IKeymap)      : ã‚­ãƒ¼ãƒãƒƒãƒ—ã‚’ä¹—ã£å–ã‚‹.
+  ///              - __uuidof(IDropTarget)  : ãƒ‰ãƒ­ãƒƒãƒ—å‡¦ç†ã‚’ä¹—ã£å–ã‚‹.
+  /// @param what æ ¼èª¿ãƒãƒ³ãƒ‰ãƒ©ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ.
   virtual HRESULT SetExtension(REFGUID which, IUnknown * what) = 0;
 
-  /// ƒtƒH[ƒJƒX‚ğ—^‚¦‚é.
+  /// ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã‚’ä¸ãˆã‚‹.
   // HRESULT Close(message msg = null) { return avesta::WindowClose(get_Handle()); }
   HRESULT Focus(message msg = null) { return avesta::WindowSetFocus(get_Handle()); }
   // HRESULT Show (message msg = null) { return avesta::Show(get_Handle(), (msg["value"] | -1));
@@ -238,33 +238,33 @@ interface __declspec(novtable) IWindow : ISignal {
   // HRESULT Minimize(message msg = null) { return afx::Minimize(get_Handle()); }
 };
 
-/// ƒŠƒXƒgƒAƒCƒeƒ€ƒRƒ“ƒeƒi.
+/// ãƒªã‚¹ãƒˆã‚¢ã‚¤ãƒ†ãƒ ã‚³ãƒ³ãƒ†ãƒŠ.
 interface __declspec(novtable) IList : IWindow {
 #ifndef DOXYGEN
   virtual size_t get_Count() = 0;
 #endif  // DOXYGEN
 
-  /// €–Ú”‚ğæ“¾‚·‚é.
-  __declspec(property(get = get_Count)) size_t Count;  ///< €–Ú”.
+  /// é …ç›®æ•°ã‚’å–å¾—ã™ã‚‹.
+  __declspec(property(get = get_Count)) size_t Count;  ///< é …ç›®æ•°.
   ///
   virtual HRESULT GetAt(REFINTF pp, size_t index) = 0;
-  /// w’è‚Ìó‘Ô‚ğ‚ÂƒAƒCƒeƒ€‚ğAw’è‚ÌƒCƒ“ƒ^ƒtƒF[ƒX‚É‡‚í‚¹‚Äæ“¾‚·‚é.
-  /// @param ppInterface æ“¾‚·‚éƒCƒ“ƒ^ƒtƒF[ƒX. IEnumUnknown ‚Ìê‡‚Í•¡”A‚»‚êˆÈŠO‚Í’P”‚ÌƒAƒCƒeƒ€‚ğæ“¾‚·‚é.
-  /// @param status æ“¾‚·‚éƒAƒCƒeƒ€‚Ìó‘Ô.
+  /// æŒ‡å®šã®çŠ¶æ…‹ã‚’æŒã¤ã‚¢ã‚¤ãƒ†ãƒ ã‚’ã€æŒ‡å®šã®ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹ã«åˆã‚ã›ã¦å–å¾—ã™ã‚‹.
+  /// @param ppInterface å–å¾—ã™ã‚‹ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹. IEnumUnknown ã®å ´åˆã¯è¤‡æ•°ã€ãã‚Œä»¥å¤–ã¯å˜æ•°ã®ã‚¢ã‚¤ãƒ†ãƒ ã‚’å–å¾—ã™ã‚‹.
+  /// @param status å–å¾—ã™ã‚‹ã‚¢ã‚¤ãƒ†ãƒ ã®çŠ¶æ…‹.
   virtual HRESULT GetContents(REFINTF ppInterface, Status status) = 0;
-  /// ƒAƒCƒeƒ€‚Ìó‘Ô‚ğæ“¾‚·‚é.
-  virtual HRESULT GetStatus(IndexOr<IUnknown> item,  ///< ‘ÎÛ‚ÌƒAƒCƒeƒ€‚Ü‚½‚ÍƒCƒ“ƒfƒbƒNƒX.
-                            DWORD * status,          ///< ƒAƒCƒeƒ€‚Ìó‘Ô. null‚Ìê‡‚Íæ“¾‚µ‚È‚¢.
-                            size_t* index = null     ///< ƒAƒCƒeƒ€‚ÌƒCƒ“ƒfƒbƒNƒX. null‚Ìê‡‚Íæ“¾‚µ‚È‚¢.
+  /// ã‚¢ã‚¤ãƒ†ãƒ ã®çŠ¶æ…‹ã‚’å–å¾—ã™ã‚‹.
+  virtual HRESULT GetStatus(IndexOr<IUnknown> item,  ///< å¯¾è±¡ã®ã‚¢ã‚¤ãƒ†ãƒ ã¾ãŸã¯ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹.
+                            DWORD * status,          ///< ã‚¢ã‚¤ãƒ†ãƒ ã®çŠ¶æ…‹. nullã®å ´åˆã¯å–å¾—ã—ãªã„.
+                            size_t* index = null     ///< ã‚¢ã‚¤ãƒ†ãƒ ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹. nullã®å ´åˆã¯å–å¾—ã—ãªã„.
                             ) = 0;
-  /// ƒAƒCƒeƒ€‚Ìó‘Ô‚ğİ’è‚·‚é.
-  virtual HRESULT SetStatus(IndexOr<IUnknown> item,  ///< ‘ÎÛ‚ÌƒAƒCƒeƒ€‚Ü‚½‚ÍƒCƒ“ƒfƒbƒNƒX.
-                            Status status,           ///< ƒAƒCƒeƒ€‚Ìó‘Ô.
-                            bool unique = false      ///< w’è‚µ‚½ƒAƒCƒeƒ€ˆÈŠO‚Ìstatusó‘Ô‚ğ‰ğœ‚·‚é‚©”Û‚©.
+  /// ã‚¢ã‚¤ãƒ†ãƒ ã®çŠ¶æ…‹ã‚’è¨­å®šã™ã‚‹.
+  virtual HRESULT SetStatus(IndexOr<IUnknown> item,  ///< å¯¾è±¡ã®ã‚¢ã‚¤ãƒ†ãƒ ã¾ãŸã¯ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹.
+                            Status status,           ///< ã‚¢ã‚¤ãƒ†ãƒ ã®çŠ¶æ…‹.
+                            bool unique = false      ///< æŒ‡å®šã—ãŸã‚¢ã‚¤ãƒ†ãƒ ä»¥å¤–ã®statusçŠ¶æ…‹ã‚’è§£é™¤ã™ã‚‹ã‹å¦ã‹.
                             ) = 0;
 };
 
-/// ƒcƒŠ[ƒAƒCƒeƒ€ƒRƒ“ƒeƒi.
+/// ãƒ„ãƒªãƒ¼ã‚¢ã‚¤ãƒ†ãƒ ã‚³ãƒ³ãƒ†ãƒŠ.
 interface __declspec(novtable) ITree : IWindow {
 #ifndef DOXYGEN
   virtual ITreeItem* get_Root() = 0;
@@ -273,9 +273,9 @@ interface __declspec(novtable) ITree : IWindow {
   virtual void set_ImageList(IImageList * value) = 0;
 #endif  // DOXYGEN
 
-  /// ƒ‹[ƒgƒcƒŠ[ƒAƒCƒeƒ€ [get, set].
+  /// ãƒ«ãƒ¼ãƒˆãƒ„ãƒªãƒ¼ã‚¢ã‚¤ãƒ†ãƒ  [get, set].
   __declspec(property(get = get_Root, put = set_Root)) ITreeItem* Root;
-  /// ƒCƒ[ƒWƒŠƒXƒg [get, set].
+  /// ã‚¤ãƒ¡ãƒ¼ã‚¸ãƒªã‚¹ãƒˆ [get, set].
   __declspec(property(get = get_ImageList, put = set_ImageList)) IImageList* ImageList;
 };
 
@@ -286,7 +286,7 @@ enum CopyMode {
   CopyBase,
 };
 
-/// ƒtƒŒ[ƒ€ƒEƒBƒ“ƒhƒE.
+/// ãƒ•ãƒ¬ãƒ¼ãƒ ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦.
 interface __declspec(novtable) IForm : ITree {
 #ifndef DOXYGEN
   virtual bool get_TaskTray() = 0;
@@ -295,13 +295,13 @@ interface __declspec(novtable) IForm : ITree {
   virtual void set_AutoCopy(CopyMode value) = 0;
 #endif  // DOXYGEN
 
-  /// ƒ^ƒXƒNƒgƒŒƒC [get, set].
+  /// ã‚¿ã‚¹ã‚¯ãƒˆãƒ¬ã‚¤ [get, set].
   __declspec(property(get = get_TaskTray, put = set_TaskTray)) bool TaskTray;
-  /// ƒRƒs[ƒ‚[ƒh [get, set].
+  /// ã‚³ãƒ”ãƒ¼ãƒ¢ãƒ¼ãƒ‰ [get, set].
   __declspec(property(get = get_AutoCopy, put = set_AutoCopy)) CopyMode AutoCopy;
 };
 
-/// ƒfƒBƒXƒvƒŒƒC.
+/// ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤.
 interface __declspec(novtable) IDisplay : IWindow {
   using WNDPROCEX = LRESULT(__stdcall*)(void* self, HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -312,22 +312,22 @@ interface __declspec(novtable) IDisplay : IWindow {
   virtual void UnregisterMessageHook(void* self, WNDPROCEX wndproc) = 0;
 };
 
-/// ‘}“üˆÊ’u.
+/// æŒ¿å…¥ä½ç½®.
 enum InsertTo {
-  InsertHead,  ///< ˆê”ÔÅ‰‚É‘}“ü.
-  InsertTail,  ///< ˆê”ÔÅŒã‚É‘}“ü.
-  InsertPrev,  ///< Œ»İ‚Ìˆê‚Â‘O‚É‘}“ü.
-  InsertNext,  ///< Œ»İ‚Ìˆê‚ÂŒã‚É‘}“ü.
+  InsertHead,  ///< ä¸€ç•ªæœ€åˆã«æŒ¿å…¥.
+  InsertTail,  ///< ä¸€ç•ªæœ€å¾Œã«æŒ¿å…¥.
+  InsertPrev,  ///< ç¾åœ¨ã®ä¸€ã¤å‰ã«æŒ¿å…¥.
+  InsertNext,  ///< ç¾åœ¨ã®ä¸€ã¤å¾Œã«æŒ¿å…¥.
 };
 
-/// •À‚×•û.
+/// ä¸¦ã¹æ–¹.
 enum ArrangeType {
-  ArrangeHorz,  ///< ‰¡‚É•À‚×‚é.
-  ArrangeVert,  ///< c‚É•À‚×‚é.
-  ArrangeAuto,  ///< ‚¢‚¢Š´‚¶‚É•À‚×‚é.
+  ArrangeHorz,  ///< æ¨ªã«ä¸¦ã¹ã‚‹.
+  ArrangeVert,  ///< ç¸¦ã«ä¸¦ã¹ã‚‹.
+  ArrangeAuto,  ///< ã„ã„æ„Ÿã˜ã«ä¸¦ã¹ã‚‹.
 };
 
-/// ƒ^ƒuƒRƒ“ƒeƒi.
+/// ã‚¿ãƒ–ã‚³ãƒ³ãƒ†ãƒŠ.
 interface __declspec(novtable) ITabPanel : IList {
 #ifndef DOXYGEN
   virtual InsertTo get_InsertPosition() = 0;
@@ -336,19 +336,19 @@ interface __declspec(novtable) ITabPanel : IList {
   virtual void set_Arrange(ArrangeType value) = 0;
 #endif  // DOXYGEN
 
-  /// ƒAƒCƒeƒ€‚ğ©“®’Ç‰Á‚·‚éê‡‚Ì‘}“üˆÊ’u [get, set].
+  /// ã‚¢ã‚¤ãƒ†ãƒ ã‚’è‡ªå‹•è¿½åŠ ã™ã‚‹å ´åˆã®æŒ¿å…¥ä½ç½® [get, set].
   __declspec(property(get = get_InsertPosition, put = set_InsertPosition)) InsertTo InsertPosition;
-  ///< •À‚×•û.
+  ///< ä¸¦ã¹æ–¹.
   __declspec(property(get = get_Arrange, put = set_Arrange)) ArrangeType Arrange;
   ///
   virtual Rect GetTabRect(IndexOr<IUnknown> item) = 0;
   ///
   virtual HRESULT MoveTab(IndexOr<IUnknown> from, int to) = 0;
-  /// ƒ^ƒu‚ÌÅ¬•AÅ‘å•‚ğw’è‚·‚é.
+  /// ã‚¿ãƒ–ã®æœ€å°å¹…ã€æœ€å¤§å¹…ã‚’æŒ‡å®šã™ã‚‹.
   virtual HRESULT SetMinMaxTabWidth(size_t min, size_t max) = 0;
 };
 
-/// ƒŠƒXƒgƒrƒ…[‚Ì•\¦ƒXƒ^ƒCƒ‹.
+/// ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ã®è¡¨ç¤ºã‚¹ã‚¿ã‚¤ãƒ«.
 enum ListStyle {
   ListStyleIcon = 0x01,
   ListStyleLargeIcon = ListStyleIcon,
@@ -359,7 +359,7 @@ enum ListStyle {
   ListStyleTile = 0x06,
 };
 
-/// ƒŠƒXƒgƒrƒ…[.
+/// ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼.
 interface __declspec(novtable) IListView : IList {
 #ifndef DOXYGEN
   virtual size_t get_SelectedCount() = 0;
@@ -377,52 +377,52 @@ interface __declspec(novtable) IListView : IList {
   virtual void set_Grouping(bool value) = 0;
 #endif  // DOXYGEN
 
-  __declspec(property(get = get_SelectedCount)) size_t SelectedCount;                         ///< ‘I‘ğ‚³‚ê‚½€–Ú”.
-  __declspec(property(get = get_Style, put = set_Style)) ListStyle Style;                     ///< •\¦ƒXƒ^ƒCƒ‹.
-  __declspec(property(get = get_AutoArrange, put = set_AutoArrange)) bool AutoArrange;        ///< ©“®®—ñ.
-  __declspec(property(get = get_CheckBox, put = set_CheckBox)) bool CheckBox;                 ///< ƒ`ƒFƒbƒNƒ{ƒbƒNƒX.
-  __declspec(property(get = get_FullRowSelect, put = set_FullRowSelect)) bool FullRowSelect;  ///< ˆês‘I‘ğ.
-  __declspec(property(get = get_GridLine, put = set_GridLine)) bool GridLine;                 ///< ƒOƒŠƒbƒh.
-  __declspec(property(get = get_Grouping, put = set_Grouping)) bool Grouping;                 ///< ƒOƒ‹[ƒv.
+  __declspec(property(get = get_SelectedCount)) size_t SelectedCount;                         ///< é¸æŠã•ã‚ŒãŸé …ç›®æ•°.
+  __declspec(property(get = get_Style, put = set_Style)) ListStyle Style;                     ///< è¡¨ç¤ºã‚¹ã‚¿ã‚¤ãƒ«.
+  __declspec(property(get = get_AutoArrange, put = set_AutoArrange)) bool AutoArrange;        ///< è‡ªå‹•æ•´åˆ—.
+  __declspec(property(get = get_CheckBox, put = set_CheckBox)) bool CheckBox;                 ///< ãƒã‚§ãƒƒã‚¯ãƒœãƒƒã‚¯ã‚¹.
+  __declspec(property(get = get_FullRowSelect, put = set_FullRowSelect)) bool FullRowSelect;  ///< ä¸€è¡Œé¸æŠ.
+  __declspec(property(get = get_GridLine, put = set_GridLine)) bool GridLine;                 ///< ã‚°ãƒªãƒƒãƒ‰.
+  __declspec(property(get = get_Grouping, put = set_Grouping)) bool Grouping;                 ///< ã‚°ãƒ«ãƒ¼ãƒ—.
 };
 
-/// ƒcƒŠ[ƒrƒ…[.
+/// ãƒ„ãƒªãƒ¼ãƒ“ãƒ¥ãƒ¼.
 interface __declspec(novtable) ITreeView : ITree {
 #ifndef DOXYGEN
 #endif  // DOXYGEN
 
-  /// w’è‚Ìó‘Ô‚ğ‚ÂƒAƒCƒeƒ€‚ğAw’è‚ÌƒCƒ“ƒ^ƒtƒF[ƒX‚É‡‚í‚¹‚Äæ“¾‚·‚é.
-  /// @param ppInterface æ“¾‚·‚éƒCƒ“ƒ^ƒtƒF[ƒX. IEnumUnknown ‚Ìê‡‚Í•¡”A‚»‚êˆÈŠO‚Í’P”‚ÌƒAƒCƒeƒ€‚ğæ“¾‚·‚é.
-  /// @param status æ“¾‚·‚éƒAƒCƒeƒ€‚Ìó‘Ô.
+  /// æŒ‡å®šã®çŠ¶æ…‹ã‚’æŒã¤ã‚¢ã‚¤ãƒ†ãƒ ã‚’ã€æŒ‡å®šã®ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹ã«åˆã‚ã›ã¦å–å¾—ã™ã‚‹.
+  /// @param ppInterface å–å¾—ã™ã‚‹ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹. IEnumUnknown ã®å ´åˆã¯è¤‡æ•°ã€ãã‚Œä»¥å¤–ã¯å˜æ•°ã®ã‚¢ã‚¤ãƒ†ãƒ ã‚’å–å¾—ã™ã‚‹.
+  /// @param status å–å¾—ã™ã‚‹ã‚¢ã‚¤ãƒ†ãƒ ã®çŠ¶æ…‹.
   virtual HRESULT GetContents(REFINTF ppInterface, Status status) = 0;
-  /// ƒAƒCƒeƒ€‚Ìó‘Ô‚ğæ“¾‚·‚é.
-  virtual HRESULT GetStatus(IUnknown * item,  ///< ‘ÎÛ‚ÌƒAƒCƒeƒ€.
-                            DWORD * status    ///< ƒAƒCƒeƒ€‚Ìó‘Ô. null‚Ìê‡‚Íæ“¾‚µ‚È‚¢.
+  /// ã‚¢ã‚¤ãƒ†ãƒ ã®çŠ¶æ…‹ã‚’å–å¾—ã™ã‚‹.
+  virtual HRESULT GetStatus(IUnknown * item,  ///< å¯¾è±¡ã®ã‚¢ã‚¤ãƒ†ãƒ .
+                            DWORD * status    ///< ã‚¢ã‚¤ãƒ†ãƒ ã®çŠ¶æ…‹. nullã®å ´åˆã¯å–å¾—ã—ãªã„.
                             ) = 0;
-  /// ƒAƒCƒeƒ€‚Ìó‘Ô‚ğİ’è‚·‚é.
-  virtual HRESULT SetStatus(IUnknown * item,  ///< ‘ÎÛ‚ÌƒAƒCƒeƒ€.
-                            Status status     ///< ƒAƒCƒeƒ€‚Ìó‘Ô.
+  /// ã‚¢ã‚¤ãƒ†ãƒ ã®çŠ¶æ…‹ã‚’è¨­å®šã™ã‚‹.
+  virtual HRESULT SetStatus(IUnknown * item,  ///< å¯¾è±¡ã®ã‚¢ã‚¤ãƒ†ãƒ .
+                            Status status     ///< ã‚¢ã‚¤ãƒ†ãƒ ã®çŠ¶æ…‹.
                             ) = 0;
 };
 
-/// ƒvƒŒƒrƒ…[.
+/// ãƒ—ãƒ¬ãƒ“ãƒ¥ãƒ¼.
 interface __declspec(novtable) IPreview : IWindow {
   virtual HRESULT GetContents(REFINTF ppInterface) = 0;
   virtual HRESULT SetContents(IUnknown * contents) = 0;
 };
 
-/// ƒVƒFƒ‹ƒXƒgƒŒ[ƒW.
+/// ã‚·ã‚§ãƒ«ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸.
 __interface IShellStorage : IUnknown {
   HRESULT QueryStream(IStream * *ppStream, io::IEntry * pFolder, bool writable);
   HRESULT SyncDescendants(io::IEntry * pFolder);
 };
 
-/// ƒtƒHƒ‹ƒ_ƒrƒ…[.
+/// ãƒ•ã‚©ãƒ«ãƒ€ãƒ“ãƒ¥ãƒ¼.
 interface __declspec(novtable) IShellListView : IListView {
-  /// Šg’£ƒnƒ“ƒhƒ‰‚ğİ’è‚·‚é.
-  /// @param which IWindow‚É‰Á‚¦A
-  ///              - __uuidof(IShellStorage) : ƒXƒgƒŒ[ƒW.
-  /// @param what Ši’²ƒnƒ“ƒhƒ‰ƒIƒuƒWƒFƒNƒg.
+  /// æ‹¡å¼µãƒãƒ³ãƒ‰ãƒ©ã‚’è¨­å®šã™ã‚‹.
+  /// @param which IWindowã«åŠ ãˆã€
+  ///              - __uuidof(IShellStorage) : ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸.
+  /// @param what æ ¼èª¿ãƒãƒ³ãƒ‰ãƒ©ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ.
   virtual HRESULT SetExtension(REFGUID which, IUnknown * what) = 0;
 
 #ifndef DOXYGEN
@@ -434,27 +434,27 @@ interface __declspec(novtable) IShellListView : IListView {
   virtual void set_PatternMask(string value) = 0;
 #endif  // DOXYGEN
 
-  __declspec(property(get = get_ShowAllFiles, put = set_ShowAllFiles)) bool ShowAllFiles;  ///< ‰B‚µƒtƒ@ƒCƒ‹‚Ì•\¦.
+  __declspec(property(get = get_ShowAllFiles, put = set_ShowAllFiles)) bool ShowAllFiles;  ///< éš ã—ãƒ•ã‚¡ã‚¤ãƒ«ã®è¡¨ç¤º.
   __declspec(
-      property(get = get_RenameExtension, put = set_RenameExtension)) bool RenameExtension;  ///< ƒŠƒl[ƒ€‚ÉŠg’£q‚ğ‘I‘ğ‚·‚é.
-  __declspec(property(get = get_PatternMask, put = set_PatternMask)) string PatternMask;  ///< ƒtƒBƒ‹ƒ^•¶š—ñ
+      property(get = get_RenameExtension, put = set_RenameExtension)) bool RenameExtension;  ///< ãƒªãƒãƒ¼ãƒ æ™‚ã«æ‹¡å¼µå­ã‚’é¸æŠã™ã‚‹.
+  __declspec(property(get = get_PatternMask, put = set_PatternMask)) string PatternMask;  ///< ãƒ•ã‚£ãƒ«ã‚¿æ–‡å­—åˆ—
 
-  /// ƒtƒHƒ‹ƒ_‚ğˆÚ“®‚·‚é.
-  virtual HRESULT Go(io::IEntry * folder  ///< ˆÚ“®æ‚ÌƒtƒHƒ‹ƒ_.
+  /// ãƒ•ã‚©ãƒ«ãƒ€ã‚’ç§»å‹•ã™ã‚‹.
+  virtual HRESULT Go(io::IEntry * folder  ///< ç§»å‹•å…ˆã®ãƒ•ã‚©ãƒ«ãƒ€.
                      ) = 0;
-  /// ƒtƒHƒ‹ƒ_‚ğˆÚ“®‚·‚é.
-  virtual HRESULT Go(Direction dir,  ///< •ûŒü. DirWest=–ß‚é, DirEast=i‚Ş, DirNorth=i‚Ş.
-                     int level = 1   ///< ’iŠK.
+  /// ãƒ•ã‚©ãƒ«ãƒ€ã‚’ç§»å‹•ã™ã‚‹.
+  virtual HRESULT Go(Direction dir,  ///< æ–¹å‘. DirWest=æˆ»ã‚‹, DirEast=é€²ã‚€, DirNorth=é€²ã‚€.
+                     int level = 1   ///< æ®µéš.
                      ) = 0;
-  /// Œ»İ‚ÌƒtƒHƒ‹ƒ_‚ğæ“¾‚·‚é.
-  virtual HRESULT GetFolder(REFINTF ppFolder  ///< io::IEntry ‚Ü‚½‚Í IShellFolder ‚ğæ“¾‚Å‚«‚é.
+  /// ç¾åœ¨ã®ãƒ•ã‚©ãƒ«ãƒ€ã‚’å–å¾—ã™ã‚‹.
+  virtual HRESULT GetFolder(REFINTF ppFolder  ///< io::IEntry ã¾ãŸã¯ IShellFolder ã‚’å–å¾—ã§ãã‚‹.
                             ) = 0;
 
   virtual string GetLastStatusText() = 0;
   virtual HRESULT SelectChecked() = 0;
 };
 
-/// ŠK‘w\‘¢‚ğ‚ÂƒAƒCƒeƒ€.
+/// éšå±¤æ§‹é€ ã‚’æŒã¤ã‚¢ã‚¤ãƒ†ãƒ .
 __interface ITreeItem : IUnknown {
 #ifndef DOXYGEN
   string get_Name();
@@ -462,22 +462,22 @@ __interface ITreeItem : IUnknown {
   int get_Image();
 #endif  // DOXYGEN
 
-  __declspec(property(get = get_Name)) string Name;               ///< •\¦‚Ég‚í‚ê‚é–¼‘O.
-  __declspec(property(get = get_Command)) ref<ICommand> Command;  ///< ŠÖ˜A•t‚¯‚ç‚ê‚Ä‚¢‚éƒRƒ}ƒ“ƒh.
-  __declspec(property(get = get_Image)) int Image;                ///< ƒCƒ[ƒWƒŠƒXƒgƒCƒ“ƒfƒNƒX.
+  __declspec(property(get = get_Name)) string Name;               ///< è¡¨ç¤ºã«ä½¿ã‚ã‚Œã‚‹åå‰.
+  __declspec(property(get = get_Command)) ref<ICommand> Command;  ///< é–¢é€£ä»˜ã‘ã‚‰ã‚Œã¦ã„ã‚‹ã‚³ãƒãƒ³ãƒ‰.
+  __declspec(property(get = get_Image)) int Image;                ///< ã‚¤ãƒ¡ãƒ¼ã‚¸ãƒªã‚¹ãƒˆã‚¤ãƒ³ãƒ‡ã‚¯ã‚¹.
 
-  /// ‰æ–Ê‚É•\¦‚³‚ê‚é’¼‘O‚ÉŒÄ‚Î‚ê‚é.
-  /// @result \¬‚ª•Ï‰»‚µ‚½ê‡‚ÉƒCƒ“ƒNƒŠƒƒ“ƒg‚³‚ê‚éÅIXVŠÔ.
+  /// ç”»é¢ã«è¡¨ç¤ºã•ã‚Œã‚‹ç›´å‰ã«å‘¼ã°ã‚Œã‚‹.
+  /// @result æ§‹æˆãŒå¤‰åŒ–ã—ãŸå ´åˆã«ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆã•ã‚Œã‚‹æœ€çµ‚æ›´æ–°æ™‚é–“.
   UINT32 OnUpdate();
 
-  /// q‹Ÿ‚ğ‚Á‚Ä‚¢‚éê‡‚Ítrue.
+  /// å­ä¾›ã‚’æŒã£ã¦ã„ã‚‹å ´åˆã¯true.
   bool HasChildren();
   size_t GetChildCount();
-  /// q‹Ÿ‚ğæ“¾.
+  /// å­ä¾›ã‚’å–å¾—.
   HRESULT GetChild(REFINTF ppChild, size_t index);
 };
 
-/// •ÒW‰Â”\‚ÈŠK‘w\‘¢‚ğ‚ÂƒAƒCƒeƒ€.
+/// ç·¨é›†å¯èƒ½ãªéšå±¤æ§‹é€ ã‚’æŒã¤ã‚¢ã‚¤ãƒ†ãƒ .
 __interface IEditableTreeItem : ITreeItem {
 #ifndef DOXYGEN
   void set_Name(string value);
@@ -493,29 +493,29 @@ __interface IEditableTreeItem : ITreeItem {
   bool RemoveChild(ITreeItem * child);
 };
 
-/// ƒL[ƒ}ƒbƒv.
+/// ã‚­ãƒ¼ãƒãƒƒãƒ—.
 __interface IKeymap : IUnknown {
-  /// ƒL[‚ª‰Ÿ‚³‚ê‚½.
+  /// ã‚­ãƒ¼ãŒæŠ¼ã•ã‚ŒãŸ.
   HRESULT OnKeyDown(IWindow * window, UINT16 modifiers, UINT8 vkey);
 };
 
-/// ƒRƒ}ƒ“ƒh“o˜^Œ^‚ÌƒL[ƒ}ƒbƒv.
+/// ã‚³ãƒãƒ³ãƒ‰ç™»éŒ²å‹ã®ã‚­ãƒ¼ãƒãƒƒãƒ—.
 __interface IKeymapTable : IKeymap {
 #ifndef DOXYGEN
   size_t get_Count();
 #endif  // DOXYGEN
 
-  /// ƒoƒCƒ“ƒh”‚ğæ“¾‚·‚é.
+  /// ãƒã‚¤ãƒ³ãƒ‰æ•°ã‚’å–å¾—ã™ã‚‹.
   __declspec(property(get = get_Count)) size_t Count;
-  /// ƒCƒ“ƒfƒNƒX‚ğw’è‚µ‚ÄƒoƒCƒ“ƒh‚ÆƒRƒ}ƒ“ƒh‚ğæ“¾‚·‚é.
+  /// ã‚¤ãƒ³ãƒ‡ã‚¯ã‚¹ã‚’æŒ‡å®šã—ã¦ãƒã‚¤ãƒ³ãƒ‰ã¨ã‚³ãƒãƒ³ãƒ‰ã‚’å–å¾—ã™ã‚‹.
   HRESULT GetBind(size_t index, UINT16 * modifiers, UINT8 * vkey, REFINTF ppCommand);
-  /// ƒoƒCƒ“ƒh‚ğw’è‚µ‚ÄƒRƒ}ƒ“ƒh‚ğæ“¾‚·‚é.
+  /// ãƒã‚¤ãƒ³ãƒ‰ã‚’æŒ‡å®šã—ã¦ã‚³ãƒãƒ³ãƒ‰ã‚’å–å¾—ã™ã‚‹.
   HRESULT GetBind(UINT16 modifiers, UINT8 vkey, REFINTF ppCommand);
-  /// ƒL[ƒoƒCƒ“ƒh‚ğ’Ç‰Á‚·‚é.
+  /// ã‚­ãƒ¼ãƒã‚¤ãƒ³ãƒ‰ã‚’è¿½åŠ ã™ã‚‹.
   HRESULT SetBind(UINT16 modifiers, UINT8 vkey, ICommand * pCommand);
 };
 
-/// ƒ}ƒEƒXƒWƒFƒXƒ`ƒƒ‚ğƒtƒbƒN‚·‚é.
+/// ãƒã‚¦ã‚¹ã‚¸ã‚§ã‚¹ãƒãƒ£ã‚’ãƒ•ãƒƒã‚¯ã™ã‚‹.
 __interface IGesture : IUnknown {
   ///
   HRESULT OnGestureAccept(HWND hWnd, Point ptScreen, size_t length, const Gesture gesture[]);
@@ -525,19 +525,19 @@ __interface IGesture : IUnknown {
   HRESULT OnGestureFinish(UINT16 modifiers, size_t length, const Gesture gesture[]);
 };
 
-/// ƒRƒ}ƒ“ƒh“o˜^Œ^‚Ìƒ}ƒEƒXƒWƒFƒXƒ`ƒƒ.
+/// ã‚³ãƒãƒ³ãƒ‰ç™»éŒ²å‹ã®ãƒã‚¦ã‚¹ã‚¸ã‚§ã‚¹ãƒãƒ£.
 __interface IGestureTable : IGesture {
-  /// ƒoƒCƒ“ƒh”‚ğæ“¾‚·‚é.
+  /// ãƒã‚¤ãƒ³ãƒ‰æ•°ã‚’å–å¾—ã™ã‚‹.
   size_t get_Count();
-  /// ƒCƒ“ƒfƒNƒX‚ğw’è‚µ‚ÄƒRƒ}ƒ“ƒh‚ğæ“¾‚·‚é.
+  /// ã‚¤ãƒ³ãƒ‡ã‚¯ã‚¹ã‚’æŒ‡å®šã—ã¦ã‚³ãƒãƒ³ãƒ‰ã‚’å–å¾—ã™ã‚‹.
   HRESULT GetGesture(size_t index, REFINTF ppCommand);
-  /// ƒWƒFƒXƒ`ƒƒ‚ğw’è‚µ‚ÄƒRƒ}ƒ“ƒh‚ğæ“¾‚·‚é.
+  /// ã‚¸ã‚§ã‚¹ãƒãƒ£ã‚’æŒ‡å®šã—ã¦ã‚³ãƒãƒ³ãƒ‰ã‚’å–å¾—ã™ã‚‹.
   HRESULT GetGesture(UINT16 modifiers, size_t length, const Gesture gesture[], REFINTF ppCommand);
-  /// ƒWƒFƒXƒ`ƒƒ‚ğ’Ç‰Á‚·‚é.
+  /// ã‚¸ã‚§ã‚¹ãƒãƒ£ã‚’è¿½åŠ ã™ã‚‹.
   HRESULT SetGesture(UINT16 modifiers, size_t length, const Gesture gesture[], ICommand* pCommand);
 };
 
-/// ”wŒi‰æ‘œƒTƒ|[ƒg.
+/// èƒŒæ™¯ç”»åƒã‚µãƒãƒ¼ãƒˆ.
 __interface IWallPaper : IUnknown {
 #ifndef DOXYGEN
   string get_WallPaperFile();
@@ -550,13 +550,13 @@ __interface IWallPaper : IUnknown {
   __declspec(property(get = get_WallPaperAlign, put = set_WallPaperAlign)) UINT32 WallPaperAlign;
 };
 
-/// •Ç†w’èƒ_ƒCƒAƒƒO.
+/// å£ç´™æŒ‡å®šãƒ€ã‚¤ã‚¢ãƒ­ã‚°.
 __interface IWallPaperDialog : IUnknown {
   HRESULT Go();
   HRESULT AddTarget(IWallPaper * target, string name);
 };
 
-/// ‚¦‚­‚·‚Û‚ºH
+/// ãˆãã™ã½ãœï¼Ÿ
 __interface IExpose : IUnknown {
   void AddRect(INT32 id, INT32 group, const Rect& bounds, UINT8 hotkey);
   void Select(UINT32 id);
@@ -565,38 +565,38 @@ __interface IExpose : IUnknown {
 };
 
 //==============================================================================
-// ƒƒbƒZ[ƒW
+// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 
-/// ƒEƒBƒ“ƒhƒEƒRƒ}ƒ“ƒh.
+/// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚³ãƒãƒ³ãƒ‰.
 enum WindowCommand {
   // standard window
   CommandClose = 'CLOS',   ///< IWindow::Close().
   CommandUpdate = 'UPDT',  ///< IWindow::Update(bool sync = false).
   CommandShow = 'SHOW',    ///< IWindow::set_Visible(bool value = {none=>toggle})
                          // editable window
-  CommandCut = 'CUT_',            ///< ƒJƒbƒg.
-  CommandCopy = 'COPY',           ///< ƒRƒs[.
-  CommandPaste = 'PAST',          ///< “\‚è•t‚¯.
-  CommandDelete = 'DELE',         ///< íœ.
-  CommandBury = 'BURY',           ///< Š®‘S‚Éíœ.
+  CommandCut = 'CUT_',            ///< ã‚«ãƒƒãƒˆ.
+  CommandCopy = 'COPY',           ///< ã‚³ãƒ”ãƒ¼.
+  CommandPaste = 'PAST',          ///< è²¼ã‚Šä»˜ã‘.
+  CommandDelete = 'DELE',         ///< å‰Šé™¤.
+  CommandBury = 'BURY',           ///< å®Œå…¨ã«å‰Šé™¤.
   CommandUndo = 'UNDO',           ///< Undo.
   CommandRedo = 'REDO',           ///< Redo.
-  CommandSelectAll = 'SELA',      ///< ‚·‚×‚Ä‚ÌƒAƒCƒeƒ€‚ğ‘I‘ğ‚·‚é.
-  CommandSelectChecked = 'SELC',  ///< ƒ`ƒFƒbƒN‚³‚ê‚½ƒAƒCƒeƒ€‚ğ‘I‘ğ‚·‚é.
-  CommandSelectNone = 'SELN',     ///< ‚·‚×‚Ä‚ÌƒAƒCƒeƒ€‚Ì‘I‘ğ‚ğ‰ğœ‚µ‚Ü‚·.
-  CommandSelectReverse = 'SELR',  ///< ‘I‘ğ€–Ú‚ğ”½“]‚µ‚Ü‚·.
-  CommandSelectToFirst = 'SELF',  ///< Å‰‚Ü‚Å‘I‘ğ‚·‚é.
-  CommandSelectToLast = 'SELL',   ///< Å‰‚Ü‚Å‘I‘ğ‚·‚é.
-  CommandCheckAll = 'CHKA',       ///< ‚·‚×‚Ä‚ÌƒAƒCƒeƒ€‚ğƒ`ƒFƒbƒN‚·‚é.
-  CommandCheckNone = 'CHKN',      ///< ‚·‚×‚Ä‚ÌƒAƒCƒeƒ€‚Ìƒ`ƒFƒbƒN‚ğ‰ğœ‚µ‚Ü‚·.
+  CommandSelectAll = 'SELA',      ///< ã™ã¹ã¦ã®ã‚¢ã‚¤ãƒ†ãƒ ã‚’é¸æŠã™ã‚‹.
+  CommandSelectChecked = 'SELC',  ///< ãƒã‚§ãƒƒã‚¯ã•ã‚ŒãŸã‚¢ã‚¤ãƒ†ãƒ ã‚’é¸æŠã™ã‚‹.
+  CommandSelectNone = 'SELN',     ///< ã™ã¹ã¦ã®ã‚¢ã‚¤ãƒ†ãƒ ã®é¸æŠã‚’è§£é™¤ã—ã¾ã™.
+  CommandSelectReverse = 'SELR',  ///< é¸æŠé …ç›®ã‚’åè»¢ã—ã¾ã™.
+  CommandSelectToFirst = 'SELF',  ///< æœ€åˆã¾ã§é¸æŠã™ã‚‹.
+  CommandSelectToLast = 'SELL',   ///< æœ€åˆã¾ã§é¸æŠã™ã‚‹.
+  CommandCheckAll = 'CHKA',       ///< ã™ã¹ã¦ã®ã‚¢ã‚¤ãƒ†ãƒ ã‚’ãƒã‚§ãƒƒã‚¯ã™ã‚‹.
+  CommandCheckNone = 'CHKN',      ///< ã™ã¹ã¦ã®ã‚¢ã‚¤ãƒ†ãƒ ã®ãƒã‚§ãƒƒã‚¯ã‚’è§£é™¤ã—ã¾ã™.
   CommandProperty = 'PROP',       ///<
-  CommandOpen = 'OPEN',           ///< ŠJ‚­.
-  CommandSave = 'SAVE',           ///< •Û‘¶.
+  CommandOpen = 'OPEN',           ///< é–‹ã.
+  CommandSave = 'SAVE',           ///< ä¿å­˜.
                          // navigating window
-  CommandGoBack = 'GOBK',     ///< –ß‚é or ¶‚Ö.
-  CommandGoForward = 'GOFW',  ///< i‚Ş or ‰E‚Ö.
-  CommandGoUp = 'GOUP',       ///< ã‚Ö.
-  CommandGoDown = 'GODW',     ///< ‰º‚Ö.
+  CommandGoBack = 'GOBK',     ///< æˆ»ã‚‹ or å·¦ã¸.
+  CommandGoForward = 'GOFW',  ///< é€²ã‚€ or å³ã¸.
+  CommandGoUp = 'GOUP',       ///< ä¸Šã¸.
+  CommandGoDown = 'GODW',     ///< ä¸‹ã¸.
                            // form window
   CommandMaximize = 'MAXI',  ///<
   CommandMinimize = 'MINI',  ///<
@@ -605,10 +605,10 @@ enum WindowCommand {
   CommandMove = 'MOVE',      ///<
   CommandMenu = 'MENU',      ///<
                          //
-  CommandKeyUp = 'KEYU',        ///< ƒJ[ƒ\ƒ‹ã
-  CommandKeyDown = 'KEYD',      ///< ƒJ[ƒ\ƒ‹‰º
-  CommandKeyLeft = 'KEYL',      ///< ƒJ[ƒ\ƒ‹¶
-  CommandKeyRight = 'KEYR',     ///< ƒJ[ƒ\ƒ‹‰E
+  CommandKeyUp = 'KEYU',        ///< ã‚«ãƒ¼ã‚½ãƒ«ä¸Š
+  CommandKeyDown = 'KEYD',      ///< ã‚«ãƒ¼ã‚½ãƒ«ä¸‹
+  CommandKeyLeft = 'KEYL',      ///< ã‚«ãƒ¼ã‚½ãƒ«å·¦
+  CommandKeyRight = 'KEYR',     ///< ã‚«ãƒ¼ã‚½ãƒ«å³
   CommandKeyHome = 'KEYH',      ///< Home
   CommandKeyEnd = 'KEYE',       ///< End
   CommandKeyPageUp = 'KEYP',    ///< PageUp
@@ -616,41 +616,41 @@ enum WindowCommand {
   CommandKeySpace = 'KEYS',     ///< Space
   CommandKeyEnter = 'KEYT',     ///< Enter
 
-  CommandShownToLeft = 'STOL',    ///< ƒ^ƒu‚ğ¶‚Ö
-  CommandShownToRight = 'STOR',   ///< ƒ^ƒu‚ğ‰E‚Ö
-  CommandLockedToLeft = 'LTOL',   ///< ƒ^ƒu‚ğ¶‚Ö
-  CommandLockedToRight = 'LTOR',  ///< ƒ^ƒu‚ğ‰E‚Ö
+  CommandShownToLeft = 'STOL',    ///< ã‚¿ãƒ–ã‚’å·¦ã¸
+  CommandShownToRight = 'STOR',   ///< ã‚¿ãƒ–ã‚’å³ã¸
+  CommandLockedToLeft = 'LTOL',   ///< ã‚¿ãƒ–ã‚’å·¦ã¸
+  CommandLockedToRight = 'LTOR',  ///< ã‚¿ãƒ–ã‚’å³ã¸
 
   CommandSetStyle = 'STYS',        ///< IListView::set_Style(INT32 style)
   CommandRename = 'RENA',          ///< Rename.
-  CommandFocusAddress = 'FCAD',    ///< ƒAƒhƒŒƒXƒo[‚ÉƒtƒH[ƒJƒX‚ğˆÚ‚·.
-  CommandFocusHeader = 'FCHD',     ///< ƒwƒbƒ_‚ÉƒtƒH[ƒJƒX‚ğˆÚ‚·.
+  CommandFocusAddress = 'FCAD',    ///< ã‚¢ãƒ‰ãƒ¬ã‚¹ãƒãƒ¼ã«ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã‚’ç§»ã™.
+  CommandFocusHeader = 'FCHD',     ///< ãƒ˜ãƒƒãƒ€ã«ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã‚’ç§»ã™.
   CommandAdjustToItem = 'ADJI',    ///<
   CommandAdjustToWindow = 'ADJW',  ///<
 };
 
-/// ƒEƒBƒ“ƒhƒEƒƒbƒZ[ƒWƒR[ƒh.
+/// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚³ãƒ¼ãƒ‰.
 enum WindowMessage {
-  EventDispose = 'WDEL',        ///< ƒEƒBƒ“ƒhƒE‚ª”jŠü‚³‚ê‚½.
-  EventPreClose = 'WPCL',       ///< ƒEƒBƒ“ƒhƒE‚Ì•Â‚¶‚æ‚¤‚Æ‚µ‚Ä‚¢‚é.
-  EventClose = 'WCLS',          ///< ƒEƒBƒ“ƒhƒE‚ª•Â‚¶‚ç‚ê‚½.
-  EventRename = 'WREN',         ///< ƒEƒBƒ“ƒhƒE‚Ì–¼‘O‚ª•ÏX‚³‚ê‚½.
-  EventResize = 'WRSZ',         ///< ƒEƒBƒ“ƒhƒE‚ÌƒTƒCƒY‚ª•ÏX‚³‚ê‚½.
-  EventResizeDefault = 'WRSD',  ///< „§ƒTƒCƒY‚ª•Ï‰»‚µ‚½.
-  EventData = 'DATA',           ///< WM_COPYDATA‚ğó‚¯æ‚Á‚½.
-  EventUnsupported = 'UNSP',    ///< —‰ğ‚Å‚«‚È‚¢ƒƒbƒZ[ƒW.
+  EventDispose = 'WDEL',        ///< ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒç ´æ£„ã•ã‚ŒãŸ.
+  EventPreClose = 'WPCL',       ///< ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®é–‰ã˜ã‚ˆã†ã¨ã—ã¦ã„ã‚‹.
+  EventClose = 'WCLS',          ///< ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒé–‰ã˜ã‚‰ã‚ŒãŸ.
+  EventRename = 'WREN',         ///< ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®åå‰ãŒå¤‰æ›´ã•ã‚ŒãŸ.
+  EventResize = 'WRSZ',         ///< ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ã‚µã‚¤ã‚ºãŒå¤‰æ›´ã•ã‚ŒãŸ.
+  EventResizeDefault = 'WRSD',  ///< æ¨å¥¨ã‚µã‚¤ã‚ºãŒå¤‰åŒ–ã—ãŸ.
+  EventData = 'DATA',           ///< WM_COPYDATAã‚’å—ã‘å–ã£ãŸ.
+  EventUnsupported = 'UNSP',    ///< ç†è§£ã§ããªã„ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸.
 
-  EventItemFocus = 'ITFC',   ///< €–Ú‚ÌƒtƒH[ƒJƒXó‘Ô‚ª•Ï‰»‚µ‚½.
-  EventMouseWheel = 'MSWH',  ///< ƒ}ƒEƒXƒzƒC[ƒ‹‚ª‰ñ“]‚µ‚½.
-  EventOtherFocus = 'OTHR',  ///< ‘¼‚ÌƒXƒŒƒbƒh‚ÌƒEƒBƒ“ƒhƒE‚ªƒtƒH[ƒJƒX‚ğ‚Á‚½.
+  EventItemFocus = 'ITFC',   ///< é …ç›®ã®ãƒ•ã‚©ãƒ¼ã‚«ã‚¹çŠ¶æ…‹ãŒå¤‰åŒ–ã—ãŸ.
+  EventMouseWheel = 'MSWH',  ///< ãƒã‚¦ã‚¹ãƒ›ã‚¤ãƒ¼ãƒ«ãŒå›è»¢ã—ãŸ.
+  EventOtherFocus = 'OTHR',  ///< ä»–ã®ã‚¹ãƒ¬ãƒƒãƒ‰ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã‚’æŒã£ãŸ.
 };
 
-/// ƒVƒFƒ‹ƒŠƒXƒgƒƒbƒZ[ƒWƒR[ƒh.
+/// ã‚·ã‚§ãƒ«ãƒªã‚¹ãƒˆãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚³ãƒ¼ãƒ‰.
 enum ShellListMessage {
-  EventFolderChanging = 'SLCI',  ///< ƒtƒHƒ‹ƒ_‚ğˆÚ“®‚µ‚æ‚¤‚Æ‚µ‚Ä‚¢‚é.
-  EventFolderChange = 'SLCG',    ///< •\¦ƒtƒHƒ‹ƒ_‚ª•ÏX‚³‚ê‚½.
-  EventExecuteEntry = 'SLEX',    ///< ƒGƒ“ƒgƒŠ‚ğÀs‚µ‚æ‚¤‚Æ‚µ‚Ä‚¢‚é.
-  EventStatusText = 'SLST',      ///< ƒXƒe[ƒ^ƒXƒo[‚ÌƒeƒLƒXƒg‚ª•ÏX‚³‚ê‚½.
+  EventFolderChanging = 'SLCI',  ///< ãƒ•ã‚©ãƒ«ãƒ€ã‚’ç§»å‹•ã—ã‚ˆã†ã¨ã—ã¦ã„ã‚‹.
+  EventFolderChange = 'SLCG',    ///< è¡¨ç¤ºãƒ•ã‚©ãƒ«ãƒ€ãŒå¤‰æ›´ã•ã‚ŒãŸ.
+  EventExecuteEntry = 'SLEX',    ///< ã‚¨ãƒ³ãƒˆãƒªã‚’å®Ÿè¡Œã—ã‚ˆã†ã¨ã—ã¦ã„ã‚‹.
+  EventStatusText = 'SLST',      ///< ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒãƒ¼ã®ãƒ†ã‚­ã‚¹ãƒˆãŒå¤‰æ›´ã•ã‚ŒãŸ.
 };
 }  // namespace ui
 }  // namespace mew

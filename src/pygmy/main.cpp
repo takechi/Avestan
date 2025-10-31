@@ -1,4 +1,4 @@
-// main.cpp
+ï»¿// main.cpp
 
 #include "stdafx.h"
 #include "../server/main.hpp"
@@ -10,10 +10,10 @@ namespace {
 static mew::string FunctionError(PCWSTR fn) {
   mew::pygmy::ErrorInfo error;
   mew::pygmy::fetch_error(error);
-  return mew::string::format(L"ScriptError: $1 ‚ÌŒÄ‚Ño‚µ‚ÅƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½Bi$2: $3j", fn,
+  return mew::string::format(L"ScriptError: $1 ã®å‘¼ã³å‡ºã—ã§ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¾ã—ãŸã€‚ï¼ˆ$2: $3ï¼‰", fn,
                              mew::pygmy::String(error.exception).str(), mew::pygmy::String(error.value).str());
 }
-static mew::string FunctionNotFound(PCWSTR fn) { return mew::string::format(L"ScriptError: $1 ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñB", fn); }
+static mew::string FunctionNotFound(PCWSTR fn) { return mew::string::format(L"ScriptError: $1 ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚", fn); }
 inline mew::pygmy::Object StringOrNone(mew::IString* str) {
   if (str) {
     return mew::pygmy::StringW(str->GetBuffer());
@@ -200,7 +200,7 @@ inline PSTR ParseTupleForStringA(PyObject* args, PSTR* option) {
 
 // def Execute(path, ...)
 static PyObject* Execute(PyObject* self, PyObject* args) {
-  // ‚Ü‚¸‚ÍUnicode‚Åæ“¾‚µ‚Ä‚İ‚é
+  // ã¾ãšã¯Unicodeã§å–å¾—ã—ã¦ã¿ã‚‹
   {
     PWSTR param = nullptr;
     if (PWSTR wcs = ParseTupleForStringW(args, &param)) {
@@ -209,7 +209,7 @@ static PyObject* Execute(PyObject* self, PyObject* args) {
     }
   }
   PyErr_Clear();
-  // ¸”s‚µ‚½‚Ì‚ÅAstring‚Åæ“¾‚µ‚Ä‚İ‚é
+  // å¤±æ•—ã—ãŸã®ã§ã€stringã§å–å¾—ã—ã¦ã¿ã‚‹
   {
     PSTR param = nullptr;
     if (PCSTR str = ParseTupleForStringA(args, &param)) {
@@ -222,39 +222,39 @@ static PyObject* Execute(PyObject* self, PyObject* args) {
 
 // def GetFreeBytes(path)
 static PyObject* GetFreeBytes(PyObject* self, PyObject* args) {
-  // ‚Ü‚¸‚ÍUnicode‚Åæ“¾‚µ‚Ä‚İ‚é
+  // ã¾ãšã¯Unicodeã§å–å¾—ã—ã¦ã¿ã‚‹
   if (PWSTR wcs = ParseTupleForStringW(args)) {
     UINT64 uFreeBytes = 0;
     ::GetDiskFreeSpaceExW(wcs, (ULARGE_INTEGER*)&uFreeBytes, nullptr, nullptr);
     return mew::pygmy::Long(uFreeBytes).detach();
   }
-  // ¸”s‚µ‚½‚Ì‚ÅAstring‚Åæ“¾‚µ‚Ä‚İ‚é
+  // å¤±æ•—ã—ãŸã®ã§ã€stringã§å–å¾—ã—ã¦ã¿ã‚‹
   PyErr_Clear();
   if (PCSTR str = ParseTupleForStringA(args)) {
     UINT64 uFreeBytes = 0;
     ::GetDiskFreeSpaceExA(str, (ULARGE_INTEGER*)&uFreeBytes, nullptr, nullptr);
     return mew::pygmy::Long(uFreeBytes).detach();
   }
-  // ‚¾‚ß‚ÛB
+  // ã ã‚ã½ã€‚
   return Py_None;
 }
 
 // def GetDriveLetter(path)
 static PyObject* GetDriveLetter(PyObject* self, PyObject* args) {
-  // ‚Ü‚¸‚ÍUnicode‚Åæ“¾‚µ‚Ä‚İ‚é
+  // ã¾ãšã¯Unicodeã§å–å¾—ã—ã¦ã¿ã‚‹
   if (PWSTR wcs = ParseTupleForStringW(args)) {
     WCHAR buffer[MAX_PATH];
     ave::GetDriveLetter(wcs, buffer);
     return PyUnicode_FromWideChar(buffer, wcslen(buffer));
   }
-  // ¸”s‚µ‚½‚Ì‚ÅAstring‚Åæ“¾‚µ‚Ä‚İ‚é
+  // å¤±æ•—ã—ãŸã®ã§ã€stringã§å–å¾—ã—ã¦ã¿ã‚‹
   PyErr_Clear();
   if (PCSTR str = ParseTupleForStringA(args)) {
     WCHAR buffer[MAX_PATH];
     ave::GetDriveLetter(ATL::CA2W(str), buffer);
     return PyUnicode_FromWideChar(buffer, wcslen(buffer));
   }
-  // ‚¾‚ß‚ÛB
+  // ã ã‚ã½ã€‚
   return Py_None;
 }
 
@@ -292,18 +292,18 @@ static PyObject* GetSelectedBytes(PyObject* self, PyObject* args) {
 
 // def GetDriveLetter(path)
 static PyObject* MyMessageBox(PyObject* self, PyObject* args) {
-  // ‚Ü‚¸‚ÍUnicode‚Åæ“¾‚µ‚Ä‚İ‚é
+  // ã¾ãšã¯Unicodeã§å–å¾—ã—ã¦ã¿ã‚‹
   if (PWSTR wcs = ParseTupleForStringW(args)) {
     ::MessageBoxW(::GetActiveWindow(), wcs, L"pygmy", MB_OK);
     Py_RETURN_NONE;
   }
-  // ¸”s‚µ‚½‚Ì‚ÅAstring‚Åæ“¾‚µ‚Ä‚İ‚é
+  // å¤±æ•—ã—ãŸã®ã§ã€stringã§å–å¾—ã—ã¦ã¿ã‚‹
   PyErr_Clear();
   if (PCSTR str = ParseTupleForStringA(args)) {
     ::MessageBoxA(::GetActiveWindow(), str, "pygmy", MB_OK);
     Py_RETURN_NONE;
   }
-  // ‚¾‚ß‚ÛB
+  // ã ã‚ã½ã€‚
   Py_RETURN_NONE;
 }
 

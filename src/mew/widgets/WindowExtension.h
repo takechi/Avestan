@@ -1,11 +1,11 @@
-// WindowExtension.h
+ï»¿// WindowExtension.h
 #pragma once
 
 namespace mew {
 namespace ui {
 
 class Extension {
- public:  // ¡‚Ì‚Æ‚±‚ë”‚ª­‚È‚¢‚Ì‚ÅAƒ}ƒbƒv‚È‚Ç‚ğg‚í‚¸‚É‚»‚Ì‚Ü‚Ü
+ public:  // ä»Šã®ã¨ã“ã‚æ•°ãŒå°‘ãªã„ã®ã§ã€ãƒãƒƒãƒ—ãªã©ã‚’ä½¿ã‚ãšã«ãã®ã¾ã¾
   ref<IKeymap> m_keymap;
   ref<IGesture> m_gesture;
   ref<IDropTarget> m_drop;

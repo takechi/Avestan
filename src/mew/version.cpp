@@ -1,4 +1,4 @@
-// version.cpp
+﻿// version.cpp
 
 #include "stdafx.h"
 #include "io.hpp"

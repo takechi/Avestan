@@ -1,4 +1,4 @@
-// WindowMessage.h
+﻿// WindowMessage.h
 #pragma once
 
 #include "signal.hpp"

@@ -1,20 +1,20 @@
-/// @file application.hpp
-/// ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒtƒŒ[ƒ€ƒ[ƒN.
+ï»¿/// @file application.hpp
+/// ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¯ãƒ¼ã‚¯.
 #pragma once
 
 #include "message.hpp"
 
 namespace mew {
-/// ”Ä—pƒXƒe[ƒ^ƒX.
+/// æ±ç”¨ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹.
 enum Status {
   StatusNone = 0x00000000,  ///< .
 
-  FOCUSED = 0x00000001,   ///< ƒtƒH[ƒJƒX.
-  SELECTED = 0x00000002,  ///< ‘I‘ğ.
-  CHECKED = 0x00000004,   ///< ƒ`ƒFƒbƒN.
-  ENABLED = 0x00000008,   ///< —LŒø‰».
-  EXPANDED = 0x00000010,  ///< “WŠJ.
-  HOT = 0x00000020,       ///< ƒzƒbƒgƒgƒ‰ƒbƒN.
+  FOCUSED = 0x00000001,   ///< ãƒ•ã‚©ãƒ¼ã‚«ã‚¹.
+  SELECTED = 0x00000002,  ///< é¸æŠ.
+  CHECKED = 0x00000004,   ///< ãƒã‚§ãƒƒã‚¯.
+  ENABLED = 0x00000008,   ///< æœ‰åŠ¹åŒ–.
+  EXPANDED = 0x00000010,  ///< å±•é–‹.
+  HOT = 0x00000020,       ///< ãƒ›ãƒƒãƒˆãƒˆãƒ©ãƒƒã‚¯.
 
   UNFOCUSED = 0x00010000,   ///< .
   UNSELECTED = 0x00020000,  ///< .
@@ -34,25 +34,25 @@ enum Status {
 __interface __declspec(uuid("2EFEAB15-24BF-498B-A1F7-6E85087026C0")) ICommand;
 __interface __declspec(uuid("E2B2FC4C-561B-4A38-96EB-B484E47237D8")) ICommands;
 
-/// ƒRƒ}ƒ“ƒhƒe[ƒuƒ‹.
+/// ã‚³ãƒãƒ³ãƒ‰ãƒ†ãƒ¼ãƒ–ãƒ«.
 class __declspec(uuid("E35429F9-AA06-42C3-BDAF-9361FF54501E")) Commands;
 
-/// ƒRƒ}ƒ“ƒh.
+/// ã‚³ãƒãƒ³ãƒ‰.
 __interface ICommand : IUnknown {
 #ifndef DOXYGEN
   string get_Description();
 #endif  // DOXYGEN
 
-  /// ƒRƒ}ƒ“ƒh‚ğÀs‚·‚é.
+  /// ã‚³ãƒãƒ³ãƒ‰ã‚’å®Ÿè¡Œã™ã‚‹.
   void Invoke();
-  /// ƒRƒ}ƒ“ƒh‚Ìà–¾ [get].
+  /// ã‚³ãƒãƒ³ãƒ‰ã®èª¬æ˜ [get].
   __declspec(property(get = get_Description)) string Description;
 
-  /// ƒXƒe[ƒ^ƒX‚ğæ“¾‚·‚é.
+  /// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’å–å¾—ã™ã‚‹.
   UINT32 QueryState(IUnknown* owner = null);
 };
 
-/// ƒRƒ}ƒ“ƒhƒe[ƒuƒ‹.
+/// ã‚³ãƒãƒ³ãƒ‰ãƒ†ãƒ¼ãƒ–ãƒ«.
 __interface ICommands : IUnknown {
   HRESULT Add(string name, ICommand * command);
   HRESULT Add(string name, string description);
@@ -63,9 +63,9 @@ __interface ICommands : IUnknown {
   HRESULT SetObserver(string name, function fn, message msg = null);
 };
 
-/// ƒRƒ}ƒ“ƒhƒƒbƒZ[ƒWƒR[ƒh.
+/// ã‚³ãƒãƒ³ãƒ‰ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚³ãƒ¼ãƒ‰.
 enum CommandMessage {
-  EventInvoke = 'CMIV',      ///< ƒRƒ}ƒ“ƒh‚ªÀs‚³‚ê‚½.
-  EventQueryState = 'CMST',  ///< ƒRƒ}ƒ“ƒh‚ÌƒXƒe[ƒ^ƒX‚ª–â‚¢‡‚í‚¹‚ç‚ê‚½.
+  EventInvoke = 'CMIV',      ///< ã‚³ãƒãƒ³ãƒ‰ãŒå®Ÿè¡Œã•ã‚ŒãŸ.
+  EventQueryState = 'CMST',  ///< ã‚³ãƒãƒ³ãƒ‰ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãŒå•ã„åˆã‚ã›ã‚‰ã‚ŒãŸ.
 };
 }  // namespace mew

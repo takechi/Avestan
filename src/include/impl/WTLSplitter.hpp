@@ -1,4 +1,4 @@
-// WTLSplitter.hpp
+ï»¿// WTLSplitter.hpp
 #pragma once
 
 namespace WTLEX {
@@ -100,11 +100,11 @@ __declspec(selectany) HCURSOR CSplitterBase::s_hCursors[2];
 template <class T>
 class __declspec(novtable) CSplitter : public CSplitterBase {
  public:  // override
-  /// pt ‚ÌˆÊ’u‚Å‚ÌƒNƒŠƒbƒN‚ªAƒhƒ‰ƒbƒO‚ğŠJn‚·‚×‚«‚©”Û‚©‚ğ•Ô‚·.
+  /// pt ã®ä½ç½®ã§ã®ã‚¯ãƒªãƒƒã‚¯ãŒã€ãƒ‰ãƒ©ãƒƒã‚°ã‚’é–‹å§‹ã™ã¹ãã‹å¦ã‹ã‚’è¿”ã™.
   bool IsDragRegion(POINT pt) { return true; }
-  /// w ‚ªƒhƒ‰ƒbƒO‰Â”\‚ÈƒEƒBƒ“ƒhƒE‚©”Û‚©‚ğ•Ô‚·.
+  /// w ãŒãƒ‰ãƒ©ãƒƒã‚°å¯èƒ½ãªã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‹å¦ã‹ã‚’è¿”ã™.
   bool IsDragTarget(mew::ui::CWindowEx w) { return w.IsWindowVisible() != 0; }
-  /// ÀÛ‚Éƒhƒ‰ƒbƒO’†‚ÌƒEƒBƒ“ƒhƒE‚ğƒŠƒTƒCƒY‚·‚é.
+  /// å®Ÿéš›ã«ãƒ‰ãƒ©ãƒƒã‚°ä¸­ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’ãƒªã‚µã‚¤ã‚ºã™ã‚‹.
   void OnResizeDragTargets(DragMode mode, mew::ui::CWindowEx wndDrag[2], POINT pt);
 
   const T& get_final() const throw() { return *static_cast<T*>(this); }

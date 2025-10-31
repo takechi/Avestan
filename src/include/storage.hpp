@@ -1,5 +1,5 @@
-/// @storage io.hpp
-/// “ñ‘wƒƒbƒNƒXƒgƒŒ[ƒW.
+ï»¿/// @storage io.hpp
+/// äºŒå±¤ãƒ­ãƒƒã‚¯ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸.
 
 #pragma once
 

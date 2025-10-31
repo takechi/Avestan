@@ -1,4 +1,4 @@
-// FolderList.cpp
+ï»¿// FolderList.cpp
 
 #include "stdafx.h"
 #include "main.hpp"
@@ -29,7 +29,7 @@ HRESULT ShellCopyHere(mew::ui::IShellListView* view) {
     }
     WCHAR dst[MAX_PATH];
     if (PathMakeUniqueName(dst, MAX_PATH, NULL, PathFindFileNameW(src.str()), path.str())) {
-      WCHAR src2null[MAX_PATH] = {0};  // ––’[‚Íƒ_ƒuƒ‹NULL‚ª•K—v‚È‚½‚ßB
+      WCHAR src2null[MAX_PATH] = {0};  // æœ«ç«¯ã¯ãƒ€ãƒ–ãƒ«NULLãŒå¿…è¦ãªãŸã‚ã€‚
       src.copyto(src2null, MAX_PATH);
       avesta::FileDup(src2null, dst);
     }
@@ -104,9 +104,9 @@ static size_t AddShownToExpose(mew::ui::IExpose* expose, HWND hwndRoot, mew::ui:
     }
   }
   if (shown == 1) {
-    return indexCurrent + shown;  // ‚à‚µ•\¦’†‚ªˆê‚Â‚¾‚¯‚È‚ç‚ÎAƒ^ƒu‚Ì’†‚Å‚»‚Ì•\¦’†‚ğw‚·‚à‚Ì‚ÉƒJ[ƒ\ƒ‹‚ğ‡‚í‚¹‚é
+    return indexCurrent + shown;  // ã‚‚ã—è¡¨ç¤ºä¸­ãŒä¸€ã¤ã ã‘ãªã‚‰ã°ã€ã‚¿ãƒ–ã®ä¸­ã§ãã®è¡¨ç¤ºä¸­ã‚’æŒ‡ã™ã‚‚ã®ã«ã‚«ãƒ¼ã‚½ãƒ«ã‚’åˆã‚ã›ã‚‹
   } else {
-    return indexSelected;  // •¡”‚ª•\¦’†‚È‚ç‚ÎAƒtƒH[ƒJƒX‚ÌŸ‚Ìƒrƒ…[‚ÉƒJ[ƒ\ƒ‹‚ğ‡‚í‚¹‚é
+    return indexSelected;  // è¤‡æ•°ãŒè¡¨ç¤ºä¸­ãªã‚‰ã°ã€ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã®æ¬¡ã®ãƒ“ãƒ¥ãƒ¼ã«ã‚«ãƒ¼ã‚½ãƒ«ã‚’åˆã‚ã›ã‚‹
   }
 }
 static void AddTabToExpose(mew::ui::IExpose* expose, HWND hwndRoot) {
@@ -129,16 +129,16 @@ void ShellMoveTo(mew::ui::IShellListView* current, bool copy) {
   mew::ref<mew::ui::IExpose> expose(__uuidof(mew::ui::Expose));
 
   if (copy) {
-    expose->SetTitle(L"ƒRƒs[æ‚Ìw’è");
+    expose->SetTitle(L"ã‚³ãƒ”ãƒ¼å…ˆã®æŒ‡å®š");
   } else {
-    expose->SetTitle(L"ˆÚ“®æ‚Ìw’è");
+    expose->SetTitle(L"ç§»å‹•å…ˆã®æŒ‡å®š");
   }
 
   HWND hwndRoot = ::GetAncestor(current->Handle, GA_ROOT);
 
-  // 1T–Ú
+  // 1é€±ç›®
   size_t indexSelected = AddShownToExpose(expose, hwndRoot, current);
-  // 2T–Ú
+  // 2é€±ç›®
   AddTabToExpose(expose, hwndRoot);
   //
   expose->Select(indexSelected);
@@ -151,7 +151,7 @@ void ShellMoveTo(mew::ui::IShellListView* current, bool copy) {
       if (copy) {
         ShellCopyHere(current);
       } else {
-        ave::ErrorBox(current, _T("‘—‚èè‚Æó‚¯è‚ª“¯‚¶‚Å‚·"));
+        ave::ErrorBox(current, _T("é€ã‚Šæ‰‹ã¨å—ã‘æ‰‹ãŒåŒã˜ã§ã™"));
       }
     } else if (mew::string dstpath = ave::GetPathOfView(dst)) {
       TCHAR dstpath2[MAX_PATH] = {0};
@@ -183,7 +183,7 @@ void ShellMoveToOther(mew::ui::IShellListView* current, bool copy) {
   if (shown != 2) {
     return ShellMoveTo(current, copy);
   }
-  // ‚¿‚å‚¤‚Ç2‚ÂŠJ‚©‚ê‚Ä‚¢‚½‚Ì‚ÅAƒRƒs[‚Ü‚½‚ÍˆÚ“®
+  // ã¡ã‚‡ã†ã©2ã¤é–‹ã‹ã‚Œã¦ã„ãŸã®ã§ã€ã‚³ãƒ”ãƒ¼ã¾ãŸã¯ç§»å‹•
   if (mew::string dstpath = ave::GetPathOfView(dst)) {
     TCHAR dstpath2[MAX_PATH] = {0};
     dstpath.copyto(dstpath2, MAX_PATH);

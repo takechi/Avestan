@@ -1,4 +1,4 @@
-// Entry.cpp
+ï»¿// Entry.cpp
 
 #include "stdafx.h"
 #include <shobjidl.h>
@@ -178,12 +178,12 @@ class Entry : public Root<implements<IEntry, ISerializable> > {
         m_isAttrValid = true;
       }
       // TRACE(_T("UpdateFolder(m_attrs=0x%08X, SFGAO_FOLDER=0x%08X, isFolder=%d", m_attrs, SFGAO_FOLDER, (m_attrs &
-      // SFGAO_FOLDER) != 0); SHDESCRIPTIONID.dwDescriptionId ‚æ‚è‚àƒƒoƒXƒg‚È”»’è‚ª‚Å‚«‚é
+      // SFGAO_FOLDER) != 0); SHDESCRIPTIONID.dwDescriptionId ã‚ˆã‚Šã‚‚ãƒ­ãƒã‚¹ãƒˆãªåˆ¤å®šãŒã§ãã‚‹
       if (m_attrs & SFGAO_FOLDER) {
         HRESULT hr;
         hr = parent->BindToObject(leaf, NULL, IID_IShellFolder, (void**)&m_folder);
         if (!m_folder) {
-          TRACE(_T("error: SFGAO_FOLDER ‚È‚Ì‚ÉƒtƒHƒ‹ƒ_‚ªæ“¾‚Å‚«‚È‚¢, (code=$1)"), (DWORD)hr);
+          TRACE(_T("error: SFGAO_FOLDER ãªã®ã«ãƒ•ã‚©ãƒ«ãƒ€ãŒå–å¾—ã§ããªã„, (code=$1)"), (DWORD)hr);
         }
       }
     }
@@ -192,7 +192,7 @@ class Entry : public Root<implements<IEntry, ISerializable> > {
  private:
   Entry(LPITEMIDLIST pidl, IShellFolder* parent, LPCITEMIDLIST leaf)
       : m_pidl(pidl), m_attrs(0), m_image(NOIMAGE), m_isAttrValid(false) {
-    // SHBindToParent()‚ÍƒRƒXƒg‚ª‚©‚©‚é‚Ì‚ÅAe‚ª‚í‚©‚Á‚Ä‚¢‚é‚¤‚¿‚Éî•ñ‚ğ“¾‚Ä‚¨‚­
+    // SHBindToParent()ã¯ã‚³ã‚¹ãƒˆãŒã‹ã‹ã‚‹ã®ã§ã€è¦ªãŒã‚ã‹ã£ã¦ã„ã‚‹ã†ã¡ã«æƒ…å ±ã‚’å¾—ã¦ãŠã
     if (parent && leaf) {
       UpdateAttribute(parent, leaf);
     }
@@ -241,7 +241,7 @@ class Entry : public Root<implements<IEntry, ISerializable> > {
       ILFree(pidl);
       return hr;
     }
-    // ––’[ƒm[ƒh‚ğæ‚èœ‚¢‚Ä‚¢‚éB"Parent/Leaf" => "Parent\0Leaf" ‚Æ‚¢‚¤ƒCƒ[ƒWB
+    // æœ«ç«¯ãƒãƒ¼ãƒ‰ã‚’å–ã‚Šé™¤ã„ã¦ã„ã‚‹ã€‚"Parent/Leaf" => "Parent\0Leaf" ã¨ã„ã†ã‚¤ãƒ¡ãƒ¼ã‚¸ã€‚
     leaf->mkid.cb = 0;  // item->RemoveLeaf(leaf)
     return ref<IEntry>::from(NewEntry(pidl))->QueryInterface(parent);
   }
@@ -260,7 +260,7 @@ class Entry : public Root<implements<IEntry, ISerializable> > {
       }
       /*
                               if(!afx::ILIsRoot(pidl)) //
-         ƒfƒXƒNƒgƒbƒv‚ÍƒpƒX‚ğæ“¾‚Å‚«‚µ‚Ü‚¤‚à‚Ì‚ÌA‰¼‘zƒAƒCƒeƒ€‚Æ‚µ‚Äˆµ‚¢‚½‚¢‚½‚ß
+         ãƒ‡ã‚¹ã‚¯ãƒˆãƒƒãƒ—ã¯ãƒ‘ã‚¹ã‚’å–å¾—ã§ãã—ã¾ã†ã‚‚ã®ã®ã€ä»®æƒ³ã‚¢ã‚¤ãƒ†ãƒ ã¨ã—ã¦æ‰±ã„ãŸã„ãŸã‚
                               {
                                       TCHAR path[MAX_PATH];
                                       if SUCCEEDED(afx::ILGetPath(pidl, path))
@@ -322,24 +322,24 @@ class Entry : public Root<implements<IEntry, ISerializable> > {
     if (LPITEMIDLIST pidl = afx::ILFromPath(path2, &attrs)) {
       return Entry::NewEntry(pidl, attrs);
     }
-    throw mew::exceptions::IOError(string::format(L"$1 ‚Í–³Œø‚ÈƒpƒX‚Å‚·", path), STG_E_PATHNOTFOUND);
+    throw mew::exceptions::IOError(string::format(L"$1 ã¯ç„¡åŠ¹ãªãƒ‘ã‚¹ã§ã™", path), STG_E_PATHNOTFOUND);
   }
   static Entry* CreateEntryFromCSIDL(int csidl, PCWSTR path, PCWSTR next) {
     LPITEMIDLIST pidl = null;
-    if (FAILED(SHGetFolderLocation(null, csidl, null, 0, &pidl)) || !pidl) {  // SUCCEEDED ‚È‚Ì‚É null ‚ğ•Ô‚·‚±‚Æ‚ª‚ ‚éI
-      throw mew::exceptions::IOError(string::format(_T("“ÁêƒtƒHƒ‹ƒ_ $1 (CSIDL=$2) ‚ğæ“¾‚Å‚«‚Ü‚¹‚ñ"), path, csidl),
+    if (FAILED(SHGetFolderLocation(null, csidl, null, 0, &pidl)) || !pidl) {  // SUCCEEDED ãªã®ã« null ã‚’è¿”ã™ã“ã¨ãŒã‚ã‚‹ï¼
+      throw mew::exceptions::IOError(string::format(_T("ç‰¹æ®Šãƒ•ã‚©ãƒ«ãƒ€ $1 (CSIDL=$2) ã‚’å–å¾—ã§ãã¾ã›ã‚“"), path, csidl),
                                      STG_E_PATHNOTFOUND);
     }
     if (!*next) {
       return Entry::NewEntry(pidl);
     }
-    // “ÁêƒtƒHƒ‹ƒ_‚É‘±‚¢‚ÄA‰½‚©‚µ‚ç‚ÌƒpƒX‚ªw’è‚³‚ê‚Ä‚¢‚½
+    // ç‰¹æ®Šãƒ•ã‚©ãƒ«ãƒ€ã«ç¶šã„ã¦ã€ä½•ã‹ã—ã‚‰ã®ãƒ‘ã‚¹ãŒæŒ‡å®šã•ã‚Œã¦ã„ãŸ
     Entry* parent = Entry::NewEntry(pidl);
     IEntry* result = null;
     HRESULT hr = parent->ParseDisplayName(&result, next);
     parent->Release();
     if FAILED (hr) {
-      throw mew::exceptions::IOError(string::format(_T("$1 ‚Í–³Œø‚ÈƒpƒX‚Å‚·"), path), STG_E_PATHNOTFOUND);
+      throw mew::exceptions::IOError(string::format(_T("$1 ã¯ç„¡åŠ¹ãªãƒ‘ã‚¹ã§ã™"), path), STG_E_PATHNOTFOUND);
     }
     return static_cast<Entry*>(result);
   }
@@ -357,7 +357,7 @@ class Entry : public Root<implements<IEntry, ISerializable> > {
         ::GetModuleFileName(null, file, MAX_PATH);
         file.RemoveLeaf().RemoveLeaf();
         break;
-      case CSIDL_MYDOCUMENTS:  // CSIDL_PERSONAL ‚ÍA‚È‚º‚©¸”s‚·‚é‚Ì‚Å“Á•Êˆ—‚ğs‚¤B
+      case CSIDL_MYDOCUMENTS:  // CSIDL_PERSONAL ã¯ã€ãªãœã‹å¤±æ•—ã™ã‚‹ã®ã§ç‰¹åˆ¥å‡¦ç†ã‚’è¡Œã†ã€‚
         mew::str::copy(file, GUID_MyDocument);
         break;
       default:
@@ -390,7 +390,7 @@ class Entry : public Root<implements<IEntry, ISerializable> > {
       Stream stream(__uuidof(io::Reader), arg);
       HRESULT hr = ILLoadFromStreamEx(stream, &pidl);
       if FAILED (hr) {
-        throw mew::exceptions::IOError(_T("ƒVƒŠƒAƒ‰ƒCƒY‚©‚ç•œŒ³‚Å‚«‚Ü‚¹‚ñ"), hr);
+        throw mew::exceptions::IOError(_T("ã‚·ãƒªã‚¢ãƒ©ã‚¤ã‚ºã‹ã‚‰å¾©å…ƒã§ãã¾ã›ã‚“"), hr);
       }
       ASSERT(pidl);
       return Entry::NewEntry(pidl);
@@ -414,7 +414,7 @@ class Entry : public Root<implements<IEntry, ISerializable> > {
     return !!(m_attrs & SFGAO_FOLDER);
   }
   HRESULT QueryObject(REFINTF ppObject, IndexOrIDList relpath = 0) {
-    if (relpath == 0) {  // ©•ª©g
+    if (relpath == 0) {  // è‡ªåˆ†è‡ªèº«
       if SUCCEEDED (QueryInterface(ppObject)) {
         return S_OK;
       } else if (ppObject.iid == IID_IContextMenu || ppObject.iid == IID_IContextMenu2 || ppObject.iid == IID_IDropTarget ||
@@ -433,13 +433,13 @@ class Entry : public Root<implements<IEntry, ISerializable> > {
       } else {
         return GetFolder(ppObject);
       }
-    } else if (relpath.is_index()) {  // N ’iŠKã‚Ìe
+    } else if (relpath.is_index()) {  // N æ®µéšä¸Šã®è¦ª
       if (relpath == IDList_Linked) {
         return ResolveLink(ppObject);
       } else {
         return get_Parent((int)relpath, ppObject);
       }
-    } else {  // ‘Š‘ÎƒpƒX‚Å‚Ìq‹Ÿ
+    } else {  // ç›¸å¯¾ãƒ‘ã‚¹ã§ã®å­ä¾›
       return ref<IEntry>::from(NewEntry(ILCombine(get_ID(), relpath)))->QueryInterface(ppObject);
     }
   }
@@ -467,7 +467,7 @@ class Entry : public Root<implements<IEntry, ISerializable> > {
   }
   bool Exists() {
     string path = get_Path();
-    if (!path) {  // ƒVƒXƒeƒ€ƒtƒHƒ‹ƒ_c‚½‚Ô‚ñ‘¶İ‚µ‚Ä‚¢‚é‚¾‚ë‚¤
+    if (!path) {  // ã‚·ã‚¹ãƒ†ãƒ ãƒ•ã‚©ãƒ«ãƒ€â€¦ãŸã¶ã‚“å­˜åœ¨ã—ã¦ã„ã‚‹ã ã‚ã†
       return true;
     }
     PCTSTR szPath = path.str();
@@ -680,7 +680,7 @@ class EntryList : public Root<implements<IEntryList> > {
       STGMEDIUM medium;
       HRESULT hr = data->GetData(&FORMAT_IDLIST, &medium);
       if FAILED (hr) {
-        throw mew::exceptions::IOError(_T("IDataObject ‚©‚ç CFSTR_SHELLIDLIST/TYMED_HGLOBAL ‚ğæ“¾‚Å‚«‚Ü‚¹‚ñ"), hr);
+        throw mew::exceptions::IOError(_T("IDataObject ã‹ã‚‰ CFSTR_SHELLIDLIST/TYMED_HGLOBAL ã‚’å–å¾—ã§ãã¾ã›ã‚“"), hr);
       }
       InitOnHGlobal(medium.hGlobal);
     } else {
@@ -690,7 +690,7 @@ class EntryList : public Root<implements<IEntryList> > {
   void Dispose() throw() {
     if (m_hGlobal) {
       ::GlobalUnlock(m_hGlobal);
-      // ::GlobalFree(m_hGlobal); // XXX: ‰ğ•ú‚Á‚Ä‚¢‚ç‚È‚¢‚ÌH
+      // ::GlobalFree(m_hGlobal); // XXX: è§£æ”¾ã£ã¦ã„ã‚‰ãªã„ã®ï¼Ÿ
       m_hGlobal = NULL;
     } else {
       ::free(m_pCIDA);
@@ -719,7 +719,7 @@ class EntryList : public Root<implements<IEntryList> > {
     return hr;
   }
   HRESULT CloneSubset(REFINTF pp, size_t subsets[], size_t length) {
-    // –{“–‚ÍA’Šo‚µ‚Ä‚à‚æ‚¢‚Ì‚¾‚ªAŠÈ’P‚Ì‚½‚ß‚Émemcpy‚µAƒwƒbƒ_‚¾‚¯‚ğ•ÏX‚·‚é.
+    // æœ¬å½“ã¯ã€æŠ½å‡ºã—ã¦ã‚‚ã‚ˆã„ã®ã ãŒã€ç°¡å˜ã®ãŸã‚ã«memcpyã—ã€ãƒ˜ãƒƒãƒ€ã ã‘ã‚’å¤‰æ›´ã™ã‚‹.
     size_t size = afx::CIDAGetSize(m_pCIDA);
     CIDA* cida = (CIDA*)::malloc(size);
 
@@ -751,7 +751,7 @@ HRESULT Entry::ResolveLink(REFINTF ppObject) {
   LPITEMIDLIST pidl = null;
   if (SUCCEEDED(hr = cast<IPersistFile>(link)->Load(get_Path().str(), STGM_READ)) &&
       SUCCEEDED(hr = link->Resolve(null, SLR_NOLINKINFO | SLR_NO_UI | SLR_NOUPDATE | SLR_NOSEARCH | SLR_NOTRACK)) &&
-      (hr = link->GetIDList(&pidl)) == S_OK) {  // © SUCCEEDED ‚Å‚Í‚È‚­AS_OK ‚ğg‚¤•K—v‚ ‚è
+      (hr = link->GetIDList(&pidl)) == S_OK) {  // â† SUCCEEDED ã§ã¯ãªãã€S_OK ã‚’ä½¿ã†å¿…è¦ã‚ã‚Š
     return objnew<EntryAlias>(pidl, get_Name())->QueryObject(ppObject);
   } else {
     return QueryObject(ppObject);

@@ -1,4 +1,4 @@
-// utils.cpp
+﻿// utils.cpp
 
 #include "stdafx.h"
 #include "main.hpp"
@@ -19,9 +19,9 @@ HRESULT ave::EntryNameToClipboard(mew::io::IEntryList* entries, mew::io::IEntry:
       if (!!path) {
         PCTSTR text = path.str();
         size_t length = path.length();
-        if (first){
+        if (first) {
           first = false;
-        }else{
+        } else {
           stream.write(L"\r\n", 2 * sizeof(WCHAR));
         }
         stream.write(text, length * sizeof(TCHAR));

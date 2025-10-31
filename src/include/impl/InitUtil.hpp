@@ -1,4 +1,4 @@
-// InitUtil.hpp
+ï»¿// InitUtil.hpp
 #pragma once
 
 #include "io.hpp"
@@ -12,7 +12,7 @@ class GdiInit {
   Gdiplus::GdiplusStartupInput m_StartupInput;
 
  public:
-  // ƒRƒ“ƒXƒgƒ‰ƒNƒ^.
+  // ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿.
   GdiInit() throw() { Gdiplus::GdiplusStartup(&m_Token, &m_StartupInput, null); }
   ~GdiInit() throw() { Gdiplus::GdiplusShutdown(m_Token); }
 };

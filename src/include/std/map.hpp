@@ -1,4 +1,4 @@
-/// @file map.hpp
+ï»¿/// @file map.hpp
 /// UNDOCUMENTED
 #pragma once
 
@@ -8,7 +8,7 @@
 #pragma warning(default : 4702)
 
 //==============================================================================
-// std::map<Key, Mapped, Pred, Alloc>‚É‘Î‚·‚éBinary“üo—ÍƒIƒyƒŒ[ƒ^
+// std::map<Key, Mapped, Pred, Alloc>ã«å¯¾ã™ã‚‹Binaryå…¥å‡ºåŠ›ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
 
 template <typename Key, typename Mapped, class Pred, class Alloc>
 inline IStream& operator<<(IStream& stream, const std::map<Key, Mapped, Pred, Alloc>& v) throw(...) {

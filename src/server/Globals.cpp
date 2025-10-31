@@ -1,4 +1,4 @@
-// Globals.cpp
+ï»¿// Globals.cpp
 
 #include "stdafx.h"
 #include "main.hpp"
@@ -243,17 +243,17 @@ static DWORD theDefaultEffect = 0;
 static WCHAR theSourcePath[MAX_PATH];
 
 void UpdateDefaultEffect(mew::io::IEntry* dst) {
-  if (!dst || !avesta::GetOption(avesta::BoolDnDCopyInterDrv)) {  // dst ‚ªw’è‚³‚ê‚Ä‚¢‚È‚¢ê‡‚Í•ÏX‚µ‚È‚¢
+  if (!dst || !avesta::GetOption(avesta::BoolDnDCopyInterDrv)) {  // dst ãŒæŒ‡å®šã•ã‚Œã¦ã„ãªã„å ´åˆã¯å¤‰æ›´ã—ãªã„
     return;
-  } else if (mew::str::empty(theSourcePath)) {  // ƒ\[ƒXƒpƒX‚ª‹ócc‚æ‚­‚í‚©‚ç‚ñ‚Ì‚ÅƒfƒtƒHƒ‹ƒg‚ğİ’è‚µ‚È‚¢
+  } else if (mew::str::empty(theSourcePath)) {  // ã‚½ãƒ¼ã‚¹ãƒ‘ã‚¹ãŒç©ºâ€¦â€¦ã‚ˆãã‚ã‹ã‚‰ã‚“ã®ã§ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚’è¨­å®šã—ãªã„
     theDefaultEffect = 0;
   } else {
     mew::string dstpath = dst->Path;
-    if (!dstpath) {  // ƒRƒs[æƒpƒX‚ª‹ócc‚æ‚­‚í‚©‚ç‚ñ‚Ì‚ÅƒfƒtƒHƒ‹ƒg‚ğİ’è‚µ‚È‚¢
+    if (!dstpath) {  // ã‚³ãƒ”ãƒ¼å…ˆãƒ‘ã‚¹ãŒç©ºâ€¦â€¦ã‚ˆãã‚ã‹ã‚‰ã‚“ã®ã§ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚’è¨­å®šã—ãªã„
       theDefaultEffect = 0;
-    } else if (PathIsSameRoot(theSourcePath, dstpath.str())) {  // “¯‚¶ƒhƒ‰ƒCƒu‚È‚Ì‚ÅAˆÚ“®
+    } else if (PathIsSameRoot(theSourcePath, dstpath.str())) {  // åŒã˜ãƒ‰ãƒ©ã‚¤ãƒ–ãªã®ã§ã€ç§»å‹•
       theDefaultEffect = DROPEFFECT_MOVE;
-    } else {  // ˆÙ‚È‚éƒhƒ‰ƒCƒu‚È‚Ì‚ÅAˆÚ“®
+    } else {  // ç•°ãªã‚‹ãƒ‰ãƒ©ã‚¤ãƒ–ãªã®ã§ã€ç§»å‹•
       theDefaultEffect = DROPEFFECT_COPY;
     }
   }
@@ -356,11 +356,11 @@ HRESULT mew::ui::ProcessDrop(IDataObject* src, mew::io::IEntry* dst, POINTL pt, 
   if (dst) {
     try {
       ref<IDropTarget> drop;
-      if (!(key & MouseButtonRight) && SUCCEEDED(hr = DropToExe(src, dst))) {  // EXE ‚Ö‚Ìƒhƒƒbƒv
+      if (!(key & MouseButtonRight) && SUCCEEDED(hr = DropToExe(src, dst))) {  // EXE ã¸ã®ãƒ‰ãƒ­ãƒƒãƒ—
       } else if SUCCEEDED (dst->QueryObject(&drop)) {
         if (key & MouseButtonRight) {
           if ((key & ModifierMask) ==
-              0) {  // ‰Eƒhƒƒbƒv‚ÉƒL[‚ª‰Ÿ‚³‚ê‚Ä‚¢‚È‚¢‚ÆuƒVƒ‡[ƒgƒJƒbƒg‚ğì¬v‚ªƒfƒtƒHƒ‹ƒg‚É‚È‚Á‚Ä‚µ‚Ü‚¤‚½‚ßB
+              0) {  // å³ãƒ‰ãƒ­ãƒƒãƒ—æ™‚ã«ã‚­ãƒ¼ãŒæŠ¼ã•ã‚Œã¦ã„ãªã„ã¨ã€Œã‚·ãƒ§ãƒ¼ãƒˆã‚«ãƒƒãƒˆã‚’ä½œæˆã€ãŒãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã«ãªã£ã¦ã—ã¾ã†ãŸã‚ã€‚
             switch (theDefaultEffect) {
               case DROPEFFECT_COPY:
                 key |= ModifierControl;

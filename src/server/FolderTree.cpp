@@ -1,4 +1,4 @@
-// FolderTree.cpp
+ï»¿// FolderTree.cpp
 
 #include "stdafx.h"
 #include "main.hpp"
@@ -9,7 +9,7 @@
 void CreateFolderTree(mew::REFINTF ppInterface, IUnknown* arg) throw(...) {
   HRESULT hr;
   mew::ref<mew::ui::ITreeView> w(__uuidof(mew::ui::ShellTreeView), arg);
-  w->Name = _T("ƒtƒHƒ‹ƒ_");
+  w->Name = _T("ãƒ•ã‚©ãƒ«ãƒ€");
   if FAILED (hr = w.copyto(ppInterface)) {
     throw mew::exceptions::CastError(mew::string::load(IDS_ERR_NOINTERFACE, w, ppInterface.iid), hr);
   }

@@ -1,4 +1,4 @@
-// itemid.cpp
+ï»¿// itemid.cpp
 
 #include "stdafx.h"
 #include "avesta.hpp"
@@ -10,34 +10,34 @@ HRESULT HresultFromShellExecute(HINSTANCE hInstance, PCWSTR path, PCWSTR verb, H
   if (hInstance > (HINSTANCE)32) {
     return S_OK;
   }
-  if (hwnd) {  // hwnd ‚ªw’è‚³‚ê‚½ê‡‚Ì‚İƒGƒ‰[‚ğ•\¦
+  if (hwnd) {  // hwnd ãŒæŒ‡å®šã•ã‚ŒãŸå ´åˆã®ã¿ã‚¨ãƒ©ãƒ¼ã‚’è¡¨ç¤º
     mew::string msg;
     switch ((int)hInstance) {
       case SE_ERR_FNF:
       case SE_ERR_PNF:
-        msg = mew::string::format(L"\"$1\" ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ", path);
+        msg = mew::string::format(L"\"$1\" ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“", path);
         break;
       case SE_ERR_ACCESSDENIED:
       case SE_ERR_SHARE:
-        msg = mew::string::format(L"\"$1\" ‚ÉƒAƒNƒZƒX‚Å‚«‚Ü‚¹‚ñ", path);
+        msg = mew::string::format(L"\"$1\" ã«ã‚¢ã‚¯ã‚»ã‚¹ã§ãã¾ã›ã‚“", path);
         break;
       case SE_ERR_OOM:  // Out of Memory
-        msg = L"ƒƒ‚ƒŠ‚ª•s‘«‚µ‚Ä‚¢‚é‚½‚ßÀs‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½";
+        msg = L"ãƒ¡ãƒ¢ãƒªãŒä¸è¶³ã—ã¦ã„ã‚‹ãŸã‚å®Ÿè¡Œã§ãã¾ã›ã‚“ã§ã—ãŸ";
         break;
       case SE_ERR_DLLNOTFOUND:
-        msg = mew::string::format(L"\"$1\" ‚ğÀs‚·‚é‚½‚ß‚É•K—v‚ÈDLL‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½", path);
+        msg = mew::string::format(L"\"$1\" ã‚’å®Ÿè¡Œã™ã‚‹ãŸã‚ã«å¿…è¦ãªDLLãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã§ã—ãŸ", path);
         break;
       case SE_ERR_ASSOCINCOMPLETE:
       case SE_ERR_NOASSOC:
-        msg = mew::string::format(L"\"$1\" ‚É‘Î‚µ‚Ä ƒAƒNƒVƒ‡ƒ“ \"$2\" ‚ªŠÖ˜A•t‚¯‚ç‚ê‚Ä‚¢‚Ü‚¹‚ñ", path, verb);
+        msg = mew::string::format(L"\"$1\" ã«å¯¾ã—ã¦ ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ \"$2\" ãŒé–¢é€£ä»˜ã‘ã‚‰ã‚Œã¦ã„ã¾ã›ã‚“", path, verb);
         break;
       case SE_ERR_DDETIMEOUT:
       case SE_ERR_DDEFAIL:
       case SE_ERR_DDEBUSY:
-        msg = mew::string::format(L"DDEƒGƒ‰[‚ª”­¶‚µ‚½‚½‚ß \"$1\" ‚ğÀs‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½", path);
+        msg = mew::string::format(L"DDEã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ãŸãŸã‚ \"$1\" ã‚’å®Ÿè¡Œã§ãã¾ã›ã‚“ã§ã—ãŸ", path);
         break;
       default:
-        msg = mew::string::format(L"$1 ‚ğÀs‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½", path);
+        msg = mew::string::format(L"$1 ã‚’å®Ÿè¡Œã§ãã¾ã›ã‚“ã§ã—ãŸ", path);
         break;
     }
     if (msg) {
@@ -62,17 +62,17 @@ HRESULT DoPathExecute(PCWSTR path, PCWSTR verb, PCWSTR args, PCWSTR dir, HWND hw
   if (!mew::str::empty(verb)) {
     ExpandEnvironmentStrings(verb, verbbuf, MAX_PATH);
     verb = verbbuf;
-    if (verb[0] == _T('.')) {  // verb = Šg’£q
+    if (verb[0] == _T('.')) {  // verb = æ‹¡å¼µå­
       if FAILED (avesta::RegGetAssocExe(verb, exepath)) {
-        return E_INVALIDARG;  // ŠÖ˜A•t‚¯‚³‚ê‚½EXE‚ğæ“¾‚Å‚«‚È‚©‚Á‚½
+        return E_INVALIDARG;  // é–¢é€£ä»˜ã‘ã•ã‚ŒãŸEXEã‚’å–å¾—ã§ããªã‹ã£ãŸ
       }
       exe = exepath;
-    } else if (*PathFindExtension(verb) == _T('.')) {  // verb = EXEƒtƒ@ƒCƒ‹‚Å‚Í‚È‚¢
+    } else if (*PathFindExtension(verb) == _T('.')) {  // verb = EXEãƒ•ã‚¡ã‚¤ãƒ«ã§ã¯ãªã„
       exe = verb;
     }
   }
 
-  if (mew::str::empty(dir)) {  // ƒ[ƒLƒ“ƒOƒfƒBƒŒƒNƒgƒŠ‚ÍA‹N“®‚·‚éƒtƒ@ƒCƒ‹‚Æ“¯‚¶
+  if (mew::str::empty(dir)) {  // ãƒ¯ãƒ¼ã‚­ãƒ³ã‚°ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã¯ã€èµ·å‹•ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã¨åŒã˜
     mew::str::copy(dirpath, path);
     PathRemoveFileSpec(dirpath);
     dir = dirpath;
@@ -114,7 +114,7 @@ HRESULT DoILExecute(LPCITEMIDLIST pidl, PCWSTR path, PCWSTR verb, PCWSTR args, P
   info.lpVerb = verb;
   info.lpParameters = args;
   TCHAR dirpath[MAX_PATH];
-  if (mew::str::empty(dir) && !mew::str::empty(path)) {  // ƒ[ƒLƒ“ƒOƒfƒBƒŒƒNƒgƒŠ‚ÍA‹N“®‚·‚éƒtƒ@ƒCƒ‹‚Æ“¯‚¶
+  if (mew::str::empty(dir) && !mew::str::empty(path)) {  // ãƒ¯ãƒ¼ã‚­ãƒ³ã‚°ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã¯ã€èµ·å‹•ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã¨åŒã˜
     mew::str::copy(dirpath, path, MAX_PATH);
     PathRemoveFileSpec(dirpath);
     info.lpDirectory = dirpath;
@@ -141,13 +141,13 @@ HRESULT ILExecute(LPCITEMIDLIST pidl, PCWSTR verb, PCWSTR args, PCWSTR dir, HWND
 
   if (SHGetPathFromIDListW(pidl, path) && !mew::str::empty(verb)) {
     HRESULT hr;
-    // ¸”s‚µ‚½ê‡‚Éƒ_ƒCƒAƒƒO‚ªo‚é‚Ì‚ÅAlazy ‚Ìê‡‚ÍUI‚È‚µ (hwnd=null)B
+    // å¤±æ•—ã—ãŸå ´åˆã«ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ãŒå‡ºã‚‹ã®ã§ã€lazy ã®å ´åˆã¯UIãªã— (hwnd=null)ã€‚
     if SUCCEEDED (hr = DoPathExecute(path, verb, args, dir, (!lazy ? hwnd : nullptr))) {
       return S_OK;
     } else if (!lazy) {
       return hr;
     } else {
-      verb = nullptr;  // ‚±‚Ì“®Œ‚Å‚ÍÀs‚Å‚«‚È‚¢B
+      verb = nullptr;  // ã“ã®å‹•è©ã§ã¯å®Ÿè¡Œã§ããªã„ã€‚
     }
   }
 
@@ -166,13 +166,13 @@ HRESULT PathExecute(PCWSTR path, PCWSTR verb, PCWSTR args, PCWSTR dir, HWND hwnd
 
   if (!mew::str::empty(verb)) {
     HRESULT hr;
-    // ¸”s‚µ‚½ê‡‚Éƒ_ƒCƒAƒƒO‚ªo‚é‚Ì‚ÅAlazy ‚Ìê‡‚ÍUI‚È‚µ (hwnd=null)B
+    // å¤±æ•—ã—ãŸå ´åˆã«ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ãŒå‡ºã‚‹ã®ã§ã€lazy ã®å ´åˆã¯UIãªã— (hwnd=null)ã€‚
     if SUCCEEDED (hr = DoPathExecute(path, verb, args, dir, (!lazy ? hwnd : nullptr))) {
       return S_OK;
     } else if (!lazy) {
       return hr;
     } else {
-      verb = nullptr;  // ‚±‚Ì“®Œ‚Å‚ÍÀs‚Å‚«‚È‚¢B
+      verb = nullptr;  // ã“ã®å‹•è©ã§ã¯å®Ÿè¡Œã§ããªã„ã€‚
     }
   }
 

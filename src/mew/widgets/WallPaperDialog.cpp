@@ -1,4 +1,4 @@
-// WallPaperDialog.cpp
+﻿// WallPaperDialog.cpp
 
 #include "stdafx.h"
 #include "../private.h"

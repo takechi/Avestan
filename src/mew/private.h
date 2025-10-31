@@ -1,4 +1,4 @@
-// private.h
+﻿// private.h
 #pragma once
 
 #include "error.hpp"

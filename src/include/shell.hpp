@@ -1,5 +1,5 @@
-/// @file shell.hpp
-/// ƒVƒFƒ‹‚Æƒtƒ@ƒCƒ‹ƒVƒXƒeƒ€.
+ï»¿/// @file shell.hpp
+/// ã‚·ã‚§ãƒ«ã¨ãƒ•ã‚¡ã‚¤ãƒ«ã‚·ã‚¹ãƒ†ãƒ .
 #pragma once
 
 #include <shellapi.h>
@@ -10,12 +10,12 @@
 #include "widgets.hpp"
 
 namespace mew {
-/// ƒVƒFƒ‹Aƒtƒ@ƒCƒ‹ƒVƒXƒeƒ€AƒvƒƒZƒXŠÔ’ÊM.
+/// ã‚·ã‚§ãƒ«ã€ãƒ•ã‚¡ã‚¤ãƒ«ã‚·ã‚¹ãƒ†ãƒ ã€ãƒ—ãƒ­ã‚»ã‚¹é–“é€šä¿¡.
 namespace io {
 //==============================================================================
-// ƒCƒ“ƒ^ƒtƒF[ƒX’è‹`.
+// ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹å®šç¾©.
 
-/// ƒVƒFƒ‹ƒGƒ“ƒgƒŠ”z—ñ(CIDA).
+/// ã‚·ã‚§ãƒ«ã‚¨ãƒ³ãƒˆãƒªé…åˆ—(CIDA).
 __interface IEntryList : IUnknown {
 #ifndef DOXYGEN
   size_t get_Count();
@@ -30,14 +30,14 @@ __interface IEntryList : IUnknown {
   const CIDA* GetCIDA();
   HRESULT GetAt(IEntry * *ppShellItem, size_t index);
 
-  /// ‚±‚ÌƒGƒ“ƒgƒŠ”z—ñ‚Ì‚¤‚¿Aw’è‚ÌƒGƒ“ƒgƒŠ‚¾‚¯‚ğ’Šo‚·‚é.
-  HRESULT CloneSubset(REFINTF pp,        ///< ’Šo‚³‚ê‚½”z—ñ.
-                      size_t subsets[],  ///< ’Šo‚·‚éƒGƒ“ƒgƒŠƒCƒ“ƒfƒbƒNƒX”z—ñ.
-                      size_t length      ///< subsets‚Ì’·‚³.
+  /// ã“ã®ã‚¨ãƒ³ãƒˆãƒªé…åˆ—ã®ã†ã¡ã€æŒ‡å®šã®ã‚¨ãƒ³ãƒˆãƒªã ã‘ã‚’æŠ½å‡ºã™ã‚‹.
+  HRESULT CloneSubset(REFINTF pp,        ///< æŠ½å‡ºã•ã‚ŒãŸé…åˆ—.
+                      size_t subsets[],  ///< æŠ½å‡ºã™ã‚‹ã‚¨ãƒ³ãƒˆãƒªã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹é…åˆ—.
+                      size_t length      ///< subsetsã®é•·ã•.
   );
 };
 
-/// ƒVƒFƒ‹ƒtƒHƒ‹ƒ_ƒƒjƒ…[.
+/// ã‚·ã‚§ãƒ«ãƒ•ã‚©ãƒ«ãƒ€ãƒ¡ãƒ‹ãƒ¥ãƒ¼.
 __interface IFolder : ui::ITreeItem {
 #ifndef DOXYGEN
   IEntry* get_Entry();
@@ -46,14 +46,14 @@ __interface IFolder : ui::ITreeItem {
   int get_Depth();
   void set_Depth(int depth);
 #endif
-  __declspec(property(get = get_Entry)) IEntry* Entry;                                     ///< ƒGƒ“ƒgƒŠ.
-  __declspec(property(get = get_IncludeFiles, put = set_IncludeFiles)) bool IncludeFiles;  ///< ƒtƒ@ƒCƒ‹‚ğŠÜ‚Ş‚©”Û‚©.
-  __declspec(property(get = get_Depth, put = set_Depth)) int Depth;                        ///< “WŠJ‚·‚é[‚³.
+  __declspec(property(get = get_Entry)) IEntry* Entry;                                     ///< ã‚¨ãƒ³ãƒˆãƒª.
+  __declspec(property(get = get_IncludeFiles, put = set_IncludeFiles)) bool IncludeFiles;  ///< ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å«ã‚€ã‹å¦ã‹.
+  __declspec(property(get = get_Depth, put = set_Depth)) int Depth;                        ///< å±•é–‹ã™ã‚‹æ·±ã•.
 
   void Reset();
 };
 
-/// ƒhƒƒbƒvƒGƒtƒFƒNƒg.
+/// ãƒ‰ãƒ­ãƒƒãƒ—ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ.
 enum DropEffect {
   DropEffectNone = 0x00000000,
   DropEffectCopy = 0x00000001,
@@ -62,22 +62,22 @@ enum DropEffect {
   // DropEffectScroll= 0x80000000
 };
 
-/// ƒhƒ‰ƒbƒO•ƒhƒƒbƒvƒ\[ƒX.
+/// ãƒ‰ãƒ©ãƒƒã‚°ï¼†ãƒ‰ãƒ­ãƒƒãƒ—ã‚½ãƒ¼ã‚¹.
 __interface IDragSource : IDataObject {
   DropEffect DoDragDrop(DWORD dwSupportsEffect);
   DropEffect DoDragDrop(DWORD dwSupportsEffect, HWND hWndDrag, POINT ptCursor);
   DropEffect DoDragDrop(DWORD dwSupportsEffect, HBITMAP hBitmap, COLORREF colorkey, POINT ptHotspot);
-  /// ƒf[ƒ^‚ğ’Ç‰Á‚·‚é.
+  /// ãƒ‡ãƒ¼ã‚¿ã‚’è¿½åŠ ã™ã‚‹.
   HRESULT AddData(CLIPFORMAT cfFormat, const void* data, size_t size);
-  /// ƒOƒ[ƒoƒ‹ƒnƒ“ƒhƒ‹‚ğ’Ç‰Á‚·‚é.
+  /// ã‚°ãƒ­ãƒ¼ãƒãƒ«ãƒãƒ³ãƒ‰ãƒ«ã‚’è¿½åŠ ã™ã‚‹.
   HRESULT AddGlobalData(CLIPFORMAT cfFormat, HGLOBAL hGlobal);
-  /// ‚Ğ‚Æ‚Â‚ÌIDList‚ğ’Ç‰Á‚·‚é.
+  /// ã²ã¨ã¤ã®IDListã‚’è¿½åŠ ã™ã‚‹.
   HRESULT AddIDList(LPCITEMIDLIST pIDList);
-  /// IDList”z—ñ‚ğ’Ç‰Á‚·‚é.
+  /// IDListé…åˆ—ã‚’è¿½åŠ ã™ã‚‹.
   HRESULT AddIDList(const CIDA* pCIDA);
-  /// ƒeƒLƒXƒg‚ğ’Ç‰Á‚·‚é.
+  /// ãƒ†ã‚­ã‚¹ãƒˆã‚’è¿½åŠ ã™ã‚‹.
   HRESULT AddText(string text);
-  /// URL‚ğ’Ç‰Á‚·‚é.
+  /// URLã‚’è¿½åŠ ã™ã‚‹.
   HRESULT AddURL(string url);
 };
 

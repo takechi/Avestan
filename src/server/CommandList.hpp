@@ -1,4 +1,4 @@
-// CommandList.hpp
+ï»¿// CommandList.hpp
 #pragma once
 
 class CommandList : public mew::Root<mew::implements<mew::ICommand>, mew::mixin<mew::StaticLife> > {
@@ -121,7 +121,7 @@ class MRUList : public CommandList {
     MRUEntry(MRUList& mru, mew::io::IEntry* entry) : CommandEntry(entry), m_owner(mru) {}
     void Invoke() {
       mew::ref<IUnknown> addref(OID);
-      m_owner.Remove(this);  // ‚±‚ÌuŠÔAQÆ”‚ªƒ[ƒ‚É‚È‚é‰Â”\«‚ª‚ ‚é
+      m_owner.Remove(this);  // ã“ã®ç¬é–“ã€å‚ç…§æ•°ãŒã‚¼ãƒ­ã«ãªã‚‹å¯èƒ½æ€§ãŒã‚ã‚‹
       theAvesta->OpenFolder(m_entry, avesta::NaviOpen);
     }
     mew::string get_Description() {
@@ -170,7 +170,7 @@ class MRUList : public CommandList {
       }
     }
   }
-  mew::string get_Description() { return _T("ÅŒã‚É•Â‚¶‚ç‚ê‚½ƒtƒHƒ‹ƒ_‚ğŠJ‚«‚Ü‚·"); }
+  mew::string get_Description() { return _T("æœ€å¾Œã«é–‰ã˜ã‚‰ã‚ŒãŸãƒ•ã‚©ãƒ«ãƒ€ã‚’é–‹ãã¾ã™"); }
 
   friend inline IStream& operator<<(IStream& stream, const MRUList& v) throw(...) {
     stream << v.m_queue.size();

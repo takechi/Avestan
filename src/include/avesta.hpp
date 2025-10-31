@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 
 #include "mew.hpp"
 #include "path.hpp"
@@ -14,7 +14,7 @@ HWND GetForm();
 HWND GetForm(DWORD dwThreadId);
 
 //==============================================================================
-// ÉIÉvÉVÉáÉì.
+// „Ç™„Éó„Ç∑„Éß„É≥.
 
 enum BoolOption {
   BoolCheckBox,
@@ -42,7 +42,7 @@ enum BoolOption {
 bool GetOption(BoolOption what);
 
 //==============================================================================
-// ÉtÉ@ÉCÉãëÄçÏ.
+// „Éï„Ç°„Ç§„É´Êìç‰Ωú.
 
 HRESULT FileNew(PCWSTR path);
 HRESULT FileDup(PCWSTR src, PCWSTR dst);
@@ -59,7 +59,7 @@ HRESULT FileOperationHack(HWND hwndProgress, HWND hwndOwner);
 HRESULT FileDialogSetPath(PCWSTR path);
 
 //==============================================================================
-// ÉåÉWÉXÉgÉä.
+// „É¨„Ç∏„Çπ„Éà„É™.
 
 HRESULT RegGetDWORD(HKEY hKey, PCWSTR subkey, PCWSTR value, DWORD* outDWORD);
 HRESULT RegSetDWORD(HKEY hKey, PCWSTR subkey, PCWSTR value, DWORD inDWORD);
@@ -74,7 +74,7 @@ HRESULT PathExecute(PCWSTR path, PCWSTR verb = nullptr, PCWSTR args = nullptr, P
 //HRESULT UrlDownload(PCWSTR url);
 
 //==============================================================================
-// ÉRÉ}ÉìÉhÉâÉCÉì.
+// „Ç≥„Éû„É≥„Éâ„É©„Ç§„É≥.
 
 __interface __declspec(uuid("7756E3FD-567D-4011-950F-4FC5F3AE75D4")) ICommandLine : IUnknown {
   bool Next(PWSTR * option, PWSTR * value);
@@ -84,13 +84,13 @@ __interface __declspec(uuid("7756E3FD-567D-4011-950F-4FC5F3AE75D4")) ICommandLin
 mew::ref<ICommandLine> ParseCommandLine(PCWSTR args);
 
 //==============================================================================
-// ÉEÉBÉìÉhÉE.
+// „Ç¶„Ç£„É≥„Éâ„Ç¶.
 
 HRESULT WindowClose(HWND hwnd);
 HRESULT WindowSetFocus(HWND hwnd);
 
 //==============================================================================
-// É_ÉCÉAÉçÉO.
+// „ÉÄ„Ç§„Ç¢„É≠„Ç∞.
 
 mew::ref<mew::io::IEntry> PathDialog(mew::string path = mew::null);
 HRESULT NameDialog(mew::IString** pp, mew::string path, mew::string name, UINT resID);

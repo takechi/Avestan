@@ -1,25 +1,25 @@
-/// @file meta.hpp
-/// ƒeƒ“ƒvƒŒ[ƒgƒƒ^ƒvƒƒOƒ‰ƒ~ƒ“ƒO.
-/// Loki, TTL ‚Ì‚ ‚½‚è‚ğƒpƒN‚è‚Ü‚µ‚½.
+ï»¿/// @file meta.hpp
+/// ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆãƒ¡ã‚¿ãƒ—ãƒ­ã‚°ãƒ©ãƒŸãƒ³ã‚°.
+/// Loki, TTL ã®ã‚ãŸã‚Šã‚’ãƒ‘ã‚¯ã‚Šã¾ã—ãŸ.
 #pragma once
 
 namespace mew {
-/// ƒRƒ“ƒpƒCƒ‹‚ÉŒ^‚ğˆµ‚¤.
+/// ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«æ™‚ã«å‹ã‚’æ‰±ã†.
 namespace meta {
 //==============================================================================
-// –³Œø.
+// ç„¡åŠ¹.
 
 struct Void;
 template <typename T>
 struct Void1;
 
 //==============================================================================
-/// Ã“I‚ÈŒ^î•ñ.
+/// é™çš„ãªå‹æƒ…å ±.
 template <typename T>
 struct TypeOf {
   enum {
-    is_pointer = 0,    ///< ƒ|ƒCƒ“ƒ^‚©”Û‚©.
-    is_reference = 0,  ///< QÆ‚©”Û‚©.
+    is_pointer = 0,    ///< ãƒã‚¤ãƒ³ã‚¿ã‹å¦ã‹.
+    is_reference = 0,  ///< å‚ç…§ã‹å¦ã‹.
   };
   using value_type = T;
   using pointer_type = T*;
@@ -327,12 +327,12 @@ struct DerivedToFront<Typelist<H, T> > {
 };
 
 //==============================================================================
-/// TList ‚Ì‚»‚ê‚¼‚ê‚Ì—v‘f Element ‚É‘Î‚µAPred<Status, Element>‚ğŒÄ‚Ño‚·.
-/// ŒJ‚è•Ô‚µ‚²‚Æ‚É Status = Pred<Status, Element>::Result ‚ªŸ‚ÌStatus‚Æ‚µ‚Äg—p‚³‚ê‚é.
+/// TList ã®ãã‚Œãã‚Œã®è¦ç´  Element ã«å¯¾ã—ã€Pred<Status, Element>ã‚’å‘¼ã³å‡ºã™.
+/// ç¹°ã‚Šè¿”ã—ã”ã¨ã« Status = Pred<Status, Element>::Result ãŒæ¬¡ã®Statusã¨ã—ã¦ä½¿ç”¨ã•ã‚Œã‚‹.
 template <class TList, class Status, template <class Status, class T> class Pred>
 struct Fold {
-  using Result = typename Fold<typename TList::Tail,                                 // c‚è
-                               typename Pred<Status, typename TList::Head>::Result,  // Head ‚ÌŒ‹‰Ê
+  using Result = typename Fold<typename TList::Tail,                                 // æ®‹ã‚Š
+                               typename Pred<Status, typename TList::Head>::Result,  // Head ã®çµæœ
                                Pred>::Result;
 };
 template <class Status, template <class, class> class Pred>
@@ -341,7 +341,7 @@ struct Fold<Void, Status, Pred> {
 };
 
 //==============================================================================
-/// TList ‚É T ‚æ‚è‚àŒp³‚Ì‰º—¬‚ÌƒNƒ‰ƒX‚ªŠÜ‚Ü‚ê‚Ä‚¢‚éê‡ATList‚©‚çT‚ğÁ‹‚·‚é.
+/// TList ã« T ã‚ˆã‚Šã‚‚ç¶™æ‰¿ã®ä¸‹æµã®ã‚¯ãƒ©ã‚¹ãŒå«ã¾ã‚Œã¦ã„ã‚‹å ´åˆã€TListã‹ã‚‰Tã‚’æ¶ˆå»ã™ã‚‹.
 template <class TList, class T>
 struct RemoveIfNotMostDerived {
   using Result =
@@ -349,15 +349,15 @@ struct RemoveIfNotMostDerived {
 };
 
 //==============================================================================
-/// TList ‚Ì’†‚Ì‚·‚×‚Ä‚ÌŒ^‚ÍA‚»‚ê‚æ‚è‚àã—¬‚ÌŒ^‚ªŠÜ‚Ü‚ê‚Ä‚¢‚È‚¢‚æ‚¤‚É‚·‚é.
+/// TList ã®ä¸­ã®ã™ã¹ã¦ã®å‹ã¯ã€ãã‚Œã‚ˆã‚Šã‚‚ä¸Šæµã®å‹ãŒå«ã¾ã‚Œã¦ã„ãªã„ã‚ˆã†ã«ã™ã‚‹.
 template <class TList>
 struct MostDerivedOnly {
   using Result = typename Fold<TList, TList, RemoveIfNotMostDerived>::Result;
 };
 
 //==============================================================================
-/// TList ‚ÉŠÜ‚Ü‚ê‚é‚·‚×‚Ä‚ÌŒ^‚ğ‘½dŒp³‚µ‚½ƒNƒ‰ƒX‚ğ’è‹`‚·‚é.
-/// GenScatterHierarchy‚ğ—˜—p‚µ‚½ê‡‚Í—]•ª‚Èvtable‚ª’Ç‰Á‚³‚ê‚é‚ªA‚±‚ÌƒNƒ‰ƒX‚Å‚ÍÅ“K‰»‚³‚ê‚Ä‚¢‚é.
+/// TList ã«å«ã¾ã‚Œã‚‹ã™ã¹ã¦ã®å‹ã‚’å¤šé‡ç¶™æ‰¿ã—ãŸã‚¯ãƒ©ã‚¹ã‚’å®šç¾©ã™ã‚‹.
+/// GenScatterHierarchyã‚’åˆ©ç”¨ã—ãŸå ´åˆã¯ä½™åˆ†ãªvtableãŒè¿½åŠ ã•ã‚Œã‚‹ãŒã€ã“ã®ã‚¯ãƒ©ã‚¹ã§ã¯æœ€é©åŒ–ã•ã‚Œã¦ã„ã‚‹.
 template <class TList>
 struct __declspec(novtable) Inherits : TList::Head, Inherits<typename TList::Tail> {
   using Head = typename TList::Head;
@@ -369,42 +369,42 @@ template <>
 struct __declspec(novtable) Inherits<Void> {};
 
 //==============================================================================
-/// TList ‚ª T ‚ğŠÜ‚ñ‚Å‚¢‚é‚©”Û‚©.
+/// TList ãŒ T ã‚’å«ã‚“ã§ã„ã‚‹ã‹å¦ã‹.
 template <class TList, class T>
 struct Contains {
   enum { value = (IndexOf<TList, T>::value != -1) };
 };
 
 //==============================================================================
-/// ·W‡‚ğ•Ô‚·.
+/// å·®é›†åˆã‚’è¿”ã™.
 template <class TLhs, class TRhs>
 struct Subtract {
-  /// TLhs‚Ì’†‚©‚çTRhs‚ÉŠÜ‚Ü‚ê‚éŒ^‚ğæ‚èœ‚­.
-  /// TRhs‚É‚ÍŠÜ‚Ü‚ê‚é‚ªATLhs‚ÉŠÜ‚Ü‚ê‚È‚¢Œ^‚É‚Â‚¢‚Ä‚Í‚È‚É‚à‚µ‚È‚¢.
+  /// TLhsã®ä¸­ã‹ã‚‰TRhsã«å«ã¾ã‚Œã‚‹å‹ã‚’å–ã‚Šé™¤ã.
+  /// TRhsã«ã¯å«ã¾ã‚Œã‚‹ãŒã€TLhsã«å«ã¾ã‚Œãªã„å‹ã«ã¤ã„ã¦ã¯ãªã«ã‚‚ã—ãªã„.
   using Result = typename Fold<TRhs, TLhs, Erase>::Result;
 };
 
 //==============================================================================
-/// ÏW‡‚ğ•Ô‚·.
+/// ç©é›†åˆã‚’è¿”ã™.
 template <class TLhs, class TRhs>
 struct Intersection {
  private:
   using UniqueLeft = typename NoDuplicates<TLhs>::Result;
 
  public:
-  /// TLhs‚ÆTRhs‚Ì—¼•û‚ÉŠÜ‚Ü‚ê‚éŒ^‚ğ“¾‚é.
+  /// TLhsã¨TRhsã®ä¸¡æ–¹ã«å«ã¾ã‚Œã‚‹å‹ã‚’å¾—ã‚‹.
   using Result = typename Subtract<UniqueLeft, typename Subtract<UniqueLeft, TRhs>::Result>::Result;
 };
 
 //==============================================================================
-/// ˜aW‡‚ğ•Ô‚·.
+/// å’Œé›†åˆã‚’è¿”ã™.
 template <class TLhs, class TRhs>
 struct Union {
-  /// TLhs‚Ì––”ö‚ÉTRhs‚ğ˜AŒ‹‚µAd•¡‚ğæ‚èœ‚­.
+  /// TLhsã®æœ«å°¾ã«TRhsã‚’é€£çµã—ã€é‡è¤‡ã‚’å–ã‚Šé™¤ã.
   using Result = typename NoDuplicates<typename Fold<TLhs, TRhs, Append>::Result>::Result;
 };
 
-//”r‘¼“I˜aW‡
+//æ’ä»–çš„å’Œé›†åˆ
 // Disjunction
 }  // namespace meta
 }  // namespace mew

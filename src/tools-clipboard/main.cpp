@@ -1,4 +1,4 @@
-// main.cpp
+ï»¿// main.cpp
 
 #include "stdafx.h"
 #include "std/str.hpp"
@@ -56,18 +56,18 @@ static void CopyTextToClipboard(const Ch* text) {
 }
 
 static PyObject* copy(PyObject* self, PyObject* args) {
-  // ‚Ü‚¸‚ÍUnicode‚Åæ“¾‚µ‚Ä‚İ‚é
+  // ã¾ãšã¯Unicodeã§å–å¾—ã—ã¦ã¿ã‚‹
   if (PWSTR wcs = ParseTupleForSingleUnicode(args)) {
     CopyTextToClipboard(wcs);
     Py_RETURN_NONE;
   }
-  // ¸”s‚µ‚½‚Ì‚ÅAString‚Åæ“¾‚µ‚Ä‚İ‚é
+  // å¤±æ•—ã—ãŸã®ã§ã€Stringã§å–å¾—ã—ã¦ã¿ã‚‹
   PyErr_Clear();
   if (PCSTR str = ParseTupleForSingleString(args)) {
     CopyTextToClipboard(str);
     Py_RETURN_NONE;
   }
-  // ‚¾‚ß‚ÛB
+  // ã ã‚ã½ã€‚
   return NULL;
 }
 
@@ -85,7 +85,7 @@ static PyObject* paste(PyObject* self, PyObject* args) {
   if (result) {
     return result.detach();
   }
-  // ‚¾‚ß‚ÛB
+  // ã ã‚ã½ã€‚
   return NULL;
 }
 

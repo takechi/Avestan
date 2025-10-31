@@ -1,4 +1,4 @@
-// ShellNotify.h
+﻿// ShellNotify.h
 #pragma once
 
 class SHNotifyBase {
@@ -58,25 +58,25 @@ class SHNotifyBase {
   }
 #ifdef _DEBUG
   void SHDumpEvent(LONG lEvent) {
-    // �V�F���̕ύX�ʒm
+    // シェルの変更通知
     if (lEvent & SHCNE_RENAMEITEM) {
-      // �A�C�e���̖��̂��ύX���ꂽ
+      // アイテムの名称が変更された
       TRACE(_T("OnSHChangeNotify($1) : SHCNE_RENAMEITEM"), m_nSHChangeNotifyID);
     }
     if (lEvent & SHCNE_CREATE) {
-      // �A�C�e�����쐬���ꂽ
+      // アイテムが作成された
       TRACE(_T("OnSHChangeNotify($1) : SHCNE_CREATE"), m_nSHChangeNotifyID);
     }
     if (lEvent & SHCNE_DELETE) {
-      // �A�C�e�����폜���ꂽ
+      // アイテムが削除された
       TRACE(_T("OnSHChangeNotify($1) : SHCNE_DELETE"), m_nSHChangeNotifyID);
     }
     if (lEvent & SHCNE_MKDIR) {
-      // �f�B���N�g�����쐬���ꂽ
+      // ディレクトリが作成された
       TRACE(_T("OnSHChangeNotify($1) : SHCNE_MKDIR"), m_nSHChangeNotifyID);
     }
     if (lEvent & SHCNE_RMDIR) {
-      // �f�B���N�g�����폜���ꂽ
+      // ディレクトリが削除された
       TRACE(_T("OnSHChangeNotify($1) : SHCNE_RMDIR"), m_nSHChangeNotifyID);
     }
     if (lEvent & SHCNE_MEDIAINSERTED) {
@@ -104,7 +104,7 @@ class SHNotifyBase {
       TRACE(_T("OnSHChangeNotify($1) : SHCNE_UPDATEDIR"), m_nSHChangeNotifyID);
     }
     if (lEvent & SHCNE_UPDATEITEM) {
-      // �t�H���_�E�A�C�e���̑������ύX���ꂽ
+      // フォルダ・アイテムの属性が変更された
       TRACE(_T("OnSHChangeNotify($1) : SHCNE_UPDATEITEM"), m_nSHChangeNotifyID);
     }
     if (lEvent & SHCNE_SERVERDISCONNECT) {
@@ -117,11 +117,11 @@ class SHNotifyBase {
       TRACE(_T("OnSHChangeNotify($1) : SHCNE_DRIVEADDGUI"), m_nSHChangeNotifyID);
     }
     if (lEvent & SHCNE_RENAMEFOLDER) {
-      // �t�H���_�̖��̂��ύX���ꂽ
+      // フォルダの名称が変更された
       TRACE(_T("OnSHChangeNotify($1) : SHCNE_RENAMEFOLDER"), m_nSHChangeNotifyID);
     }
     if (lEvent & SHCNE_FREESPACE) {
-      // �t���[�X�y�[�X����������
+      // フリースペースが増減した
       TRACE(_T("OnSHChangeNotify($1) : SHCNE_FREESPACE"), m_nSHChangeNotifyID);
     }
   }

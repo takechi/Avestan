@@ -1,4 +1,4 @@
-// afx.cpp
+ï»¿// afx.cpp
 
 #include "stdafx.h"
 #include "afx.hpp"
@@ -22,8 +22,8 @@ enum {
 
 #define INVALID_FUNCTION_POINTER ((void*)(UINT_PTR)-1)
 
-// ‚±‚ÌŠÖ”‚Í”r‘¼§Œä‚ğs‚í‚È‚­‚Ä—Ç‚¢B
-// –³‘Ê‚É‚Í‚È‚é‚ªA‚Ç‚¤‚¹“¯‚¶ƒ|ƒCƒ“ƒ^‚ªæ‚ê‚é‚Ì‚ÅB
+// ã“ã®é–¢æ•°ã¯æ’ä»–åˆ¶å¾¡ã‚’è¡Œã‚ãªãã¦è‰¯ã„ã€‚
+// ç„¡é§„ã«ã¯ãªã‚‹ãŒã€ã©ã†ã›åŒã˜ãƒã‚¤ãƒ³ã‚¿ãŒå–ã‚Œã‚‹ã®ã§ã€‚
 static bool DynamicLoadVoidPtr(void** fn, PCWSTR module, PCSTR name, int64_t index) throw() {
   ASSERT(fn);
   if (*fn == INVALID_FUNCTION_POINTER) {
@@ -127,7 +127,7 @@ HICON afx::ExtractIcon(PCWSTR filename, int index, int w, int h) {
 }
 
 //==============================================================================
-// ƒVƒFƒ‹ƒƒjƒ…[.
+// ã‚·ã‚§ãƒ«ãƒ¡ãƒ‹ãƒ¥ãƒ¼.
 
 namespace {
 class ShellMenuProvider : public ATL::CWindowImpl<ShellMenuProvider> {
@@ -204,7 +204,7 @@ HMENU afx::SHBeginContextMenu(IShellView* pView, UINT svgio, IContextMenu** ppMe
 }
 
 UINT afx::SHPopupContextMenu(IContextMenu* pMenu, HMENU hMenu, POINT ptScreen) {
-  // ƒZƒpƒŒ[ƒ^‚ª˜A‘±‚·‚é‚È‚ÇA•sv‹c‚Èƒƒjƒ…[‚ªæ“¾‚³‚ê‚Ä‚µ‚Ü‚¤‚±‚Æ‚ª‚ ‚é‚Ì‚ÅA®—‚·‚éB
+  // ã‚»ãƒ‘ãƒ¬ãƒ¼ã‚¿ãŒé€£ç¶šã™ã‚‹ãªã©ã€ä¸æ€è­°ãªãƒ¡ãƒ‹ãƒ¥ãƒ¼ãŒå–å¾—ã•ã‚Œã¦ã—ã¾ã†ã“ã¨ãŒã‚ã‚‹ã®ã§ã€æ•´ç†ã™ã‚‹ã€‚
   bool prevIsSeparator = true;
   for (int i = GetMenuItemCount(hMenu) - 1; i >= 0; --i) {
     MENUITEMINFO info = {sizeof(MENUITEMINFO), MIIM_TYPE};
@@ -245,7 +245,7 @@ HRESULT afx::SHEndContextMenu(IContextMenu* pMenu, int command, HWND hwnd, PWSTR
 }
 
 //==============================================================================
-// ƒNƒŠƒbƒvƒ{[ƒh.
+// ã‚¯ãƒªãƒƒãƒ—ãƒœãƒ¼ãƒ‰.
 
 namespace {
 template <class T>
@@ -259,7 +259,7 @@ static void WritePath(const CIDA* pCIDA, mew::Stream& stream, IShellFolder* pPar
     stream.write(desc.cFileName, (lstrlen(desc.cFileName)) * sizeof(T));
     stream.write(sep, seplen * sizeof(T));
   }
-  stream.write(_T("\0"), sizeof(T));  // ÅŒã‚ÍNULL
+  stream.write(_T("\0"), sizeof(T));  // æœ€å¾Œã¯NULL
 }
 
 template <class T>
@@ -272,7 +272,7 @@ HGLOBAL CreateTextT(const CIDA* pCIDA) {
   afx::ILGetPath(afx::CIDAGetParent(pCIDA), parentPath);
   ATLPath::AddBackslash(parentPath);
   UINT parentPathLength = mew::str::length(parentPath);
-  // ‘å‘Ì‚±‚ñ‚È‚à‚ñ‚ ‚ê‚Î\•ª‚¾‚ë‚¤B
+  // å¤§ä½“ã“ã‚“ãªã‚‚ã‚“ã‚ã‚Œã°ååˆ†ã ã‚ã†ã€‚
   UINT allocateBytes = (parentPathLength + 64) * afx::CIDAGetCount(pCIDA) * sizeof(T);
   mew::Stream stream;
   HGLOBAL hGlobal = mew::io::StreamCreateOnHGlobal(&stream, allocateBytes, false);
@@ -283,9 +283,9 @@ HGLOBAL CreateTextT(const CIDA* pCIDA) {
 }  // namespace
 
 HGLOBAL afx::CIDAToHDROP(const CIDA* pCIDA) {
-  // HDROP ‚ÍADROPFILES \‘¢‘Ì‚Ìƒwƒbƒ_‚ÌŒã‚ÉAƒ_ƒuƒ‹NULL‹æØ‚èƒtƒ@ƒCƒ‹–¼”z—ñ‚ª‘±‚­Œ`®B
-  // cc‚Æ‚¢‚¤‚±‚Æ‚ÍADragQueryFile() ‚Íw’è‚µ‚½ƒCƒ“ƒfƒbƒNƒX‚Ìƒtƒ@ƒCƒ‹–¼‚ğæ“¾‚·‚é‚Ì‚É
-  // ‚¢‚¿‚¢‚¿ƒ_ƒuƒ‹NULL‹æØ‚è•¶š—ñ‚ğƒXƒLƒƒƒ“‚µ‚Ä‚¢‚é‚Ì‚©ccB
+  // HDROP ã¯ã€DROPFILES æ§‹é€ ä½“ã®ãƒ˜ãƒƒãƒ€ã®å¾Œã«ã€ãƒ€ãƒ–ãƒ«NULLåŒºåˆ‡ã‚Šãƒ•ã‚¡ã‚¤ãƒ«åé…åˆ—ãŒç¶šãå½¢å¼ã€‚
+  // â€¦â€¦ã¨ã„ã†ã“ã¨ã¯ã€DragQueryFile() ã¯æŒ‡å®šã—ãŸã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®ãƒ•ã‚¡ã‚¤ãƒ«åã‚’å–å¾—ã™ã‚‹ã®ã«
+  // ã„ã¡ã„ã¡ãƒ€ãƒ–ãƒ«NULLåŒºåˆ‡ã‚Šæ–‡å­—åˆ—ã‚’ã‚¹ã‚­ãƒ£ãƒ³ã—ã¦ã„ã‚‹ã®ã‹â€¦â€¦ã€‚
   CComPtr<IShellFolder> pParentFolder;
   if FAILED (ILGetSelfFolder(afx::CIDAGetParent(pCIDA), &pParentFolder)) {
     return NULL;
@@ -294,7 +294,7 @@ HGLOBAL afx::CIDAToHDROP(const CIDA* pCIDA) {
   ILGetPath(afx::CIDAGetParent(pCIDA), parentPath);
   PathAddBackslash(parentPath);
   UINT parentPathLength = lstrlen(parentPath);
-  // ‘å‘Ì‚±‚ñ‚È‚à‚ñ‚ ‚ê‚Î\•ª‚¾‚ë‚¤B
+  // å¤§ä½“ã“ã‚“ãªã‚‚ã‚“ã‚ã‚Œã°ååˆ†ã ã‚ã†ã€‚
   UINT allocateBytes = sizeof(DROPFILES) + (parentPathLength + 64) * CIDAGetCount(pCIDA) * sizeof(TCHAR);
   mew::Stream stream;
   HGLOBAL hGlobal = mew::io::StreamCreateOnHGlobal(&stream, allocateBytes, false);
@@ -377,7 +377,7 @@ HRESULT afx::PathNormalize(WCHAR dst[MAX_PATH], PCWSTR src) {
     mew::str::copy(dst, src);
   } else {
     PathNormaizeSeparator(dst, src);
-    if (wcslen(dst) == 1 && iswalpha(src[0])) {  // "C" ‚Æ‚©B
+    if (wcslen(dst) == 1 && iswalpha(src[0])) {  // "C" ã¨ã‹ã€‚
       wcscat(dst, L":\\");
     }
   }
@@ -392,19 +392,19 @@ bool afx::PathIsRegistory(PCWSTR name) {
 
 bool afx::PathIsFolder(PCWSTR path) {
   if (PathIsDirectory(path)) {
-    return true;  // ƒfƒBƒŒƒNƒgƒŠ
+    return true;  // ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
   }
   PCTSTR ext = PathFindExtension(path);
   TCHAR key[MAX_PATH], def[MAX_PATH], command[MAX_PATH], buffer[MAX_PATH];
   if FAILED (avesta::RegGetString(HKEY_CLASSES_ROOT, ext, NULL, key)) {
-    return true;  // –¢“o˜^€–Ú
+    return true;  // æœªç™»éŒ²é …ç›®
   }
   wsprintf(buffer, _T("%s\\shell"), key);
   if FAILED (avesta::RegGetString(HKEY_CLASSES_ROOT, buffer, NULL, def)) {
-    return true;  // ƒGƒ‰[
+    return true;  // ã‚¨ãƒ©ãƒ¼
   }
   if (mew::str::equals_nocase(def, _T("explore"))) {
-    return true;  // ƒGƒNƒXƒvƒ[ƒ‰‚ÉŠÖ˜A•t‚¯
+    return true;  // ã‚¨ã‚¯ã‚¹ãƒ—ãƒ­ãƒ¼ãƒ©ã«é–¢é€£ä»˜ã‘
   }
   if (mew::str::empty(def)) {
     lstrcpy(def, _T("open"));
@@ -413,7 +413,7 @@ bool afx::PathIsFolder(PCWSTR path) {
   if FAILED (avesta::RegGetString(HKEY_CLASSES_ROOT, buffer, NULL, command)) {
     return true;
   }
-  return false;  // ‰½‚©ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ÉŠÖ˜A•t‚¯‚ç‚ê‚Ä‚¢‚½
+  return false;  // ä½•ã‹ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã«é–¢é€£ä»˜ã‘ã‚‰ã‚Œã¦ã„ãŸ
 }
 
 //==============================================================================
@@ -425,7 +425,7 @@ HRESULT afx::SHResolveLink(PCWSTR shortcut, PWSTR resolved) {
   }
   mew::str::clear(resolved);
 
-  // ƒIƒuƒWƒFƒNƒg‚Ìì¬
+  // ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä½œæˆ
   CComPtr<IShellLink> link;
   hr = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (void**)&link);
   if FAILED (hr) {
@@ -437,13 +437,13 @@ HRESULT afx::SHResolveLink(PCWSTR shortcut, PWSTR resolved) {
     return hr;
   }
 
-  // ƒVƒ‡[ƒgƒJƒbƒg‚ğ“Ç‚İ‚Ş
+  // ã‚·ãƒ§ãƒ¼ãƒˆã‚«ãƒƒãƒˆã‚’èª­ã¿è¾¼ã‚€
   hr = persist->Load(CT2CW(shortcut), STGM_READ);
   if FAILED (hr) {
     return hr;
   }
 
-  // ƒŠƒ“ƒNæ‚ÌƒpƒX‚ğ“¾‚é
+  // ãƒªãƒ³ã‚¯å…ˆã®ãƒ‘ã‚¹ã‚’å¾—ã‚‹
   hr = link->GetPath(resolved, MAX_PATH, NULL, SLGP_UNCPRIORITY);
   if FAILED (hr) {
     return hr;
@@ -452,7 +452,7 @@ HRESULT afx::SHResolveLink(PCWSTR shortcut, PWSTR resolved) {
 }
 
 //==============================================================================
-// ITEMIDLIST ŠÖ”.
+// ITEMIDLIST é–¢æ•°.
 
 LPITEMIDLIST afx::ILFromPath(PCWSTR path, DWORD* pdwAttr) {
   LPITEMIDLIST pidl = 0;
@@ -462,7 +462,7 @@ LPITEMIDLIST afx::ILFromPath(PCWSTR path, DWORD* pdwAttr) {
     return pidl;
   }
   if (pdwAttr) {
-    *pdwAttr = dwReserved;  // ƒ[ƒƒNƒŠƒA‚³‚ê‚Ä‚µ‚Ü‚¤‚Ì‚ÅA‚±‚±‚Å‚à‚¤ˆê“xƒZƒbƒg‚·‚é
+    *pdwAttr = dwReserved;  // ã‚¼ãƒ­ã‚¯ãƒªã‚¢ã•ã‚Œã¦ã—ã¾ã†ã®ã§ã€ã“ã“ã§ã‚‚ã†ä¸€åº¦ã‚»ãƒƒãƒˆã™ã‚‹
   }                         //
   size_t len = mew::str::length(path);
   if (len < 4 || path[0] != L':') {
@@ -486,7 +486,7 @@ LPITEMIDLIST afx::ILFromPath(PCWSTR path, DWORD* pdwAttr) {
         if SUCCEEDED (afx::ILGetParentFolder(pidl, &parent, &leaf)) {
           VERIFY_HRESULT(parent->GetAttributesOf(1, &leaf, pdwAttr));
         } else {
-          ASSERT(!"e‚ªæ“¾‚Å‚«‚È‚¢‚Á‚Ä‚Ç‚¤‚¢‚¤‚±‚Æ‚æH");
+          ASSERT(!"è¦ªãŒå–å¾—ã§ããªã„ã£ã¦ã©ã†ã„ã†ã“ã¨ã‚ˆï¼Ÿ");
           *pdwAttr &= SFGAO_FOLDER;
         }
       }
@@ -530,7 +530,7 @@ LPITEMIDLIST afx::ILFromExplorer(HWND hwnd) {
       if (wbhwnd == hwnd) {
         BSTR path;
         pwb->get_LocationURL(&path);
-        if (SysStringByteLen(path) != 0) {  // “ÁêƒtƒHƒ‹ƒ_‚Å‚Í‚È‚¢
+        if (SysStringByteLen(path) != 0) {  // ç‰¹æ®Šãƒ•ã‚©ãƒ«ãƒ€ã§ã¯ãªã„
           LPSHELLFOLDER pDesktopFolder;
           if (SUCCEEDED(::SHGetDesktopFolder(&pDesktopFolder))) {
             ULONG chEaten;
@@ -561,7 +561,7 @@ HRESULT afx::ILGetSelfFolder(LPCITEMIDLIST pidl, IShellFolder** ppFolder) {
 }
 
 //==============================================================================
-// CIDA ŠÖ”.
+// CIDA é–¢æ•°.
 
 HGLOBAL afx::CIDAFromSingleIDList(LPCITEMIDLIST pidl) {
   LPCITEMIDLIST leaf = ILFindLastID(pidl);
@@ -583,7 +583,7 @@ HGLOBAL afx::CIDAFromSingleIDList(LPCITEMIDLIST pidl) {
   p->cidl = 1;
   p->aoffset[0] = headerSize;
   p->aoffset[1] = headerSize + parentSize + 2;
-  // ––’[‚Í (WORD)0 ‚È‚Ì‚ÅAƒRƒs[‚µ‚È‚¢imemset()‚Å‚·‚Å‚Éƒ[ƒ‚ª–„‚ß‚ç‚ê‚Ä‚¢‚éj
+  // æœ«ç«¯ã¯ (WORD)0 ãªã®ã§ã€ã‚³ãƒ”ãƒ¼ã—ãªã„ï¼ˆmemset()ã§ã™ã§ã«ã‚¼ãƒ­ãŒåŸ‹ã‚ã‚‰ã‚Œã¦ã„ã‚‹ï¼‰
   memcpy(((BYTE*)p) + p->aoffset[0], pidl, parentSize);
   memcpy(((BYTE*)p) + p->aoffset[1], leaf, leafSize);
   ::GlobalUnlock(hGlobal);
@@ -595,7 +595,7 @@ HGLOBAL afx::CIDAFromSingleIDList(LPCITEMIDLIST pidl) {
 namespace {
 int ExpGetImageIndexForDrive(UINT type) {
   DWORD drives = GetLogicalDrives();
-  // FDD(A:)‚ğã‘‚«‚µ‚Ä‚µ‚Ü‚¤‚Ì‚ÅA2(C:)‚©‚çn‚ß‚é
+  // FDD(A:)ã‚’ä¸Šæ›¸ãã—ã¦ã—ã¾ã†ã®ã§ã€2(C:)ã‹ã‚‰å§‹ã‚ã‚‹
   for (int i = 2; i < 26; ++i) {
     if (drives & (1 << i)) {
       TCHAR path[] = _T("*:\\");
@@ -621,59 +621,59 @@ int ExpGetDummyFile(PCWSTR relpath) {
 
 int IconID_Index(int ID) {
   switch (ID) {
-    case 0:  // –¢’è‹`‚Ìƒtƒ@ƒCƒ‹
-    case 1:  // •W€‚Ì•¶‘
+    case 0:  // æœªå®šç¾©ã®ãƒ•ã‚¡ã‚¤ãƒ«
+    case 1:  // æ¨™æº–ã®æ–‡æ›¸
       return ExpGetDummyFile(L"..\\var\\unknown");
-    case 2:  // •W€‚Ì EXE, COM ƒtƒ@ƒCƒ‹
+    case 2:  // æ¨™æº–ã® EXE, COM ãƒ•ã‚¡ã‚¤ãƒ«
       return ExpGetDummyFile(L"..\\var\\unknown.exe");
-    case 3:  // •Â‚¶‚½ó‘Ô‚ÌƒtƒHƒ‹ƒ_
+    case 3:  // é–‰ã˜ãŸçŠ¶æ…‹ã®ãƒ•ã‚©ãƒ«ãƒ€
       return afx::ExpGetImageIndexForFolder();
-    case 4:  // ŠJ‚¢‚Ä‚éƒtƒHƒ‹ƒ_
+    case 4:  // é–‹ã„ã¦ã‚‹ãƒ•ã‚©ãƒ«ãƒ€
       break;
     case 5:  // Floppy Drive (5.25)
     case 6:  // Floppy Drive (3.5)
       return afx::ExpGetImageIndex(_T("A:\\"));
-    case 7:  // ƒŠƒ€[ƒoƒuƒ‹ƒhƒ‰ƒCƒu
+    case 7:  // ãƒªãƒ ãƒ¼ãƒãƒ–ãƒ«ãƒ‰ãƒ©ã‚¤ãƒ–
       return ExpGetImageIndexForDrive(DRIVE_REMOVABLE);
-    case 8:  // ƒn[ƒhƒhƒ‰ƒCƒu
+    case 8:  // ãƒãƒ¼ãƒ‰ãƒ‰ãƒ©ã‚¤ãƒ–
       return ExpGetImageIndexForDrive(DRIVE_FIXED);
-    case 9:  // ƒlƒbƒgƒ[ƒNƒhƒ‰ƒCƒu
+    case 9:  // ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ãƒ‰ãƒ©ã‚¤ãƒ–
       return ExpGetImageIndexForDrive(DRIVE_REMOTE);
-    case 10:  // ƒlƒbƒgƒ[ƒNƒhƒ‰ƒCƒuiƒIƒtƒ‰ƒCƒ“j
+    case 10:  // ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ãƒ‰ãƒ©ã‚¤ãƒ–ï¼ˆã‚ªãƒ•ãƒ©ã‚¤ãƒ³ï¼‰
       break;
     case 11:  // CD Drive
       return ExpGetImageIndexForDrive(DRIVE_CDROM);
-    case 12:  // ‰¼‘z RAM ƒhƒ‰ƒCƒu
+    case 12:  // ä»®æƒ³ RAM ãƒ‰ãƒ©ã‚¤ãƒ–
       return ExpGetImageIndexForDrive(DRIVE_RAMDISK);
-    case 13:  // ƒlƒbƒgƒ[ƒN‘S‘Ì
+    case 13:  // ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯å…¨ä½“
       return afx::ExpGetImageIndex(CSIDL_NETWORK);
-    case 17:  // ƒlƒbƒgƒ[ƒNƒRƒ“ƒsƒ…[ƒ^
+    case 17:  // ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ã‚³ãƒ³ãƒ”ãƒ¥ãƒ¼ã‚¿
       break;
-    case 18:  // ƒ[ƒNƒOƒ‹[ƒv
+    case 18:  // ãƒ¯ãƒ¼ã‚¯ã‚°ãƒ«ãƒ¼ãƒ—
       break;
-    case 19:  // ƒvƒƒOƒ‰ƒ€iƒXƒ^[ƒgƒƒjƒ…[j
+    case 19:  // ãƒ—ãƒ­ã‚°ãƒ©ãƒ ï¼ˆã‚¹ã‚¿ãƒ¼ãƒˆãƒ¡ãƒ‹ãƒ¥ãƒ¼ï¼‰
       return afx::ExpGetImageIndex(CSIDL_STARTMENU);
-    case 20:  // Å‹ßg‚Á‚½ƒtƒ@ƒCƒ‹iƒXƒ^[ƒgƒƒjƒ…[j
+    case 20:  // æœ€è¿‘ä½¿ã£ãŸãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆã‚¹ã‚¿ãƒ¼ãƒˆãƒ¡ãƒ‹ãƒ¥ãƒ¼ï¼‰
       return afx::ExpGetImageIndex(CSIDL_RECENT);
-    case 21:  // İ’èiƒXƒ^[ƒgƒƒjƒ…[j
-    case 22:  // ŒŸõiƒXƒ^[ƒgƒƒjƒ…[j
-    case 23:  // ƒwƒ‹ƒviƒXƒ^[ƒgƒƒjƒ…[j
-    case 24:  // ƒtƒ@ƒCƒ‹–¼‚ğw’è‚µ‚ÄÀsiƒXƒ^[ƒgƒƒjƒ…[j
-    case 25:  // ƒTƒXƒyƒ“ƒhiƒXƒ^[ƒgƒƒjƒ…[j
-    case 26:  // ƒhƒbƒLƒ“ƒOƒXƒe[ƒVƒ‡ƒ“iƒXƒ^[ƒgƒƒjƒ…[j
-    case 27:  // Windows ‚ÌI—¹iƒXƒ^[ƒgƒƒjƒ…[j
-    case 28:  // ƒVƒFƒAƒtƒHƒ‹ƒ_—pƒAƒCƒRƒ“
-    case 29:  // ƒVƒ‡[ƒgƒJƒbƒg‚Ì¬‚³‚¢–îˆó
+    case 21:  // è¨­å®šï¼ˆã‚¹ã‚¿ãƒ¼ãƒˆãƒ¡ãƒ‹ãƒ¥ãƒ¼ï¼‰
+    case 22:  // æ¤œç´¢ï¼ˆã‚¹ã‚¿ãƒ¼ãƒˆãƒ¡ãƒ‹ãƒ¥ãƒ¼ï¼‰
+    case 23:  // ãƒ˜ãƒ«ãƒ—ï¼ˆã‚¹ã‚¿ãƒ¼ãƒˆãƒ¡ãƒ‹ãƒ¥ãƒ¼ï¼‰
+    case 24:  // ãƒ•ã‚¡ã‚¤ãƒ«åã‚’æŒ‡å®šã—ã¦å®Ÿè¡Œï¼ˆã‚¹ã‚¿ãƒ¼ãƒˆãƒ¡ãƒ‹ãƒ¥ãƒ¼ï¼‰
+    case 25:  // ã‚µã‚¹ãƒšãƒ³ãƒ‰ï¼ˆã‚¹ã‚¿ãƒ¼ãƒˆãƒ¡ãƒ‹ãƒ¥ãƒ¼ï¼‰
+    case 26:  // ãƒ‰ãƒƒã‚­ãƒ³ã‚°ã‚¹ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ï¼ˆã‚¹ã‚¿ãƒ¼ãƒˆãƒ¡ãƒ‹ãƒ¥ãƒ¼ï¼‰
+    case 27:  // Windows ã®çµ‚äº†ï¼ˆã‚¹ã‚¿ãƒ¼ãƒˆãƒ¡ãƒ‹ãƒ¥ãƒ¼ï¼‰
+    case 28:  // ã‚·ã‚§ã‚¢ãƒ•ã‚©ãƒ«ãƒ€ç”¨ã‚¢ã‚¤ã‚³ãƒ³
+    case 29:  // ã‚·ãƒ§ãƒ¼ãƒˆã‚«ãƒƒãƒˆã®å°ã•ã„çŸ¢å°
       break;
-    case 34:  // ƒfƒXƒNƒgƒbƒv
+    case 34:  // ãƒ‡ã‚¹ã‚¯ãƒˆãƒƒãƒ—
       return afx::ExpGetImageIndex(CSIDL_DESKTOP);
-    case 36:  // ƒvƒƒOƒ‰ƒ€ƒOƒ‹[ƒv
-    case 40:  // ‰¹Šy CD
-    case 44:  // ƒƒOƒIƒt
+    case 36:  // ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚°ãƒ«ãƒ¼ãƒ—
+    case 40:  // éŸ³æ¥½ CD
+    case 44:  // ãƒ­ã‚°ã‚ªãƒ•
     default:
       break;
   }
-  TRACE(L"TODO: IconID_Index($1) ‚ğ“Á’è‚·‚é•û–@‚ª•ª‚©‚è‚Ü‚¹‚ñ", ID);
+  TRACE(L"TODO: IconID_Index($1) ã‚’ç‰¹å®šã™ã‚‹æ–¹æ³•ãŒåˆ†ã‹ã‚Šã¾ã›ã‚“", ID);
   return -1;
 }
 void OverrideIcons(IImageList* imagelist[], size_t count) {
@@ -788,7 +788,7 @@ int afx::ExpGetImageIndex(int csidl) {
 }
 
 int afx::ExpGetImageIndexForFolder() {
-  // XXX: exe‚ª’u‚©‚ê‚Ä‚¢‚éƒpƒX‚ÍA“Á•Ê‚ÈƒAƒCƒRƒ“‚ªw’è‚³‚ê‚Ä‚¢‚È‚¢‚Æ‰¼’è‚·‚é
+  // XXX: exeãŒç½®ã‹ã‚Œã¦ã„ã‚‹ãƒ‘ã‚¹ã¯ã€ç‰¹åˆ¥ãªã‚¢ã‚¤ã‚³ãƒ³ãŒæŒ‡å®šã•ã‚Œã¦ã„ãªã„ã¨ä»®å®šã™ã‚‹
   TCHAR path[MAX_PATH];
   ::GetModuleFileName(NULL, path, MAX_PATH);
   ::PathRemoveFileSpec(path);
@@ -842,7 +842,7 @@ static UINT FindGroupItem(HMENU hMenu, HMENU* phMenuParent) {
     info.dwTypeData = text;
     info.cch = MAX_PATH;
     if (::GetMenuItemInfo(hMenu, i, TRUE, &info)) {
-      if (mew::str::equals(text, _T("ƒOƒ‹[ƒv‚Å•\¦(&G)"))) {
+      if (mew::str::equals(text, _T("ã‚°ãƒ«ãƒ¼ãƒ—ã§è¡¨ç¤º(&G)"))) {
         if (phMenuParent) {
           *phMenuParent = hMenu;
         }
@@ -895,7 +895,7 @@ bool afx::ExpEnableGroup(IShellView* pShellView, bool enable) {
   CComPtr<IContextMenu> menu;
   HRESULT hr = GetGroupMenuItem(pShellView, &menu, &cmd);
   if FAILED (hr) {
-    ASSERT(!"ƒOƒ‹[ƒvØ‚è‘Ö‚¦ƒƒjƒ…[‚ªŒ©‚Â‚©‚ç‚È‚¢");
+    ASSERT(!"ã‚°ãƒ«ãƒ¼ãƒ—åˆ‡ã‚Šæ›¿ãˆãƒ¡ãƒ‹ãƒ¥ãƒ¼ãŒè¦‹ã¤ã‹ã‚‰ãªã„");
     return false;
   }
   if ((hr == S_OK && enable) || (hr == S_FALSE && !enable)) {
@@ -907,7 +907,7 @@ bool afx::ExpEnableGroup(IShellView* pShellView, bool enable) {
   if SUCCEEDED (menu->InvokeCommand(&cmi)) {
     return enable;
   }
-  ASSERT(!"ƒOƒ‹[ƒvØ‚è‘Ö‚¦‚É¸”s");
+  ASSERT(!"ã‚°ãƒ«ãƒ¼ãƒ—åˆ‡ã‚Šæ›¿ãˆã«å¤±æ•—");
   return false;
 }
 
@@ -936,7 +936,7 @@ HRESULT afx::ExpGetNavigateSound(PWSTR path) {
 }
 
 //==============================================================================
-// ƒEƒBƒ“ƒhƒE‘€ìŠÖŒW
+// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦æ“ä½œé–¢ä¿‚
 
 namespace {
 inline void RestoreKeyState(BYTE* keys, UINT vkey) { keys[vkey] = (BYTE)(((UINT)GetAsyncKeyState(vkey) & 0x8000U) >> 8); }
@@ -986,7 +986,7 @@ bool afx::PumpMessage() {
   while (::PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
     switch (msg.message) {
       case WM_NULL:
-        // WH_GETMESSAGE ‚Åˆ—‚³‚êAæ‚èÁ‚³‚ê‚½ƒƒbƒZ[ƒW‚Í ID ‚ª WM_NULL ‚É‘‚«Š·‚¦‚ç‚ê‚Ä‚¢‚éB
+        // WH_GETMESSAGE ã§å‡¦ç†ã•ã‚Œã€å–ã‚Šæ¶ˆã•ã‚ŒãŸãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã¯ ID ãŒ WM_NULL ã«æ›¸ãæ›ãˆã‚‰ã‚Œã¦ã„ã‚‹ã€‚
         continue;
       case WM_QUIT:
         return false;
@@ -1061,10 +1061,10 @@ HRESULT afx::TipRelayEvent(HWND hTip, HWND hOwner, int xScreen, int yScreen) {
 }
 
 //==============================================================================
-// ƒGƒfƒBƒbƒg.
+// ã‚¨ãƒ‡ã‚£ãƒƒãƒˆ.
 
 namespace {
-// respects "‚¨”E‚ÑƒŠƒl[ƒ€" : http://www.digidigiday.com/
+// respects "ãŠå¿ã³ãƒªãƒãƒ¼ãƒ " : http://www.digidigiday.com/
 class OshinobiEdit : public ATL::CWindowImpl<OshinobiEdit, WTL::CEdit> {
  private:
   const bool m_isDirectory;
@@ -1097,7 +1097,7 @@ class OshinobiEdit : public ATL::CWindowImpl<OshinobiEdit, WTL::CEdit> {
       return len;
     }
     PCTSTR ext = ::PathFindExtension(text);
-    int beg = ext - text + 1;  // +1 ‚Í . ‚Ì‚Ô‚ñB
+    int beg = ext - text + 1;  // +1 ã¯ . ã®ã¶ã‚“ã€‚
     return (beg > len) ? -1 : beg;
   }
   void SelectBaseName() {
@@ -1239,7 +1239,7 @@ class OshinobiEdit : public ATL::CWindowImpl<OshinobiEdit, WTL::CEdit> {
   void MoveCursor(UINT vk) { PressKey(vk, GetShiftModifier()); }
 
   LRESULT OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-#define CTRL(k) ((k) - 'A' + 1)  // © ‚ç‚µ‚¢BÚ×•s–¾BƒVƒtƒg‚ª‰Ÿ‚³‚ê‚Ä‚à•Ï‚í‚ç‚È‚¢B
+#define CTRL(k) ((k) - 'A' + 1)  // â† ã‚‰ã—ã„ã€‚è©³ç´°ä¸æ˜ã€‚ã‚·ãƒ•ãƒˆãŒæŠ¼ã•ã‚Œã¦ã‚‚å¤‰ã‚ã‚‰ãªã„ã€‚
     switch (m_options & afx::KeybindMask) {
       case afx::KeybindAtok:
         if (::GetKeyState(VK_CONTROL) & 0x8000) {
@@ -1370,7 +1370,7 @@ HRESULT afx::Edit_SubclassSingleLineTextBox(HWND hwndEdit, LPCWSTR fullpath, DWO
 }
 
 //==============================================================================
-// ƒŠƒXƒgƒrƒ…[.
+// ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼.
 
 namespace {
 int ListView_GetMaxColumnWidth(HWND hwndListView, HWND hwndHeader, int index) {
@@ -1403,7 +1403,7 @@ int ListView_GetMaxColumnWidth(HWND hwndListView, HWND hwndHeader, int index) {
     width += 16;  // icon
     width += 4 * ListView_LabelMargin;
     if (ListView_GetExtendedListViewStyle(hwndListView) & LVS_EX_CHECKBOXES) {
-      width += GetSystemMetrics(SM_CXMENUCHECK);  // ƒƒjƒ…[‚ÆƒŠƒXƒgƒrƒ…[‚Íˆá‚¤‚æ‚¤‚È‹C‚à‚·‚é‚ªccB
+      width += GetSystemMetrics(SM_CXMENUCHECK);  // ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã¨ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ã¯é•ã†ã‚ˆã†ãªæ°—ã‚‚ã™ã‚‹ãŒâ€¦â€¦ã€‚
     }
   } else {
     width += 8 * ListView_LabelMargin;
@@ -1435,8 +1435,8 @@ HRESULT afx::ListView_AdjustToWindow(HWND hwndListView) {
   RECT rcClient;
   ::GetClientRect(hwndListView, &rcClient);
   const int wClient = rcClient.right - rcClient.left;
-  if (wClient < wTotal) {            // ƒNƒ‰ƒCƒAƒ“ƒg•‚ª‘«‚è‚È‚¢
-    if (wMin * columns > wClient) {  // ˆê”Ô‹·‚¢ƒJƒ‰ƒ€‚æ‚è‚à‹·‚¢B‚¾‚ß‚ÛB
+  if (wClient < wTotal) {            // ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆå¹…ãŒè¶³ã‚Šãªã„
+    if (wMin * columns > wClient) {  // ä¸€ç•ªç‹­ã„ã‚«ãƒ©ãƒ ã‚ˆã‚Šã‚‚ç‹­ã„ã€‚ã ã‚ã½ã€‚
       for (int i = 0; i < columns; ++i) {
         width[i] = wClient / columns;
       }
@@ -1447,8 +1447,8 @@ HRESULT afx::ListView_AdjustToWindow(HWND hwndListView) {
         width[i] = wMin + ((width[i] - wMin) * remainClient / remainTotal);
       }
     }
-  } else {                               // ƒNƒ‰ƒCƒAƒ“ƒg•‚Í\•ª
-    for (int i = 0; i < columns; ++i) {  // ‚ ‚ñ‚Ü‚èL‚­‚È‚è‚·‚¬‚Ä‚à¢‚é‚Ì‚ÅA1.5”{‚Å‚Æ‚ß‚Ä‚¨‚­
+  } else {                               // ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆå¹…ã¯ååˆ†
+    for (int i = 0; i < columns; ++i) {  // ã‚ã‚“ã¾ã‚Šåºƒããªã‚Šã™ãã¦ã‚‚å›°ã‚‹ã®ã§ã€1.5å€ã§ã¨ã‚ã¦ãŠã
       width[i] = mew::math::min(width[i] * 3 / 2, width[i] * wClient / wTotal);
     }
   }
@@ -1483,17 +1483,17 @@ HRESULT afx::ListView_GetSortKey(HWND hwndListView, int* column, bool* ascending
   const int headerCount = Header_GetItemCount(hwndHeader);
   *column = ListView_GetSelectedColumn(hwndListView);
   *ascending = false;
-  // SelectedColumn ‚Æ Header ‚ÌŠÖŒW‚ª‚¨‚©‚µ‚­‚È‚Á‚Ä‚¢‚éê‡‚ª‚ ‚é‚Ì‚Å
+  // SelectedColumn ã¨ Header ã®é–¢ä¿‚ãŒãŠã‹ã—ããªã£ã¦ã„ã‚‹å ´åˆãŒã‚ã‚‹ã®ã§
   for (int i = 0; i < headerCount; ++i) {
     HDITEM info = {HDI_FORMAT};
     Header_GetItem(hwndHeader, i, &info);
     if (i == *column) {
-      if ((info.fmt & (HDF_SORTUP | HDF_SORTDOWN)) == 0) {  // SelectedColumn ‚È‚Ì‚É‚Éƒ\[ƒgƒ}[ƒN‚ª•t‚¢‚Ä‚¢‚È‚¢I
+      if ((info.fmt & (HDF_SORTUP | HDF_SORTDOWN)) == 0) {  // SelectedColumn ãªã®ã«ã«ã‚½ãƒ¼ãƒˆãƒãƒ¼ã‚¯ãŒä»˜ã„ã¦ã„ãªã„ï¼
         *column = -1;                                       // invalid
         return E_UNEXPECTED;
       }
       *ascending = ((info.fmt & HDF_SORTDOWN) == HDF_SORTDOWN);
-    } else if (info.fmt & (HDF_SORTUP | HDF_SORTDOWN)) {  // SelectedColumn ˆÈŠO‚Éƒ\[ƒgƒ}[ƒN‚ª•t‚¢‚Ä‚¢‚éI
+    } else if (info.fmt & (HDF_SORTUP | HDF_SORTDOWN)) {  // SelectedColumn ä»¥å¤–ã«ã‚½ãƒ¼ãƒˆãƒãƒ¼ã‚¯ãŒä»˜ã„ã¦ã„ã‚‹ï¼
       *column = -1;                                       // invalid
       return E_UNEXPECTED;
     }
@@ -1514,7 +1514,7 @@ HRESULT afx::ListView_SetSortKey(HWND hwndListView, int column, bool ascending) 
   if (column >= Header_GetItemCount(hwndHeader)) {
     return E_INVALIDARG;
   }
-  for (int i = 0; i < 10; ++i) {  // •Ï‚È‚±‚Æ‚ª‹N‚±‚Á‚Ä–³ŒÀƒ‹[ƒv‚É‚È‚é‚Ì‚ğ–h‚®‚½‚ßB
+  for (int i = 0; i < 10; ++i) {  // å¤‰ãªã“ã¨ãŒèµ·ã“ã£ã¦ç„¡é™ãƒ«ãƒ¼ãƒ—ã«ãªã‚‹ã®ã‚’é˜²ããŸã‚ã€‚
     NMLISTVIEW notify = {hwndListView, static_cast<UINT_PTR>(::GetDlgCtrlID(hwndListView)), LVN_COLUMNCLICK, -1, column};
     ::SendMessage(hwndOwner, WM_NOTIFY, notify.hdr.idFrom, (LPARAM)&notify);
     int c;
@@ -1543,7 +1543,7 @@ HRESULT afx::ListView_SelectReverse(HWND hwndListView) {
       }
     }
   }
-  // ˆÈ‘O‚ÌƒtƒH[ƒJƒX‚ÉÅ‚à‹ß‚¢A‘I‘ğ’†‚Ì€–Ú‚ğƒtƒH[ƒJƒX‚·‚éB
+  // ä»¥å‰ã®ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã«æœ€ã‚‚è¿‘ã„ã€é¸æŠä¸­ã®é …ç›®ã‚’ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã™ã‚‹ã€‚
   if (focusNext < count) {
     ListView_SetItemState(hwndListView, focusNext, LVIS_FOCUSED, LVIS_FOCUSED);
     ListView_EnsureVisible(hwndListView, focusNext, false);
@@ -1552,15 +1552,15 @@ HRESULT afx::ListView_SelectReverse(HWND hwndListView) {
 }
 
 //==============================================================================
-// ƒRƒ“ƒ{ƒ{ƒbƒNƒX.
+// ã‚³ãƒ³ãƒœãƒœãƒƒã‚¯ã‚¹.
 
 bool afx::ComboBoxEx_IsAutoCompleting(HWND hwndComboBoxEx) {
   HWND hwndEdit = ComboBoxEx_GetEdit(hwndComboBoxEx);
   HWND hwndCombo = ComboBoxEx_GetCombo(hwndComboBoxEx);
   RECT rc;
   ::GetWindowRect(hwndEdit, &rc);
-  // TODO: ƒEƒBƒ“ƒhƒE‚ª‰º‚Ì‚Ù‚¤‚É‚ ‚é‚ÆA•ÛŠÇƒEƒBƒ“ƒhƒE‚ªã‘¤‚Éo‚éB
-  // ‚±‚ê‚¾‚¯‚Å‚Í”»’è‚Å‚«‚È‚¢‚ÛB
+  // TODO: ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒä¸‹ã®ã»ã†ã«ã‚ã‚‹ã¨ã€ä¿ç®¡ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒä¸Šå´ã«å‡ºã‚‹ã€‚
+  // ã“ã‚Œã ã‘ã§ã¯åˆ¤å®šã§ããªã„ã½ã€‚
   POINT pt = {(rc.left + rc.right) / 2, rc.bottom + 1};
   HWND hwnd = WindowFromPoint(pt);
   TCHAR classname[64];

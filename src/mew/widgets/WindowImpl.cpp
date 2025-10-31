@@ -1,4 +1,4 @@
-// WindowImpl.cpp
+ï»¿// WindowImpl.cpp
 
 #include "stdafx.h"
 #include "../private.h"
@@ -41,8 +41,8 @@ bool CWindowEx::DragDetect(POINT pt) {
           ::ReleaseCapture();
           return true;
         }
-      } else {  // ‘¼‚ÌƒEƒBƒ“ƒhƒE‚ª WM_MOUSEMOVE ‚ğó‚¯æ‚Á‚Ä‚¢‚éI
-        // ƒLƒƒƒvƒ`ƒƒ‚ª‰ğœ‚³‚ê‚½‚Éˆá‚¢‚È‚¢I
+      } else {  // ä»–ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒ WM_MOUSEMOVE ã‚’å—ã‘å–ã£ã¦ã„ã‚‹ï¼
+        // ã‚­ãƒ£ãƒ—ãƒãƒ£ãŒè§£é™¤ã•ã‚ŒãŸã«é•ã„ãªã„ï¼
         return false;
       }
     } else if (msg.message == WM_QUIT || (WM_MOUSEFIRST <= msg.message && msg.message <= WM_MOUSELAST) ||
@@ -120,7 +120,7 @@ LRESULT WindowImplBase::OnForwardMsg(IWindow* self, UINT uMsg, WPARAM wParam, LP
 LRESULT WindowImplBase::OnCopyData(IWindow* self, UINT, WPARAM wParam, LPARAM lParam, BOOL&) {
   COPYDATASTRUCT* data = (COPYDATASTRUCT*)lParam;
   if (data->dwData == 'STRW') {
-    // XXX: ––”ö‚ÌNULL•¶š‚ğŠÜ‚ñ‚Å‚µ‚Ü‚¤‚©‚àB
+    // XXX: æœ«å°¾ã®NULLæ–‡å­—ã‚’å«ã‚“ã§ã—ã¾ã†ã‹ã‚‚ã€‚
     string text((PCWSTR)data->lpData, data->cbData / sizeof(WCHAR));
     if (text) {
       PostMessage(MEW_ECHO_COPYDATA, 0, (LPARAM)text.detach());
@@ -234,27 +234,27 @@ void CWindowEx::Dispose()
 
 void CWindowEx::OnFinalMessage(HWND)
 {
-        Dispose(); // WM_DESTROY‚©‚ç‚àŒÄ‚Î‚ê‚é‚ªA”O‚Ì‚½‚ßB
-        this->Release(); // HWND ‚Æ‚µ‚Ä•Û‚³‚ê‚é•ª.
+        Dispose(); // WM_DESTROYã‹ã‚‰ã‚‚å‘¼ã°ã‚Œã‚‹ãŒã€å¿µã®ãŸã‚ã€‚
+        this->Release(); // HWND ã¨ã—ã¦ä¿æŒã•ã‚Œã‚‹åˆ†.
 }
 
 LRESULT CWindowEx::OnNcCreate(UINT, WPARAM, LPARAM, BOOL& bHandled)
 {
         m_msgr.create(__uuidof(Messenger));
-        this->AddRef(); // HWND ‚Æ‚µ‚Ä•Û‚³‚ê‚é•ª.
+        this->AddRef(); // HWND ã¨ã—ã¦ä¿æŒã•ã‚Œã‚‹åˆ†.
         bHandled = false;
         return 0;
 }
 
 LRESULT CWindowEx::OnDestroy(UINT, WPARAM, LPARAM, BOOL& bHandled)
 {
-        // WM_DESTROY ’†‚ÉAÄ‚Ñ DestroyWindow() ‚Å‚«‚Ä‚µ‚Ü‚¤I
-        // WINSTATE_DESTROYING ƒtƒ‰ƒO‚Å“ñd‚Í‹C‚ğ—}§‚·‚éB
+        // WM_DESTROY ä¸­ã«ã€å†ã³ DestroyWindow() ã§ãã¦ã—ã¾ã†ï¼
+        // WINSTATE_DESTROYING ãƒ•ãƒ©ã‚°ã§äºŒé‡ã¯æ°—ã‚’æŠ‘åˆ¶ã™ã‚‹ã€‚
         if((m_dwState & WINSTATE_DESTROYING) == 0)
         {
                 m_dwState |= WINSTATE_DESTROYING;
-                // ‘€ìŒnƒƒbƒZ[ƒW‚ª³í‚Éˆ—‚³‚ê‚é‚Ì‚ÍAWM_DESTROY’¼‘O‚Ü‚ÅB
-                // ‚»‚Ì‚½‚ßA‚±‚ÌêŠ‚Å@Dispose ‚ğŒÄ‚Ño‚·‚Ì‚ª‚æ‚¢B
+                // æ“ä½œç³»ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãŒæ­£å¸¸ã«å‡¦ç†ã•ã‚Œã‚‹ã®ã¯ã€WM_DESTROYç›´å‰ã¾ã§ã€‚
+                // ãã®ãŸã‚ã€ã“ã®å ´æ‰€ã§ã€€Dispose ã‚’å‘¼ã³å‡ºã™ã®ãŒã‚ˆã„ã€‚
                 Dispose();
         }
         bHandled = false;
@@ -265,7 +265,7 @@ LRESULT CWindowEx::OnLayout(UINT, WPARAM, LPARAM, BOOL&)
 {
         MSG msg;
         if(PeekMessage(&msg, m_hWnd, WM_LAYOUT, WM_LAYOUT, PM_NOREMOVE))
-        { // WM_LAYOUTƒƒbƒZ[ƒW‚ªc‚Á‚Ä‚¢‚é‚Ì‚ÅA¡‰ñ‚ÍƒXƒLƒbƒvB
+        { // WM_LAYOUTãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãŒæ®‹ã£ã¦ã„ã‚‹ã®ã§ã€ä»Šå›ã¯ã‚¹ã‚­ãƒƒãƒ—ã€‚
         }
         else
         {
@@ -295,7 +295,7 @@ LRESULT CWindowEx::OnForwardMsg(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&)
 LRESULT CWindowEx::OnGetUnknown(UINT, WPARAM, LPARAM, BOOL&)
 {
         if(!m_msgr)
-        { // ”jŠü’†A‰ºè‚ğ‚·‚é‚Æ‚·‚Å‚ÉRelease()Ï‚İ‚È‚Ì‚ÅAâ‘Î‚ÉAddRef()‚µ‚Ä‚Í‚È‚ç‚È‚¢
+        { // ç ´æ£„ä¸­ã€ä¸‹æ‰‹ã‚’ã™ã‚‹ã¨ã™ã§ã«Release()æ¸ˆã¿ãªã®ã§ã€çµ¶å¯¾ã«AddRef()ã—ã¦ã¯ãªã‚‰ãªã„
                 return 0;
         }
         this->AddRef();

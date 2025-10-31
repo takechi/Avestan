@@ -1,4 +1,4 @@
-/// @file list.hpp
+ï»¿/// @file list.hpp
 /// UNDOCUMENTED
 #pragma once
 
@@ -8,7 +8,7 @@
 #include "sequence.hpp"
 
 //==============================================================================
-// std::list<T, Alloc>‚É‘Î‚·‚éBinary“üo—ÍƒIƒyƒŒ[ƒ^
+// std::list<T, Alloc>ã«å¯¾ã™ã‚‹Binaryå…¥å‡ºåŠ›ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
 
 template <typename T, class Alloc>
 inline IStream& operator<<(IStream& stream, const std::list<T, Alloc>& v) throw(...) {

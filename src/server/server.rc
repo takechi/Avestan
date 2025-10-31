@@ -1,4 +1,4 @@
-// Microsoft Visual C++ generated resource script.
+﻿// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -13,12 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// ���{�� resources
+// 日本語 resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
 #ifdef _WIN32
 LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
-#pragma code_page(932)
 #endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
@@ -55,14 +54,14 @@ END
 IDD_RENAME DIALOGEX 0, 0, 391, 200
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
     WS_SYSMENU
-CAPTION "�����t�@�C���̖��O�ύX"
+CAPTION "複数ファイルの名前変更"
 FONT 9, "MS Shell Dlg", 400, 0, 0x80
 BEGIN
     PUSHBUTTON      "OK",IDC_RENAME_OK,6,180,50,14
-    PUSHBUTTON      "�L�����Z��",IDCANCEL,65,180,50,14
-    RTEXT           "����(&F)",IDC_STATIC,164,182,31,11,SS_CENTERIMAGE
+    PUSHBUTTON      "キャンセル",IDCANCEL,65,180,50,14
+    RTEXT           "書式(&F)",IDC_STATIC,164,182,31,11,SS_CENTERIMAGE
     EDITTEXT        IDC_REPLACE_EDIT,198,181,132,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "�S�u��(&R)",IDC_RENAME_REPLACE,334,180,50,14
+    PUSHBUTTON      "全置換(&R)",IDC_RENAME_REPLACE,334,180,50,14
     CONTROL         "",IDC_RENAMELIST,"SysListView32",LVS_REPORT | 
                     LVS_SHOWSELALWAYS | LVS_EDITLABELS | LVS_ALIGNLEFT | 
                     WS_BORDER | WS_TABSTOP,7,7,377,167
@@ -71,39 +70,39 @@ END
 IDD_OPENLOCATION DIALOGEX 0, 0, 273, 49
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
     WS_SYSMENU
-CAPTION "�p�X�̎w��"
+CAPTION "パスの指定"
 FONT 9, "MS Shell Dlg", 400, 0, 0x80
 BEGIN
     CONTROL         "",IDC_PATH,"ComboBoxEx32",CBS_DROPDOWN | 
                     CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP,7,7,
                     259,164
     DEFPUSHBUTTON   "OK",IDOK,159,28,50,14,NOT WS_TABSTOP
-    PUSHBUTTON      "�L�����Z��",IDCANCEL,216,28,50,14,NOT WS_TABSTOP
-    LTEXT           "info: �^�u�L�[�Ńp�X��⊮�ł��܂��B",IDC_STATIC,7,34,
+    PUSHBUTTON      "キャンセル",IDCANCEL,216,28,50,14,NOT WS_TABSTOP
+    LTEXT           "info: タブキーでパスを補完できます。",IDC_STATIC,7,34,
                     142,8
 END
 
 IDD_NEWFILE DIALOGEX 0, 0, 275, 84
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
     WS_SYSMENU
-CAPTION "�t�@�C���ƃt�H���_�̐V�K�쐬"
+CAPTION "ファイルとフォルダの新規作成"
 FONT 9, "MS Shell Dlg", 400, 0, 0x80
 BEGIN
-    LTEXT           "���O(&N)",IDC_NEW_NAME_S,6,24,36,12,SS_CENTERIMAGE
+    LTEXT           "名前(&N)",IDC_NEW_NAME_S,6,24,36,12,SS_CENTERIMAGE
     EDITTEXT        IDC_NEW_NAME,42,24,226,12,ES_AUTOHSCROLL
-    LTEXT           "�g���q(&E)",IDC_NEW_EXT_S,6,42,36,12,SS_CENTERIMAGE
+    LTEXT           "拡張子(&E)",IDC_NEW_EXT_S,6,42,36,12,SS_CENTERIMAGE
     EDITTEXT        IDC_NEW_EXT,42,42,226,12,ES_AUTOHSCROLL
-    CONTROL         "�쐬���ꂽ���ڂ�I������(&S)",IDC_NEW_SELECT,"Button",
+    CONTROL         "作成された項目を選択する(&S)",IDC_NEW_SELECT,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,7,69,113,8
     DEFPUSHBUTTON   "OK",IDOK,157,63,50,14
-    PUSHBUTTON      "�L�����Z��",IDCANCEL,218,63,50,14
-    LTEXT           "�ꏊ(&L)",IDC_NEW_PATH_S,6,6,30,12,SS_CENTERIMAGE
+    PUSHBUTTON      "キャンセル",IDCANCEL,218,63,50,14
+    LTEXT           "場所(&L)",IDC_NEW_PATH_S,6,6,30,12,SS_CENTERIMAGE
     EDITTEXT        IDC_NEW_PATH,42,7,226,12,ES_AUTOHSCROLL | ES_READONLY
 END
 
 IDD_ABOUT DIALOGEX 0, 0, 151, 98
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "�o�[�W�������"
+CAPTION "バージョン情報"
 FONT 10, "MS UI Gothic", 400, 0, 0x80
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,50,80,50,14
@@ -117,68 +116,68 @@ END
 
 IDD_WALLPAPER DIALOGEX 0, 0, 241, 145
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "�ǎ��̐ݒ�"
+CAPTION "壁紙の設定"
 FONT 10, "MS UI Gothic", 400, 0, 0x80
 BEGIN
-    LTEXT           "�Ώ�(&T)",IDC_STATIC,7,7,29,12,SS_CENTERIMAGE
+    LTEXT           "対象(&T)",IDC_STATIC,7,7,29,12,SS_CENTERIMAGE
     COMBOBOX        IDC_WALL_TARGET,42,6,192,82,CBS_DROPDOWNLIST | CBS_SORT | 
                     WS_VSCROLL | WS_TABSTOP
-    LTEXT           "�摜(&I)",IDC_STATIC,7,25,29,12,SS_CENTERIMAGE
+    LTEXT           "画像(&I)",IDC_STATIC,7,25,29,12,SS_CENTERIMAGE
     EDITTEXT        IDC_WALL_PATH,42,24,165,12,ES_AUTOHSCROLL
     PUSHBUTTON      "...",IDC_WALL_OPEN,209,24,12,12,BS_CENTER | BS_VCENTER
-    PUSHBUTTON      "�~",IDC_WALL_ERASE,222,24,12,12,BS_CENTER | BS_VCENTER
-    GROUPBOX        "��",IDC_WALL_HORZ,6,48,60,66,WS_GROUP
-    CONTROL         "��",IDC_WALL_WEST,"Button",BS_AUTORADIOBUTTON,13,60,48,
+    PUSHBUTTON      "×",IDC_WALL_ERASE,222,24,12,12,BS_CENTER | BS_VCENTER
+    GROUPBOX        "横",IDC_WALL_HORZ,6,48,60,66,WS_GROUP
+    CONTROL         "左",IDC_WALL_WEST,"Button",BS_AUTORADIOBUTTON,13,60,48,
                     8
-    CONTROL         "��",IDC_WALL_HCENTER,"Button",BS_AUTORADIOBUTTON,13,72,
+    CONTROL         "中",IDC_WALL_HCENTER,"Button",BS_AUTORADIOBUTTON,13,72,
                     48,8
-    CONTROL         "�E",IDC_WALL_EAST,"Button",BS_AUTORADIOBUTTON,13,84,48,
+    CONTROL         "右",IDC_WALL_EAST,"Button",BS_AUTORADIOBUTTON,13,84,48,
                     8
-    CONTROL         "�J��Ԃ�",IDC_WALL_HREPEAT,"Button",BS_AUTORADIOBUTTON,
+    CONTROL         "繰り返し",IDC_WALL_HREPEAT,"Button",BS_AUTORADIOBUTTON,
                     13,96,48,8
-    GROUPBOX        "�c",IDC_WALL_VERT,73,48,60,66,WS_GROUP
-    CONTROL         "��",IDC_WALL_NORTH,"Button",BS_AUTORADIOBUTTON,78,60,48,
+    GROUPBOX        "縦",IDC_WALL_VERT,73,48,60,66,WS_GROUP
+    CONTROL         "上",IDC_WALL_NORTH,"Button",BS_AUTORADIOBUTTON,78,60,48,
                     8
-    CONTROL         "��",IDC_WALL_VCENTER,"Button",BS_AUTORADIOBUTTON,78,72,
+    CONTROL         "中",IDC_WALL_VCENTER,"Button",BS_AUTORADIOBUTTON,78,72,
                     48,8
-    CONTROL         "��",IDC_WALL_SOUTH,"Button",BS_AUTORADIOBUTTON,78,84,48,
+    CONTROL         "下",IDC_WALL_SOUTH,"Button",BS_AUTORADIOBUTTON,78,84,48,
                     8
-    CONTROL         "�J��Ԃ�",IDC_WALL_VREPEAT,"Button",BS_AUTORADIOBUTTON,
+    CONTROL         "繰り返し",IDC_WALL_VREPEAT,"Button",BS_AUTORADIOBUTTON,
                     78,96,48,8
-    LTEXT           "�y�H�����z\n�t�H���_�̔w�i�́u�J��Ԃ��v�����I�ׂ܂���B",
+    LTEXT           "【工事中】\nフォルダの背景は「繰り返し」しか選べません。",
                     IDC_WALL_PREVIEW,153,54,81,54,0,WS_EX_CLIENTEDGE
     DEFPUSHBUTTON   "OK",IDOK,72,124,50,14
-    PUSHBUTTON      "�L�����Z��",IDCANCEL,128,124,50,14
-    PUSHBUTTON      "�K�p(&A)",IDC_WALL_APPLY,184,124,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,128,124,50,14
+    PUSHBUTTON      "適用(&A)",IDC_WALL_APPLY,184,124,50,14
 END
 
 IDD_SELECT DIALOGEX 0, 0, 275, 61
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
     WS_SYSMENU
-CAPTION "�t�@�C���̑I��"
+CAPTION "ファイルの選択"
 FONT 9, "MS Shell Dlg", 400, 0, 0x80
 BEGIN
-    LTEXT           "���O(&N)",IDC_NEW_NAME_S,6,24,36,12,SS_CENTERIMAGE
+    LTEXT           "名前(&N)",IDC_NEW_NAME_S,6,24,36,12,SS_CENTERIMAGE
     EDITTEXT        IDC_NEW_NAME,42,24,226,12,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,157,40,50,14
-    PUSHBUTTON      "�L�����Z��",IDCANCEL,218,40,50,14
-    LTEXT           "�ꏊ(&L)",IDC_NEW_PATH_S,6,6,30,12,SS_CENTERIMAGE
+    PUSHBUTTON      "キャンセル",IDCANCEL,218,40,50,14
+    LTEXT           "場所(&L)",IDC_NEW_PATH_S,6,6,30,12,SS_CENTERIMAGE
     EDITTEXT        IDC_NEW_PATH,42,7,226,12,ES_AUTOHSCROLL | ES_READONLY
-    LTEXT           "info: Control�L�[�������Ȃ�����s �� �ǉ��I��",
+    LTEXT           "info: Controlキーを押しながら実行 ⇒ 追加選択",
                     IDC_STATIC,7,46,145,8
 END
 
 IDD_PATTERN DIALOGEX 0, 0, 275, 61
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
     WS_SYSMENU
-CAPTION "�\���}�X�N�̐ݒ�"
+CAPTION "表示マスクの設定"
 FONT 9, "MS Shell Dlg", 400, 0, 0x80
 BEGIN
-    LTEXT           "���O(&N)",IDC_NEW_NAME_S,6,24,36,12,SS_CENTERIMAGE
+    LTEXT           "名前(&N)",IDC_NEW_NAME_S,6,24,36,12,SS_CENTERIMAGE
     EDITTEXT        IDC_NEW_NAME,42,24,226,12,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,157,40,50,14
-    PUSHBUTTON      "�L�����Z��",IDCANCEL,218,40,50,14
-    LTEXT           "�ꏊ(&L)",IDC_NEW_PATH_S,6,6,30,12,SS_CENTERIMAGE
+    PUSHBUTTON      "キャンセル",IDCANCEL,218,40,50,14
+    LTEXT           "場所(&L)",IDC_NEW_PATH_S,6,6,30,12,SS_CENTERIMAGE
     EDITTEXT        IDC_NEW_PATH,42,7,226,12,ES_AUTOHSCROLL | ES_READONLY
 END
 
@@ -298,99 +297,99 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_FILEFILTER          "Avesta�t�H���_���X�g (*.ave)|*.ave|���ׂẴt�@�C��|*.*"
-    IDS_MRU_OPEN            "$1 ���J���܂�"
-    IDS_ERR_NOFOLDER        "�t�H���_������J����Ă��܂���"
-    IDS_DESC_SHOW           "$1 �̕\����Ԃ�؂�ւ��܂�"
-    IDS_DESC_FOCUS          "$1 �Ƀt�H�[�J�X���ڂ��܂�"
+    IDS_FILEFILTER          "Avestaフォルダリスト (*.ave)|*.ave|すべてのファイル|*.*"
+    IDS_MRU_OPEN            "$1 を開きます"
+    IDS_ERR_NOFOLDER        "フォルダが一つも開かれていません"
+    IDS_DESC_SHOW           "$1 の表示状態を切り替えます"
+    IDS_DESC_FOCUS          "$1 にフォーカスを移します"
     IDS_ERR_FORMS_NO_DISPLAY 
-                            "usr/forms.xml �̒��� Display �v�f��������܂���"
-    IDS_ERR_FORMS_NO_FORM   "usr/forms.xml �̒��� Form �v�f��������܂���"
+                            "usr/forms.xml の中に Display 要素が見つかりません"
+    IDS_ERR_FORMS_NO_FORM   "usr/forms.xml の中に Form 要素が見つかりません"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_NOINTERFACE     "$1 �� �C���^�t�F�[�X:$2 ���T�|�[�g���܂���B"
-    IDS_ERR_INVALIDCLSID    "CLSID $1 ��������܂���"
-    IDS_ERR_VARIANT_CONVERSION "variant '$1' �� '$2' �֕ϊ��ł��܂���"
-    IDS_ERR_XMLMSG_TYPECODE "�G���g�� $1 �� $2 ��XML�Ƃ��ĕۑ��ł��܂���"
-    IDS_ERR_SEEK            "�X�g���[���̃V�[�N�Ɏ��s���܂���"
-    IDS_ERR_GET_POSITION    "�X�g���[���̃V�[�N�|�C���^�ʒu���擾�ł��܂���"
-    IDS_ERR_PUT_POSITION    "�X�g���[���̃V�[�N�|�C���^�ʒu��ݒ�ł��܂���"
-    IDS_ERR_GET_LENGTH      "�X�g���[���̃T�C�Y���擾�ł��܂���"
-    IDS_ERR_PUT_LENGTH      "�X�g���[���̃T�C�Y��ݒ�ł��܂���"
+    IDS_ERR_NOINTERFACE     "$1 は インタフェース:$2 をサポートしません。"
+    IDS_ERR_INVALIDCLSID    "CLSID $1 が見つかりません"
+    IDS_ERR_VARIANT_CONVERSION "variant '$1' を '$2' へ変換できません"
+    IDS_ERR_XMLMSG_TYPECODE "エントリ $1 ⇒ $2 をXMLとして保存できません"
+    IDS_ERR_SEEK            "ストリームのシークに失敗しました"
+    IDS_ERR_GET_POSITION    "ストリームのシークポインタ位置を取得できません"
+    IDS_ERR_PUT_POSITION    "ストリームのシークポインタ位置を設定できません"
+    IDS_ERR_GET_LENGTH      "ストリームのサイズを取得できません"
+    IDS_ERR_PUT_LENGTH      "ストリームのサイズを設定できません"
 END
 
 STRINGTABLE 
 BEGIN
     IDS_ERR_ARG_FILEINPUTSTREAM 
-                            "FileReader �̃R���X�g���N�^�͈����ɂ̓t�@�C���p�X���K�v�ł�"
+                            "FileReader のコンストラクタは引数にはファイルパスが必要です"
     IDS_ERR_ARG_FILEOUTPUTSTREAM 
-                            "FileWriter �̃R���X�g���N�^�͈����ɂ̓t�@�C���p�X���K�v�ł�"
-    IDS_ERR_FILEREAD        "�t�@�C����ǂݍ��߂܂���"
-    IDS_ERR_FILEWRITE       "�t�@�C���ɏ������߂܂���"
-    IDS_ERR_OPENFILE        "�t�@�C���u$1�v���J���܂���"
-    IDS_ERR_SERIALIZABLE    "$1 �� ISerializable �C���^�t�F�[�X���T�|�[�g���Ă��܂���"
-    IDS_ERR_FLATTENABLE     "$1 �� �t���b�g�����T�|�[�g���Ă��܂���"
-    IDS_ERR_READ_LACK       "�X�g���[���̏I�[���z���ēǂݍ��߂܂���"
-    IDS_ERR_WRITE_LACK      "�\���ȗ̈悪�������߁A�����o���Ɏ��s���܂���"
-    IDS_ERR_INVALIDTHREAD   "Display�쐬�X���b�h�ƈقȂ�X���b�h�ł̓E�B���h�E���쐬�ł��܂���"
-    IDS_ERR_INVALIDPARENT   "�����͗L���Ȑe�E�B���h�E�ł͂���܂���"
+                            "FileWriter のコンストラクタは引数にはファイルパスが必要です"
+    IDS_ERR_FILEREAD        "ファイルを読み込めません"
+    IDS_ERR_FILEWRITE       "ファイルに書き込めません"
+    IDS_ERR_OPENFILE        "ファイル「$1」を開けません"
+    IDS_ERR_SERIALIZABLE    "$1 は ISerializable インタフェースをサポートしていません"
+    IDS_ERR_FLATTENABLE     "$1 は フラット化をサポートしていません"
+    IDS_ERR_READ_LACK       "ストリームの終端を越えて読み込めません"
+    IDS_ERR_WRITE_LACK      "十分な領域が無いため、書き出しに失敗しました"
+    IDS_ERR_INVALIDTHREAD   "Display作成スレッドと異なるスレッドではウィンドウを作成できません"
+    IDS_ERR_INVALIDPARENT   "引数は有効な親ウィンドウではありません"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_CREATEWINDOW    "�E�B���h�E�̍쐬�Ɏ��s���܂���"
-    IDS_ERR_IMAGELIST       "�t�@�C�� '$1' ��������Ȃ����߁AImageList ���쐬�ł��܂���"
-    IDS_ERR_FILENOTFOUND    "�t�@�C���܂��̓t�H���_��������܂���"
+    IDS_ERR_CREATEWINDOW    "ウィンドウの作成に失敗しました"
+    IDS_ERR_IMAGELIST       "ファイル '$1' が見つからないため、ImageList を作成できません"
+    IDS_ERR_FILENOTFOUND    "ファイルまたはフォルダが見つかりません"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_FORMS_NO_TAB    "usr/forms.xml �̒��� FolderList �v�f��������܂���"
-    IDS_SYNCDESC            """$1"" ��艺�w�̃t�H���_�͕\���ݒ肪���Z�b�g����܂��B\n\n��낵���ł����H"
-    IDS_ERR_NOSELECTFOLDER  "1�̃t�H���_��I������K�v������܂�"
-    IDS_WARN_NOTAB          "warning: �^�u���������܂���"
-    IDS_WARN_DEPRECATED     "warning: �R�}���h $1 �͐�������܂���B�����o�[�W�����A�b�v�Ŏg�p�ł��Ȃ��Ȃ�܂��B"
-    IDS_ERR_VIRTUALFOLDER   "error: �t�H���_ $1 �͎��ۂ̃f�B���N�g���łȂ����߁A�����ł��܂���B"
-    IDS_WARN_NOTARGET       "warning: �Ώۂ�����܂���B"
-    IDS_WARN_NOSELECT       "warning: �t�@�C���͈���I������܂���ł����B"
-    IDS_ERR_NTH_TAB         "warning: $1 �Ԗڂ̃^�v�̑���Ɏ��s���܂����B"
-    IDS_BAD_FODLER          "error: �����ȃt�H���_�ł��B"
+    IDS_ERR_FORMS_NO_TAB    "usr/forms.xml の中に FolderList 要素が見つかりません"
+    IDS_SYNCDESC            """$1"" より下層のフォルダは表示設定がリセットされます。\n\nよろしいですか？"
+    IDS_ERR_NOSELECTFOLDER  "1つのフォルダを選択する必要があります"
+    IDS_WARN_NOTAB          "warning: タブが一つもありません"
+    IDS_WARN_DEPRECATED     "warning: コマンド $1 は推奨されません。次期バージョンアップで使用できなくなります。"
+    IDS_ERR_VIRTUALFOLDER   "error: フォルダ $1 は実際のディレクトリでないため、処理できません。"
+    IDS_WARN_NOTARGET       "warning: 対象がありません。"
+    IDS_WARN_NOSELECT       "warning: ファイルは一つも選択されませんでした。"
+    IDS_ERR_NTH_TAB         "warning: $1 番目のタプの操作に失敗しました。"
+    IDS_BAD_FODLER          "error: 無効なフォルダです。"
     IDS_TITLE_0             "Avesta"
     IDS_TITLE_1             "Avesta - $1"
     IDS_TITLE_2             "Avesta - $1 / $2"
-    IDS_CLOSING             "�I���������ł�..."
-    IDS_ERR_TABMOVE         "error: �^�u���ړ��Ɏ��s���܂����B"
-    IDS_PREVIEW_ERROR       "�g$1�h��\n�v���r���[�ł��܂���"
+    IDS_CLOSING             "終了処理中です..."
+    IDS_ERR_TABMOVE         "error: タブを移動に失敗しました。"
+    IDS_PREVIEW_ERROR       "“$1”は\nプレビューできません"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_PREVIEW_LOADING     "�g$1�h��\n���[�h���ł��c�c"
-    IDS_ERR_NOTLINK         "error: '$1' �̓V���[�g�J�b�g�ł͂���܂���"
-    IDS_ERR_LOAD_KEYMAP     "�L�[�}�b�v�u$1�v�̓ǂݍ��݂Ɏ��s���܂���"
-    IDS_ERR_LOAD_GESTURE    "�}�E�X�W�F�X�`���u$1�v�̓ǂݍ��݂Ɏ��s���܂���"
-    IDS_DLG_IMAGES          "�摜�t�@�C��|*.bmp;*.emf;*.exif;*.gif;*.ico;*.jpe;*.jpeg;*.jpg;*.png;*.rle;*.tif;*.tiff;*.wmf|���ׂẴt�@�C��|*.*"
-    IDS_NO_MRU              "warning: �ŋߕ����t�H���_�̃��X�g����ł��B"
-    IDS_WALLPAPER_FOLDER    "�t�H���_�̔w�i"
-    IDS_ERR_CLIPNOTTEXT     "�N���b�v�{�[�h���e�L�X�g�`���ł͂���܂���"
-    IDS_ERR_CLIPTEXTLACK    "�N���b�v�{�[�h�̃e�L�X�g�s�����I�����ڐ��������Ȃ����ߕύX�ł��܂���"
-    IDS_ERR_COMMAND_NOT_FOUND "error: �R�}���h '$1' ��������܂���B"
-    IDS_RESTARTING          "�ċN�����ł�..."
-    IDS_ERR_NOFILEDIALOG    "�t�@�C���_�C�A���O��������܂���B"
-    IDS_ERR_LOAD_COMMAND    "�R�}���h���X�g�u$1�v�̓ǂݍ��݂Ɏ��s���܂���"
-    IDS_ERR_LOAD_IMAGE      "�C���[�W���X�g�u$1�v�̓ǂݍ��݂Ɏ��s���܂���"
-    IDS_ERR_SELECTIONISNONFOLDER "�I�����ꂽ���ڂ��t�H���_�ł͂���܂���"
-    IDS_ERR_BADFORM         "�t�H�[����`�t�@�C���Ɍ�肪����܂�"
+    IDS_PREVIEW_LOADING     "“$1”を\nロード中です……"
+    IDS_ERR_NOTLINK         "error: '$1' はショートカットではありません"
+    IDS_ERR_LOAD_KEYMAP     "キーマップ「$1」の読み込みに失敗しました"
+    IDS_ERR_LOAD_GESTURE    "マウスジェスチャ「$1」の読み込みに失敗しました"
+    IDS_DLG_IMAGES          "画像ファイル|*.bmp;*.emf;*.exif;*.gif;*.ico;*.jpe;*.jpeg;*.jpg;*.png;*.rle;*.tif;*.tiff;*.wmf|すべてのファイル|*.*"
+    IDS_NO_MRU              "warning: 最近閉じたフォルダのリストが空です。"
+    IDS_WALLPAPER_FOLDER    "フォルダの背景"
+    IDS_ERR_CLIPNOTTEXT     "クリップボードがテキスト形式ではありません"
+    IDS_ERR_CLIPTEXTLACK    "クリップボードのテキスト行数が選択項目数よりも少ないため変更できません"
+    IDS_ERR_COMMAND_NOT_FOUND "error: コマンド '$1' が見つかりません。"
+    IDS_RESTARTING          "再起動中です..."
+    IDS_ERR_NOFILEDIALOG    "ファイルダイアログが見つかりません。"
+    IDS_ERR_LOAD_COMMAND    "コマンドリスト「$1」の読み込みに失敗しました"
+    IDS_ERR_LOAD_IMAGE      "イメージリスト「$1」の読み込みに失敗しました"
+    IDS_ERR_SELECTIONISNONFOLDER "選択された項目がフォルダではありません"
+    IDS_ERR_BADFORM         "フォーム定義ファイルに誤りがあります"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_BADFOLDER       "���Ƀt�H���_�������ɂȂ��Ă��邽�߁A���f���܂�"
+    IDS_ERR_BADFOLDER       "既にフォルダが無効になっているため、中断します"
 END
 
-#endif    // ���{�� resources
+#endif    // 日本語 resources
 /////////////////////////////////////////////////////////////////////////////
 
 

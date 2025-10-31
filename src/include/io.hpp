@@ -1,5 +1,5 @@
-/// @file io.hpp
-/// ”Ä—p“üo—Í.
+ï»¿/// @file io.hpp
+/// æ±ç”¨å…¥å‡ºåŠ›.
 
 #pragma once
 
@@ -25,7 +25,7 @@ HGLOBAL StreamCreateOnHGlobal(IStream** pp, size_t size, bool bDeleteOnRelease);
 
 //==============================================================================
 
-/// ƒXƒgƒŠ[ƒ€.
+/// ã‚¹ãƒˆãƒªãƒ¼ãƒ .
 /// @see IStream
 template <>
 class ref<IStream> : public ref_base<IStream> {
@@ -87,10 +87,10 @@ class ref<IStream> : public ref_base<IStream> {
   operator IStream&() const { return *m_ptr; }
 };
 
-/// ”Ä—p“üo—Í.
+/// æ±ç”¨å…¥å‡ºåŠ›.
 namespace io {
 //==============================================================================
-// ì¬‰Â”\‚ÈƒNƒ‰ƒX
+// ä½œæˆå¯èƒ½ãªã‚¯ãƒ©ã‚¹
 
 class __declspec(uuid("4B1AE91F-B6B5-49CA-9669-3565E011EA41")) Reader;
 class __declspec(uuid("E67D7711-8A8F-4FC8-8147-D805DB641CE6")) Writer;
@@ -98,9 +98,9 @@ class __declspec(uuid("3D1B9CCB-AB14-44CF-8D83-C4ED7CE547A4")) FileReader;
 class __declspec(uuid("9963A69D-3F35-4C88-BCE5-201C213088DF")) FileWriter;
 
 //==============================================================================
-// ƒpƒX‘€ì.
+// ãƒ‘ã‚¹æ“ä½œ.
 
-/// “ÁêƒtƒHƒ‹ƒ_ƒpƒX‚ğ‰ğŒˆ‚·‚é.
+/// ç‰¹æ®Šãƒ•ã‚©ãƒ«ãƒ€ãƒ‘ã‚¹ã‚’è§£æ±ºã™ã‚‹.
 /// pair<CSIDL, NextChar>
 std::pair<int, PCWSTR> PathResolveCSIDL(PCWSTR src, PCWSTR approot, int appcsidl);
 
@@ -114,7 +114,7 @@ inline LPCWSTR PathFindLeaf(const string& path) {
 
 //==============================================================================
 
-/// ƒpƒX‘€ì‚Ì‚½‚ß‚ÌŒÅ’è’·•¶š—ñ.
+/// ãƒ‘ã‚¹æ“ä½œã®ãŸã‚ã®å›ºå®šé•·æ–‡å­—åˆ—.
 class Path {
  private:
   TCHAR m_Path[MAX_PATH];
@@ -128,51 +128,51 @@ class Path {
   operator PTSTR() { return str(); }
   operator PCTSTR() const { return str(); }
 
-  /// ƒtƒ@ƒCƒ‹–¼‚ÌˆÊ’u‚ğ•Ô‚·.
+  /// ãƒ•ã‚¡ã‚¤ãƒ«åã®ä½ç½®ã‚’è¿”ã™.
   PCTSTR FindLeaf() const { return ::PathFindFileName(m_Path); }
-  /// ƒtƒ@ƒCƒ‹–¼‚ÌˆÊ’u‚ğ•Ô‚·.
+  /// ãƒ•ã‚¡ã‚¤ãƒ«åã®ä½ç½®ã‚’è¿”ã™.
   PTSTR FindLeaf() { return ::PathFindFileName(m_Path); }
-  /// Šg’£q‚ÌˆÊ’u‚ğ•Ô‚·.
+  /// æ‹¡å¼µå­ã®ä½ç½®ã‚’è¿”ã™.
   PCTSTR FindExtension() const { return ::PathFindExtension(m_Path); }
-  /// Šg’£q‚ÌˆÊ’u‚ğ•Ô‚·.
+  /// æ‹¡å¼µå­ã®ä½ç½®ã‚’è¿”ã™.
   PTSTR FindExtension() { return ::PathFindExtension(m_Path); }
-  /// ––”ö‚ÉƒoƒbƒNƒXƒ‰ƒbƒVƒ…‚ğ’Ç‰Á‚·‚é.
-  /// ‚·‚Å‚É––”ö‚ªƒoƒbƒNƒXƒ‰ƒbƒVƒ…‚Ìê‡‚Í‰½‚à‚µ‚È‚¢.
+  /// æœ«å°¾ã«ãƒãƒƒã‚¯ã‚¹ãƒ©ãƒƒã‚·ãƒ¥ã‚’è¿½åŠ ã™ã‚‹.
+  /// ã™ã§ã«æœ«å°¾ãŒãƒãƒƒã‚¯ã‚¹ãƒ©ãƒƒã‚·ãƒ¥ã®å ´åˆã¯ä½•ã‚‚ã—ãªã„.
   Path& AddSeparator() {
     ::PathAddBackslash(m_Path);
     return *this;
   }
-  /// ƒpƒX‚ğ˜AŒ‹‚·‚é.
-  /// ŠÔ‚ÉƒoƒbƒNƒXƒ‰ƒbƒVƒ…‚ğ•t‰Á‚·‚é‚©”Û‚©‚Í©“®“I‚É”»’f‚³‚ê‚é.
+  /// ãƒ‘ã‚¹ã‚’é€£çµã™ã‚‹.
+  /// é–“ã«ãƒãƒƒã‚¯ã‚¹ãƒ©ãƒƒã‚·ãƒ¥ã‚’ä»˜åŠ ã™ã‚‹ã‹å¦ã‹ã¯è‡ªå‹•çš„ã«åˆ¤æ–­ã•ã‚Œã‚‹.
   Path& Append(PCTSTR appended) {
     PathAppend(m_Path, appended);
     return *this;
   }
-  /// ƒtƒ@ƒCƒ‹ƒ^ƒCƒgƒ‹‚ğæ‚èœ‚­.
+  /// ãƒ•ã‚¡ã‚¤ãƒ«ã‚¿ã‚¤ãƒˆãƒ«ã‚’å–ã‚Šé™¤ã.
   Path& RemoveLeaf() {
     PathRemoveFileSpec(m_Path);
     return *this;
   }
-  /// ƒtƒ@ƒCƒ‹ƒ^ƒCƒgƒ‹‚ğ•ÏX‚·‚é.
+  /// ãƒ•ã‚¡ã‚¤ãƒ«ã‚¿ã‚¤ãƒˆãƒ«ã‚’å¤‰æ›´ã™ã‚‹.
   Path& ChangeLeaf(PCTSTR leaf) {
     PathRemoveFileSpec(m_Path);
     PathAppend(m_Path, leaf);
     return *this;
   }
-  /// Šg’£q‚ğ’Ç‰Á‚·‚é.
-  /// ‚·‚Å‚ÉŠg’£q‚ğ‚Á‚Ä‚¢‚éê‡‚Í‰½‚à‚µ‚È‚¢.
-  /// @param ext  ƒsƒŠƒIƒh•t‚«Šg’£q. —áF".txt"
+  /// æ‹¡å¼µå­ã‚’è¿½åŠ ã™ã‚‹.
+  /// ã™ã§ã«æ‹¡å¼µå­ã‚’æŒã£ã¦ã„ã‚‹å ´åˆã¯ä½•ã‚‚ã—ãªã„.
+  /// @param ext  ãƒ”ãƒªã‚ªãƒ‰ä»˜ãæ‹¡å¼µå­. ä¾‹ï¼š".txt"
   Path& AddExtension(PCTSTR ext) {
     ::PathAddExtension(m_Path, ext);
     return *this;
   }
-  /// Šg’£q‚ğæ‚èœ‚­.
+  /// æ‹¡å¼µå­ã‚’å–ã‚Šé™¤ã.
   Path& RemoveExtension() {
     ::PathRemoveExtension(m_Path);
     return *this;
   }
-  /// Šg’£q‚ğ•ÏX‚·‚é.
-  /// @param ext ƒsƒŠƒIƒh•t‚«Šg’£q. —áF".txt"
+  /// æ‹¡å¼µå­ã‚’å¤‰æ›´ã™ã‚‹.
+  /// @param ext ãƒ”ãƒªã‚ªãƒ‰ä»˜ãæ‹¡å¼µå­. ä¾‹ï¼š".txt"
   Path& ChangeExtension(PCTSTR ext) {
     ::PathRenameExtension(m_Path, ext);
     return *this;
@@ -182,9 +182,9 @@ class Path {
 }  // namespace mew
 
 //==============================================================================
-// PODŒ^‚É‘Î‚·‚éBinary“üo—ÍƒIƒyƒŒ[ƒ^
+// PODå‹ã«å¯¾ã™ã‚‹Binaryå…¥å‡ºåŠ›ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
 
-/// PODŒ^‚Æ‚µ‚Äˆµ‚¤.
+/// PODå‹ã¨ã—ã¦æ‰±ã†.
 #define AVESTA_POD(POD)                                         \
   inline IStream& operator<<(IStream& stream, const POD& pod) { \
     mew::io::StreamWriteExact(&stream, &pod, sizeof(POD));      \

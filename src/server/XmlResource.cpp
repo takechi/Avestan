@@ -1,4 +1,4 @@
-// XmlResource.cpp
+ï»¿// XmlResource.cpp
 
 #include "stdafx.h"
 #include "main.hpp"
@@ -70,7 +70,7 @@ namespace {
 class TreeItemReader : public mew::xml::XMLHandlerImpl {
  private:
   mew::ref<mew::ui::IEditableTreeItem> m_root;
-  mew::array<mew::ui::IEditableTreeItem> m_stack;  // ITreeItem ‚Íe‚Ö‚ÌƒŠƒ“ƒN‚ğ‚½‚È‚¢‚½‚ßAŠO•”“I‚ÉŠÇ—‚·‚é
+  mew::array<mew::ui::IEditableTreeItem> m_stack;  // ITreeItem ã¯è¦ªã¸ã®ãƒªãƒ³ã‚¯ã‚’æŒãŸãªã„ãŸã‚ã€å¤–éƒ¨çš„ã«ç®¡ç†ã™ã‚‹
 
  protected:
   TreeItemReader() { m_stack.reserve(8); }
@@ -80,7 +80,7 @@ class TreeItemReader : public mew::xml::XMLHandlerImpl {
       ASSERT(m_stack.empty());
       m_root = item;
       m_stack.push_back(item);
-    } else if (m_stack.empty()) {  // ƒ‹[ƒgƒŒƒxƒ‹‚É•¡”‚Ìƒƒjƒ…[‚ª•À‚ñ‚Å‚¢‚éBƒ_ƒ~[ƒ‹[ƒg‚ğ‘}“ü‚·‚éB
+    } else if (m_stack.empty()) {  // ãƒ«ãƒ¼ãƒˆãƒ¬ãƒ™ãƒ«ã«è¤‡æ•°ã®ãƒ¡ãƒ‹ãƒ¥ãƒ¼ãŒä¸¦ã‚“ã§ã„ã‚‹ã€‚ãƒ€ãƒŸãƒ¼ãƒ«ãƒ¼ãƒˆã‚’æŒ¿å…¥ã™ã‚‹ã€‚
       // ref<ITreeItem> root = CreateStandardTreeItem();
       mew::ref<mew::ui::IEditableTreeItem> root(__uuidof(mew::ui::DefaultTreeItem));
       m_stack.push_back(root);
@@ -133,7 +133,7 @@ class MenuReader : public TreeItemReader {
     if (equals(name, ITEM_NODE, cch)) {
       mew::ref<mew::ui::IEditableTreeItem> back = PopTreeItem();
       if (back->Name && !back->Command && !back->HasChildren()) {
-        back->Name = mew::string::format(_T("ƒRƒ}ƒ“ƒh‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñF$1"), back->Name);
+        back->Name = mew::string::format(_T("ã‚³ãƒãƒ³ãƒ‰ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ï¼š$1"), back->Name);
       }
     }
     return S_OK;
@@ -171,18 +171,18 @@ class KeymapReader : public MenuReader {
       if (!m_keymap) {
         return E_UNEXPECTED;
       }
-      // ‰¼‘zƒL[ƒR[ƒh
+      // ä»®æƒ³ã‚­ãƒ¼ã‚³ãƒ¼ãƒ‰
       m_vkey = avesta::XmlAttrKey(attr);
       if (m_vkey == 0) {
         TRACE(L"INVALID_KEYNAME");
         return S_OK;
       }
-      // Cüq‚Ìˆ—
+      // ä¿®é£¾å­ã®å‡¦ç†
       m_mods = avesta::XmlAttrModifiers(attr);
-      // ƒRƒ}ƒ“ƒh‚Ìˆ—
+      // ã‚³ãƒãƒ³ãƒ‰ã®å‡¦ç†
       if (mew::ref<mew::ICommand> command = avesta::XmlAttrCommand(attr, m_commands)) {
         m_keymap->SetBind(m_mods, m_vkey, command);
-      } else {  // XXX: ‚±‚ÌƒuƒƒbƒN‚Í•s—v‚©‚à‚µ‚ê‚È‚¢
+      } else {  // XXX: ã“ã®ãƒ–ãƒ­ãƒƒã‚¯ã¯ä¸è¦ã‹ã‚‚ã—ã‚Œãªã„
         mew::ref<mew::ui::IEditableTreeItem> menu;
         menu.create(__uuidof(mew::ui::DefaultTreeItem));
         PushTreeItem(menu);
@@ -235,19 +235,19 @@ class GestureReader : public mew::xml::XMLHandlerImpl {
       if (!m_gesture) {
         return E_UNEXPECTED;
       }
-      // ˆ—
+      // å‡¦ç†
       mew::string input = attr[GESTURE_INPUT];
       if (!input) {
-        ASSERT(!"gesture/@input ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ");
+        ASSERT(!"gesture/@input ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“");
         return S_OK;
       }
       std::vector<mew::ui::Gesture> gesture;
       if (!StringToGesture(input, gesture)) {
-        TRACE(L"gesture/@input ‚ª•s³‚Å‚· : $1", input);
-        ASSERT(!"gesture/@input ‚ª•s³‚Å‚·");
+        TRACE(L"gesture/@input ãŒä¸æ­£ã§ã™ : $1", input);
+        ASSERT(!"gesture/@input ãŒä¸æ­£ã§ã™");
         return S_OK;
       }
-      // ƒRƒ}ƒ“ƒh
+      // ã‚³ãƒãƒ³ãƒ‰
       if (mew::ref<mew::ICommand> command = avesta::XmlAttrCommand(attr, m_commands)) {
         m_gesture->SetGesture(avesta::XmlAttrModifiers(attr), gesture.size(), &gesture[0], command);
       }
@@ -265,27 +265,27 @@ class GestureReader : public mew::xml::XMLHandlerImpl {
     size_t length = str.length();
     for (size_t i = 0; i < length; ++i) {
       WCHAR c = s[i];
-      if (mew::str::find(L"L1‚k‚P‡@¶‡ˆ", c)) {
+      if (mew::str::find(L"L1ï¼¬ï¼‘â‘ å·¦ãŠ§", c)) {
         gesture.push_back(mew::ui::GestureButtonLeft);
-      } else if (mew::str::find(L"R2‚q‚Q‡A‰E‡‰", c)) {
+      } else if (mew::str::find(L"R2ï¼²ï¼’â‘¡å³ãŠ¨", c)) {
         gesture.push_back(mew::ui::GestureButtonRight);
-      } else if (mew::str::find(L"M3‚l‡B’†‡†", c)) {
+      } else if (mew::str::find(L"M3ï¼­â‘¢ä¸­ãŠ¥", c)) {
         gesture.push_back(mew::ui::GestureButtonMiddle);
-      } else if (mew::str::find(L"4‚S‡C", c)) {
+      } else if (mew::str::find(L"4ï¼”â‘£", c)) {
         gesture.push_back(mew::ui::GestureButtonX1);
-      } else if (mew::str::find(L"5‚T‡D", c)) {
+      } else if (mew::str::find(L"5ï¼•â‘¤", c)) {
         gesture.push_back(mew::ui::GestureButtonX2);
-      } else if (mew::str::find(L"U‚tã‡…È¢£", c)) {
+      } else if (mew::str::find(L"Uï¼µä¸ŠãŠ¤âˆ§â–³â–²", c)) {
         gesture.push_back(mew::ui::GestureWheelUp);
-      } else if (mew::str::find(L"D‚c‰º‡‡É¤¥", c)) {
+      } else if (mew::str::find(L"Dï¼¤ä¸‹ãŠ¦âˆ¨â–½â–¼", c)) {
         gesture.push_back(mew::ui::GestureWheelDown);
-      } else if (mew::str::find(L"W‚v©", c)) {
+      } else if (mew::str::find(L"Wï¼·â†", c)) {
         gesture.push_back(mew::ui::GestureWest);
-      } else if (mew::str::find(L"E‚d¨", c)) {
+      } else if (mew::str::find(L"Eï¼¥â†’", c)) {
         gesture.push_back(mew::ui::GestureEast);
-      } else if (mew::str::find(L"N‚mª", c)) {
+      } else if (mew::str::find(L"Nï¼®â†‘", c)) {
         gesture.push_back(mew::ui::GestureNorth);
-      } else if (mew::str::find(L"S‚r«", c)) {
+      } else if (mew::str::find(L"Sï¼³â†“", c)) {
         gesture.push_back(mew::ui::GestureSouth);
       } else {
         return false;

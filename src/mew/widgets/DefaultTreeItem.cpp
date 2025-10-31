@@ -1,4 +1,4 @@
-// DefaultTreeItem.cpp
+﻿// DefaultTreeItem.cpp
 
 #include "stdafx.h"
 #include "../private.h"

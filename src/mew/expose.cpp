@@ -1,4 +1,4 @@
-// expose.cpp
+Ôªø// expose.cpp
 
 #include "stdafx.h"
 #include "private.h"
@@ -27,7 +27,7 @@ class Expose : public Root<implements<IExpose> >, public CWindowImpl<Expose, CWi
   DWORD m_Alpha;
   INT32 m_Selected;
   string m_Title;
-  Point m_LastCursorPos;  // èâä˙É}ÉEÉXÉJÅ[É\Éãà íuÅB
+  Point m_LastCursorPos;  // ÂàùÊúü„Éû„Ç¶„Çπ„Ç´„Éº„ÇΩ„É´‰ΩçÁΩÆ„ÄÇ
   enum Status {
     StatusLoop,
     StatusOK,
@@ -109,7 +109,7 @@ class Expose : public Root<implements<IExpose> >, public CWindowImpl<Expose, CWi
   HRESULT Go(HWND hwndParent, UINT32 dwTransitionTime) {
     ASSERT(!IsWindow());
     if (dwTransitionTime > 1000 * 10) {
-      ASSERT(!"Ç¶Ç≠Ç∑Ç€Ç∫ í∑Ç∑Ç¨ÇÈÇÒÇøÇ·Ç§ÇÒÅH");
+      ASSERT(!"„Åà„Åè„Åô„ÅΩ„Åú Èï∑„Åô„Åé„Çã„Çì„Å°„ÇÉ„ÅÜ„ÇìÔºü");
       dwTransitionTime = 1000 * 10;
     }
 
@@ -256,7 +256,7 @@ class Expose : public Root<implements<IExpose> >, public CWindowImpl<Expose, CWi
     Release();  // for HWND
   }
   LRESULT OnClose(UINT uMsg, WPARAM, LPARAM, BOOL& bHandled) {
-    // WM_CLOSE íÜÇÃ GetParent() ÇÕé∏îsÇ∑ÇÈÇÁÇµÇ¢
+    // WM_CLOSE ‰∏≠„ÅÆ GetParent() „ÅØÂ§±Êïó„Åô„Çã„Çâ„Åó„ÅÑ
     if (m_wndParent.IsWindow()) {
       m_wndParent.EnableWindow(true);
     }
@@ -289,7 +289,7 @@ class Expose : public Root<implements<IExpose> >, public CWindowImpl<Expose, CWi
     Point pt(GET_XY_LPARAM(lParam));
     Point v = m_LastCursorPos - pt;
     if (math::hypot2(v.x, v.y) > 100) {
-      m_LastCursorPos.assign(-0x4000, -0x4000);  // Ç∆ÇËÇ†Ç¶Ç∏âìÇ≠Ç÷
+      m_LastCursorPos.assign(-0x4000, -0x4000);  // „Å®„Çä„ÅÇ„Åà„ÅöÈÅ†„Åè„Å∏
       int index = HitTest(GET_XY_LPARAM(lParam));
       if (m_Selected != index) {
         m_Selected = index;
@@ -329,7 +329,7 @@ class Expose : public Root<implements<IExpose> >, public CWindowImpl<Expose, CWi
     return 0;
   }
   LRESULT OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-    // ÉLÅ[ì¸óÕå„ÇÕÅAÉ}ÉEÉXÇïsä¥ë—Çê›ÇØÇÈÅB
+    // „Ç≠„ÉºÂÖ•ÂäõÂæå„ÅØ„ÄÅ„Éû„Ç¶„Çπ„Çí‰∏çÊÑüÂ∏Ø„ÇíË®≠„Åë„Çã„ÄÇ
     ::GetCursorPos(&m_LastCursorPos);
     ScreenToClient(&m_LastCursorPos);
     switch (wParam) {
@@ -447,16 +447,16 @@ class Expose : public Root<implements<IExpose> >, public CWindowImpl<Expose, CWi
       COLORREF textColor;
       if (m_Components[i].id == currentID) {
         dc.BitBlt(rc.x, rc.y, rc.w, rc.h, dcSrc, rc.x, rc.y, SRCCOPY);
-        if (i == m_Selected) {  // ÉJÅ[É\Éãè„
+        if (i == m_Selected) {  // „Ç´„Éº„ÇΩ„É´‰∏ä
           logfont.lfUnderline = true;
           pen.CreatePen(PS_SOLID, math::max(10, fontSizePixel / 10), GetSysColor(COLOR_WINDOW));
           textColor = GetSysColor(COLOR_HOTLIGHT);
-        } else {  // ìØÇ∂IDÇæÇ™ÅAÉJÅ[É\Éãè„Ç≈ÇÕÇ»Ç¢
+        } else {  // Âêå„ÅòID„Å†„Åå„ÄÅ„Ç´„Éº„ÇΩ„É´‰∏ä„Åß„ÅØ„Å™„ÅÑ
           COLORREF colorWindow = GetSysColor(COLOR_WINDOW);
           pen.CreatePen(PS_SOLID, math::max(10, fontSizePixel / 10), colorWindow);
           textColor = mew::drawing::BlendRGB(GetSysColor(COLOR_BTNTEXT), colorWindow, 50);
         }
-      } else {  // îÒÉAÉNÉeÉBÉu
+      } else {  // Èùû„Ç¢„ÇØ„ÉÜ„Ç£„Éñ
         pen.CreatePen(PS_SOLID, math::max(10, fontSizePixel / 10), GetSysColor(COLOR_BTNTEXT));
         textColor = GetSysColor(COLOR_WINDOW);
       }

@@ -1,4 +1,4 @@
-// TaskTrayProvider.hpp
+ï»¿// TaskTrayProvider.hpp
 #pragma once
 
 #include "main.hpp"
@@ -17,11 +17,11 @@ class __declspec(novtable) TaskTrayProvider : public TBase {
     HWND hwnd = m_form->Handle;
     if (!IsWindowEnabled(hwnd)) {return S_OK;}
     if (m_EnableTray && ::IsIconic(hwnd) &&
-        m_form->Visible) {  // •œ‹A‚ÍAForm.CommandRestore ‚ÅÀ‘•‚³‚ê‚Ä‚¢‚é‚½‚ßˆ—‚·‚é•K—v‚Í–³‚¢
+        m_form->Visible) {  // å¾©å¸°ã¯ã€Form.CommandRestore ã§å®Ÿè£…ã•ã‚Œã¦ã„ã‚‹ãŸã‚å‡¦ç†ã™ã‚‹å¿…è¦ã¯ç„¡ã„
       m_form->Visible = false;
       m_form->TaskTray = true;
     }
-    // •\¦‚³‚ê‚Ä‚¢‚é‚Ì‚Éƒ^ƒXƒNƒgƒŒƒCƒAƒCƒRƒ“‚ª‚ ‚éê‡‚ÍÁ‚·
+    // è¡¨ç¤ºã•ã‚Œã¦ã„ã‚‹ã®ã«ã‚¿ã‚¹ã‚¯ãƒˆãƒ¬ã‚¤ã‚¢ã‚¤ã‚³ãƒ³ãŒã‚ã‚‹å ´åˆã¯æ¶ˆã™
     if (!m_AlwaysTray && m_form->Visible) {
       m_form->TaskTray = false;
     }

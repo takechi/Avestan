@@ -1,4 +1,4 @@
-// xmlparse.cpp
+ï»¿// xmlparse.cpp
 
 #include "stdafx.h"
 #include "../server/main.hpp"
@@ -22,7 +22,7 @@ static bool operator==(const VirtualKey& lhs, PCWSTR rhs) { return _wcsicmp(lhs.
 static bool operator<(const VirtualKey& lhs, DWORD key) { return lhs.vkey < key; }
 static bool operator==(const VirtualKey& lhs, DWORD key) { return lhs.vkey == key; }
 
-// ƒL[–¼ to ƒL[ƒR[ƒh ”z—ñB‘å•¶Žš¬•¶Žš‚ð‹æ•Ê‚µ‚È‚¢ƒL[–¼‚Åƒ\[ƒgÏ‚Ý‚Å‚ ‚é‚±‚ÆB
+// ã‚­ãƒ¼å to ã‚­ãƒ¼ã‚³ãƒ¼ãƒ‰ é…åˆ—ã€‚å¤§æ–‡å­—å°æ–‡å­—ã‚’åŒºåˆ¥ã—ãªã„ã‚­ãƒ¼åã§ã‚½ãƒ¼ãƒˆæ¸ˆã¿ã§ã‚ã‚‹ã“ã¨ã€‚
 const VirtualKey VIRTUALKEYS[] = {
     L",",        0xBC,        L"-",        0xBD,        L".",         0xBE,         L"/",         0xBF,          L"0",
     0x30,        L"1",        0x31,        L"2",        0x32,         L"3",         0x33,         L"4",          0x34,
@@ -50,21 +50,21 @@ const VirtualKey VIRTUALKEYS[] = {
     VK_RIGHT,    L"s",        0x53,        L"sep",      VK_SEPARATOR, L"separator", VK_SEPARATOR, L"space",      VK_SPACE,
     L"sub",      VK_SUBTRACT, L"subtract", VK_SUBTRACT, L"t",         0x54,         L"tab",       VK_TAB,        L"u",
     0x55,        L"up",       VK_UP,       L"v",        0x56,         L"w",         0x57,         L"x",          0x58,
-    L"y",        0x59,        L"z",        0x5A,        L"©",         VK_LEFT,      L"ª",         VK_UP,         L"¨",
-    VK_RIGHT,    L"«",        VK_DOWN,     L"ƒJƒ^ƒJƒi", VK_KANA,      L"ƒJƒi",      VK_KANA,      L"ƒ[ƒ}Žš",   VK_KANA,
-    L"”¼Šp",     VK_KANJI,    L"•ÏŠ·",     VK_CONVERT,  L"Š¿Žš",      VK_KANJI,     L"–³•ÏŠ·",    VK_NONCONVERT,
+    L"y",        0x59,        L"z",        0x5A,        L"â†",         VK_LEFT,      L"â†‘",         VK_UP,         L"â†’",
+    VK_RIGHT,    L"â†“",        VK_DOWN,     L"ã‚«ã‚¿ã‚«ãƒŠ", VK_KANA,      L"ã‚«ãƒŠ",      VK_KANA,      L"ãƒ­ãƒ¼ãƒžå­—",   VK_KANA,
+    L"åŠè§’",     VK_KANJI,    L"å¤‰æ›",     VK_CONVERT,  L"æ¼¢å­—",      VK_KANJI,     L"ç„¡å¤‰æ›",    VK_NONCONVERT,
 };
 
 #ifdef _DEBUG
 struct VirtualKeyVerifier {
   VirtualKeyVerifier() {
-    // VIRTUALKEYS ‚Íƒ\[ƒgÏ‚Ý‚Å‚È‚¯‚ê‚Î‚È‚ç‚È‚¢‚Ì‚ÅAˆê‰žŠm”F‚µ‚Ä‚¨‚­B
+    // VIRTUALKEYS ã¯ã‚½ãƒ¼ãƒˆæ¸ˆã¿ã§ãªã‘ã‚Œã°ãªã‚‰ãªã„ã®ã§ã€ä¸€å¿œç¢ºèªã—ã¦ãŠãã€‚
     const int NUMKEYS = sizeof(VIRTUALKEYS) / sizeof(VIRTUALKEYS[0]);
     for (int i = 0; i < NUMKEYS - 1; i++) {
       if (!(VIRTUALKEYS[i] < VIRTUALKEYS[i + 1].name)) {
         PCWSTR lhs = VIRTUALKEYS[i].name;
         PCWSTR rhs = VIRTUALKEYS[i + 1].name;
-        ASSERT(!"VIRTUALKEYS ‚Íƒ\[ƒgÏ‚Ý‚Å‚È‚¯‚ê‚Î‚È‚ç‚È‚¢");
+        ASSERT(!"VIRTUALKEYS ã¯ã‚½ãƒ¼ãƒˆæ¸ˆã¿ã§ãªã‘ã‚Œã°ãªã‚‰ãªã„");
       }
     }
   }

@@ -1,4 +1,4 @@
-/// @file set.hpp
+ï»¿/// @file set.hpp
 /// UNDOCUMENTED
 #pragma once
 
@@ -8,7 +8,7 @@
 #pragma warning(default : 4702)
 
 //==============================================================================
-// std::set<T, Alloc>‚É‘Î‚·‚éBinary“üo—ÍƒIƒyƒŒ[ƒ^
+// std::set<T, Alloc>ã«å¯¾ã™ã‚‹Binaryå…¥å‡ºåŠ›ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
 
 template <typename T, class Pred, class Alloc>
 inline IStream& operator<<(IStream& stream, const std::set<T, Pred, Alloc>& v) throw(...) {

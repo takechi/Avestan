@@ -1,4 +1,4 @@
-// WindowImpl.h
+п»ї// WindowImpl.h
 #pragma once
 
 #include "../server/resource.h"
@@ -113,14 +113,14 @@ class WindowMessageSource : public SignalImpl<DynamicLife<TBase> > {
 
  protected:
   LRESULT OnQueryInterface(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-    if (!m_msgr) {  // ”jЉь’†ЃA‰єЋи‚р‚·‚й‚Ж‚·‚Е‚ЙRelease()ЌП‚Э‚И‚М‚ЕЃAђв‘О‚ЙAddRef()‚µ‚Д‚Н‚И‚з‚И‚ў
+    if (!m_msgr) {  // з ґжЈ„дё­гЂЃдё‹ж‰‹г‚’гЃ™г‚‹гЃЁгЃ™гЃ§гЃ«Release()жё€гЃїгЃЄгЃ®гЃ§гЂЃзµ¶еЇѕгЃ«AddRef()гЃ—гЃ¦гЃЇгЃЄг‚‰гЃЄгЃ„
       return E_UNEXPECTED;
     }
     const IID* piid = (const IID*)wParam;
     void** ppObject = (void**)lParam;
 #ifdef _DEBUG
     if (IsBadReadPtr(piid, sizeof(GUID)) ||
-        IsBadWritePtr(ppObject, sizeof(void**))) {  // ЉФ€б‚Б‚ДЊД‚О‚к‚й‰В”\ђ«‚Є‚ ‚й‚М‚ЕЃA–hЊд‚НЉ®аш‚ЙЃc
+        IsBadWritePtr(ppObject, sizeof(void**))) {  // й–“йЃ•гЃЈгЃ¦е‘јгЃ°г‚Њг‚‹еЏЇиѓЅжЂ§гЃЊгЃ‚г‚‹гЃ®гЃ§гЂЃйІеѕЎгЃЇе®Њз’§гЃ«вЂ¦
       __debugbreak();
       return E_POINTER;
     }
@@ -151,19 +151,19 @@ class __declspec(novtable) WindowImpl : public Root<TImplements, TMixin>, public
   HWND Create(HWND hParent);
 
  public:  // overridable
-  /// ѓRѓ“ѓXѓgѓ‰ѓNѓ^‚М’јЊг‚ЙЊД‚О‚кЃAѓEѓBѓ“ѓhѓE‚рЌмђ¬‚·‚й.
+  /// г‚ігѓіг‚№гѓ€гѓ©г‚Їг‚їгЃ®з›ґеѕЊгЃ«е‘јгЃ°г‚ЊгЂЃг‚¦г‚Јгѓігѓ‰г‚¦г‚’дЅњж€ђгЃ™г‚‹.
   void DoCreate(CWindowEx parent, ATL::_U_RECT rect = rcDefault, Direction dock = DirNone, DWORD dwStyle = 0,
                 DWORD dwExStyle = 0) {
     m_Dock = dock;
     __super::Create(parent, rect, NULL, dwStyle, dwExStyle);
   }
-  /// ѓEѓBѓ“ѓhѓE‚МЌмђ¬’јЊг‚ЙЊД‚О‚к‚й.
+  /// г‚¦г‚Јгѓігѓ‰г‚¦гЃ®дЅњж€ђз›ґеѕЊгЃ«е‘јгЃ°г‚Њг‚‹.
   bool HandleCreate(const CREATESTRUCT& cs) { return true; }
-  /// ѓEѓBѓ“ѓhѓE‚М”jЉь’ј‘O‚ЙЊД‚О‚к‚й.
+  /// г‚¦г‚Јгѓігѓ‰г‚¦гЃ®з ґжЈ„з›ґе‰ЌгЃ«е‘јгЃ°г‚Њг‚‹.
   void HandleClose() {}
-  /// ѓEѓBѓ“ѓhѓE‚М”jЉь’јЊг‚ЙЊД‚О‚к‚й.
+  /// г‚¦г‚Јгѓігѓ‰г‚¦гЃ®з ґжЈ„з›ґеѕЊгЃ«е‘јгЃ°г‚Њг‚‹.
   void HandleDestroy() {}
-  /// –ј‘O‚Є•ПЌX‚і‚к‚Ѕ
+  /// еђЌе‰ЌгЃЊе¤‰ж›ґгЃ•г‚ЊгЃџ
   void HandleSetText(PCTSTR name) {}
   ///
   void HandleUpdateLayout() {}
@@ -206,7 +206,7 @@ class __declspec(novtable) WindowImpl : public Root<TImplements, TMixin>, public
     }
   }
   HWND Recreate(_U_RECT rc = 0, PCTSTR name = 0, DWORD dwStyle = 0, DWORD dwStyleEx = 0) {
-    TRACE(_T("warning: TODO ѓnѓ“ѓhѓ‰Њn‚Є‘S–Е‚µ‚Ь‚·"));
+    TRACE(_T("warning: TODO гѓЏгѓігѓ‰гѓ©зі»гЃЊе…Ёж»…гЃ—гЃѕгЃ™"));
     CWindowEx parent = GetParent();
     DestroyWindow();
     return __super::Create(parent, rc, name, dwStyle, dwStyleEx);
@@ -252,7 +252,7 @@ class __declspec(novtable) WindowImpl : public Root<TImplements, TMixin>, public
         switch (uMsg) {
           case WM_NCCREATE:
             m_msgr.create(__uuidof(Messenger));
-            this->AddRef();  // HWND ‚Ж‚µ‚Д•ЫЋќ‚і‚к‚й•Є.
+            this->AddRef();  // HWND гЃЁгЃ—гЃ¦дїќжЊЃгЃ•г‚Њг‚‹е€†.
             lResult = DefWindowProc();
             break;
           case WM_CREATE:
@@ -292,7 +292,7 @@ class __declspec(novtable) WindowImpl : public Root<TImplements, TMixin>, public
 
           void OnFinalMessage(HWND) {
     Dispose();
-    this->Release();  // HWND ‚Ж‚µ‚Д•ЫЋќ‚і‚к‚й•Є.
+    this->Release();  // HWND гЃЁгЃ—гЃ¦дїќжЊЃгЃ•г‚Њг‚‹е€†.
   }
   bool ProcessClose() {
     message reply = InvokeEvent<EventPreClose>(static_cast<IWindow*>(this));
@@ -363,11 +363,11 @@ class __declspec(novtable) WindowImpl : public Root<TImplements, TMixin>, public
   LRESULT OnUpdateLayout(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     MSG msg;
     if (!::PeekMessage(&msg, m_hWnd, MEW_ECHO_UPDATE, MEW_ECHO_UPDATE,
-                       PM_NOREMOVE)) {  // ѓЃѓbѓZЃ[ѓWѓLѓ…Ѓ[‚Й‚±‚к€ИЏгMEW_ECHO_UPDATE‚Є–і‚ўЏкЌ‡‚М‚ЭЏ€—ќ‚·‚йЃB
-      // •Ўђ”‰сѓЊѓCѓAѓEѓgЌXђV‚і‚к‚ЅЏкЌ‡‚ЙЃA–і‘К‚ЙЌД”z’u‚·‚й‚М‚р–h‚®.
+                       PM_NOREMOVE)) {  // гѓЎгѓѓг‚»гѓјг‚ёг‚­гѓҐгѓјгЃ«гЃ“г‚Њд»ҐдёЉMEW_ECHO_UPDATEгЃЊз„ЎгЃ„е ґеђ€гЃ®гЃїе‡¦зђ†гЃ™г‚‹гЂ‚
+      // и¤‡ж•°е›ћгѓ¬г‚¤г‚ўг‚¦гѓ€ж›ґж–°гЃ•г‚ЊгЃџе ґеђ€гЃ«гЂЃз„Ўй§„гЃ«е†Ќй…ЌзЅ®гЃ™г‚‹гЃ®г‚’йІгЃђ.
       final.HandleUpdateLayout();
-    } else if (msg.hwnd != m_hWnd) {  // Ћ©•Є‚МЋq‹џѓEѓBѓ“ѓhѓE‚МѓЃѓbѓZЃ[ѓW‚аЊ©‚В‚Ї‚Д‚µ‚Ь‚¤‚М‚ЕЃA“Б•КЏ€—ќ
-      PostMessage(MEW_ECHO_UPDATE);  // ЌЕЊг‚Й‚а‚¤€к“xЋ©•Є‚р’К’m‚µ‚Д—~‚µ‚ў
+    } else if (msg.hwnd != m_hWnd) {  // и‡Єе€†гЃ®е­ђдѕ›г‚¦г‚Јгѓігѓ‰г‚¦гЃ®гѓЎгѓѓг‚»гѓјг‚ёг‚‚и¦‹гЃ¤гЃ‘гЃ¦гЃ—гЃѕгЃ†гЃ®гЃ§гЂЃз‰№е€Ґе‡¦зђ†
+      PostMessage(MEW_ECHO_UPDATE);  // жњЂеѕЊгЃ«г‚‚гЃ†дёЂеє¦и‡Єе€†г‚’йЂљзџҐгЃ—гЃ¦ж¬ІгЃ—гЃ„
     }
     return 0;
   }

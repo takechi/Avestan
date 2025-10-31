@@ -1,4 +1,4 @@
-// AvestaDialog.cpp
+﻿// AvestaDialog.cpp
 
 #include "stdafx.h"
 #include "main.hpp"
@@ -22,7 +22,7 @@ mew::string GetDirectoryOfView(mew::ui::IShellListView* view) {
 }
 
 bool Recheck(mew::ui::IShellListView* view, mew::string path) {
-  // �_�C�A���O��\�����Ă���ԂɃt�H���_�r���[������ or �p�X���ς��\�������邽�߁A������x�`�F�b�N����.
+  // ダイアログを表示している間にフォルダビューが無効 or パスが変わる可能性があるため、もう一度チェックする.
   if (path == ave::GetPathOfView(view)) {
     return true;
   }
@@ -64,10 +64,10 @@ class NewFileDlg : public avesta::Dialog {
     SetText(IDC_NEW_NAME, m_names);
     afx::Edit_SubclassSingleLineTextBox(GetItem(IDC_NEW_NAME), NULL, theAvesta->EditOptions);
     SetChecked(IDC_NEW_SELECT, m_select);
-    SetTip(IDC_NEW_PATH, _T("�t�@�C�����쐬�����ꏊ�ł��B"));
-    SetTip(IDC_NEW_NAME, _T("'/' �� ';' �ŋ�؂�ƕ��������ɍ쐬�ł��܂��B��̏ꍇ�̓f�t�H���g�̖��O�������܂��B"));
-    SetTip(IDC_NEW_EXT, _T("��̏ꍇ�̓t�H���_���쐬����܂��B'.' �͕t���Ă��t���Ȃ��Ă����܂��܂���B"));
-    SetTip(IDC_NEW_SELECT, _T("�쐬��Ƀt�@�C����I����Ԃɂ���ꍇ�̓`�F�b�N���܂��B"));
+    SetTip(IDC_NEW_PATH, _T("ファイルが作成される場所です。"));
+    SetTip(IDC_NEW_NAME, _T("'/' や ';' で区切ると複数同時に作成できます。空の場合はデフォルトの名前がつけられます。"));
+    SetTip(IDC_NEW_EXT, _T("空の場合はフォルダが作成されます。'.' は付けても付けなくてもかまいません。"));
+    SetTip(IDC_NEW_SELECT, _T("作成後にファイルを選択状態にする場合はチェックします。"));
     return true;
   }
 
@@ -94,7 +94,7 @@ class NewFileDlg : public avesta::Dialog {
 #define FORBIDDEN_PATH_CHARS L"\\/:\"<>|*?\t\r\n"
 
 void CreateFileOrFolder(std::vector<mew::string>& newfiles, const mew::string& path, PCWSTR names, PCWSTR extension) {
-  // �Z�~�R�����͖{���t�@�C���p�X�p�̕����Ƃ��Ďg���邪�A�����ł̓p�X��؂�Ƃ��Ĉ������Ƃɂ���B
+  // セミコロンは本来ファイルパス用の文字として使えるが、ここではパス区切りとして扱うことにする。
   const PCWSTR SEPARATOR = FORBIDDEN_PATH_CHARS L";";
   const PCWSTR TRIM = FORBIDDEN_PATH_CHARS L"; ";
   const bool isEmptyExtension = mew::str::empty(extension);
@@ -130,7 +130,7 @@ void CreateFileOrFolder(std::vector<mew::string>& newfiles, const mew::string& p
     if (SUCCEEDED(hr))
       newfiles.push_back(file);
     else
-      theAvesta->Notify(avesta::NotifyWarning, mew::string::format(L"$1 �̍쐬�Ɏ��s���܂���", file));
+      theAvesta->Notify(avesta::NotifyWarning, mew::string::format(L"$1 の作成に失敗しました", file));
   }
 }
 
@@ -149,11 +149,11 @@ static void CreateAndSelect(mew::ui::IShellListView* view, const mew::string& pa
   if (after == AfterCreateNone || newfiles.empty()) return;
 
   view->Send(mew::ui::CommandSelectNone);
-  // 10�����Ă��I���ł��Ȃ��悤�Ȃ�΂�����߂�
+  // 10回回っても選択できないようならばあきらめる
   for (int count = 0; count < 10; ++count) {
-    // �t�@�C���V�X�e���ւ̕ύX�Ɏ��Ԃ������邽�߁A�����ɂ͑I���ł��Ȃ��ꍇ������B
-    // ���̃X���[�v�ƃ��b�Z�[�W�f�B�X�p�b�`�́A�ύX���ʒm�����̂�҂��߂ɕK�v���Ǝv����B
-    Sleep(200);  // �����܂������Ԃ�������Ȃ��B
+    // ファイルシステムへの変更に時間がかかるため、すぐには選択できない場合がある。
+    // このスリープとメッセージディスパッチは、変更が通知されるのを待つために必要だと思われる。
+    Sleep(200);  // ←いまいち時間が分からない。
     afx::PumpMessage();
     //
     bool unique = true;
@@ -165,8 +165,8 @@ static void CreateAndSelect(mew::ui::IShellListView* view, const mew::string& pa
     }
     mew::ref<mew::io::IEntryList> entries;
     if (SUCCEEDED(view->GetContents(&entries, mew::SELECTED)) &&
-        entries->Count == newfiles.size()) {  // unique�I���ł�������I�𐔂��[���ɂȂ邽�߁A���݂̂̔��ʂŏ\���Ȃ͂��B
-      TRACE(_T("info: �V�K�쐬�t�@�C���̑I���� $1 ��̃��[�v���K�v�ł���"), count);
+        entries->Count == newfiles.size()) {  // unique選択でいったん選択数がゼロになるため、個数のみの判別で十分なはず。
+      TRACE(_T("info: 新規作成ファイルの選択に $1 回のループが必要でした"), count);
       if (after == AfterCreateRename) {
         view->Send(mew::ui::CommandRename);
       }
@@ -186,7 +186,7 @@ void DlgNew(mew::ui::IShellListView* view) {
   mew::string path = GetDirectoryOfView(view);
   if (!path) return;
   static NewFileDlg dlg;
-  mew::ref<IUnknown> unk(view);  // AddRef()�̂���
+  mew::ref<IUnknown> unk(view);  // AddRef()のため
   if (dlg.Go(path) == IDOK) {
     if (Recheck(view, path))
       CreateAndSelect(view, path, dlg.m_names, dlg.m_extension, (dlg.m_select ? AfterCreateSelect : AfterCreateNone));
@@ -226,7 +226,7 @@ static void DoSelect(mew::ui::IShellListView* view, const mew::string& path, PCT
     } while (::FindNextFile(hFind, &find));
     ::FindClose(hFind);
   }
-  if (count == 0) {  // �w�肳�ꂽ�p�^�[�������������Ȃ������B
+  if (count == 0) {  // 指定されたパターンが一つも見つからなかった。
     theAvesta->Notify(avesta::NotifyWarning, mew::string::load(IDS_WARN_NOSELECT));
   }
 }

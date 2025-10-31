@@ -1,4 +1,4 @@
-// xmlmessage.cpp
+ï»¿// xmlmessage.cpp
 
 #include "stdafx.h"
 #include "../mew/private.h"
@@ -38,7 +38,7 @@ static PCWSTR TypeToName(mew::TypeCode typecode) {
     case mew::TypeColor:
       return L"Color";
     case mew::TypeUnknown:
-      return L"String";  // ‚·‚×‚Ä‚ÌƒIƒuƒWƒFƒNƒg‚Í•¶š—ñ‚Æ‚µ‚Ä•Û‘¶‚·‚é
+      return L"String";  // ã™ã¹ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¯æ–‡å­—åˆ—ã¨ã—ã¦ä¿å­˜ã™ã‚‹
     default:
       return nullptr;
   }
@@ -82,7 +82,7 @@ static mew::TypeCode NameToType(PCWSTR name, size_t cch) throw() {
 #endif
   const Name2Type* found = mew::algorithm::binary_search(N2T_BEGIN, N2T_END, StringAndLength(name, cch));
   if (found == N2T_END) {
-    ASSERT(!"—‰ğ‚Å‚«‚È‚¢ƒ^ƒCƒv–¼");
+    ASSERT(!"ç†è§£ã§ããªã„ã‚¿ã‚¤ãƒ—å");
     return mew::TypeNull;
   } else
     return found->Type;
@@ -166,7 +166,7 @@ class XMLMessageLoader : public mew::xml::XMLHandlerImpl {
         m_stack.back()[m_var.name] = var;
       }
     } else {
-      TRACE(_T("warning: –¢’m‚ÌƒGƒŒƒƒ“ƒg : $1"), mew::string(name, cch));
+      TRACE(_T("warning: æœªçŸ¥ã®ã‚¨ãƒ¬ãƒ¡ãƒ³ãƒˆ : $1"), mew::string(name, cch));
     }
     m_var.text.clear();
     return S_OK;

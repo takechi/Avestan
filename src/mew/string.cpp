@@ -1,4 +1,4 @@
-// string.cpp
+ï»¿// string.cpp
 
 #include "stdafx.h"
 #include <new>
@@ -9,7 +9,7 @@
 //==============================================================================
 
 namespace {
-/// ŒÅ’è\‘¢‚ÌŒã‚É‰Â•Ï’·ƒoƒbƒtƒ@‚ª‘±‚­\‘¢‘Ì‚ğ\’z‚·‚é‚½‚ß‚Ìƒoƒbƒtƒ@.
+/// å›ºå®šæ§‹é€ ã®å¾Œã«å¯å¤‰é•·ãƒãƒƒãƒ•ã‚¡ãŒç¶šãæ§‹é€ ä½“ã‚’æ§‹ç¯‰ã™ã‚‹ãŸã‚ã®ãƒãƒƒãƒ•ã‚¡.
 template <class Struct, class T>
 class VariableLengthBuffer {
  private:
@@ -103,7 +103,7 @@ class String : public Root<implements<IString, ISerializable> > {
   static void* Allocate(size_t len) throw() { return ::malloc(sizeof(String) + (len + 1) * sizeof(WCHAR)); }
 
  public:
-  /// @param src Š—LŒ ‚Í÷“n‚³‚ê‚é.
+  /// @param src æ‰€æœ‰æ¨©ã¯è­²æ¸¡ã•ã‚Œã‚‹.
   static IString* NewHere(void* src, size_t len) throw() {
     ASSERT(src);
     ASSERT(len > 0);
@@ -111,7 +111,7 @@ class String : public Root<implements<IString, ISerializable> > {
     ASSERT(s->m_buffer[len] == L'\0');
     return s;
   }
-  /// @param src Š—LŒ ‚ÍŒÄ‚Ño‚µŒ³‚Ì‚Ü‚Ü.
+  /// @param src æ‰€æœ‰æ¨©ã¯å‘¼ã³å‡ºã—å…ƒã®ã¾ã¾.
   static IString* NewCopy(PCWSTR src, size_t len) throw() {
     ASSERT(len > 0);
     void* p = Allocate(len);
@@ -141,7 +141,7 @@ void CreateString(mew::REFINTF pp, IUnknown* arg) throw(...) {
   } else if (mew::ref<IStream> stream = mew::cast(arg)) {
     size_t len;
     mew::io::StreamReadExact(stream, &len, sizeof(len));
-    if (len == 0) {  // ’·‚³ƒ[ƒ‚Ì•¶š—ñ
+    if (len == 0) {  // é•·ã•ã‚¼ãƒ­ã®æ–‡å­—åˆ—
       *pp.pp = nullptr;
     } else {
       mew::IString* obj;
@@ -151,8 +151,8 @@ void CreateString(mew::REFINTF pp, IUnknown* arg) throw(...) {
       VERIFY_HRESULT(obj->QueryInterface(pp.iid, pp.pp));
       obj->Release();
     }
-  } else {  // ƒRƒ“ƒXƒgƒ‰ƒNƒ^ˆø”‚ªstream‚Å‚È‚¢
-    throw mew::exceptions::ArgumentError(L"String‚Ìˆø”‚ªstream‚Å‚È‚¢");
+  } else {  // ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿å¼•æ•°ãŒstreamã§ãªã„
+    throw mew::exceptions::ArgumentError(L"Stringã®å¼•æ•°ãŒstreamã§ãªã„");
   }
 }
 
@@ -240,7 +240,7 @@ void mew::StringReplace(IString** pp, IString* s, WCHAR from, WCHAR to) {
 }
 
 void mew::ObjectToString(IString** pp, IUnknown* obj) throw() {
-  if (!obj) {  // ‚Ê‚é‚Û
+  if (!obj) {  // ã¬ã‚‹ã½
     CreateString(pp, L"null", string::npos, 0, null);
   } else if SUCCEEDED (objcpy(obj, pp)) {  // ok. already string
   }

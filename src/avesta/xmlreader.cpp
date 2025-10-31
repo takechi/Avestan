@@ -1,4 +1,4 @@
-// xmlreader.cpp
+ï»¿// xmlreader.cpp
 
 #include "stdafx.h"
 #import <msxml6.dll> raw_interfaces_only
@@ -9,8 +9,8 @@
 
 namespace {
 
-// wchar_t* ‚ğ unsigned short* ‚Æ‚µ‚ÄƒCƒ“ƒ|[ƒg‚µ‚Ä‚µ‚Ü‚¤‚Ì‚ÅA
-// USHORT* Ì PWSTR ‚ÌƒLƒƒƒXƒg‚ğ‘½—p‚·‚é‚±‚Æ‚É‚È‚éB
+// wchar_t* ã‚’ unsigned short* ã¨ã—ã¦ã‚¤ãƒ³ãƒãƒ¼ãƒˆã—ã¦ã—ã¾ã†ã®ã§ã€
+// USHORT* â‡” PWSTR ã®ã‚­ãƒ£ã‚¹ãƒˆã‚’å¤šç”¨ã™ã‚‹ã“ã¨ã«ãªã‚‹ã€‚
 using XMLSTR = unsigned short*;
 STATIC_ASSERT(sizeof(unsigned short) == sizeof(wchar_t));
 
@@ -46,7 +46,7 @@ class AttributesImpl : public mew::xml::XMLAttributes {
   }
 };
 
-// MSXML4 ‚Å‚ÍAnullƒ^[ƒ~ƒl[ƒg‚³‚ê‚Ä‚¢‚È‚¢‚±‚Æ‚É’ˆÓI
+// MSXML4 ã§ã¯ã€nullã‚¿ãƒ¼ãƒŸãƒãƒ¼ãƒˆã•ã‚Œã¦ã„ãªã„ã“ã¨ã«æ³¨æ„ï¼
 
 #define TO_STRING(chars, cch) (PCWSTR) chars, cch
 #define TO_STRING0(chars) (PCWSTR) chars
@@ -156,7 +156,7 @@ class XMLReader : public Root<implements<IXMLReader> > {
  public:  // IXMLReader
   HRESULT Parse(IXMLHandler* handler, IUnknown* pSource) {
     if (!handler) {
-      ASSERT(!"‚Ê‚é‚Û");
+      ASSERT(!"ã¬ã‚‹ã½");
       return E_POINTER;
     }
     m_Adapter.m_pHandler = handler;

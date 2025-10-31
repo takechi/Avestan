@@ -1,4 +1,4 @@
-// dialog_path.cpp
+﻿// dialog_path.cpp
 
 #include "stdafx.h"
 #include "../server/main.hpp"

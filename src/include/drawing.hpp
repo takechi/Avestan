@@ -1,14 +1,14 @@
-/// @file drawing.hpp
-/// }Œ`•`‰æ.
+ï»¿/// @file drawing.hpp
+/// å›³å½¢æç”».
 #pragma once
 
 #include "struct.hpp"
 
 namespace mew {
-/// }Œ`•`‰æ.
+/// å›³å½¢æç”».
 namespace drawing {
 //==============================================================================
-// ƒCƒ“ƒ^ƒtƒF[ƒX
+// ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹
 
 ///
 __interface __declspec(uuid("0779F971-F896-41A9-88E6-1C66978ECE65")) IImageList2 : IImageList {

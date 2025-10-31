@@ -1,4 +1,4 @@
-// buffer.hpp
+ï»¿// buffer.hpp
 #pragma once
 
 #include "math.hpp"
@@ -43,7 +43,7 @@ class BufferT : public CHeapPtr<T, TAlloc> {
     if (m_length < pos + len) {
       size_t length = m_length;
       resize(pos + len);
-      if (pos > length) {  // ––”ö‚ğ‰z‚¦‚½‘‚«‚İ‚Ìê‡AuŒŠv‚ğƒ[ƒ‚Å–„‚ß‚éB
+      if (pos > length) {  // æœ«å°¾ã‚’è¶ŠãˆãŸæ›¸ãè¾¼ã¿ã®å ´åˆã€ã€Œç©´ã€ã‚’ã‚¼ãƒ­ã§åŸ‹ã‚ã‚‹ã€‚
         memset(m_pData + length, 0, (pos - length) * sizeof(T));
       }
     }
@@ -85,7 +85,7 @@ class StringBufferT : public BufferT<T, TAlloc> {
  public:
   const T* str() const { return empty() ? 0 : data(); }
   using super::append;
-  /// ––’[‚ÌNULL•¶š‚Í’Ç‰Á‚µ‚È‚¢.
+  /// æœ«ç«¯ã®NULLæ–‡å­—ã¯è¿½åŠ ã—ãªã„.
   void append(const T* str) {
     size_t length = str::length(str);
     size_t sz = size();
@@ -93,11 +93,11 @@ class StringBufferT : public BufferT<T, TAlloc> {
     for (size_t i = 0; i < length; ++i) data()[sz + i] = str[i];
   }
   void append_path(const T* path) {
-    if (str::find(path, T(' '))) {  // ƒXƒy[ƒX‚ğŠÜ‚Şê‡
+    if (str::find(path, T(' '))) {  // ã‚¹ãƒšãƒ¼ã‚¹ã‚’å«ã‚€å ´åˆ
       append(T('"'));
       append(path);
       append(T('"'));
-    } else {  // ƒXƒy[ƒX‚ğŠÜ‚Ü‚È‚¢ê‡
+    } else {  // ã‚¹ãƒšãƒ¼ã‚¹ã‚’å«ã¾ãªã„å ´åˆ
       append(path);
     }
   }

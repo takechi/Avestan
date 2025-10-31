@@ -1,12 +1,12 @@
-// ShellFolder.h
+ï»¿// ShellFolder.h
 #pragma once
 
 #include "WindowImpl.h"
 #include "path.hpp"
 #include "std/deque.hpp"
 
-const PCTSTR SHSTR_MENU_RENAME = _T("–¼‘O‚Ì•ÏX(&M)");
-const PCTSTR SHSTR_MENU_GO = _T("ˆÚ“®(&G)");
+const PCTSTR SHSTR_MENU_RENAME = _T("åå‰ã®å¤‰æ›´(&M)");
+const PCTSTR SHSTR_MENU_GO = _T("ç§»å‹•(&G)");
 
 namespace mew {
 namespace ui {
@@ -43,14 +43,14 @@ class Shell : public WindowImplBase {
 
  protected:
   ref<io::IEntry> m_pCurrentEntry;
-  ref<IShellFolder> m_pCurrentFolder;  // Œ»İ•\¦’†‚ÌƒtƒHƒ‹ƒ_
-  ref<IShellView> m_pShellView;        // Œ»İ•\¦’†‚Ìƒrƒ…[
+  ref<IShellFolder> m_pCurrentFolder;  // ç¾åœ¨è¡¨ç¤ºä¸­ã®ãƒ•ã‚©ãƒ«ãƒ€
+  ref<IShellView> m_pShellView;        // ç¾åœ¨è¡¨ç¤ºä¸­ã®ãƒ“ãƒ¥ãƒ¼
   ref<IStream> m_pViewStateStream;
   ref<IShellBrowser> m_pShellBrowser;
-  FOLDERSETTINGS m_FolderSettings;  // ƒtƒHƒ‹ƒ_•\¦ƒIƒvƒVƒ‡ƒ“
-  CContainedShell m_wndShell;       // ƒrƒ…[‚Ìƒnƒ“ƒhƒ‹B‚½‚¾‚µAƒŠƒXƒgƒrƒ…[‚Í‚±‚ê‚Ìq‹ŸB
-  CContainedList m_wndList;         // ƒŠƒXƒgƒrƒ…[
-  CContainedHeader m_wndHeader;     // ƒwƒbƒ_ƒRƒ“ƒgƒ[ƒ‹.
+  FOLDERSETTINGS m_FolderSettings;  // ãƒ•ã‚©ãƒ«ãƒ€è¡¨ç¤ºã‚ªãƒ—ã‚·ãƒ§ãƒ³
+  CContainedShell m_wndShell;       // ãƒ“ãƒ¥ãƒ¼ã®ãƒãƒ³ãƒ‰ãƒ«ã€‚ãŸã ã—ã€ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ã¯ã“ã‚Œã®å­ä¾›ã€‚
+  CContainedList m_wndList;         // ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼
+  CContainedHeader m_wndHeader;     // ãƒ˜ãƒƒãƒ€ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«.
   History m_History;
   string m_PatternMask;
   bool m_CheckBoxChangeEnabled;
@@ -63,11 +63,11 @@ class Shell : public WindowImplBase {
 
  protected:  // overrides
   virtual bool OnDirectoryChanging(io::IEntry* entry, GoType go) { return true; }
-  // ƒfƒBƒŒƒNƒgƒŠ‚ğˆÚ“®‚µ‚½’¼Œã‚ÉŒÄ‚Î‚ê‚Ü‚·B
+  // ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’ç§»å‹•ã—ãŸç›´å¾Œã«å‘¼ã°ã‚Œã¾ã™ã€‚
   virtual void OnDirectoryChanged(io::IEntry* entry, GoType go) {}
-  // ƒfƒtƒHƒ‹ƒgƒRƒ}ƒ“ƒh‚ÅƒGƒ“ƒgƒŠ‚ğÀs‚µ‚æ‚¤‚Æ‚µ‚Ä‚¢‚é.
+  // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚³ãƒãƒ³ãƒ‰ã§ã‚¨ãƒ³ãƒˆãƒªã‚’å®Ÿè¡Œã—ã‚ˆã†ã¨ã—ã¦ã„ã‚‹.
   virtual void OnDefaultExecute(io::IEntry* entry) { avesta::ILExecute(entry->ID, null, null, null, m_hWnd); }
-  // ƒfƒtƒHƒ‹ƒgƒRƒ}ƒ“ƒh‚ÅƒfƒBƒŒƒNƒgƒŠ‚ğˆÚ“®‚µ‚æ‚¤‚Æ‚µ‚Ä‚¢‚é
+  // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚³ãƒãƒ³ãƒ‰ã§ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’ç§»å‹•ã—ã‚ˆã†ã¨ã—ã¦ã„ã‚‹
   virtual void OnDefaultDirectoryChange(io::IEntry* folder, IShellFolder* pShellFolder);
   virtual HRESULT OnQueryStream(DWORD grfMode, IStream** ppStream) { return E_NOTIMPL; }
   virtual HRESULT OnStateChange(IShellView* pShellView, ULONG uChange) { return E_NOTIMPL; }

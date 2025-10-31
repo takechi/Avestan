@@ -1,5 +1,5 @@
-/// @file struct.hpp
-/// Šî–{\‘¢‘Ì.
+ï»¿/// @file struct.hpp
+/// åŸºæœ¬æ§‹é€ ä½“.
 
 #pragma once
 
@@ -20,8 +20,8 @@ struct Rect;
 
 //==============================================================================
 
-/// ƒ^ƒvƒ‹À‘•—p‚Ìƒx[ƒXƒNƒ‰ƒX.
-/// ©“®“I‚É +, -, *, / ƒIƒyƒŒ[ƒ^‚ª’è‹`‚³‚ê‚é.
+/// ã‚¿ãƒ—ãƒ«å®Ÿè£…ç”¨ã®ãƒ™ãƒ¼ã‚¹ã‚¯ãƒ©ã‚¹.
+/// è‡ªå‹•çš„ã« +, -, *, / ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ãŒå®šç¾©ã•ã‚Œã‚‹.
 template <class TFinal, size_t N>
 struct Tuple {
   enum { Dimension = N };
@@ -111,8 +111,8 @@ struct Size : SIZE, Tuple<Size, 2> {
   const INT32 set_h(INT32 value) { return cy = value; }
 #endif  // DOXYGEN
 
-  __declspec(property(get = get_w, put = set_w)) INT32 w;  ///< •
-  __declspec(property(get = get_h, put = set_h)) INT32 h;  ///< ‚‚³
+  __declspec(property(get = get_w, put = set_w)) INT32 w;  ///< å¹…
+  __declspec(property(get = get_h, put = set_h)) INT32 h;  ///< é«˜ã•
 
   static const Size Zero;
 };
@@ -145,7 +145,7 @@ struct Point : POINT, Tuple<Point, 2> {
 
 struct Rect : RECT {
   //==============================================================================
-  /// @name ì¬E‘ã“ü
+  /// @name ä½œæˆãƒ»ä»£å…¥
   //@{
   Rect() {}
   Rect(INT32 l, INT32 t, INT32 r, INT32 b) { assign(l, t, r, b); }
@@ -165,7 +165,7 @@ struct Rect : RECT {
   //@}
 
   //==============================================================================
-  /// @name ƒƒ\ƒbƒh
+  /// @name ãƒ¡ã‚½ãƒƒãƒ‰
   //@{
   bool empty() const { return w <= 0 || h <= 0; }
   bool contains(INT32 xx, INT32 yy) const { return left <= xx && top <= yy && xx < right && yy < bottom; }
@@ -181,7 +181,7 @@ struct Rect : RECT {
   //@}
 
   //==============================================================================
-  /// @name ‰‰Zq
+  /// @name æ¼”ç®—å­
   //@{
   /* Rect& operator &= (const Rect& rhs)
           {
@@ -246,7 +246,7 @@ struct Rect : RECT {
 #endif  // DOXYGEN
 
   //==============================================================================
-  /// @name ƒvƒƒpƒeƒB
+  /// @name ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
   //@{
   __declspec(property(get = get_x, put = set_x)) INT32 x;
   __declspec(property(get = get_y, put = set_y)) INT32 y;
@@ -270,7 +270,7 @@ __declspec(selectany) const Rect Rect::Zero(0, 0, 0, 0);
 
 //==============================================================================
 
-// •¶š—ñ‚Ö‚Ì•ÏŠ·(Size).
+// æ–‡å­—åˆ—ã¸ã®å¤‰æ›(Size).
 template <>
 class ToString<Size> {
  private:
@@ -281,7 +281,7 @@ class ToString<Size> {
   operator PCWSTR() const throw() { return m_str; }
 };
 
-// •¶š—ñ‚Ö‚Ì•ÏŠ·(Point).
+// æ–‡å­—åˆ—ã¸ã®å¤‰æ›(Point).
 template <>
 class ToString<Point> {
  private:
@@ -292,7 +292,7 @@ class ToString<Point> {
   operator PCWSTR() const throw() { return m_str; }
 };
 
-// •¶š—ñ‚Ö‚Ì•ÏŠ·(Rect).
+// æ–‡å­—åˆ—ã¸ã®å¤‰æ›(Rect).
 template <>
 class ToString<Rect> {
  private:
@@ -303,7 +303,7 @@ class ToString<Rect> {
   operator PCWSTR() const throw() { return m_str; }
 };
 
-// •¶š—ñ‚Ö‚Ì•ÏŠ·(Color).
+// æ–‡å­—åˆ—ã¸ã®å¤‰æ›(Color).
 template <>
 class ToString<Color> {
  private:

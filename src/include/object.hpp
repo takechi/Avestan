@@ -1,5 +1,5 @@
-/// @file object.hpp
-/// IUnknownÀ‘•ƒwƒ‹ƒp.
+ï»¿/// @file object.hpp
+/// IUnknownå®Ÿè£…ãƒ˜ãƒ«ãƒ‘.
 #pragma once
 
 #include "error.hpp"
@@ -48,9 +48,9 @@ struct mixin<PP_CSV0(10, meta::Void1)> {
 
 namespace mew {
 //==============================================================================
-// ¶‘¶ŠúŠÔŠÇ—.
+// ç”Ÿå­˜æœŸé–“ç®¡ç†.
 
-/// ƒXƒ^ƒbƒNã‚Éì‚ç‚ê‚éƒIƒuƒWƒFƒNƒg‚Ì¶‘¶ŠúŠÔŠÇ—.
+/// ã‚¹ã‚¿ãƒƒã‚¯ä¸Šã«ä½œã‚‰ã‚Œã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç”Ÿå­˜æœŸé–“ç®¡ç†.
 template <class TBase>
 class __declspec(novtable) StaticLife : public TBase {
  public:
@@ -58,7 +58,7 @@ class __declspec(novtable) StaticLife : public TBase {
   ULONG __stdcall Release() throw() { return 1; }
 };
 
-/// ƒq[ƒvã‚Éì‚ç‚ê‚éƒIƒuƒWƒFƒNƒg‚Ì¶‘¶ŠúŠÔŠÇ—.
+/// ãƒ’ãƒ¼ãƒ—ä¸Šã«ä½œã‚‰ã‚Œã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç”Ÿå­˜æœŸé–“ç®¡ç†.
 template <class TBase>
 class __declspec(novtable) DynamicLife : public TBase {
  protected:
@@ -98,15 +98,15 @@ class __declspec(novtable) DynamicLife : public TBase {
 };
 
 //==============================================================================
-// IUnknownÀ‘•ƒx[ƒX.
+// IUnknownå®Ÿè£…ãƒ™ãƒ¼ã‚¹.
 
 template <typename TBase, typename TImplements = implements<>, typename TMixin = mixin<> >
 class __declspec(novtable) Object : public detail::Object1<TBase, TImplements, TMixin>::Result {
-  // typedef meta::Typelist __inherits__; // C++Œ¾Œê“I‚ÉŒp³‚µ‚Ä‚¢‚éƒCƒ“ƒ^ƒtƒF[ƒX.
-  // typedef meta::Typelist __supports__; // COMƒIƒuƒWƒFƒNƒg‚Æ‚µ‚ÄƒTƒ|[ƒg‚·‚éƒCƒ“ƒ^ƒtƒF[ƒX.
-  // typedef ... __primary__; // Å‚àu¶‘¤v‚ÌƒCƒ“ƒ^ƒtƒF[ƒX.
+  // typedef meta::Typelist __inherits__; // C++è¨€èªçš„ã«ç¶™æ‰¿ã—ã¦ã„ã‚‹ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹.
+  // typedef meta::Typelist __supports__; // COMã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¨ã—ã¦ã‚µãƒãƒ¼ãƒˆã™ã‚‹ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹.
+  // typedef ... __primary__; // æœ€ã‚‚ã€Œå·¦å´ã€ã®ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹.
 
-  // IUnknown* OID; // COMƒAƒCƒfƒ“ƒeƒBƒeƒB‚Æ‚µ‚Ä‚ÌIUnknownƒ|ƒCƒ“ƒ^.
+  // IUnknown* OID; // COMã‚¢ã‚¤ãƒ‡ãƒ³ãƒ†ã‚£ãƒ†ã‚£ã¨ã—ã¦ã®IUnknownãƒã‚¤ãƒ³ã‚¿.
 
   // HRESULT __stdcall QueryInterface(REFIID iid, void** pp) throw();
   // HRESULT __stdcall QueryInterface(REFINTF pp) throw();

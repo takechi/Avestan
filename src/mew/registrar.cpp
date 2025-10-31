@@ -1,4 +1,4 @@
-// registrar.cpp
+ï»¿// registrar.cpp
 
 #include "stdafx.h"
 #include "private.h"
@@ -10,8 +10,8 @@ inline bool operator<(REFGUID lhs, REFGUID rhs) { return memcmp(&lhs, &rhs, size
 
 namespace {
 using Registrar = stdext::hash_map<CLSID, mew::FactoryProc>;
-// ‘¼‚ÌƒOƒ[ƒoƒ‹•Ï”‚Ì‰Šú‰»ƒ‹[ƒ`ƒ“‚©‚çŒÄ‚Î‚ê‚é‚Ä‚à—Ç‚¢‚æ‚¤‚ÉA
-// ŠÖ”‚È‚¢ƒXƒ^ƒeƒBƒbƒN‚É‚µ‚Ä\’z‡˜‚ğ§Œä‚·‚é•K—v‚ª‚ ‚éB
+// ä»–ã®ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°ã®åˆæœŸåŒ–ãƒ«ãƒ¼ãƒãƒ³ã‹ã‚‰å‘¼ã°ã‚Œã‚‹ã¦ã‚‚è‰¯ã„ã‚ˆã†ã«ã€
+// é–¢æ•°ãªã„ã‚¹ã‚¿ãƒ†ã‚£ãƒƒã‚¯ã«ã—ã¦æ§‹ç¯‰é †åºã‚’åˆ¶å¾¡ã™ã‚‹å¿…è¦ãŒã‚ã‚‹ã€‚
 Registrar& GetRegistrar() {
   static Registrar theRegistrar;
   return theRegistrar;
@@ -20,24 +20,24 @@ Registrar& GetRegistrar() {
 
 namespace mew {
 MEW_API void CreateInstance(REFCLSID clsid, REFINTF ppInterface, IUnknown* arg) throw(...) {
-  // ‚Ü‚¸Aƒ‚ƒWƒ…[ƒ‹ƒNƒ‰ƒXƒ}ƒbƒv‚©‚çŒŸõ‚µAŒ©‚Â‚©‚ç‚È‚¯‚ê‚ÎCOMƒNƒ‰ƒX‚ğì¬‚·‚é.
+  // ã¾ãšã€ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã‚¯ãƒ©ã‚¹ãƒãƒƒãƒ—ã‹ã‚‰æ¤œç´¢ã—ã€è¦‹ã¤ã‹ã‚‰ãªã‘ã‚Œã°COMã‚¯ãƒ©ã‚¹ã‚’ä½œæˆã™ã‚‹.
   HRESULT hr;
   Registrar::const_iterator i = GetRegistrar().find(clsid);
-  if (i != GetRegistrar().end()) {  // ƒtƒ@ƒNƒgƒŠŠÖ”‚ªŒ©‚Â‚©‚Á‚½
+  if (i != GetRegistrar().end()) {  // ãƒ•ã‚¡ã‚¯ãƒˆãƒªé–¢æ•°ãŒè¦‹ã¤ã‹ã£ãŸ
     i->second(ppInterface, arg);
     ASSERT(*ppInterface.pp);
     return;
   } else if (SUCCEEDED(
-                 hr = ::CoCreateInstance(clsid, null, CLSCTX_ALL, ppInterface.iid, ppInterface.pp))) {  // COMƒNƒ‰ƒX‚Ìì¬‚É¬Œ÷
+                 hr = ::CoCreateInstance(clsid, null, CLSCTX_ALL, ppInterface.iid, ppInterface.pp))) {  // COMã‚¯ãƒ©ã‚¹ã®ä½œæˆã«æˆåŠŸ
     TRACE(L"info: CoCreateInstance($1)", clsid);
     ASSERT(*ppInterface.pp);
     return;
-  } else {  // ƒNƒ‰ƒX‚ªŒ©‚Â‚©‚ç‚È‚¢
+  } else {  // ã‚¯ãƒ©ã‚¹ãŒè¦‹ã¤ã‹ã‚‰ãªã„
     throw mew::exceptions::ClassError(string::load(IDS_ERR_INVALIDCLSID, clsid), hr);
   }
 }
 MEW_API void RegisterFactory(REFCLSID clsid, FactoryProc factory) throw() {
-  ASSERT(GetRegistrar()[clsid] == null && "ì¬‰Â”\ƒNƒ‰ƒX‚Ì“ñd“o˜^");
+  ASSERT(GetRegistrar()[clsid] == null && "ä½œæˆå¯èƒ½ã‚¯ãƒ©ã‚¹ã®äºŒé‡ç™»éŒ²");
   GetRegistrar()[clsid] = factory;
 }
 }  // namespace mew

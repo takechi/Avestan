@@ -1,4 +1,4 @@
-/// @file hash_map.hpp
+ï»¿/// @file hash_map.hpp
 /// UNDOCUMENTED
 #pragma once
 
@@ -22,7 +22,7 @@ inline size_t stdext::hash_value(REFGUID key) throw() {
 }
 
 //==============================================================================
-// stdext::hash_map<Key, Mapped, Pred, Alloc>‚É‘Î‚·‚éBinary“üo—ÍƒIƒyƒŒ[ƒ^
+// stdext::hash_map<Key, Mapped, Pred, Alloc>ã«å¯¾ã™ã‚‹Binaryå…¥å‡ºåŠ›ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
 
 template <typename Key, typename Mapped, class Pred, class Alloc>
 inline IStream& operator<<(IStream& stream, const stdext::hash_map<Key, Mapped, Pred, Alloc>& v) throw(...) {

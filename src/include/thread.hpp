@@ -1,5 +1,5 @@
-/// @file thread.hpp
-/// ƒe[ƒ}.
+ï»¿/// @file thread.hpp
+/// ãƒ†ãƒ¼ãƒ.
 #pragma once
 
 namespace mew {

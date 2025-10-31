@@ -1,4 +1,4 @@
-// XmlForm.cpp
+ï»¿// XmlForm.cpp
 
 #include "stdafx.h"
 #include "main.hpp"
@@ -128,7 +128,7 @@ mew::ref<T> LoadResource(mew::string relname, mew::ICommands* commands, mew::xml
   RelativePath path(relname, L"..\\..\\usr");
   if (!PathFileExists(path)) {
     // file not found
-    ave::WarningBox(/*m_forms*/ mew::null, mew::string::format(L"$1 ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ", relname));
+    ave::WarningBox(/*m_forms*/ mew::null, mew::string::format(L"$1 ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“", relname));
     return mew::null;
   }
   if (mew::ref<T> res = fn(mew::string(path), commands, sax)) {
@@ -156,7 +156,7 @@ mew::ref<IImageList> LoadImageList(mew::string relname) {
   RelativePath path(relname, L"..\\..\\usr");
   if (!PathFileExists(path)) {
     // file not found
-    ave::WarningBox(/*m_forms*/ mew::null, mew::string::format(L"$1 ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ", relname));
+    ave::WarningBox(/*m_forms*/ mew::null, mew::string::format(L"$1 ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“", relname));
     return mew::null;
   }
   try {
@@ -223,7 +223,7 @@ HRESULT OnOpenEntry(mew::message msg) {
   return S_OK;
 }
 
-// “Ç‚İ‚İ¸”s—pƒ_ƒ~[ƒcƒŠ[
+// èª­ã¿è¾¼ã¿å¤±æ•—ç”¨ãƒ€ãƒŸãƒ¼ãƒ„ãƒªãƒ¼
 mew::ref<mew::ui::ITreeItem> CreateDummyTree(mew::string relname) {
   mew::ref<mew::ui::IEditableTreeItem> root(__uuidof(mew::ui::DefaultTreeItem));
   mew::ref<mew::ui::IEditableTreeItem> disable(__uuidof(mew::ui::DefaultTreeItem));

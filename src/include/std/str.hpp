@@ -1,19 +1,19 @@
-/// @file str.hpp
+ï»¿/// @file str.hpp
 /// UNDOCUMENTED
 #pragma once
 
 #include <mbstring.h>
 
 namespace mew {
-/// ’áƒŒƒxƒ‹•¶š—ñˆ—.
+/// ä½ãƒ¬ãƒ™ãƒ«æ–‡å­—åˆ—å‡¦ç†.
 namespace str {
-/// •¶š—ñ‚ª0‚Ü‚½‚Í’·‚³‚ª0‚©”Û‚©‚ğ”»•Ê‚·‚é.
+/// æ–‡å­—åˆ—ãŒ0ã¾ãŸã¯é•·ã•ãŒ0ã‹å¦ã‹ã‚’åˆ¤åˆ¥ã™ã‚‹.
 inline bool empty(const char* str) { return !str || str[0] == '\0'; }
 inline bool empty(const wchar_t* str) { return !str || str[0] == L'\0'; }
-/// •¶š—ñ‚Ì’·‚³‚ğ•Ô‚·.
+/// æ–‡å­—åˆ—ã®é•·ã•ã‚’è¿”ã™.
 inline size_t length(const char* str) { return str ? strlen(str) : 0; }
 inline size_t length(const wchar_t* str) { return str ? wcslen(str) : 0; }
-/// •¶š—ñ‚ğI’[‚Ìƒkƒ‹•¶š‚àŠÜ‚ßAŠi”[‚·‚é‚Ì‚É•K—v‚ÈƒoƒCƒg”‚ğ•Ô‚·.
+/// æ–‡å­—åˆ—ã‚’çµ‚ç«¯ã®ãƒŒãƒ«æ–‡å­—ã‚‚å«ã‚ã€æ ¼ç´ã™ã‚‹ã®ã«å¿…è¦ãªãƒã‚¤ãƒˆæ•°ã‚’è¿”ã™.
 inline size_t size(const char* str) { return sizeof(char) * (length(str) + 1); }
 inline size_t size(const wchar_t* str) { return sizeof(wchar_t) * (length(str) + 1); }
 ///
@@ -27,11 +27,11 @@ inline const char* inc(const char* x) { return (const char*)_mbsinc((const UCHAR
 inline char* inc(char* x) { return (char*)_mbsinc((UCHAR*)x); }
 inline const wchar_t* inc(const wchar_t* x) { return x + 1; }
 inline wchar_t* inc(wchar_t* x) { return x + 1; }
-/// •¶š—ñ‚Ì’†‚ÅÅ‰‚ÉoŒ»‚·‚é•¶š‚ÌˆÊ’u‚ğ•Ô‚·.
+/// æ–‡å­—åˆ—ã®ä¸­ã§æœ€åˆã«å‡ºç¾ã™ã‚‹æ–‡å­—ã®ä½ç½®ã‚’è¿”ã™.
 inline const char* find(const char* str, char c) { return (const char*)_mbschr((const UCHAR*)str, (UINT)c); }
 inline const wchar_t* find(const wchar_t* str, wchar_t c) {
 #if _MANAGED
-  // managed‚Å‚ÍA‚È‚º‚©wcschr‚Å‚ÌŒŸõ‚ª¸”s‚·‚éBŒ´ˆö•s–¾B
+  // managedã§ã¯ã€ãªãœã‹wcschrã§ã®æ¤œç´¢ãŒå¤±æ•—ã™ã‚‹ã€‚åŸå› ä¸æ˜ã€‚
   while (*str && *str != c) {
     str++;
   }
@@ -43,7 +43,7 @@ inline const wchar_t* find(const wchar_t* str, wchar_t c) {
 inline char* find(char* str, char c) { return (char*)_mbschr((UCHAR*)str, (UINT)c); }
 inline wchar_t* find(wchar_t* str, wchar_t c) {
 #if _MANAGED
-  // managed‚Å‚ÍA‚È‚º‚©wcschr‚Å‚ÌŒŸõ‚ª¸”s‚·‚éBŒ´ˆö•s–¾B
+  // managedã§ã¯ã€ãªãœã‹wcschrã§ã®æ¤œç´¢ãŒå¤±æ•—ã™ã‚‹ã€‚åŸå› ä¸æ˜ã€‚
   while (*str && *str != c) {
     str++;
   }
@@ -52,12 +52,12 @@ inline wchar_t* find(wchar_t* str, wchar_t c) {
   return wcschr(str, c);
 #endif
 }
-/// •¶š—ñ’†‚ÅÅŒã‚ÉoŒ»‚·‚é•¶š‚ÌˆÊ’u‚ğ•Ô‚·.
+/// æ–‡å­—åˆ—ä¸­ã§æœ€å¾Œã«å‡ºç¾ã™ã‚‹æ–‡å­—ã®ä½ç½®ã‚’è¿”ã™.
 inline const char* find_reverse(const char* str, char c) { return (const char*)_mbsrchr((const UCHAR*)str, (UINT)c); }
 inline const wchar_t* find_reverse(const wchar_t* str, wchar_t c) { return wcsrchr(str, c); }
 inline char* find_reverse(char* str, char c) { return (char*)_mbsrchr((UCHAR*)str, (UINT)c); }
 inline wchar_t* find_reverse(wchar_t* str, wchar_t c) { return wcsrchr(str, c); }
-/// •¶š—ñ‚Ì’†‚ÅAƒ}ƒXƒN‚ÉŠÜ‚Ü‚ê‚é•¶š‚ªÅ‰‚ÉŒ©‚Â‚©‚Á‚½ˆÊ’u‚ğ•Ô‚·.
+/// æ–‡å­—åˆ—ã®ä¸­ã§ã€ãƒã‚¹ã‚¯ã«å«ã¾ã‚Œã‚‹æ–‡å­—ãŒæœ€åˆã«è¦‹ã¤ã‹ã£ãŸä½ç½®ã‚’è¿”ã™.
 inline char* find_some_of(char* str, const char* mask) {
   char* found = str + _mbscspn((const UCHAR*)str, (const UCHAR*)mask);
   return *found == '\0' ? 0 : found;
@@ -74,7 +74,7 @@ inline const wchar_t* find_some_of(const wchar_t* str, const wchar_t* mask) {
   const wchar_t* found = str + wcscspn(str, mask);
   return *found == L'\0' ? 0 : found;
 }
-/// ‘å•¶š¬•¶š‚ğ‹æ•Ê‚µ‚Ä”äŠr‚·‚é.
+/// å¤§æ–‡å­—å°æ–‡å­—ã‚’åŒºåˆ¥ã—ã¦æ¯”è¼ƒã™ã‚‹.
 inline int compare(const char* lhs, const char* rhs) {
   if (!lhs) return empty(rhs) ? 0 : 1;
   if (!rhs) return empty(lhs) ? 0 : -1;
@@ -95,7 +95,7 @@ inline int compare(const wchar_t* lhs, const wchar_t* rhs, size_t sz) {
   if (!rhs) return empty(lhs) ? 0 : -1;
   return wcsncmp(lhs, rhs, sz);
 }
-/// ‘å•¶š¬•¶š‚ğ‹æ•Ê‚µ‚È‚¢‚Å”äŠr‚·‚é.
+/// å¤§æ–‡å­—å°æ–‡å­—ã‚’åŒºåˆ¥ã—ãªã„ã§æ¯”è¼ƒã™ã‚‹.
 inline int compare_nocase(const char* lhs, const char* rhs) {
   if (!lhs) return empty(rhs) ? 0 : 1;
   if (!rhs) return empty(lhs) ? 0 : -1;
@@ -116,7 +116,7 @@ inline int compare_nocase(const wchar_t* lhs, const wchar_t* rhs, size_t sz) {
   if (!rhs) return empty(lhs) ? 0 : -1;
   return _wcsnicmp(lhs, rhs, sz);
 }
-/// “™‚µ‚¢‚©”Û‚©‚ğ•Ô‚·.
+/// ç­‰ã—ã„ã‹å¦ã‹ã‚’è¿”ã™.
 inline bool equals(const char* lhs, const char* rhs) {
   if (!lhs) return empty(rhs);
   if (!rhs) return empty(lhs);
@@ -137,7 +137,7 @@ inline bool equals_nocase(const wchar_t* lhs, const wchar_t* rhs) {
   if (!rhs) return empty(lhs);
   return _wcsicmp(lhs, rhs) == 0;
 }
-/// 0‚Å‚È‚¢ê‡A•¶š—ñ‚Ì’·‚³‚ğ0‚É‚·‚é.
+/// 0ã§ãªã„å ´åˆã€æ–‡å­—åˆ—ã®é•·ã•ã‚’0ã«ã™ã‚‹.
 inline char* clear(char* str) {
   if (str) str[0] = '\0';
   return str;
@@ -146,12 +146,12 @@ inline wchar_t* clear(wchar_t* str) {
   if (str) str[0] = L'\0';
   return str;
 }
-/// ƒRƒs[‚·‚é.
+/// ã‚³ãƒ”ãƒ¼ã™ã‚‹.
 inline char* copy(char* dst, const char* src, size_t sz) { return strncpy(dst, src, sz); }
 inline wchar_t* copy(wchar_t* dst, const wchar_t* src, size_t sz) { return wcsncpy(dst, src, sz); }
 inline char* copy(char* dst, const char* src) { return src ? strcpy(dst, src) : clear(dst); }
 inline wchar_t* copy(wchar_t* dst, const wchar_t* src) { return src ? wcscpy(dst, src) : clear(dst); }
-/// ‘O‚É˜AŒ‹‚·‚é.
+/// å‰ã«é€£çµã™ã‚‹.
 template <typename Ch>
 inline Ch* prepend(Ch* dst, const Ch* src) {
   size_t dstln = length(dst);
@@ -160,32 +160,32 @@ inline Ch* prepend(Ch* dst, const Ch* src) {
   memcpy(dst, src, srcln * sizeof(Ch));
   return dst;
 }
-/// ˜AŒ‹‚·‚é.
+/// é€£çµã™ã‚‹.
 inline char* append(char* dst, const char* src) { return strcat(dst, src); }
 inline wchar_t* append(wchar_t* dst, const wchar_t* src) { return wcscat(dst, src); }
 inline char* append(char* dst, const char* src, size_t srclen) { return strncat(dst, src, srclen); }
 inline wchar_t* append(wchar_t* dst, const wchar_t* src, size_t srclen) { return wcsncat(dst, src, srclen); }
-/// ƒ}ƒ‹ƒ`ƒoƒCƒg•¶š—ñÌƒƒCƒh•¶š—ñ‚ğ•ÏŠ·‚·‚é.
+/// ãƒãƒ«ãƒãƒã‚¤ãƒˆæ–‡å­—åˆ—â‡”ãƒ¯ã‚¤ãƒ‰æ–‡å­—åˆ—ã‚’å¤‰æ›ã™ã‚‹.
 inline void convert(char* dst, const char* src, size_t sz) { copy(dst, src, sz); }
 inline void convert(wchar_t* dst, const wchar_t* src, size_t sz) { copy(dst, src, sz); }
 inline void convert(wchar_t* dst, const char* src, size_t sz) { MultiByteToWideChar(CP_ACP, 0, src, -1, dst, (int)sz); }
 inline void convert(char* dst, const wchar_t* src, size_t sz) { WideCharToMultiByte(CP_ACP, 0, src, -1, dst, (int)sz, 0, 0); }
-/// •¶š•ÏŠ·.
+/// æ–‡å­—å¤‰æ›.
 inline char tolower(char c) { return (__isascii(c) && ::isupper(c)) ? (char)::tolower(c) : c; }
 inline wchar_t tolower(wchar_t c) { return (::iswascii(c) && ::iswupper(c)) ? ::towlower(c) : c; }
 inline char toupper(char c) { return (__isascii(c) && ::islower(c)) ? (char)::toupper(c) : c; }
 inline wchar_t toupper(wchar_t c) { return (::iswascii(c) && ::iswlower(c)) ? ::towupper(c) : c; }
-/// •¶š—ñ‚©‚ç®”‚É•ÏŠ·‚·‚é.
+/// æ–‡å­—åˆ—ã‹ã‚‰æ•´æ•°ã«å¤‰æ›ã™ã‚‹.
 inline int atoi(const char* str) { return str ? ::atoi(str) : 0; }
 inline int atoi(const wchar_t* str) { return str ? ::_wtoi(str) : 0; }
 inline int atou(const char* str, int radix = 10) { return str ? ::strtoul(str, NULL, radix) : 0; }
 inline int atou(const wchar_t* str, int radix = 10) { return str ? ::wcstoul(str, NULL, radix) : 0; }
 inline __int64 atoi64(const char* str) { return str ? ::_atoi64(str) : 0; }
 inline __int64 atoi64(const wchar_t* str) { return str ? ::_wtoi64(str) : 0; }
-/// •¶š—ñ‚©‚çÀ”‚É•ÏŠ·‚·‚é.
+/// æ–‡å­—åˆ—ã‹ã‚‰å®Ÿæ•°ã«å¤‰æ›ã™ã‚‹.
 inline double atof(const char* str) { return str ? ::atof(str) : 0.0; }
 inline double atof(const wchar_t* str) { return str ? ::_wtof(str) : 0.0; }
-/// ®”‚©‚ç•¶š—ñ‚É•ÏŠ·‚·‚é.
+/// æ•´æ•°ã‹ã‚‰æ–‡å­—åˆ—ã«å¤‰æ›ã™ã‚‹.
 inline char* itoa(char* str, int value, int radix = 10) { return ::_itoa(value, str, radix); }
 inline wchar_t* itoa(wchar_t* str, int value, int radix = 10) { return ::_itow(value, str, radix); }
 inline char* itoa(char* str, unsigned int value, int radix = 10) { return ::_ultoa(value, str, radix); }
@@ -194,7 +194,7 @@ inline char* itoa(char* str, __int64 value, int radix = 10) { return ::_i64toa(v
 inline wchar_t* itoa(wchar_t* str, __int64 value, int radix = 10) { return ::_i64tow(value, str, radix); }
 inline char* itoa(char* str, unsigned __int64 value, int radix = 10) { return ::_ui64toa(value, str, radix); }
 inline wchar_t* itoa(wchar_t* str, unsigned __int64 value, int radix = 10) { return ::_ui64tow(value, str, radix); }
-/// À”‚©‚ç•¶š—ñ‚É•ÏŠ·‚·‚é.
+/// å®Ÿæ•°ã‹ã‚‰æ–‡å­—åˆ—ã«å¤‰æ›ã™ã‚‹.
 inline char* ftoa(char* str, double value, int digits = 6) { return ::_gcvt(value, digits, str); }
 inline wchar_t* ftoa(wchar_t* str, double value, int digits = 6) {
   char buffer[32];
@@ -256,7 +256,7 @@ inline bool atoguid(GUID& guid, PCWSTR str) {
   guid.Data4[7] = (BYTE)v[9];
   return true;
 }
-/// ‘Š‘ÎƒpƒX‚ğâ‘ÎƒpƒX‚É•ÏŠ·‚·‚é.
+/// ç›¸å¯¾ãƒ‘ã‚¹ã‚’çµ¶å¯¾ãƒ‘ã‚¹ã«å¤‰æ›ã™ã‚‹.
 inline char* fullpath(char* dst, const char* src, size_t sz) { return _fullpath(dst, src, sz); }
 inline wchar_t* fullpath(wchar_t* dst, const wchar_t* src, size_t sz) { return _wfullpath(dst, src, sz); }
 }  // namespace str

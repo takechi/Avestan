@@ -1,20 +1,20 @@
-/// @file preprocessor.hpp
+ï»¿/// @file preprocessor.hpp
 /// UNDOCUMENTED
 #pragma once
 
-/// •¶š—ñ‰».
+/// æ–‡å­—åˆ—åŒ–.
 #define PP_QUOTE(text) PP_QUOTE_1((text))
 #define PP_QUOTE_1(par) PP_QUOTE_0##par
 #define PP_QUOTE_0(text) #text
 
-/// Ã“I”z—ñ‚Ì’·‚³
+/// é™çš„é…åˆ—ã®é•·ã•
 //#define lengthof(ar) (sizeof(ar)/sizeof(ar[0]))
 template <typename T, std::size_t N>
 constexpr std::size_t lengthof(const T (&ar)[N]) {
   return N;
 }
 
-/// ˜AŒ‹.
+/// é€£çµ.
 #define PP_CAT(a, b) PP_CAT_OO((a, b))
 #define PP_CAT_OO(par) PP_CAT_I##par
 #define PP_CAT_I(a, b) PP_CAT_II(a##b)

@@ -1,4 +1,4 @@
-// dialog.cpp
+﻿// dialog.cpp
 
 #include "stdafx.h"
 #include "avesta.hpp"

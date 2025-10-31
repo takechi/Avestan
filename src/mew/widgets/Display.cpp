@@ -1,4 +1,4 @@
-// Display.cpp
+ï»¿// Display.cpp
 
 #include "stdafx.h"
 #include "../private.h"
@@ -294,7 +294,7 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
     DWORD tid = ::GetCurrentThreadId();
     DWORD t, p;
     t = ::GetWindowThreadProcessId(hwnd, &p);
-    if (p == pid && t != tid) {  // ‚±‚ÌƒvƒƒZƒX‚ªì‚Á‚½AƒƒCƒ“ƒXƒŒƒbƒh‚Å‚È‚¢ƒEƒBƒ“ƒhƒEB
+    if (p == pid && t != tid) {  // ã“ã®ãƒ—ãƒ­ã‚»ã‚¹ãŒä½œã£ãŸã€ãƒ¡ã‚¤ãƒ³ã‚¹ãƒ¬ãƒƒãƒ‰ã§ãªã„ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã€‚
       InvokeEvent<EventOtherFocus>(this, hwnd);
     }
   }
@@ -308,9 +308,9 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
     HHOOK hHookNext = self->m_hHookMSG;
     MSG* msg = (MSG*)lParam;
     if (nCode == HC_ACTION && wParam == PM_REMOVE) {
-      if (self->OnHookMSG(*msg)) {  // ƒƒbƒZ[ƒW‚ğƒnƒ“ƒhƒ‹‚µ‚½‚Ì‚ÅAƒƒbƒZ[ƒW©‘Ì‚ğ–³Œø‰»‚·‚é•K—v‚ª‚ ‚éB
-        // –ß‚è’l‚âCallNextHookEx()‚ğŒÄ‚Î‚È‚¢‚È‚Ç‚Ì•û–@‚Å‚Í‚È‚­A
-        // ƒƒbƒZ[ƒW‚ğ•ÏX‚µ‚Äu‰½‚à‚µ‚È‚¢ƒƒbƒZ[ƒWv‚É‚µ‚Ä‚µ‚Ü‚¤‚Ì‚ª—Ç‚¢‚æ‚¤‚¾B
+      if (self->OnHookMSG(*msg)) {  // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ãƒãƒ³ãƒ‰ãƒ«ã—ãŸã®ã§ã€ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è‡ªä½“ã‚’ç„¡åŠ¹åŒ–ã™ã‚‹å¿…è¦ãŒã‚ã‚‹ã€‚
+        // æˆ»ã‚Šå€¤ã‚„CallNextHookEx()ã‚’å‘¼ã°ãªã„ãªã©ã®æ–¹æ³•ã§ã¯ãªãã€
+        // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å¤‰æ›´ã—ã¦ã€Œä½•ã‚‚ã—ãªã„ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã€ã«ã—ã¦ã—ã¾ã†ã®ãŒè‰¯ã„ã‚ˆã†ã ã€‚
         msg->message = WM_NULL;
         return 0;
       }
@@ -352,9 +352,9 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
         OnNeedUpdateUIState();
         return false;
       case WM_UPDATEUISTATE:
-        if (msg.hwnd) {  // Œã‚É‚à‚¤ˆê“x WM_UPDATEUISTATE ‚³‚ê‚é‚Ì‚ÅA¡‰ñ•ª‚ÍƒLƒƒƒ“ƒZƒ‹‚·‚é.
+        if (msg.hwnd) {  // å¾Œã«ã‚‚ã†ä¸€åº¦ WM_UPDATEUISTATE ã•ã‚Œã‚‹ã®ã§ã€ä»Šå›åˆ†ã¯ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã™ã‚‹.
           return m_needsUpdateUIState;
-        } else {  // ƒgƒbƒvƒŒƒxƒ‹ƒEƒBƒ“ƒhƒE‚É WM_UPDATEUISTATE ‚ğƒuƒ[ƒhƒLƒƒƒXƒg‚·‚é.
+        } else {  // ãƒˆãƒƒãƒ—ãƒ¬ãƒ™ãƒ«ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã« WM_UPDATEUISTATE ã‚’ãƒ–ãƒ­ãƒ¼ãƒ‰ã‚­ãƒ£ã‚¹ãƒˆã™ã‚‹.
           afx::BroadcastMessage(WM_UPDATEUISTATE);
           return true;
         }
@@ -405,9 +405,9 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
     return false;
   }
 
-  /// ƒ}ƒEƒXƒzƒC[ƒ‹‚ğƒJ[ƒ\ƒ‹’¼‰º‚ÌƒEƒBƒ“ƒhƒE‚É‘—‚é.
+  /// ãƒã‚¦ã‚¹ãƒ›ã‚¤ãƒ¼ãƒ«ã‚’ã‚«ãƒ¼ã‚½ãƒ«ç›´ä¸‹ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«é€ã‚‹.
   void RedirectMouseWheel(MSG& msg) {
-    // WM_MOUSEWHEEL‚Ìƒ}ƒEƒXˆÊ’u‚ÍƒXƒNƒŠ[ƒ“À•WŒn‚È‚Ì‚ÅAC³‚·‚é•K—v‚È‚µ.
+    // WM_MOUSEWHEELã®ãƒã‚¦ã‚¹ä½ç½®ã¯ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ç³»ãªã®ã§ã€ä¿®æ­£ã™ã‚‹å¿…è¦ãªã—.
     POINT pt = {GET_XY_LPARAM(msg.lParam)};
     HWND hWnd = ::WindowFromPoint(pt);
     if (hWnd && ::GetWindowThreadProcessId(hWnd, NULL) == ::GetCurrentThreadId() && IsWindowEnabled(hWnd)) {
@@ -416,7 +416,7 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
       msg.hwnd = m_wndLastWheel;
     }
   }
-  /// ƒ†[ƒU“ü—ÍŒn‚ÌƒƒbƒZ[ƒW‚ğ“]‘—‚·‚é.
+  /// ãƒ¦ãƒ¼ã‚¶å…¥åŠ›ç³»ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è»¢é€ã™ã‚‹.
   bool ForwardMessage(MSG& msg) const {
     if (m_menuStack.empty() && IsWindowEnabled(msg.hwnd) && !IsInMenuOrMoveOrSize(::GetWindowThreadProcessId(msg.hwnd, NULL))) {
       ref<IWindow> p;
@@ -429,7 +429,7 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
     }
     return false;
   }
-  /// ƒƒjƒ…[ƒ‹[ƒv‚Ü‚½‚ÍƒEƒBƒ“ƒhƒE‚ÌˆÚ“®EƒŠƒTƒCƒY’†‚Ìê‡‚Í^.
+  /// ãƒ¡ãƒ‹ãƒ¥ãƒ¼ãƒ«ãƒ¼ãƒ—ã¾ãŸã¯ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ç§»å‹•ãƒ»ãƒªã‚µã‚¤ã‚ºä¸­ã®å ´åˆã¯çœŸ.
   static bool IsInMenuOrMoveOrSize(DWORD dwThreadID) throw() {
     GUITHREADINFO info = {sizeof(GUITHREADINFO)};
     return ::GetGUIThreadInfo(dwThreadID, &info) && (info.flags & (GUI_INMENUMODE | GUI_INMOVESIZE)) != 0;

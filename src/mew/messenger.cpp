@@ -1,4 +1,4 @@
-// messenger.cpp
+ï»¿// messenger.cpp
 
 #include "stdafx.h"
 #include "private.h"
@@ -9,7 +9,7 @@ namespace mew {
 
 class Messenger : public Root<implements<IMessenger, ISignal, IDisposable> > {
  private:
-  /// ŠÖ”‚Æˆø”‚ÌƒZƒbƒg.
+  /// é–¢æ•°ã¨å¼•æ•°ã®ã‚»ãƒƒãƒˆ.
   class Closure {
    public:
     message msg;
@@ -43,8 +43,8 @@ class Messenger : public Root<implements<IMessenger, ISignal, IDisposable> > {
 
   CriticalSection m_cs;
   Map m_map;
-  volatile size_t m_depth;  // ŒÄ‚Ño‚µ[‚³‚ªƒ[ƒ‚Ìê‡‚Ì‚İˆÀ‘S‚Éíœ‚Å‚«‚é‚½‚ßAŒÄ‚Ño‚µ[‚³‚ğ‹L˜^‚·‚é
-  volatile bool m_removed;  // ‘½­‚È‚è‚Æ‚àíœƒ`ƒFƒbƒN‰ñ”‚ğŒ¸‚ç‚·‚½‚ß‚Ìƒtƒ‰ƒO
+  volatile size_t m_depth;  // å‘¼ã³å‡ºã—æ·±ã•ãŒã‚¼ãƒ­ã®å ´åˆã®ã¿å®‰å…¨ã«å‰Šé™¤ã§ãã‚‹ãŸã‚ã€å‘¼ã³å‡ºã—æ·±ã•ã‚’è¨˜éŒ²ã™ã‚‹
+  volatile bool m_removed;  // å¤šå°‘ãªã‚Šã¨ã‚‚å‰Šé™¤ãƒã‚§ãƒƒã‚¯å›æ•°ã‚’æ¸›ã‚‰ã™ãŸã‚ã®ãƒ•ãƒ©ã‚°
 
  public:
   class Invoker : public Root<implements<IMessage, ISerializable> > {
@@ -196,7 +196,7 @@ class Messenger : public Root<implements<IMessenger, ISignal, IDisposable> > {
     if (i == m_map.end()) {  // new fn
       m_map.insert(value_type(fn, code, msg));
     } else {  // existing fn
-      TRACE(_T("Connect : replace ($1 Ë $2)"), i->second.msg, msg);
+      TRACE(_T("Connect : replace ($1 â‡’ $2)"), i->second.msg, msg);
       i->second.msg = msg;
     }
     return S_OK;
@@ -295,4 +295,3 @@ class Messenger : public Root<implements<IMessenger, ISignal, IDisposable> > {
 AVESTA_EXPORT(Messenger)
 
 }  // namespace mew
-

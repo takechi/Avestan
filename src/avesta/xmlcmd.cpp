@@ -1,4 +1,4 @@
-// xmlcmd.cpp
+ï»¿// xmlcmd.cpp
 
 #include "stdafx.h"
 #include "../server/main.hpp"
@@ -68,9 +68,9 @@ mew::ref<mew::ICommand> avesta::XmlAttrCommand(mew::xml::XMLAttributes& attr, me
 mew::ref<mew::ui::IEditableTreeItem> avesta::XmlAttrTreeItem(mew::xml::XMLAttributes& attr, mew::ICommands* commands) {
   mew::ref<mew::ui::IEditableTreeItem> item;
   if (mew::string command = attr[ATTR_COMMAND]) {
-    item = CreateSpecialMenu(command);  // “Áêƒƒjƒ…[‚Ìì¬‚ğ‚İ‚é
+    item = CreateSpecialMenu(command);  // ç‰¹æ®Šãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®ä½œæˆã‚’è©¦ã¿ã‚‹
   }
-  if (!item) {  // ˆê”Êƒƒjƒ…[
+  if (!item) {  // ä¸€èˆ¬ãƒ¡ãƒ‹ãƒ¥ãƒ¼
     item.create(__uuidof(mew::ui::DefaultTreeItem));
     if (mew::ref<mew::ICommand> command = XmlAttrCommand(attr, commands)) {
       item->Command = command;

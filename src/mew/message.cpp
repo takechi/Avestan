@@ -1,4 +1,4 @@
-// message.cpp
+ï»¿// message.cpp
 
 #include "stdafx.h"
 #include "private.h"
@@ -10,7 +10,7 @@
 
 namespace mew {
 
-/// ƒƒbƒZ[ƒW.
+/// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸.
 class __declspec(uuid("50E61566-66FC-448C-8760-7B6B09511C5D")) Message;
 
 class Message : public Root<implements<IMessage, ISerializable> > {

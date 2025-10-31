@@ -1,4 +1,4 @@
-// TreeView.cpp
+ï»¿// TreeView.cpp
 
 #include "stdafx.h"
 #include "../private.h"
@@ -8,7 +8,7 @@
 #include "drawing.hpp"
 #include "path.hpp"
 
-#include "../server/main.hpp"  // ‚à‚¤‚®‚¿‚á‚®‚¿‚ácc
+#include "../server/main.hpp"  // ã‚‚ã†ãã¡ã‚ƒãã¡ã‚ƒâ€¦â€¦
 
 namespace {
 
@@ -129,7 +129,7 @@ class __declspec(novtable) TreeViewBase
 
   LRESULT OnForwardMsg(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     MSG* msg = (MSG*)lParam;
-    if (IsChild(msg->hwnd)) {  // ƒŠƒXƒgƒrƒ…[‚Ìq‹Ÿƒtƒ@ƒCƒ‹ƒŠƒl[ƒ€’†‚ÌƒGƒfƒBƒbƒg‚È‚Ì‚Åˆ—‚ğ”C‚¹‚é
+    if (IsChild(msg->hwnd)) {  // ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼ã®å­ä¾›ï¼ãƒ•ã‚¡ã‚¤ãƒ«ãƒªãƒãƒ¼ãƒ ä¸­ã®ã‚¨ãƒ‡ã‚£ãƒƒãƒˆãªã®ã§å‡¦ç†ã‚’ä»»ã›ã‚‹
       return 0;
     }
     bHandled = false;
@@ -141,7 +141,7 @@ class __declspec(novtable) TreeViewBase
       TVHITTESTINFO hit = {GET_XY_LPARAM(lParam)};
       if (HTREEITEM hItem = HitTest(&hit)) {
         SelectDropTarget(hItem);
-        // TODO: ƒ†[ƒU‚ªƒJƒXƒ^ƒ}ƒCƒY‚Å‚«‚é‚æ‚¤‚É
+        // TODO: ãƒ¦ãƒ¼ã‚¶ãŒã‚«ã‚¹ã‚¿ãƒã‚¤ã‚ºã§ãã‚‹ã‚ˆã†ã«
         UINT32 mods = mew::ui::GetCurrentModifiers();
         if (mods == 0) {
           mods = m;
@@ -218,7 +218,7 @@ class TreeView : public TreeViewBase<TreeView, ITreeItem, implements<ITreeView, 
     }
     CMenu menu;
     menu.CreatePopupMenu();
-    menu.AppendMenu(MF_STRING, ID_EXECUTE, _T("ŠJ‚­(&O)"));
+    menu.AppendMenu(MF_STRING, ID_EXECUTE, _T("é–‹ã(&O)"));
     int cmd = menu.TrackPopupMenu(TPM_RIGHTBUTTON | TPM_RETURNCMD, ptScreen.x, ptScreen.y, m_hWnd, NULL);
     switch (cmd) {
       case ID_EXECUTE:
@@ -363,11 +363,11 @@ class ShellTreeView : public TreeViewBase<ShellTreeView, io::IFolder,
     }
     io::IFolder* folder = GetItemData(hItem);
     ref<IContextMenu> menu;
-    if SUCCEEDED (folder->Entry->QueryObject(&menu)) {  // ‘I‘ğƒAƒCƒeƒ€‚ª‚ ‚éê‡
+    if SUCCEEDED (folder->Entry->QueryObject(&menu)) {  // é¸æŠã‚¢ã‚¤ãƒ†ãƒ ãŒã‚ã‚‹å ´åˆ
       if (CMenu popup = afx::SHBeginContextMenu(menu)) {
         UINT cmd = OnContextMenu_Selection(menu, popup.m_hMenu, ptScreen, hItem);
-        // XP –¼‘O‚Ì•ÏX(&M) BUG ...
-        // ‚¶‚á‚È‚¢‚©‚àB–¼‘O‚Ì•ÏX‚ÍAƒrƒ…[‚É‚æ‚Á‚Ä‘€ì‚ªˆÙ‚È‚é‚Ì‚ÅAƒfƒtƒHƒ‹ƒg‚Å‚ÍÀ‘•‚³‚ê‚Ä‚¢‚È‚¢‚Ì‚©H
+        // XP åå‰ã®å¤‰æ›´(&M) BUG ...
+        // ã˜ã‚ƒãªã„ã‹ã‚‚ã€‚åå‰ã®å¤‰æ›´ã¯ã€ãƒ“ãƒ¥ãƒ¼ã«ã‚ˆã£ã¦æ“ä½œãŒç•°ãªã‚‹ã®ã§ã€ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ã¯å®Ÿè£…ã•ã‚Œã¦ã„ãªã„ã®ã‹ï¼Ÿ
         TCHAR text[MAX_PATH];
         if (popup.GetMenuString(cmd, text, MAX_PATH, MF_BYCOMMAND) > 0 && str::equals(text, SHSTR_MENU_RENAME)) {
           afx::SHEndContextMenu(menu, cmd, m_hWnd);
@@ -484,8 +484,8 @@ class ShellTreeView : public TreeViewBase<ShellTreeView, io::IFolder,
     if FAILED (hr = (undo ? avesta::FileDelete(buffer) : avesta::FileBury(buffer))) {
       return hr;
     }
-    if (!entry->Exists()) {  // ƒLƒƒƒ“ƒZƒ‹‚³‚ê‚½‚É‚à S_OK ‚ª‹A‚é‚Ì‚ÅAƒtƒ@ƒCƒ‹‚Ì‘¶İƒ`ƒFƒbƒN‚ğs‚¤.
-      // TODO: IFolder ‚Æ‚Ì“¯ŠúB
+    if (!entry->Exists()) {  // ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã•ã‚ŒãŸæ™‚ã«ã‚‚ S_OK ãŒå¸°ã‚‹ã®ã§ã€ãƒ•ã‚¡ã‚¤ãƒ«ã®å­˜åœ¨ãƒã‚§ãƒƒã‚¯ã‚’è¡Œã†.
+      // TODO: IFolder ã¨ã®åŒæœŸã€‚
       VERIFY(DeleteItem(hItem));
       return S_OK;
     }

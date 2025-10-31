@@ -1,4 +1,4 @@
-// dialog_name.cpp
+ï»¿// dialog_name.cpp
 
 #include "stdafx.h"
 #include "../server/main.hpp"
@@ -23,7 +23,7 @@ class NameDlg : public avesta::Dialog {
     SetText(IDC_NEW_PATH, m_path.str());
     SetText(IDC_NEW_NAME, m_name);
     afx::Edit_SubclassSingleLineTextBox(GetItem(IDC_NEW_NAME), NULL, theAvesta->EditOptions);
-    SetTip(IDC_NEW_PATH, _T("‘ÎÛƒtƒHƒ‹ƒ_‚Å‚·B"));
+    SetTip(IDC_NEW_PATH, _T("å¯¾è±¡ãƒ•ã‚©ãƒ«ãƒ€ã§ã™ã€‚"));
     return true;
   }
   void OnCommand(UINT what, HWND ctrl) {

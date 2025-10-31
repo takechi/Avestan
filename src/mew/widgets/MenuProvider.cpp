@@ -1,4 +1,4 @@
-// MenuProvider.cpp
+ï»¿// MenuProvider.cpp
 
 #include "stdafx.h"
 #include "../private.h"
@@ -11,7 +11,7 @@ namespace {
 const UINT ID_DEFAULT_MENU_ITEM = 0x0FFF;
 static WORD ID_MENU_COMMAND = 0x1000;
 inline static WORD GetNextMenuID() {
-  if (++ID_MENU_COMMAND > 0x7FFF) {  // ˆêü‚·‚é‚±‚Æ‚Í‚Ü‚¸‚È‚¢‚¯‚ÇccB
+  if (++ID_MENU_COMMAND > 0x7FFF) {  // ä¸€å‘¨ã™ã‚‹ã“ã¨ã¯ã¾ãšãªã„ã‘ã©â€¦â€¦ã€‚
     ID_MENU_COMMAND = 0x1000;
   }
   return ID_MENU_COMMAND;
@@ -61,7 +61,7 @@ static void Menu_Dispose(HMENU hMenu, bool destory = true) {
   if (!::IsMenu(hMenu)) {
     return;
   }
-  // ToDo: eqŠÖŒW‚ª‚ ‚éê‡A–{“–‚ÍØ‚è—£‚µ‚Ä‚©‚çíœ‚µ‚È‚¢‚Æ‚¢‚¯‚È‚¢
+  // ToDo: è¦ªå­é–¢ä¿‚ãŒã‚ã‚‹å ´åˆã€æœ¬å½“ã¯åˆ‡ã‚Šé›¢ã—ã¦ã‹ã‚‰å‰Šé™¤ã—ãªã„ã¨ã„ã‘ãªã„
   INT count = ::GetMenuItemCount(hMenu);
   ASSERT(count >= 0);
   for (INT i = 0; i < count; i++) {
@@ -100,7 +100,7 @@ static HMENU Menu_Create(mew::ui::ITreeItem* pMenu, bool isPopup) {
   ::GetMenuInfo(hMenu, &info);
   info.dwStyle |= MNS_NOTIFYBYPOS;
   info.Menu = pMenu;
-  info.dwContextHelpID = (DWORD)-1;  // dwContextHelpID ‚Éƒ^ƒCƒ€ƒXƒ^ƒ“ƒvî•ñ‚ğ•Û‘¶‚·‚é.
+  info.dwContextHelpID = (DWORD)-1;  // dwContextHelpID ã«ã‚¿ã‚¤ãƒ ã‚¹ã‚¿ãƒ³ãƒ—æƒ…å ±ã‚’ä¿å­˜ã™ã‚‹.
   if (::SetMenuInfo(hMenu, &info)) {
     pMenu->AddRef();
   }
@@ -108,8 +108,8 @@ static HMENU Menu_Create(mew::ui::ITreeItem* pMenu, bool isPopup) {
 }
 static void Menu_Insert(
     HMENU hMenu, int index,
-    mew::ui::ITreeItem* pMenu) {  // ƒI[ƒi[ƒhƒ[‚·‚é‚Ì‚ÅAdwTypeDatai€–Ú–¼j‚ÍAŠî–{“I‚É‚Í•\¦‚Å‚Íg‚í‚È‚¢B
-  // ‚µ‚©‚µAƒj[ƒ‚ƒjƒbƒN‚ğˆ—‚µ‚Ä‚­‚ê‚é‚Ì‚Åİ’è‚µ‚Ä‚¨‚­B
+    mew::ui::ITreeItem* pMenu) {  // ã‚ªãƒ¼ãƒŠãƒ¼ãƒ‰ãƒ­ãƒ¼ã™ã‚‹ã®ã§ã€dwTypeDataï¼ˆé …ç›®åï¼‰ã¯ã€åŸºæœ¬çš„ã«ã¯è¡¨ç¤ºã§ã¯ä½¿ã‚ãªã„ã€‚
+  // ã—ã‹ã—ã€ãƒ‹ãƒ¼ãƒ¢ãƒ‹ãƒƒã‚¯ã‚’å‡¦ç†ã—ã¦ãã‚Œã‚‹ã®ã§è¨­å®šã—ã¦ãŠãã€‚
   ASSERT(pMenu);
   size_t count = pMenu->GetChildCount();
   for (size_t i = 0; i < count; ++i) {
@@ -122,15 +122,15 @@ static void Menu_Insert(
     info.fType = MFT_OWNERDRAW;
     info.Menu = child;
     bool hasChildren = child->HasChildren();
-    if (!child || !child->Name) {  // ƒZƒpƒŒ[ƒ^
-      info.fType = MFT_SEPARATOR;  // ƒZƒpƒŒ[ƒ^‚ÍƒI[ƒi[ƒhƒ[‚µ‚È‚¢.
-    } else if (hasChildren) {      // ”ñI’[ƒƒjƒ…[
+    if (!child || !child->Name) {  // ã‚»ãƒ‘ãƒ¬ãƒ¼ã‚¿
+      info.fType = MFT_SEPARATOR;  // ã‚»ãƒ‘ãƒ¬ãƒ¼ã‚¿ã¯ã‚ªãƒ¼ãƒŠãƒ¼ãƒ‰ãƒ­ãƒ¼ã—ãªã„.
+    } else if (hasChildren) {      // éçµ‚ç«¯ãƒ¡ãƒ‹ãƒ¥ãƒ¼
       info.fMask |= MIIM_SUBMENU | MIIM_ID | MIIM_STRING;
       info.hSubMenu = Menu_Create(child, false);
       info.dwTypeData = const_cast<PTSTR>(text.str());
       info.wID = GetNextMenuID();
-    } else {  // I’[ƒAƒCƒeƒ€
-      // TODO: I’[ƒAƒCƒeƒ€‚ªŒã‚©‚çq‹Ÿ‚ğ‚Â‚æ‚¤‚É‚È‚Á‚½ê‡Aƒƒjƒ…[‚É•Ï‚¦‚È‚¯‚ê‚Î‚È‚ç‚È‚¢.
+    } else {  // çµ‚ç«¯ã‚¢ã‚¤ãƒ†ãƒ 
+      // TODO: çµ‚ç«¯ã‚¢ã‚¤ãƒ†ãƒ ãŒå¾Œã‹ã‚‰å­ä¾›ã‚’æŒã¤ã‚ˆã†ã«ãªã£ãŸå ´åˆã€ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã«å¤‰ãˆãªã‘ã‚Œã°ãªã‚‰ãªã„.
       info.fMask |= MIIM_ID | MIIM_STRING;
       info.dwTypeData = const_cast<PTSTR>(text.str());
       info.wID = GetNextMenuID();
@@ -139,9 +139,9 @@ static void Menu_Insert(
       info.Menu->AddRef();
     }
   }
-  // ƒRƒ}ƒ“ƒh•t‚«”ñI’[ƒƒjƒ…[
-  if (pMenu->Command) {  // ƒI[ƒi[ƒhƒ[‚É‚µAWM_MEASUREITEM ‚Åƒ[ƒ‚ğ•Ô‚·‚±‚Æ‚ÅA
-    // ƒ_ƒuƒ‹ƒNƒŠƒbƒN‚É”½‰‚·‚é”ñI’[ƒƒjƒ…[‚ğÀŒ»‚·‚é.
+  // ã‚³ãƒãƒ³ãƒ‰ä»˜ãéçµ‚ç«¯ãƒ¡ãƒ‹ãƒ¥ãƒ¼
+  if (pMenu->Command) {  // ã‚ªãƒ¼ãƒŠãƒ¼ãƒ‰ãƒ­ãƒ¼ã«ã—ã€WM_MEASUREITEM ã§ã‚¼ãƒ­ã‚’è¿”ã™ã“ã¨ã§ã€
+    // ãƒ€ãƒ–ãƒ«ã‚¯ãƒªãƒƒã‚¯ã«åå¿œã™ã‚‹éçµ‚ç«¯ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’å®Ÿç¾ã™ã‚‹.
     MenuItemInfo info(MIIM_DATA | MIIM_ID | MIIM_FTYPE | MIIM_STATE);
     info.wID = ID_DEFAULT_MENU_ITEM;
     info.Menu = pMenu;
@@ -169,7 +169,7 @@ static void Menu_InvokeCommand(HMENU hMenu, UINT wID) {
   }
 }
 static void Menu_OnMenuCommand(UINT index_and_command, HMENU hParentMenu) {
-  // 98‚Å‚ÍHIWORD‚ç‚µ‚¢BLOWORD‚È‚ç‚Ü‚¾‹~‚¢‚æ‚¤‚ª‚ ‚é‚Ì‚ÉB
+  // 98ã§ã¯HIWORDã‚‰ã—ã„ã€‚LOWORDãªã‚‰ã¾ã æ•‘ã„ã‚ˆã†ãŒã‚ã‚‹ã®ã«ã€‚
   UINT index = module::isNT ? index_and_command : HIWORD(index_and_command);
   if (mew::ui::ITreeItem* pMenu = Menu_FromHandle(hParentMenu, index, true)) {
     if (mew::ICommand* command = pMenu->Command) {
@@ -268,14 +268,14 @@ static bool Menu_OnDrawItem(UINT wID, DRAWITEMSTRUCT* draw, IImageList* imagelis
 }
 
 HRESULT Dispatch_WM_MENUCOMMAND(HWND hWnd, mew::ICommand** ppCommand) {
-  // WM_MENUCOMMAND ‚Í”ñ“¯Šú‚Å‘—‚ç‚ê‚é‚ªA‹­§“I‚É“¯Šú‚³‚¹‚é
+  // WM_MENUCOMMAND ã¯éåŒæœŸã§é€ã‚‰ã‚Œã‚‹ãŒã€å¼·åˆ¶çš„ã«åŒæœŸã•ã›ã‚‹
   MSG msg;
   if (!::PeekMessage(&msg, hWnd, WM_MENUCOMMAND, WM_MENUCOMMAND, PM_NOREMOVE)) {
     return E_FAIL;
   }
   while (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
     if (msg.hwnd == hWnd && msg.message == WM_MENUCOMMAND) {
-      // 98‚Å‚ÍHIWORD‚ç‚µ‚¢BLOWORD‚È‚ç‚Ü‚¾‹~‚¢‚æ‚¤‚ª‚ ‚é‚Ì‚ÉB
+      // 98ã§ã¯HIWORDã‚‰ã—ã„ã€‚LOWORDãªã‚‰ã¾ã æ•‘ã„ã‚ˆã†ãŒã‚ã‚‹ã®ã«ã€‚
       UINT index = module::isNT ? msg.wParam : HIWORD(msg.wParam);
       if (mew::ui::ITreeItem* pMenu = Menu_FromHandle((HMENU)msg.lParam, index, true)) {
         return pMenu->Command.copyto(ppCommand);

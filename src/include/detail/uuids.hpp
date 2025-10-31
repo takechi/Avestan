@@ -1,4 +1,4 @@
-// uuids.hpp
+﻿// uuids.hpp
 #pragma once
 
 #include <functional>

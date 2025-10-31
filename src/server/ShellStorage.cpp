@@ -1,4 +1,4 @@
-// ShellStorage.cpp
+ï»¿// ShellStorage.cpp
 
 #include "stdafx.h"
 #include "main.hpp"
@@ -120,7 +120,7 @@ class ShellStorage : public mew::Root<mew::implements<mew::ui::IShellStorage, me
     mew::string name = pFolder->GetName(mew::io::IEntry::PATH_OR_NAME);
     hr = OnStreamOpen(name, writable, ppStream);
     if (SUCCEEDED(hr) || writable) return hr;
-    // read only ‚Ìê‡AŒ©‚Â‚©‚ç‚È‚¯‚ê‚ÎeƒtƒHƒ‹ƒ_‚Ìİ’è‚ğ•Ô‚·B
+    // read only ã®å ´åˆã€è¦‹ã¤ã‹ã‚‰ãªã‘ã‚Œã°è¦ªãƒ•ã‚©ãƒ«ãƒ€ã®è¨­å®šã‚’è¿”ã™ã€‚
     while (name = RemoveLeaf(name)) {
       hr = OnStreamOpen(name, writable, ppStream);
       switch (hr) {

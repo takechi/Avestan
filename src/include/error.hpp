@@ -1,14 +1,14 @@
-/// @file error.hpp
-/// —áŠO.
+ï»¿/// @file error.hpp
+/// ä¾‹å¤–.
 #pragma once
 
 #include "mew.hpp"
 #include "string.hpp"
 
 namespace mew {
-/// —áŠO.
+/// ä¾‹å¤–.
 namespace exceptions {
-/// —áŠOŠî’êƒNƒ‰ƒX.
+/// ä¾‹å¤–åŸºåº•ã‚¯ãƒ©ã‚¹.
 class Error {
  public:
   virtual ~Error() {}
@@ -18,13 +18,13 @@ class Error {
   virtual HRESULT get_Code() throw() = 0;
 #endif  // DOXYGEN
 
-  /// —áŠOƒƒbƒZ[ƒW [get].
+  /// ä¾‹å¤–ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ [get].
   __declspec(property(get = get_Message)) string Message;
-  /// —áŠOƒR[ƒh [get].
+  /// ä¾‹å¤–ã‚³ãƒ¼ãƒ‰ [get].
   __declspec(property(get = get_Code)) HRESULT Code;
 };
 
-/// ƒVƒXƒeƒ€ƒGƒ‰[.
+/// ã‚·ã‚¹ãƒ†ãƒ ã‚¨ãƒ©ãƒ¼.
 class SystemError : public Error {
  protected:
   string m_Message;
@@ -39,37 +39,37 @@ class SystemError : public Error {
 #endif  // DOXYGEN
 };
 
-/// ƒƒWƒbƒNƒGƒ‰[.
+/// ãƒ­ã‚¸ãƒƒã‚¯ã‚¨ãƒ©ãƒ¼.
 class LogicError : public SystemError {
  public:
   LogicError(const string& msg, HRESULT code) : SystemError(msg, code) {}
 };
 
-/// ƒ‰ƒ“ƒ^ƒCƒ€ƒGƒ‰[.
+/// ãƒ©ãƒ³ã‚¿ã‚¤ãƒ ã‚¨ãƒ©ãƒ¼.
 class RuntimeError : public SystemError {
  public:
   RuntimeError(const string& msg, HRESULT code) : SystemError(msg, code) {}
 };
 
-/// •s³‚Èƒƒ\ƒbƒhŒÄ‚Ño‚µ.
+/// ä¸æ­£ãªãƒ¡ã‚½ãƒƒãƒ‰å‘¼ã³å‡ºã—.
 class ArgumentError : public LogicError {
  public:
   ArgumentError(const string& msg, HRESULT code = E_INVALIDARG) : LogicError(msg, code) {}
 };
 
-/// ƒLƒƒƒXƒgƒGƒ‰[.
+/// ã‚­ãƒ£ã‚¹ãƒˆã‚¨ãƒ©ãƒ¼.
 class CastError : public RuntimeError {
  public:
   CastError(const string& msg, HRESULT code = E_NOINTERFACE) : RuntimeError(msg, code) {}
 };
 
-/// ƒCƒ“ƒXƒ^ƒ“ƒXì¬ƒGƒ‰[.
+/// ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ä½œæˆã‚¨ãƒ©ãƒ¼.
 class ClassError : public RuntimeError {
  public:
   ClassError(const string& msg, HRESULT code) : RuntimeError(msg, code) {}
 };
 
-/// IOƒGƒ‰[.
+/// IOã‚¨ãƒ©ãƒ¼.
 class IOError : public RuntimeError {
  public:
   IOError(const string& msg, HRESULT code) : RuntimeError(msg, code) {}

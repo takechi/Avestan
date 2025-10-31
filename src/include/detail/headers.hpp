@@ -1,16 +1,16 @@
-// headers.hpp
+ï»¿// headers.hpp
 #pragma once
 
 //==============================================================================
 // warning
 
-#pragma warning(disable : 4100)  // warning C4100: 'argument' : ˆø”‚ÍŠÖ”‚Ì–{‘Ì•”‚Å 1
-                                 // “x‚àQÆ‚³‚ê‚Ü‚¹‚ñB
-#pragma warning(disable : 4127)  // warning C4127: ğŒ®‚ª’è”‚Å‚·B
-#pragma warning(disable : 4201)  // warning C4201: ”ñ•W€‚ÌŠg’£‹@”\‚ªg—p‚³‚ê‚Ä‚¢‚Ü‚· :
-                                 // –³–¼‚Ì\‘¢‘Ì‚Ü‚½‚Í‹¤—p‘Ì‚Å‚·B
-#pragma warning(disable : 4290)  // warning C4290: C++ ‚Ì—áŠO‚Ìw’è‚Í–³‹‚³‚ê‚Ü‚·BŠÖ”‚ª
-                                 // __declspec(nothrow) ‚Å‚È‚¢‚±‚Æ‚Ì‚İ•\¦‚³‚ê‚Ü‚·B
+#pragma warning(disable : 4100)  // warning C4100: 'argument' : å¼•æ•°ã¯é–¢æ•°ã®æœ¬ä½“éƒ¨ã§ 1
+                                 // åº¦ã‚‚å‚ç…§ã•ã‚Œã¾ã›ã‚“ã€‚
+#pragma warning(disable : 4127)  // warning C4127: æ¡ä»¶å¼ãŒå®šæ•°ã§ã™ã€‚
+#pragma warning(disable : 4201)  // warning C4201: éæ¨™æº–ã®æ‹¡å¼µæ©Ÿèƒ½ãŒä½¿ç”¨ã•ã‚Œã¦ã„ã¾ã™ :
+                                 // ç„¡åã®æ§‹é€ ä½“ã¾ãŸã¯å…±ç”¨ä½“ã§ã™ã€‚
+#pragma warning(disable : 4290)  // warning C4290: C++ ã®ä¾‹å¤–ã®æŒ‡å®šã¯ç„¡è¦–ã•ã‚Œã¾ã™ã€‚é–¢æ•°ãŒ
+                                 // __declspec(nothrow) ã§ãªã„ã“ã¨ã®ã¿è¡¨ç¤ºã•ã‚Œã¾ã™ã€‚
 
 //==============================================================================
 // system headers
@@ -34,10 +34,10 @@
 #define _ATL_ALL_WARNINGS
 #define _ATL_NO_OPENGL
 #define _ATL_NO_OLD_NAMES
-#define _WTL_NO_CSTRING        // CString ‚Å‚Í‚È‚­AATL::CStringT ‚ğg—p‚·‚é‚½‚ßB
+#define _WTL_NO_CSTRING        // CString ã§ã¯ãªãã€ATL::CStringT ã‚’ä½¿ç”¨ã™ã‚‹ãŸã‚ã€‚
 #define _WTL_NO_WTYPES         // CSize, CPoint, CRect
-                               // ‚Å‚Í‚È‚­AATL‚ÌƒNƒ‰ƒX‚ğg—p‚·‚é‚½‚ßB
-#define _WTL_NO_UNION_CLASSES  // ATL ‚É‚ ‚é“¯–¼‚ÌƒNƒ‰ƒX‚ğg—p‚·‚éB
+                               // ã§ã¯ãªãã€ATLã®ã‚¯ãƒ©ã‚¹ã‚’ä½¿ç”¨ã™ã‚‹ãŸã‚ã€‚
+#define _WTL_NO_UNION_CLASSES  // ATL ã«ã‚ã‚‹åŒåã®ã‚¯ãƒ©ã‚¹ã‚’ä½¿ç”¨ã™ã‚‹ã€‚
 
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
@@ -54,15 +54,15 @@
 #endif
 */
 #ifndef _MT
-#error ƒ}ƒ‹ƒ`ƒXƒŒƒbƒhİ’è‚Åƒrƒ‹ƒh‚·‚é•K—v‚ª‚ ‚è‚Ü‚·B
+#error ãƒãƒ«ãƒã‚¹ãƒ¬ãƒƒãƒ‰è¨­å®šã§ãƒ“ãƒ«ãƒ‰ã™ã‚‹å¿…è¦ãŒã‚ã‚Šã¾ã™ã€‚
 #endif
 
 #ifndef _CPPUNWIND
-#error C++—áŠOˆ—‚ğ—LŒø‚É‚·‚é•K—v‚ª‚ ‚è‚Ü‚·B
+#error C++ä¾‹å¤–å‡¦ç†ã‚’æœ‰åŠ¹ã«ã™ã‚‹å¿…è¦ãŒã‚ã‚Šã¾ã™ã€‚
 #endif
 
 #ifndef _NATIVE_WCHAR_T_DEFINED
-#error wchar_t ‚ğ‘g‚İ‚İŒ^‚Æ‚µ‚Äˆµ‚¤•K—v‚ª‚ ‚è‚Ü‚·B
+#error wchar_t ã‚’çµ„ã¿è¾¼ã¿å‹ã¨ã—ã¦æ‰±ã†å¿…è¦ãŒã‚ã‚Šã¾ã™ã€‚
 #endif
 
 //==============================================================================
@@ -135,5 +135,5 @@ const bool IS_UNICODE_CHARSET = false;
 #define __FILE_W__ WIDEN(__FILE__)
 #define __FUNCTION_W__ WIDEN(__FUNCTION__)
 
-using REAL32 = float;   ///< 32bit•‚“®¬”.
-using REAL64 = double;  ///< 64bit•‚“®¬”.
+using REAL32 = float;   ///< 32bitæµ®å‹•å°æ•°.
+using REAL64 = double;  ///< 64bitæµ®å‹•å°æ•°.

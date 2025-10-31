@@ -1,11 +1,11 @@
-�R���p�C���ɕK�v�Ȃ��́F
-�EVisual Studio.NET 2003 �ȍ~�i�����ƃe���v���[�g�̕������ꉻ���K�v�Ȃ��߁j
-�EPython2.4 �ȍ~
-�EWTL7.5 �ȍ~
+コンパイルに必要なもの：
+・Visual Studio.NET 2003 以降（方言とテンプレートの部分特殊化が必要なため）
+・Python2.4 以降
+・WTL7.5 以降
 
-�ȉ�������������K�v�����邩������܂���B
+以下を書き換える必要があるかもしれません。
 
 <pyconfig.h>
 #define PY_UNICODE_TYPE unsigned short
-��
+↓
 #define PY_UNICODE_TYPE wchar_t

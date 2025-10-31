@@ -1,4 +1,4 @@
-// stdafx.cpp
+﻿// stdafx.cpp
 
 #include "stdafx.h"
 

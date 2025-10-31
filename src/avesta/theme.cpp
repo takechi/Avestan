@@ -1,4 +1,4 @@
-// theme.cpp
+﻿// theme.cpp
 
 #include "stdafx.h"
 #include "theme.hpp"
@@ -102,7 +102,7 @@ void Theme::Text(HDC hDC, int part, int state, const RECT* rc, PCWSTR text, DWOR
                 EDIT,
                 EXPLORERBAR,
                 GLOBALS,
-                HEADER, // ListView �ꗗ �̏㕔�̃w�b�_
+                HEADER, // ListView 一覧 の上部のヘッダ
                 LISTVIEW,
                 MENU,
                 MENUBAND,

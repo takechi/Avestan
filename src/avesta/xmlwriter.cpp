@@ -1,4 +1,4 @@
-// xmlwriter.cpp
+ï»¿// xmlwriter.cpp
 
 #include "stdafx.h"
 #include "../mew/private.h"
@@ -37,7 +37,7 @@ class XMLWriter : public Root<implements<IXMLWriter> > {
   void __init__(IUnknown* arg) { ASSERT(!arg); }
   void Dispose() {
     if (!m_stack.empty()) {
-      TRACE(_T("warning: ƒ^ƒO‚ª•Â‚¶‚ç‚ê‚È‚¢‚Ü‚Ü XMLWriter ‚ª”jŠü‚³‚ê‚Ü‚µ‚½"));
+      TRACE(_T("warning: ã‚¿ã‚°ãŒé–‰ã˜ã‚‰ã‚Œãªã„ã¾ã¾ XMLWriter ãŒç ´æ£„ã•ã‚Œã¾ã—ãŸ"));
       EndDocument();
     }
     m_stack.clear();
@@ -47,7 +47,7 @@ class XMLWriter : public Root<implements<IXMLWriter> > {
  public:  // IXMLWriter
   void StartDocument(IStream* stream, PCWSTR encoding) {
     if (m_stream) {
-      throw mew::exceptions::ArgumentError(_T("Šù‚ÉŠJ‚©‚ê‚Ä‚¢‚Ü‚·"), E_UNEXPECTED);
+      throw mew::exceptions::ArgumentError(_T("æ—¢ã«é–‹ã‹ã‚Œã¦ã„ã¾ã™"), E_UNEXPECTED);
     }
     m_isTagClosed = true;
     m_hasChild = false;
@@ -57,7 +57,7 @@ class XMLWriter : public Root<implements<IXMLWriter> > {
   void EndDocument() {
 #if _DEBUG
     if (!m_stack.empty()) {
-      TRACE(_T("warning: ƒ^ƒO‚ª•Â‚¶‚ç‚ê‚È‚¢‚Ü‚Ü XMLWriter.EndDocument() ‚³‚ê‚Ü‚µ‚½"));
+      TRACE(_T("warning: ã‚¿ã‚°ãŒé–‰ã˜ã‚‰ã‚Œãªã„ã¾ã¾ XMLWriter.EndDocument() ã•ã‚Œã¾ã—ãŸ"));
     }
 #endif
     while (!m_stack.empty()) {
@@ -77,7 +77,7 @@ class XMLWriter : public Root<implements<IXMLWriter> > {
   }
   void EndElement() {
     if (m_stack.empty()) {
-      throw mew::exceptions::ArgumentError(_T("EndElement()‚ÌŒÄ‚Ño‚µ‚ªAStartElement()‚Æˆê’v‚µ‚Ü‚¹‚ñ"), E_UNEXPECTED);
+      throw mew::exceptions::ArgumentError(_T("EndElement()ã®å‘¼ã³å‡ºã—ãŒã€StartElement()ã¨ä¸€è‡´ã—ã¾ã›ã‚“"), E_UNEXPECTED);
     }
     if (!m_isTagClosed) {
       m_stream << "/>\r\n";
@@ -93,7 +93,7 @@ class XMLWriter : public Root<implements<IXMLWriter> > {
   }
   void Attribute(PCWSTR name, PCWSTR data) {
     if (m_isTagClosed) {
-      throw mew::exceptions::ArgumentError(_T("‘®«‚ÍƒeƒLƒXƒg‚æ‚èæ‚Éw’è‚·‚é•K—v‚ª‚ ‚è‚Ü‚·"), E_UNEXPECTED);
+      throw mew::exceptions::ArgumentError(_T("å±æ€§ã¯ãƒ†ã‚­ã‚¹ãƒˆã‚ˆã‚Šå…ˆã«æŒ‡å®šã™ã‚‹å¿…è¦ãŒã‚ã‚Šã¾ã™"), E_UNEXPECTED);
     }
     m_stream << ' ' << name << "=\"" << data << '\"';
   }
@@ -109,11 +109,11 @@ class XMLWriter : public Root<implements<IXMLWriter> > {
   }
   void ProcessingInstruction(PCWSTR target, PCWSTR data) {
     if (!m_stream) {
-      throw mew::exceptions::ArgumentError(_T("xmlo—Íæ‚ªw’è‚³‚ê‚éˆÈ‘O‚É ProcessingInstruction ‚ªŒÄ‚Ño‚³‚ê‚Ü‚µ‚½"),
+      throw mew::exceptions::ArgumentError(_T("xmlå‡ºåŠ›å…ˆãŒæŒ‡å®šã•ã‚Œã‚‹ä»¥å‰ã« ProcessingInstruction ãŒå‘¼ã³å‡ºã•ã‚Œã¾ã—ãŸ"),
                                            E_UNEXPECTED);
     }
     if (!m_stack.empty()) {
-      throw mew::exceptions::ArgumentError(_T("ProcessingInstruction ‚Íƒ‹[ƒgƒm[ƒh‚æ‚èæ‚ÉéŒ¾‚·‚é•K—v‚ª‚ ‚è‚Ü‚·"),
+      throw mew::exceptions::ArgumentError(_T("ProcessingInstruction ã¯ãƒ«ãƒ¼ãƒˆãƒãƒ¼ãƒ‰ã‚ˆã‚Šå…ˆã«å®£è¨€ã™ã‚‹å¿…è¦ãŒã‚ã‚Šã¾ã™"),
                                            E_UNEXPECTED);
     }
     m_stream << "<?" << target << ' ' << data << "?>\r\n";

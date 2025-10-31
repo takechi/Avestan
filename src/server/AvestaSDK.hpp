@@ -1,4 +1,4 @@
-// AvestaSDK.hpp
+ï»¿// AvestaSDK.hpp
 
 #pragma once
 
@@ -15,23 +15,23 @@ enum AvestaComponent {
 /// .
 enum NotifyPriority {
   NotifyIdle = 0,      //
-  NotifyInfo = 10,     // ƒVƒXƒeƒ€‚©‚ç‚Ìî•ñ
-  NotifyResult = 20,   // ƒ†[ƒU‚Ì‘€ì‚ÌŒ‹‰Ê
-  NotifyWarning = 30,  // ƒ†[ƒU‚ÌŒë‘€ì
-  NotifyError = 40,    // ƒVƒXƒeƒ€‚Ì“®ì•s—Ç
+  NotifyInfo = 10,     // ã‚·ã‚¹ãƒ†ãƒ ã‹ã‚‰ã®æƒ…å ±
+  NotifyResult = 20,   // ãƒ¦ãƒ¼ã‚¶ã®æ“ä½œã®çµæœ
+  NotifyWarning = 30,  // ãƒ¦ãƒ¼ã‚¶ã®èª¤æ“ä½œ
+  NotifyError = 40,    // ã‚·ã‚¹ãƒ†ãƒ ã®å‹•ä½œä¸è‰¯
 };
 
 /// .
 enum Navigation {
-  NaviCancel,      ///< ˆÚ“®‚ğæ‚èÁ‚·
-  NaviGoto,        ///< ˆÚ“®{ƒL[
-  NaviGotoAlways,  ///< ˆÚ“®
-  NaviOpen,        ///< ŠJ‚­{ƒL[
-  NaviOpenAlways,  ///< ŠJ‚­
-  NaviAppend,      ///< ’Ç‰Á
-  NaviReserve,     ///< ’Ç‰Á{‰B‚·
-  NaviSwitch,      ///< ’Ç‰Á{ƒtƒH[ƒJƒX
-  NaviReplace,     ///< ’Ç‰Á{ƒtƒH[ƒJƒX{Œ³‚ğ‰B‚·
+  NaviCancel,      ///< ç§»å‹•ã‚’å–ã‚Šæ¶ˆã™
+  NaviGoto,        ///< ç§»å‹•ï¼‹ã‚­ãƒ¼
+  NaviGotoAlways,  ///< ç§»å‹•
+  NaviOpen,        ///< é–‹ãï¼‹ã‚­ãƒ¼
+  NaviOpenAlways,  ///< é–‹ã
+  NaviAppend,      ///< è¿½åŠ 
+  NaviReserve,     ///< è¿½åŠ ï¼‹éš ã™
+  NaviSwitch,      ///< è¿½åŠ ï¼‹ãƒ•ã‚©ãƒ¼ã‚«ã‚¹
+  NaviReplace,     ///< è¿½åŠ ï¼‹ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ï¼‹å…ƒã‚’éš ã™
 };
 
 ///.
@@ -45,23 +45,23 @@ enum Fonts {
 
 /// .
 __interface IAvesta {
-  /// ƒRƒ“ƒ|[ƒlƒ“ƒg”‚ğæ“¾‚·‚é.
+  /// ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆæ•°ã‚’å–å¾—ã™ã‚‹.
   size_t GetComponentCount(AvestaComponent type);
-  /// ƒRƒ“ƒ|[ƒlƒ“ƒg‚ğæ“¾‚·‚é.
+  /// ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’å–å¾—ã™ã‚‹.
   HRESULT GetComponent(mew::REFINTF pp, AvestaComponent type, size_t index = (size_t)-1);
-  /// IShellListView ‚ğ—ñ‹“‚·‚é.
+  /// IShellListView ã‚’åˆ—æŒ™ã™ã‚‹.
   mew::ref<IEnumUnknown> EnumFolders(mew::Status status) const;
 
   mew::ref<mew::ui::IShellListView> CurrentView() const;
   mew::ref<mew::io::IEntry> CurrentFolder() const;
   mew::string CurrentPath() const;
 
-  /// ƒtƒHƒ‹ƒ_‚Æ‚µ‚ÄŠJ‚«‚Ü‚·.
+  /// ãƒ•ã‚©ãƒ«ãƒ€ã¨ã—ã¦é–‹ãã¾ã™.
   mew::ref<mew::ui::IShellListView> OpenFolder(mew::io::IEntry * entry, Navigation navi, Navigation* naviResult = nullptr);
-  /// ƒtƒHƒ‹ƒ_‚Æ‚µ‚ÄŠJ‚­‚©AÀs‚µ‚Ü‚·.
+  /// ãƒ•ã‚©ãƒ«ãƒ€ã¨ã—ã¦é–‹ãã‹ã€å®Ÿè¡Œã—ã¾ã™.
   HRESULT OpenOrExecute(mew::io::IEntry * entry);
 
-  /// ’Ê’m‚ğƒ†[ƒU‚Ì×–‚‚É‚È‚ç‚È‚¢‚æ‚¤‚É•\¦‚·‚é.
+  /// é€šçŸ¥ã‚’ãƒ¦ãƒ¼ã‚¶ã®é‚ªé­”ã«ãªã‚‰ãªã„ã‚ˆã†ã«è¡¨ç¤ºã™ã‚‹.
   void Notify(DWORD priority, mew::string msg);
   ///
   void ParseCommandLine(PCWSTR args);
@@ -69,7 +69,7 @@ __interface IAvesta {
   void Restart(PCWSTR newDLL = nullptr);
 };
 
-/// ŠÖ˜A•t‚¯Às‚µ‚Ü‚·.
+/// é–¢é€£ä»˜ã‘å®Ÿè¡Œã—ã¾ã™.
 HRESULT AvestaExecute(mew::io::IEntry* entry);
 }  // namespace avesta
 

@@ -1,4 +1,4 @@
-// window.cpp
+ï»¿// window.cpp
 
 #include "stdafx.h"
 #include "avesta.hpp"
@@ -232,7 +232,7 @@ int Window::Broadcast(UINT msg, WPARAM wParam, LPARAM lParam) {
   return m.count;
 }
 
-/// ƒ†[ƒU“ü—ÍŒn‚ÌƒƒbƒZ[ƒW‚ğ“]‘—‚·‚é.
+/// ãƒ¦ãƒ¼ã‚¶å…¥åŠ›ç³»ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è»¢é€ã™ã‚‹.
 bool Window::Filter(MSG& msg) {
   if (::IsWindowEnabled(msg.hwnd) && Thread::IsLocalLoop()) {
     // if (ProcessMouseMessage(msg))

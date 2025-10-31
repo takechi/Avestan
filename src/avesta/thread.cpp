@@ -1,4 +1,4 @@
-// thread.cpp
+ï»¿// thread.cpp
 
 #include "stdafx.h"
 #include "avesta.hpp"
@@ -49,7 +49,7 @@ class MessageHook {
       if (::PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
         ::TranslateMessage(&msg);
         ::DispatchMessage(&msg);
-      } else if (m_needsUpdateUIState) {  // ƒƒbƒZ[ƒWƒLƒ…[‚ª‹ó‚É‚È‚Á‚½‚Ì‚ÅAWM_UPDATEUISTATE ‚ğƒ|ƒXƒg‚·‚éB
+      } else if (m_needsUpdateUIState) {  // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚­ãƒ¥ãƒ¼ãŒç©ºã«ãªã£ãŸã®ã§ã€WM_UPDATEUISTATE ã‚’ãƒã‚¹ãƒˆã™ã‚‹ã€‚
         m_needsUpdateUIState = false;
         avesta::Window::Broadcast(WM_UPDATEUISTATE);
       } else {
@@ -69,9 +69,9 @@ class MessageHook {
     HHOOK hHook = self->m_hHookMSG;
     MSG* msg = (MSG*)lParam;
     if (nCode == HC_ACTION && wParam == PM_REMOVE) {
-      if (self->OnHook(*msg)) {  // ƒƒbƒZ[ƒW‚ğƒnƒ“ƒhƒ‹‚µ‚½‚Ì‚ÅAƒƒbƒZ[ƒW©‘Ì‚ğ–³Œø‰»‚·‚é•K—v‚ª‚ ‚éB
-        // –ß‚è’l‚âCallNextHookEx()‚ğŒÄ‚Î‚È‚¢‚È‚Ç‚Ì•û–@‚Å‚Í‚È‚­A
-        // ƒƒbƒZ[ƒW‚ğ•ÏX‚µ‚Äu‰½‚à‚µ‚È‚¢ƒƒbƒZ[ƒWv‚É‚µ‚Ä‚µ‚Ü‚¤‚Ì‚ª—Ç‚¢‚æ‚¤‚¾B
+      if (self->OnHook(*msg)) {  // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ãƒãƒ³ãƒ‰ãƒ«ã—ãŸã®ã§ã€ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è‡ªä½“ã‚’ç„¡åŠ¹åŒ–ã™ã‚‹å¿…è¦ãŒã‚ã‚‹ã€‚
+        // æˆ»ã‚Šå€¤ã‚„CallNextHookEx()ã‚’å‘¼ã°ãªã„ãªã©ã®æ–¹æ³•ã§ã¯ãªãã€
+        // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å¤‰æ›´ã—ã¦ã€Œä½•ã‚‚ã—ãªã„ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã€ã«ã—ã¦ã—ã¾ã†ã®ãŒè‰¯ã„ã‚ˆã†ã ã€‚
         msg->message = WM_NULL;
         return 0;
       }
@@ -116,16 +116,16 @@ class MessageHook {
     }
 
     if (m_needsUpdateUIState &&
-        HIWORD(GetQueueStatus(QS_ALLINPUT)) == 0) {  // ƒƒbƒZ[ƒWƒLƒ…[‚ª‹ó‚É‚È‚Á‚½‚Ì‚ÅAWM_UPDATEUISTATE ‚ğƒ|ƒXƒg‚·‚éB
+        HIWORD(GetQueueStatus(QS_ALLINPUT)) == 0) {  // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚­ãƒ¥ãƒ¼ãŒç©ºã«ãªã£ãŸã®ã§ã€WM_UPDATEUISTATE ã‚’ãƒã‚¹ãƒˆã™ã‚‹ã€‚
       m_needsUpdateUIState = false;
       avesta::Window::Broadcast(WM_UPDATEUISTATE);
     }
     return handled;
   }
 
-  /// ƒ}ƒEƒXƒzƒC[ƒ‹‚ğƒJ[ƒ\ƒ‹’¼‰º‚ÌƒEƒBƒ“ƒhƒE‚É‘—‚é.
+  /// ãƒã‚¦ã‚¹ãƒ›ã‚¤ãƒ¼ãƒ«ã‚’ã‚«ãƒ¼ã‚½ãƒ«ç›´ä¸‹ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«é€ã‚‹.
   void RedirectMouseWheel(MSG& msg) {
-    // WM_MOUSEWHEEL‚Ìƒ}ƒEƒXˆÊ’u‚ÍƒXƒNƒŠ[ƒ“À•WŒn‚È‚Ì‚ÅAC³‚·‚é•K—v‚È‚µ.
+    // WM_MOUSEWHEELã®ãƒã‚¦ã‚¹ä½ç½®ã¯ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ç³»ãªã®ã§ã€ä¿®æ­£ã™ã‚‹å¿…è¦ãªã—.
     POINT pt = {GET_XY_LPARAM(msg.lParam)};
     HWND hwnd = ::WindowFromPoint(pt);
     if (hwnd && ::GetWindowThreadProcessId(hwnd, NULL) == ::GetCurrentThreadId() && ::IsWindowEnabled(hwnd)) {
@@ -150,7 +150,7 @@ bool RemoveThread(int at) {
 
 int MessageLoop() {
   while (true) {
-    // ƒ[ƒJƒ‹•Ï”‚ÉƒRƒs[‚·‚é‚ªAí‚É nCount == theNumThreads
+    // ãƒ­ãƒ¼ã‚«ãƒ«å¤‰æ•°ã«ã‚³ãƒ”ãƒ¼ã™ã‚‹ãŒã€å¸¸ã« nCount == theNumThreads
     const size_t nCount = theNumThreads;
 
     if (nCount == 0) {
@@ -158,7 +158,7 @@ int MessageLoop() {
     }
 
     DWORD ret = ::MsgWaitForMultipleObjects((DWORD)nCount, theThreads, false, INFINITE, QS_ALLINPUT);
-    if (ret == WAIT_OBJECT_0 + nCount) {  // ƒƒbƒZ[ƒW‚É‚æ‚é‹N°
+    if (ret == WAIT_OBJECT_0 + nCount) {  // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã«ã‚ˆã‚‹èµ·åºŠ
       MSG msg;
       while (::PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
         switch (msg.message) {
@@ -167,12 +167,12 @@ int MessageLoop() {
             break;
         }
       }
-    } else if (WAIT_OBJECT_0 <= ret && ret < WAIT_OBJECT_0 + nCount) {  // ƒXƒŒƒbƒh‚Ì‚Ç‚ê‚©‚ªI—¹‚µ‚½
+    } else if (WAIT_OBJECT_0 <= ret && ret < WAIT_OBJECT_0 + nCount) {  // ã‚¹ãƒ¬ãƒƒãƒ‰ã®ã©ã‚Œã‹ãŒçµ‚äº†ã—ãŸ
       RemoveThread(ret - WAIT_OBJECT_0);
-    } else if (WAIT_ABANDONED_0 <= ret && ret < WAIT_ABANDONED_0 + nCount) {  // ƒXƒŒƒbƒh‚Ç‚ê‚©‚ª”jŠüÏ‚İH ‚±‚±‚É‚Í—ˆ‚È‚¢‚©‚àB
+    } else if (WAIT_ABANDONED_0 <= ret && ret < WAIT_ABANDONED_0 + nCount) {  // ã‚¹ãƒ¬ãƒƒãƒ‰ã©ã‚Œã‹ãŒç ´æ£„æ¸ˆã¿ï¼Ÿ ã“ã“ã«ã¯æ¥ãªã„ã‹ã‚‚ã€‚
       RemoveThread(ret - WAIT_ABANDONED_0);
-    } else {  // ƒGƒ‰[BŠù‚ÉƒXƒŒƒbƒh‚ªI—¹‚µ‚Ä‚¢‚é‰Â”\«‚ª‚ ‚éB
-      // •¡”‚ÌƒEƒBƒ“ƒhƒE‚ğ“¯‚É•Â‚¶‚½ê‡‚É”­¶‚µ‚â‚·‚¢B
+    } else {  // ã‚¨ãƒ©ãƒ¼ã€‚æ—¢ã«ã‚¹ãƒ¬ãƒƒãƒ‰ãŒçµ‚äº†ã—ã¦ã„ã‚‹å¯èƒ½æ€§ãŒã‚ã‚‹ã€‚
+      // è¤‡æ•°ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’åŒæ™‚ã«é–‰ã˜ãŸå ´åˆã«ç™ºç”Ÿã—ã‚„ã™ã„ã€‚
       for (int i = theNumThreads - 1; i >= 0; --i) {
         DWORD code;
         if (!::GetExitCodeThread(theThreads[i], &code) || code != STILL_ACTIVE) {
@@ -200,7 +200,7 @@ HANDLE Thread::New(Routine fn, void* args) {
     theThreads[theNumThreads++] = handle;
     return handle;
   } else {
-    // XXX: theThreads ‚ğ CriticalSection ‚Åç‚ê‚ÎAƒ}[ƒVƒƒƒŠƒ“ƒO‚·‚é•K—v‚Í–³‚¢‚©‚àH
+    // XXX: theThreads ã‚’ CriticalSection ã§å®ˆã‚Œã°ã€ãƒãƒ¼ã‚·ãƒ£ãƒªãƒ³ã‚°ã™ã‚‹å¿…è¦ã¯ç„¡ã„ã‹ã‚‚ï¼Ÿ
     ::PostThreadMessage(theMainThreadId, WM_APP, (WPARAM)fn, (LPARAM)args);
     return ::GetCurrentThread();
   }
@@ -222,7 +222,7 @@ int Thread::Run(Routine fn, void* args) {
   return ret;
 }
 
-/// ƒƒjƒ…[ƒ‹[ƒv‚Ü‚½‚ÍƒEƒBƒ“ƒhƒE‚ÌˆÚ“®EƒŠƒTƒCƒY’†‚Ìê‡‚Í^.
+/// ãƒ¡ãƒ‹ãƒ¥ãƒ¼ãƒ«ãƒ¼ãƒ—ã¾ãŸã¯ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ç§»å‹•ãƒ»ãƒªã‚µã‚¤ã‚ºä¸­ã®å ´åˆã¯çœŸ.
 bool Thread::IsLocalLoop() {
   if (MessageHook::Get()->GetMenuStackDepth() > 0) return true;
   GUITHREADINFO info = {sizeof(GUITHREADINFO)};

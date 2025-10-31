@@ -1,4 +1,4 @@
-// widgets.client.hpp
+﻿// widgets.client.hpp
 #pragma once
 
 #ifndef __ATLWIN_H__

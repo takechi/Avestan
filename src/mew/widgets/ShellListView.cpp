@@ -1,4 +1,4 @@
-// ShellListView.cpp
+ï»¿// ShellListView.cpp
 #pragma once
 
 #include "stdafx.h"
@@ -53,7 +53,7 @@ class ShellListView
       public SHNotifyBase {
  public:
   void QueryMouseGesture(IGesture** pp, Point ptScreen, size_t length, const Gesture gesture[]) {
-    // ƒAƒCƒeƒ€ã‚Å‚È‚¯‚ê‚ÎƒWƒFƒXƒ`ƒƒ‚ğó‚¯“ü‚ê‚é
+    // ã‚¢ã‚¤ãƒ†ãƒ ä¸Šã§ãªã‘ã‚Œã°ã‚¸ã‚§ã‚¹ãƒãƒ£ã‚’å—ã‘å…¥ã‚Œã‚‹
     if (!__super::HandleQueryGesture(pp, ptScreen, length, gesture)) {
       QueryInterface(pp);
     }
@@ -73,11 +73,11 @@ class ShellListView
           return true;
         }
         break;
-      default:  // 4, 5 button ‚ÍƒAƒCƒeƒ€‚ğl—¶‚µ‚È‚¢
+      default:  // 4, 5 button ã¯ã‚¢ã‚¤ãƒ†ãƒ ã‚’è€ƒæ…®ã—ãªã„
         QueryMouseGesture(pp, ptScreen, length, gesture);
         return true;
     }
-    // ƒAƒCƒeƒ€ã‚È‚ç–³Œø
+    // ã‚¢ã‚¤ãƒ†ãƒ ä¸Šãªã‚‰ç„¡åŠ¹
     LVHITTESTINFO hit = {ptScreen, 0, -1, 0};
     list.ScreenToClient(&hit.pt);
     if (list.HitTest(&hit) >= 0 && (hit.flags & (LVHT_ONITEMICON | LVHT_ONITEMLABEL))) {
@@ -314,7 +314,7 @@ class ShellListView
             if (header.IsWindowVisible()) {
               WTL::CListViewCtrl list = this->ListView;
               ref<IExpose> expose(__uuidof(Expose));
-              expose->SetTitle(_T("ƒ\[ƒg€–Ú‚Ì‘I‘ğ"));
+              expose->SetTitle(_T("ã‚½ãƒ¼ãƒˆé …ç›®ã®é¸æŠ"));
               HWND hwndRoot = ::GetAncestor(m_hWnd, GA_ROOT);
               const int count = header.GetItemCount();
               std::vector<int> orders(count);
@@ -401,7 +401,7 @@ class ShellListView
       return false;
     }
     bool HandleCreate(const CREATESTRUCT& cs) {
-      RECT rc = {0, 0, 0, 480};  // ‚±‚ê‚ªƒhƒƒbƒvƒ_ƒEƒ“ƒŠƒXƒg‚ÌÅ‘å‚‚³‚É‚È‚é‚à‚æ‚¤
+      RECT rc = {0, 0, 0, 480};  // ã“ã‚ŒãŒãƒ‰ãƒ­ãƒƒãƒ—ãƒ€ã‚¦ãƒ³ãƒªã‚¹ãƒˆã®æœ€å¤§é«˜ã•ã«ãªã‚‹ã‚‚ã‚ˆã†
       HIMAGELIST hImageList = afx::ExpGetImageList(16);
       m_Address.Create(m_hWnd, rc, NULL, WS_CONTROL | CBS_DROPDOWN | CBS_AUTOHSCROLL);
       m_Address.SetFont(AtlGetDefaultGuiFont());
@@ -437,17 +437,17 @@ class ShellListView
       if (!list) {
         return 0;
       }
-      // ‚à‚¤ˆê“xƒfƒtƒHƒ‹ƒg‚ÌƒRƒ“ƒeƒLƒXƒgƒƒjƒ…[‚É–ß‚·
+      // ã‚‚ã†ä¸€åº¦ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆãƒ¡ãƒ‹ãƒ¥ãƒ¼ã«æˆ»ã™
       //__super::DefaultContextMenu(wParam, lParam);
       Point ptScreen(GET_XY_LPARAM(lParam));
-      // ƒƒjƒ…[ƒL[‚Ìê‡‚Ì“Á•Êˆ—
+      // ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚­ãƒ¼ã®å ´åˆã®ç‰¹åˆ¥å‡¦ç†
       if (ptScreen.x == -1 || ptScreen.y == -1) {
         int index = list.GetNextItem(-1, LVNI_ALL | LVNI_SELECTED);
         RECT rc;
         if (index >= 0 && list.GetItemRect(index, &rc, LVIR_BOUNDS)) {
           ptScreen.x = rc.left;
           ptScreen.y = rc.bottom;
-        } else {  // ‘I‘ğƒAƒCƒeƒ€‚È‚µ
+        } else {  // é¸æŠã‚¢ã‚¤ãƒ†ãƒ ãªã—
           ptScreen.x = ptScreen.y = 0;
         }
         list.ClientToScreen(&ptScreen);
@@ -456,13 +456,13 @@ class ShellListView
       ref<IContextMenu> menu;
       CMenu popup;
       if (list.GetSelectedCount() >
-          0) {  // ƒA[ƒJƒCƒuX ‚ÍA‘I‘ğ€–Ú‚ª–³‚­‚Ä‚à‘I‘ğ€–Ú‚É‘Î‚·‚éƒRƒ“ƒeƒLƒXƒgƒƒjƒ…[‚ğæ“¾‚Å‚«‚Ä‚µ‚Ü‚¤‚½‚ß
+          0) {  // ã‚¢ãƒ¼ã‚«ã‚¤ãƒ–X ã¯ã€é¸æŠé …ç›®ãŒç„¡ãã¦ã‚‚é¸æŠé …ç›®ã«å¯¾ã™ã‚‹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’å–å¾—ã§ãã¦ã—ã¾ã†ãŸã‚
         popup = afx::SHBeginContextMenu(m_pShellView, SVGIO_SELECTION, &menu);
       }
-      if (popup) {  // ‘I‘ğƒAƒCƒeƒ€‚ª‚ ‚éê‡
+      if (popup) {  // é¸æŠã‚¢ã‚¤ãƒ†ãƒ ãŒã‚ã‚‹å ´åˆ
         UINT cmd = OnContextMenu_Selection(menu, popup.m_hMenu, ptScreen, special);
-        // XP –¼‘O‚Ì•ÏX(&M) BUG ...
-        // ‚¶‚á‚È‚¢‚©‚àB–¼‘O‚Ì•ÏX‚ÍAƒrƒ…[‚É‚æ‚Á‚Ä‘€ì‚ªˆÙ‚È‚é‚Ì‚ÅAƒfƒtƒHƒ‹ƒg‚Å‚ÍÀ‘•‚³‚ê‚Ä‚¢‚È‚¢‚Ì‚©H
+        // XP åå‰ã®å¤‰æ›´(&M) BUG ...
+        // ã˜ã‚ƒãªã„ã‹ã‚‚ã€‚åå‰ã®å¤‰æ›´ã¯ã€ãƒ“ãƒ¥ãƒ¼ã«ã‚ˆã£ã¦æ“ä½œãŒç•°ãªã‚‹ã®ã§ã€ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ã¯å®Ÿè£…ã•ã‚Œã¦ã„ãªã„ã®ã‹ï¼Ÿ
         TCHAR text[MAX_PATH];
         if (popup.GetMenuString(cmd, text, MAX_PATH, MF_BYCOMMAND) > 0 && str::equals(text, SHSTR_MENU_RENAME)) {
           __super::EndContextMenu(menu, 0);
@@ -471,7 +471,7 @@ class ShellListView
           __super::EndContextMenu(menu, cmd);
         }
         return 0;
-      } else if (null != (popup = afx::SHBeginContextMenu(m_pShellView, SVGIO_BACKGROUND, &menu))) {  // ‘I‘ğƒAƒCƒeƒ€‚ª–³‚¢ê‡
+      } else if (null != (popup = afx::SHBeginContextMenu(m_pShellView, SVGIO_BACKGROUND, &menu))) {  // é¸æŠã‚¢ã‚¤ãƒ†ãƒ ãŒç„¡ã„å ´åˆ
         UINT cmd = OnContextMenu_Background(menu, popup.m_hMenu, ptScreen, special);
         __super::EndContextMenu(menu, cmd);
         return 0;
@@ -506,9 +506,9 @@ class ShellListView
         for (int i = 0; i < count; ++i) {
           TCHAR text[MAX_PATH];
           if (popup.GetMenuString(i, text, MAX_PATH, MF_BYPOSITION) > 0) {
-            if (str::equals(text, _T("‘—‚é(&N)"))) {
+            if (str::equals(text, _T("é€ã‚‹(&N)"))) {
               indexSendTo = i;
-            } else if (str::equals(text, _T("ƒvƒƒOƒ‰ƒ€‚©‚çŠJ‚­(&H)"))) {
+            } else if (str::equals(text, _T("ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‹ã‚‰é–‹ã(&H)"))) {
               indexOpenWith = i;
             }
           }
@@ -525,21 +525,21 @@ class ShellListView
           return afx::SHPopupContextMenu(menu, popup.GetSubMenu(indexOpenWith), ptScreen);
         }
       }
-      // ’ÊíƒRƒ“ƒeƒLƒXƒgƒƒjƒ…[
+      // é€šå¸¸ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆãƒ¡ãƒ‹ãƒ¥ãƒ¼
       enum {
         ID_FOLDER_GO = 100,
       };
-      // ‘I‘ğ’†‚ÌƒAƒCƒeƒ€‚ªƒTƒuƒtƒHƒ‹ƒ_‚¿‚ÌƒtƒHƒ‹ƒ_‚©”Û‚©‚ğ’²‚×‚éB
+      // é¸æŠä¸­ã®ã‚¢ã‚¤ãƒ†ãƒ ãŒã‚µãƒ–ãƒ•ã‚©ãƒ«ãƒ€æŒã¡ã®ãƒ•ã‚©ãƒ«ãƒ€ã‹å¦ã‹ã‚’èª¿ã¹ã‚‹ã€‚
       ref<io::IEntryList> entries;
       ref<io::IEntry> focus;
       if (SUCCEEDED(Shell::GetContents(&entries, FOCUSED)) && SUCCEEDED(entries->GetAt(&focus, 0))) {
         ref<io::IEntry> resolved;
         focus->GetLinked(&resolved);
-        if (focus->IsFolder()) {  // ƒtƒHƒ‹ƒ_
+        if (focus->IsFolder()) {  // ãƒ•ã‚©ãƒ«ãƒ€
           popup.InsertMenu(0, MF_BYPOSITION, ID_FOLDER_GO, SHSTR_MENU_GO);
           popup.InsertMenu(1, MF_BYPOSITION | MF_SEPARATOR);
           popup.SetMenuDefaultItem(0, true);
-        } else {  // ˆê”Êƒtƒ@ƒCƒ‹
+        } else {  // ä¸€èˆ¬ãƒ•ã‚¡ã‚¤ãƒ«
         }
       }
       UINT cmd = afx::SHPopupContextMenu(menu, popup, ptScreen);
@@ -559,7 +559,7 @@ class ShellListView
         for (int i = 0; i < count; ++i) {
           TCHAR text[MAX_PATH];
           if (popup.GetMenuString(i, text, MAX_PATH, MF_BYPOSITION) > 0) {
-            if (str::equals(text, _T("V‹Kì¬(&W)"))) indexNew = i;
+            if (str::equals(text, _T("æ–°è¦ä½œæˆ(&W)"))) indexNew = i;
           }
         }
         if (indexNew != -1) {
@@ -574,7 +574,7 @@ class ShellListView
       VERIFY(afx::ILGetFileInfo(pidl, &info, SHGFI_SYSICONINDEX | SHGFI_SMALLICON));
       COMBOBOXEXITEM item = {CBEIF_TEXT | CBEIF_INDENT | CBEIF_IMAGE | CBEIF_SELECTEDIMAGE};
       item.iItem = count;
-      item.iIndent = count;  // ƒCƒ“ƒfƒ“ƒg’PˆÊ‚Í•¶š‚Ì•‚Æ“¯‚¶‚©H
+      item.iIndent = count;  // ã‚¤ãƒ³ãƒ‡ãƒ³ãƒˆå˜ä½ã¯æ–‡å­—ã®å¹…ã¨åŒã˜ã‹ï¼Ÿ
       item.pszText = (PTSTR)text.str();
       item.iImage = item.iSelectedImage = info.iIcon;
       m_Address.InsertItem(&item);
@@ -588,7 +588,7 @@ class ShellListView
       Point ptScreen(GET_XY_LPARAM(lParam));
       if (HitTestComboIcon(ptScreen) && GetCurrentEntry()) {  // on Icon
         ref<IContextMenu> menu;
-        if SUCCEEDED (GetCurrentEntry()->QueryObject(&menu)) {  // ‘I‘ğƒAƒCƒeƒ€‚ª‚ ‚éê‡
+        if SUCCEEDED (GetCurrentEntry()->QueryObject(&menu)) {  // é¸æŠã‚¢ã‚¤ãƒ†ãƒ ãŒã‚ã‚‹å ´åˆ
           if (CMenu popup = afx::SHBeginContextMenu(menu)) {
             UINT cmd = afx::SHPopupContextMenu(menu, popup, ptScreen);
             __super::EndContextMenu(menu, cmd);
@@ -607,12 +607,12 @@ class ShellListView
           if (m_ComboBox.DragDetect(ptClient)) {
             ref<io::IDragSource> source(__uuidof(io::DragSource));
             source->AddIDList(entry->ID);
-            // TODO: ŠG‚ªo‚Ü‚¹‚ñB
+            // TODO: çµµãŒå‡ºã¾ã›ã‚“ã€‚
             source->DoDragDrop(io::DropEffectCopy | io::DropEffectMove | io::DropEffectLink);
             // source->DoDragDrop(DropEffectLink);
           }
-          // ƒfƒtƒHƒ‹ƒg‚Å‚ÍuƒGƒfƒBƒbƒg‚ÉƒtƒH[ƒJƒX‚ğˆÚ‚·v
-          // ‚±‚ê‚ªˆ«‚³‚ğ‚·‚é‚Ì‚ÅƒLƒƒƒ“ƒZƒ‹‚·‚éB
+          // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ã¯ã€Œã‚¨ãƒ‡ã‚£ãƒƒãƒˆã«ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã‚’ç§»ã™ã€
+          // ã“ã‚ŒãŒæ‚ªã•ã‚’ã™ã‚‹ã®ã§ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã™ã‚‹ã€‚
           return 0;
         }
       }
@@ -643,9 +643,9 @@ class ShellListView
       switch (wParam) {
         case 0x09:  // tab
         case 0x1b:  // esc
-          break;    // ƒ|[ƒ“–Â‚é‚Ì‚ÅƒfƒtƒHƒ‹ƒg‚ğƒLƒƒƒ“ƒZƒ‹‚·‚é
+          break;    // ãƒãƒ¼ãƒ³é³´ã‚‹ã®ã§ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚’ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã™ã‚‹
         default:
-          if (!m_EditBoxAutoComplete) {  // ‚È‚é‚×‚­•K—v‚É‚È‚é‚Ü‚Å‚Í‰Šú‰»‚µ‚È‚¢
+          if (!m_EditBoxAutoComplete) {  // ãªã‚‹ã¹ãå¿…è¦ã«ãªã‚‹ã¾ã§ã¯åˆæœŸåŒ–ã—ãªã„
             m_EditBoxAutoComplete = true;
             SHAutoComplete(m_EditBox, SHACF_FILESYSTEM | SHACF_USETAB);
           }
@@ -665,7 +665,7 @@ class ShellListView
           SHFILEINFO info;
           VERIFY(afx::ILGetFileInfo(pidl, &info, SHGFI_DISPLAYNAME));
           PCTSTR name = info.szDisplayName;
-          // Registroy Explorer ‚ÍA–¼‘O‚ğ—v‹‚µ‚Ä‚àƒpƒX‚ğ•Ô‚µ‚Ä‚­‚é‚Ì‚ÅA‚±‚±‚ÅƒtƒHƒ[‚µ‚Ä‚â‚é
+          // Registroy Explorer ã¯ã€åå‰ã‚’è¦æ±‚ã—ã¦ã‚‚ãƒ‘ã‚¹ã‚’è¿”ã—ã¦ãã‚‹ã®ã§ã€ã“ã“ã§ãƒ•ã‚©ãƒ­ãƒ¼ã—ã¦ã‚„ã‚‹
           if (afx::PathIsRegistory(name)) name = PathFindFileName(name);
           AddPath(pidl, name);
         }
@@ -846,13 +846,13 @@ class ShellListView
       return 0;
     }
     LRESULT OnStatusBarText(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&) {
-      if (!this->ShellView.IsWindow()) {  // ”jŠüŒã‚É‘—‚ç‚ê‚Ä‚­‚é‚±‚Æ‚ª‚ ‚é‚Á‚Û‚¢
+      if (!this->ShellView.IsWindow()) {  // ç ´æ£„å¾Œã«é€ã‚‰ã‚Œã¦ãã‚‹ã“ã¨ãŒã‚ã‚‹ã£ã½ã„
         return 0;
       }
       string text;
       m_StatusText = (PCWSTR)lParam;
-      // ‚±‚±‚Å‚·‚®‚É IShellView::GetItemObject() ‚·‚é‚ÆƒtƒŠ[ƒY‚·‚é‰Â”\«‚ª‚ ‚èA
-      // ’ZŠÔ‚É˜A‘±‚µ‚Ä‘—‚ç‚ê‚é‚±‚Æ‚à‘½‚¢‚½‚ßAƒ^ƒCƒ~ƒ“ƒO‚ğ‚¸‚ç‚·.
+      // ã“ã“ã§ã™ãã« IShellView::GetItemObject() ã™ã‚‹ã¨ãƒ•ãƒªãƒ¼ã‚ºã™ã‚‹å¯èƒ½æ€§ãŒã‚ã‚Šã€
+      // çŸ­æ™‚é–“ã«é€£ç¶šã—ã¦é€ã‚‰ã‚Œã‚‹ã“ã¨ã‚‚å¤šã„ãŸã‚ã€ã‚¿ã‚¤ãƒŸãƒ³ã‚°ã‚’ãšã‚‰ã™.
       SetTimer(TIMER_STATUSTEXT, DELAY_STATUSTEXT, NULL);
       return true;
     }
@@ -868,7 +868,7 @@ class ShellListView
 
    protected:  // Shell override
     bool OnListWheel(WPARAM wParam, LPARAM lParam) {
-      if (wParam & MK_SHIFT) {  // Shift‚ª‰Ÿ‚³‚ê‚½‚Ü‚Ü‚¾‚ÆA•ÊƒEƒBƒ“ƒhƒE‚ÅŠJ‚¢‚Ä‚µ‚Ü‚¤‚Ì‚Åcc
+      if (wParam & MK_SHIFT) {  // ShiftãŒæŠ¼ã•ã‚ŒãŸã¾ã¾ã ã¨ã€åˆ¥ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã§é–‹ã„ã¦ã—ã¾ã†ã®ã§â€¦â€¦
         afx::SetModifierState(0, 0);
         if (GET_WHEEL_DELTA_WPARAM(wParam) > 0) {
           GoUp();
@@ -877,7 +877,7 @@ class ShellListView
         }
         afx::RestoreModifierState(0);
         return true;
-      } else if (wParam & MK_CONTROL) {  // ‚à‚µShift or Control ‚ª‰Ÿ‚³‚ê‚Ä‚¢‚éê‡‚ÍA’Êí‚ÌƒXƒNƒ[ƒ‹‚ğs‚í‚È‚¢
+      } else if (wParam & MK_CONTROL) {  // ã‚‚ã—Shift or Control ãŒæŠ¼ã•ã‚Œã¦ã„ã‚‹å ´åˆã¯ã€é€šå¸¸ã®ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ã‚’è¡Œã‚ãªã„
         ::SendMessage(GetParent(), WM_MOUSEWHEEL, wParam, lParam);
         return true;
       }
@@ -885,7 +885,7 @@ class ShellListView
     }
     bool OnDirectoryChanging(io::IEntry * entry, GoType go) {
       if (go == GoReplace ||
-          !GetCurrentEntry()) {  // ƒtƒ@ƒCƒ‹ƒVƒXƒeƒ€•ÏX‚É‚æ‚é©“®ˆÚ“® ‚Ü‚½‚Í ‰‚ß‚Ä‚ÌˆÚ“® ‚Ìê‡‚ÍƒCƒxƒ“ƒg‚ğ”­¶‚³‚¹‚È‚¢
+          !GetCurrentEntry()) {  // ãƒ•ã‚¡ã‚¤ãƒ«ã‚·ã‚¹ãƒ†ãƒ å¤‰æ›´ã«ã‚ˆã‚‹è‡ªå‹•ç§»å‹• ã¾ãŸã¯ åˆã‚ã¦ã®ç§»å‹• ã®å ´åˆã¯ã‚¤ãƒ™ãƒ³ãƒˆã‚’ç™ºç”Ÿã•ã›ãªã„
         return true;
       }
       message reply = InvokeEvent<EventFolderChanging>(this, entry);
@@ -924,10 +924,10 @@ class ShellListView
       }
     }
     HRESULT OnStateChange(IShellView * pShellView, ULONG uChange) {
-      if (!this->ShellView.IsWindow()) {  // ”jŠüŒã‚É‘—‚ç‚ê‚Ä‚­‚é‚±‚Æ‚ª‚ ‚é‚Á‚Û‚¢
+      if (!this->ShellView.IsWindow()) {  // ç ´æ£„å¾Œã«é€ã‚‰ã‚Œã¦ãã‚‹ã“ã¨ãŒã‚ã‚‹ã£ã½ã„
         return 0;
       }
-      // ƒXƒe[ƒ^ƒXƒeƒLƒXƒg•ÏX‚ğŠÔØ‚è‚·‚éB
+      // ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ†ã‚­ã‚¹ãƒˆå¤‰æ›´ã‚’é–“å€Ÿã‚Šã™ã‚‹ã€‚
       SetTimer(TIMER_STATUSTEXT, DELAY_STATUSTEXT, NULL);
       return S_OK;
     }
@@ -943,12 +943,12 @@ class ShellListView
    public:
     LRESULT OnDeviceChange(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL & bHandled) {
       switch (wParam) {
-        case DBT_DEVNODES_CHANGED:  // ƒfƒoƒCƒX\¬‚ª•Ï‰»‚µ‚½ © ‚±‚Á‚¿‚ª‘—‚ç‚ê‚Ä‚­‚é‚±‚Æ‚ª‘½‚¢‚İ‚½‚¢
-        case DBT_DEVICEREMOVECOMPLETE:  // ƒfƒoƒCƒX‚ªæ‚èo‚³‚ê‚½
+        case DBT_DEVNODES_CHANGED:      // ãƒ‡ãƒã‚¤ã‚¹æ§‹æˆãŒå¤‰åŒ–ã—ãŸ â† ã“ã£ã¡ãŒé€ã‚‰ã‚Œã¦ãã‚‹ã“ã¨ãŒå¤šã„ã¿ãŸã„
+        case DBT_DEVICEREMOVECOMPLETE:  // ãƒ‡ãƒã‚¤ã‚¹ãŒå–ã‚Šå‡ºã•ã‚ŒãŸ
           if (io::IEntry* entry =
-                  GetCurrentEntry()) {  // ‰½‚ª‹N‚±‚Á‚½‚Ì‚©‚ğ’²‚×‚Ä‚à‚¢‚¢‚¯‚ÇAExists() ‚ğŒ©‚é‚Ì‚ªˆê”ÔŠÈ’P‚È‚Ì‚ÅA‚Æ‚è‚ ‚¦‚¸B
+                  GetCurrentEntry()) {  // ä½•ãŒèµ·ã“ã£ãŸã®ã‹ã‚’èª¿ã¹ã¦ã‚‚ã„ã„ã‘ã©ã€Exists() ã‚’è¦‹ã‚‹ã®ãŒä¸€ç•ªç°¡å˜ãªã®ã§ã€ã¨ã‚Šã‚ãˆãšã€‚
             if (!entry->Exists()) {
-              TRACE(_T("info: $1 : ƒGƒ“ƒgƒŠ‚ªíœ‚³‚ê‚½‚½‚ßA©“®“I‚É•Â‚¶‚Ü‚·"), Name);
+              TRACE(_T("info: $1 : ã‚¨ãƒ³ãƒˆãƒªãŒå‰Šé™¤ã•ã‚ŒãŸãŸã‚ã€è‡ªå‹•çš„ã«é–‰ã˜ã¾ã™"), Name);
               PostMessage(WM_CLOSE);
             }
           }
@@ -960,7 +960,7 @@ class ShellListView
       return 0;
     }
 
-    LRESULT OnSHChangeNotify(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL & /*bHandled*/) {
+    LRESULT OnSHChangeNotify(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/) {
       io::IEntry* entry = GetCurrentEntry();
       if (!entry) PostMessage(WM_CLOSE);
 
@@ -975,19 +975,19 @@ class ShellListView
 
       if (lEvent & (SHCNE_RMDIR | SHCNE_DRIVEREMOVED)) {
         if (ILIsEqual(entry->ID, pidls[0])) {
-          TRACE(_T("info: $1 : ƒGƒ“ƒgƒŠ‚ªíœ‚³‚ê‚½‚½‚ßA©“®“I‚É•Â‚¶‚Ü‚·"), Name);
+          TRACE(_T("info: $1 : ã‚¨ãƒ³ãƒˆãƒªãŒå‰Šé™¤ã•ã‚ŒãŸãŸã‚ã€è‡ªå‹•çš„ã«é–‰ã˜ã¾ã™"), Name);
           PostMessage(WM_CLOSE);
         }
       } else if (lEvent & SHCNE_RENAMEFOLDER) {
         if (ILIsEqual(entry->ID, pidls[0])) {
           try {
             ref<io::IEntry> moveto;
-            // ‚¢‚Á‚½‚ñƒpƒX‚É•ÏŠ·‚µ‚È‚¢‚ÆA•s³‚ÈITEMIDLIST‚É‚È‚Á‚Ä‚µ‚Ü‚¤H
+            // ã„ã£ãŸã‚“ãƒ‘ã‚¹ã«å¤‰æ›ã—ãªã„ã¨ã€ä¸æ­£ãªITEMIDLISTã«ãªã£ã¦ã—ã¾ã†ï¼Ÿ
             TCHAR dstpath[MAX_PATH] = _T("");
             if SUCCEEDED (afx::ILGetPath(pidls[1], dstpath)) {
               moveto.create(__uuidof(io::Entry), string(dstpath));
-            } else {  // ƒpƒX‚ªæ“¾‚Å‚«‚È‚¢‰¼‘zƒtƒHƒ‹ƒ_H
-              // ¸”s‚·‚é‚©‚à‚µ‚ê‚È‚¢‚ªAQueryObject()‚ğg‚Á‚Äˆ—‚µ‚Ä‚İ‚éB
+            } else {  // ãƒ‘ã‚¹ãŒå–å¾—ã§ããªã„ï¼ä»®æƒ³ãƒ•ã‚©ãƒ«ãƒ€ï¼Ÿ
+              // å¤±æ•—ã™ã‚‹ã‹ã‚‚ã—ã‚Œãªã„ãŒã€QueryObject()ã‚’ä½¿ã£ã¦å‡¦ç†ã—ã¦ã¿ã‚‹ã€‚
               ref<io::IEntry> root(__uuidof(io::Entry));
               root->QueryObject(&moveto, pidls[1]);
             }
@@ -995,7 +995,7 @@ class ShellListView
 #ifdef _DEBUG
               TCHAR path1[MAX_PATH];
               afx::ILGetPath(pidls[0], path1);
-              TRACE(_T("info: $1 : ƒGƒ“ƒgƒŠ‚ªƒŠƒl[ƒ€‚³‚ê‚½‚½‚ßA©“®“I‚ÉˆÚ“®‚µ‚Ü‚· ($2 Ë $3)"), Name, path1, moveto->Path);
+              TRACE(_T("info: $1 : ã‚¨ãƒ³ãƒˆãƒªãŒãƒªãƒãƒ¼ãƒ ã•ã‚ŒãŸãŸã‚ã€è‡ªå‹•çš„ã«ç§»å‹•ã—ã¾ã™ ($2 â‡’ $3)"), Name, path1, moveto->Path);
 #endif
               AsyncGoAbsolute(moveto, GoReplace);
             }
@@ -1022,15 +1022,15 @@ class ShellListView
           return pDropTarget;
         }
       }
-      TRACE(_T("warning: @ShellListView : DropTarget‚ğæ“¾‚Å‚«‚Ü‚¹‚ñ"));
+      TRACE(_T("warning: @ShellListView : DropTargetã‚’å–å¾—ã§ãã¾ã›ã‚“"));
       return null;
     }
 
    public:  // IDropTarget
     STDMETHODIMP DragEnter(IDataObject * src, DWORD key, POINTL pt, DWORD * effect) {
       if (ref<IDropTarget> dst = QueryFolderDropTarget()) {
-        DWORD dwEffectCopy = *effect;  // DragOver()‚ğŒÄ‚Ô‚Æƒ[ƒ‚É‚³‚ê‚Ä‚µ‚Ü‚¤‚Ì‚ÅA
-        if SUCCEEDED (dst->DragEnter(src, key, pt, &dwEffectCopy)) {  // ‚±‚Á‚¿‚ÅƒGƒtƒFƒNƒg‚ğİ’è‚·‚é
+        DWORD dwEffectCopy = *effect;                                 // DragOver()ã‚’å‘¼ã¶ã¨ã‚¼ãƒ­ã«ã•ã‚Œã¦ã—ã¾ã†ã®ã§ã€
+        if SUCCEEDED (dst->DragEnter(src, key, pt, &dwEffectCopy)) {  // ã“ã£ã¡ã§ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’è¨­å®šã™ã‚‹
           return ProcessDragEnter(src, Shell::GetCurrentEntry(), key, effect);
         }
       }
@@ -1038,8 +1038,8 @@ class ShellListView
     }
     STDMETHODIMP DragOver(DWORD key, POINTL pt, DWORD * effect) {
       if (ref<IDropTarget> dst = QueryFolderDropTarget()) {
-        DWORD dwEffectCopy = *effect;                           // DragOver()‚ğŒÄ‚Ô‚Æƒ[ƒ‚É‚³‚ê‚Ä‚µ‚Ü‚¤‚Ì‚ÅA
-        if SUCCEEDED (dst->DragOver(key, pt, &dwEffectCopy)) {  // ‚±‚Á‚¿‚ÅƒGƒtƒFƒNƒg‚ğİ’è‚·‚é
+        DWORD dwEffectCopy = *effect;                           // DragOver()ã‚’å‘¼ã¶ã¨ã‚¼ãƒ­ã«ã•ã‚Œã¦ã—ã¾ã†ã®ã§ã€
+        if SUCCEEDED (dst->DragOver(key, pt, &dwEffectCopy)) {  // ã“ã£ã¡ã§ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’è¨­å®šã™ã‚‹
           return ProcessDragOver(Shell::GetCurrentEntry(), key, effect);
         }
       }

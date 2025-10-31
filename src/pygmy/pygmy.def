@@ -1,3 +1,3 @@
-LIBRARY      pygmy
+﻿LIBRARY      pygmy
 EXPORTS
              initpygmy = initpygmy

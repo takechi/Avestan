@@ -1,4 +1,4 @@
-// file.cpp
+ï»¿// file.cpp
 
 #include "stdafx.h"
 #include "avesta.hpp"
@@ -31,7 +31,7 @@ HRESULT FileNewShell(PCWSTR path, PCWSTR ext, PCWSTR templates) {
   TCHAR reg[MAX_PATH], srcfile[MAX_PATH] = _T("");
   lstrcpy(reg, ext);
   lstrcat(reg, _T("\\ShellNew"));
-  // ƒŒƒWƒXƒgƒŠ‚Ì’PƒShellNewƒGƒ“ƒgƒŠ‚ğ’T‚·
+  // ãƒ¬ã‚¸ã‚¹ãƒˆãƒªã®å˜ç´”ShellNewã‚¨ãƒ³ãƒˆãƒªã‚’æ¢ã™
   if SUCCEEDED (avesta::RegGetString(HKEY_CLASSES_ROOT, reg, _T("FileName"), srcfile)) {
     if (PathIsRelative(srcfile)) {
       mew::str::prepend(srcfile, templates);
@@ -104,7 +104,7 @@ HRESULT FileCutOrCopy(PCTSTR srcSingle, DWORD dwDropEffect) {
     return E_INVALIDARG;
   }
 
-  // CF_HDROP‚ğì¬
+  // CF_HDROPã‚’ä½œæˆ
   DROPFILES dropfiles = {sizeof(DROPFILES), 0, 0, true, IS_UNICODE_CHARSET};
   mew::Stream stream;
   HGLOBAL hDrop = mew::io::StreamCreateOnHGlobal(&stream, sizeof(DROPFILES) + ((len + 1) * 1 + 1) * sizeof(TCHAR), false);
@@ -113,13 +113,13 @@ HRESULT FileCutOrCopy(PCTSTR srcSingle, DWORD dwDropEffect) {
   stream.write(_T("\0"), sizeof(TCHAR));
   stream.clear();
 
-  // Preferred DropEffect‚ğì¬
+  // Preferred DropEffectã‚’ä½œæˆ
   HGLOBAL hDropEffect = GlobalAlloc(GMEM_MOVEABLE, sizeof(DWORD));
   DWORD* pdw = static_cast<DWORD*>(GlobalLock(hDropEffect));
   *pdw = dwDropEffect;
   GlobalUnlock(hDropEffect);
 
-  // ƒNƒŠƒbƒvƒ{[ƒh‚Éƒf[ƒ^[‚ğƒZƒbƒg
+  // ã‚¯ãƒªãƒƒãƒ—ãƒœãƒ¼ãƒ‰ã«ãƒ‡ãƒ¼ã‚¿ãƒ¼ã‚’ã‚»ãƒƒãƒˆ
   HWND hwnd = avesta::GetForm();
   UINT CF_PREFERREDDROPEFFECT = RegisterClipboardFormat(CFSTR_PREFERREDDROPEFFECT);
   if (!::OpenClipboard(hwnd)) {
@@ -143,16 +143,16 @@ HRESULT FileNew(PCWSTR path) {
     TCHAR templates[MAX_PATH];
     SHGetSpecialFolderPath(NULL, templates, CSIDL_TEMPLATES, FALSE);
     PathAddBackslash(templates);
-    // ‚Ü‚¸‚Í’PƒShellNewƒGƒ“ƒgƒŠ‚ğQÆ‚·‚éB
+    // ã¾ãšã¯å˜ç´”ShellNewã‚¨ãƒ³ãƒˆãƒªã‚’å‚ç…§ã™ã‚‹ã€‚
     if SUCCEEDED (FileNewShell(path, ext, templates)) {
       return S_OK;
     }
-    // Ÿ‚ÉCSIDL_TEMPLATESƒtƒHƒ‹ƒ_‚Ì“¯‚¶Šg’£q‚ğ‘{‚·
+    // æ¬¡ã«CSIDL_TEMPLATESãƒ•ã‚©ãƒ«ãƒ€ã®åŒã˜æ‹¡å¼µå­ã‚’æœã™
     if SUCCEEDED (FileNewTemplate(path, ext, templates)) {
       return S_OK;
     }
   }
-  // ƒeƒ“ƒvƒŒ[ƒgƒtƒ@ƒCƒ‹‚ª–³‚¢
+  // ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ãŒç„¡ã„
   return FileNewNull(path);
 }
 
@@ -165,7 +165,7 @@ HRESULT FileDelete(PCWSTR src) { return DoFileOperation(src, nullptr, FO_DELETE,
 HRESULT FileBury(PCWSTR src) { return DoFileOperation(src, nullptr, FO_DELETE, FOF_WANTNUKEWARNING); }
 
 HRESULT FileRename(PCWSTR src, PCWSTR dst) {
-  if (lstrcmp(src, dst) == 0) {  // “¯‚¶–¼‘O‚È‚Ì‚Å•ÏX‚·‚é•K—v‚ª–³‚¢
+  if (lstrcmp(src, dst) == 0) {  // åŒã˜åå‰ãªã®ã§å¤‰æ›´ã™ã‚‹å¿…è¦ãŒç„¡ã„
     return true;
   }
   return DoFileOperation(src, dst, FO_RENAME, FOF_FILESONLY | FOF_ALLOWUNDO);

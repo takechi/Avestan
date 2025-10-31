@@ -1,4 +1,4 @@
-// ReBar.cpp
+ï»¿// ReBar.cpp
 
 #include "stdafx.h"
 #include "../private.h"
@@ -62,7 +62,7 @@ class __declspec(novtable) WallPaperImpl : public TBase {
     } else {
       CAutoPtr<Gdiplus::Image> image(Gdiplus::Image::FromFile(value.str()));
       if (!image || image->GetLastStatus() != Gdiplus::Ok) {
-        TRACE(L"error: WallPaperImpl.”wŒi‰æ‘œ‚ª“Ç‚İ‚ß‚È‚¢");
+        TRACE(L"error: WallPaperImpl.èƒŒæ™¯ç”»åƒãŒèª­ã¿è¾¼ã‚ãªã„");
         return;
       }
       m_WallPaperFile = value;
@@ -331,7 +331,7 @@ class ReBar
     if (count > 0) {
       popup.AppendMenu(MF_SEPARATOR);
     }
-    popup.AppendMenu(MF_STRING | (m_locked ? MF_CHECKED : 0), ID_LOCKED, _T("ƒc[ƒ‹ƒo[‚ğŒÅ’è‚·‚é(&B)"));
+    popup.AppendMenu(MF_STRING | (m_locked ? MF_CHECKED : 0), ID_LOCKED, _T("ãƒ„ãƒ¼ãƒ«ãƒãƒ¼ã‚’å›ºå®šã™ã‚‹(&B)"));
     int cmd = popup.TrackPopupMenu(TPM_RIGHTBUTTON | TPM_RETURNCMD, ptScreen.x, ptScreen.y, m_hWnd);
     switch (cmd) {
       case ID_LOCKED:
@@ -394,7 +394,7 @@ class ReBar
   void LoadFromMessage(const message& msg) {
     m_locked = msg["fixed"];
     if (message archive = msg["bands"]) {
-      // ‚·‚Å‚É’Ç‰Á‚³‚ê‚½ƒoƒ“ƒh‚ğ•À‚Ñ‘Ö‚¦‚é‚æ‚è‚àAV‚µ‚­’Ç‰Á‚µ‚½‚Ù‚¤‚ªŠy‚È‚Ì‚ÅB
+      // ã™ã§ã«è¿½åŠ ã•ã‚ŒãŸãƒãƒ³ãƒ‰ã‚’ä¸¦ã³æ›¿ãˆã‚‹ã‚ˆã‚Šã‚‚ã€æ–°ã—ãè¿½åŠ ã—ãŸã»ã†ãŒæ¥½ãªã®ã§ã€‚
       using Bands = std::vector<ReBarBandInfo>;
       Bands bands;
       ReBarBandInfo band(RBBIM_SIZE | RBBIM_STYLE | RBBIM_CHILD | RBBIM_CHILDSIZE);
@@ -434,8 +434,8 @@ class ReBar
           w->Visible = bands[i].Visible;
         }
       }
-      if (m_locked) {  // ƒoƒ“ƒh‚ª‚Ğ‚Æ‚Â‚µ‚©‚È‚¢ê‡‚ÉRBBS_NOGRIPPER‚ğİ’è‚·‚é‚ÆA©“®“I‚ÉRBBS_GRIPPERALWAYS‚à‰ğœ‚³‚ê‚Ä‚µ‚Ü‚¤B
-        // ‚±‚ê‚ğ–h‚®‚½‚ßAInsertBand()‚ÆSetBandInfo(~RBBS_NOGRIPPER)‚ğ•ÊX‚És‚¤B
+      if (m_locked) {  // ãƒãƒ³ãƒ‰ãŒã²ã¨ã¤ã—ã‹ãªã„å ´åˆã«RBBS_NOGRIPPERã‚’è¨­å®šã™ã‚‹ã¨ã€è‡ªå‹•çš„ã«RBBS_GRIPPERALWAYSã‚‚è§£é™¤ã•ã‚Œã¦ã—ã¾ã†ã€‚
+        // ã“ã‚Œã‚’é˜²ããŸã‚ã€InsertBand()ã¨SetBandInfo(~RBBS_NOGRIPPER)ã‚’åˆ¥ã€…ã«è¡Œã†ã€‚
         LockBands(m_locked);
       }
     }
@@ -467,8 +467,8 @@ class ReBar
  private:
   void LockBands(bool locked) {
     SetRedraw(false);
-    // ƒXƒ^ƒCƒ‹‚Ì•ÏX‚¾‚¯‚Å‚ÍA¶‘¤‚ÌŒ„ŠÔ‚ğ’²®‚µ‚Ä‚­‚ê‚È‚¢B
-    // ‚»‚Ì‚½‚ßA‚¢‚Á‚½‚ñíœ‚µA‚»‚ÌŒã‚Å’Ç‰Á‚µ‚È‚¨‚·B
+    // ã‚¹ã‚¿ã‚¤ãƒ«ã®å¤‰æ›´ã ã‘ã§ã¯ã€å·¦å´ã®éš™é–“ã‚’èª¿æ•´ã—ã¦ãã‚Œãªã„ã€‚
+    // ãã®ãŸã‚ã€ã„ã£ãŸã‚“å‰Šé™¤ã—ã€ãã®å¾Œã§è¿½åŠ ã—ãªãŠã™ã€‚
     int count = GetBandCount();
     using Bands = std::vector<ReBarBandInfo>;
     Bands bands;
@@ -481,8 +481,8 @@ class ReBar
     //
     ASSERT(GetBandCount() == 0);
     for (int i = 0; i < count; i++) {
-      // Band‚ğ’Ç‰Á or íœ‚·‚é‚ÆAƒEƒBƒ“ƒhƒE‚Ì•\¦‚àŸè‚É•\¦‚³‚ê‚éB
-      // ‚¢‚Á‚½‚ñ•\¦ó‘Ô‚Å’Ç‰Á‚µA‚»‚ÌŒãAƒEƒBƒ“ƒhƒE‚ğÄ‚Ñ‰B‚·‚±‚Æ‚Å‘Îˆ‚·‚éB
+      // Bandã‚’è¿½åŠ  or å‰Šé™¤ã™ã‚‹ã¨ã€ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®è¡¨ç¤ºã‚‚å‹æ‰‹ã«è¡¨ç¤ºã•ã‚Œã‚‹ã€‚
+      // ã„ã£ãŸã‚“è¡¨ç¤ºçŠ¶æ…‹ã§è¿½åŠ ã—ã€ãã®å¾Œã€ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’å†ã³éš ã™ã“ã¨ã§å¯¾å‡¦ã™ã‚‹ã€‚
       ReBarBandInfo& band = bands[i];
       bool visible = band.Visible;
       band.Visible = true;

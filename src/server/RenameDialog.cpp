@@ -1,4 +1,4 @@
-// RenameDialog.cpp
+ï»¿// RenameDialog.cpp
 
 #include "stdafx.h"
 #include "main.hpp"
@@ -52,7 +52,7 @@ class RenameDlg : public avesta::Dialog {
     }
     return true;
   }
-  void AutoNumbering(PCTSTR text) {  // ©•ªD‚İ‚ÌƒŠƒl[ƒ€ƒ‹[ƒ`ƒ“B‘¼‚Ìl‚ªg‚¢‚â‚·‚¢‚©‚Ç‚¤‚©‚Í’m‚ç‚È‚¢B
+  void AutoNumbering(PCTSTR text) {  // è‡ªåˆ†å¥½ã¿ã®ãƒªãƒãƒ¼ãƒ ãƒ«ãƒ¼ãƒãƒ³ã€‚ä»–ã®äººãŒä½¿ã„ã‚„ã™ã„ã‹ã©ã†ã‹ã¯çŸ¥ã‚‰ãªã„ã€‚
     size_t selectCount = m_src.size();
     int n = 0;
     for (size_t cnt = selectCount; cnt > 0; cnt /= 10) {
@@ -148,9 +148,9 @@ class RenameDlg : public avesta::Dialog {
     PCWSTR text = nm->item.pszText;
     if (!text || index >= m_dst.size()) return false;
     m_dst[index] = text;
-    if (index + 1 < m_dst.size()) {  // Ÿ‚ÌƒAƒCƒeƒ€‚ğ•ÒW
+    if (index + 1 < m_dst.size()) {  // æ¬¡ã®ã‚¢ã‚¤ãƒ†ãƒ ã‚’ç·¨é›†
       ::PostMessage(hListView, LVM_EDITLABEL, index + 1, 0);
-    } else {  // OKƒ{ƒ^ƒ“‚ÉƒtƒH[ƒJƒX‚ğˆÚ‚·
+    } else {  // OKãƒœã‚¿ãƒ³ã«ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã‚’ç§»ã™
       ::PostMessage(m_hwnd, WM_KEYDOWN, VK_TAB, 0);
     }
     return true;
@@ -164,8 +164,8 @@ class RenameDlg : public avesta::Dialog {
     afx::Edit_SubclassSingleLineTextBox(hwndEdit, NULL, theAvesta->EditOptions);
     ::SetWindowText(hwndEdit, _T("<1>"));
 
-    SetTip(IDC_REPLACE_EDIT, _T("g<hg>h‚ÅˆÍ‚ñ‚¾•”•ª‚ª˜A”Ô‚É’uŠ·‚³‚ê‚Ü‚·B—áFgprefix-<00777>-postfixh"));
-    SetTip(IDC_RENAME_REPLACE, _T("Šg’£q‚Í•Û‘¶‚³‚ê‚Ü‚·BƒVƒtƒgƒL[‚ğ‰Ÿ‚µ‚È‚ª‚ç‚Ìê‡‚ÍŠg’£q‚à’u‚«Š·‚¦‚ç‚ê‚Ü‚·B"));
+    SetTip(IDC_REPLACE_EDIT, _T("â€œ<â€â€œ>â€ã§å›²ã‚“ã éƒ¨åˆ†ãŒé€£ç•ªã«ç½®æ›ã•ã‚Œã¾ã™ã€‚ä¾‹ï¼šâ€œprefix-<00777>-postfixâ€"));
+    SetTip(IDC_RENAME_REPLACE, _T("æ‹¡å¼µå­ã¯ä¿å­˜ã•ã‚Œã¾ã™ã€‚ã‚·ãƒ•ãƒˆã‚­ãƒ¼ã‚’æŠ¼ã—ãªãŒã‚‰ã®å ´åˆã¯æ‹¡å¼µå­ã‚‚ç½®ãæ›ãˆã‚‰ã‚Œã¾ã™ã€‚"));
 
     HWND hListView = GetItem(IDC_RENAMELIST);
     RECT rcListView;
@@ -176,11 +176,11 @@ class RenameDlg : public avesta::Dialog {
     column.cx = (rcListView.right - ::GetSystemMetrics(SM_CXVSCROLL)) / 2;
     column.iSubItem = 0;
     column.iOrder = 0;
-    column.pszText = _T("•ÏX‘O");
+    column.pszText = _T("å¤‰æ›´å‰");
     ListView_InsertColumn(hListView, 0, &column);
     column.iSubItem = 1;
     column.iOrder = 1;
-    column.pszText = _T("•ÏXŒã");
+    column.pszText = _T("å¤‰æ›´å¾Œ");
     ListView_InsertColumn(hListView, 0, &column);
 
     size_t count = m_src.size();
@@ -246,7 +246,7 @@ class RenameDlg : public avesta::Dialog {
       case IDOK:
         if (!ctrl) {  // by enter
           if (GetKeyState(VK_CONTROL) & 0x8000) {
-            End(IDOK);  // ƒRƒ“ƒgƒ[ƒ‹‚ğ‰Ÿ‚µ‚È‚ª‚ç‚Ìê‡‚Íƒ_ƒCƒAƒƒO‚ğOKI—¹‚Æ‚İ‚È‚·
+            End(IDOK);  // ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã‚’æŠ¼ã—ãªãŒã‚‰ã®å ´åˆã¯ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚’OKçµ‚äº†ã¨ã¿ãªã™
           } else if (::GetFocus() == GetItem(IDC_REPLACE_EDIT)) {
             ReplaceAll(GetItem(IDC_RENAMELIST), GetItem(IDC_REPLACE_EDIT), !mew::ui::IsKeyPressed(VK_SHIFT));
           } else {
@@ -279,7 +279,7 @@ static HRESULT RenameFromClipboard(RenameDlg& dlg, mew::io::IEntryList* entries)
   // parse text
   for (PCTSTR beg = text.str(); beg;) {
     if (PCTSTR end = mew::str::find_some_of(beg, _T("\r\n"))) {
-      if (end - beg > 1) {  // ‹ó•¶šs‚Í–³‹
+      if (end - beg > 1) {  // ç©ºæ–‡å­—è¡Œã¯ç„¡è¦–
         dlg.AddDestination(beg, end);
       }
       beg = end + 1;
@@ -288,7 +288,7 @@ static HRESULT RenameFromClipboard(RenameDlg& dlg, mew::io::IEntryList* entries)
       }
     } else {
       size_t len = lstrlen(beg);
-      if (len > 0) {  // ‹ó•¶šs‚Í–³‹
+      if (len > 0) {  // ç©ºæ–‡å­—è¡Œã¯ç„¡è¦–
         dlg.AddDestination(beg, beg + len);
       }
       break;

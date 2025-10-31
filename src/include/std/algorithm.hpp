@@ -1,4 +1,4 @@
-/// @file algorithm.hpp
+ï»¿/// @file algorithm.hpp
 /// UNDOCUMENTED
 #pragma once
 
@@ -6,7 +6,7 @@
 #include <functional>
 
 namespace mew {
-/// stdƒAƒ‹ƒSƒŠƒYƒ€Šg’£.
+/// stdã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ æ‹¡å¼µ.
 namespace algorithm {
 /// for_all
 template <class Cont, class Pred1>
@@ -51,8 +51,8 @@ bool contains(Cont& cont, const Item& item) {
 }
 
 /// binary_search
-/// std::binary_search() ‚Í
-/// bool’l‚µ‚©•Ô‚³‚È‚¢‚Ì‚É‘Î‚µA‚±‚ê‚ÍŒ©‚Â‚©‚Á‚½ƒCƒ^ƒŒ[ƒ^‚ğ•Ô‚·.
+/// std::binary_search() ã¯
+/// boolå€¤ã—ã‹è¿”ã•ãªã„ã®ã«å¯¾ã—ã€ã“ã‚Œã¯è¦‹ã¤ã‹ã£ãŸã‚¤ã‚¿ãƒ¬ãƒ¼ã‚¿ã‚’è¿”ã™.
 template <class FwdIter, class type>
 FwdIter binary_search(FwdIter _First, FwdIter _Last, const type& _Val) {
   FwdIter result = std::lower_bound(_First, _Last, _Val);

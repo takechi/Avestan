@@ -1,5 +1,5 @@
-/// @file reference.hpp
-/// QÆƒJƒEƒ“ƒg.
+ï»¿/// @file reference.hpp
+/// å‚ç…§ã‚«ã‚¦ãƒ³ãƒˆ.
 #pragma once
 
 #include "mew.hpp"
@@ -58,7 +58,7 @@ inline bool objcmp(IUnknown* lhs, IUnknown* rhs) throw() {
 
 //==============================================================================
 
-/// ƒXƒ}[ƒgƒ|ƒCƒ“ƒ^ƒx[ƒX.
+/// ã‚¹ãƒãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿ãƒ™ãƒ¼ã‚¹.
 template <typename T>
 class ref_base {
  private:
@@ -91,7 +91,7 @@ class ref_base {
   T* m_ptr;
 
  private:
-  void operator[](size_t) const;  // ”z—ñ‚É‘Î‚·‚éƒXƒ}[ƒgƒ|ƒCƒ“ƒ^‚Í—L‚è“¾‚È‚¢.
+  void operator[](size_t) const;  // é…åˆ—ã«å¯¾ã™ã‚‹ã‚¹ãƒãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿ã¯æœ‰ã‚Šå¾—ãªã„.
  public:
   ref_base() throw() : m_ptr(null) {}
   ref_base(const ref_base& p) throw() : m_ptr(p.m_ptr) {
@@ -171,7 +171,7 @@ class ref_base {
   HRESULT copyto(REFINTF pp) const throw() { return mew::objcpy(m_ptr, pp); }
 };
 
-/// ƒXƒ}[ƒgƒ|ƒCƒ“ƒ^.
+/// ã‚¹ãƒãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿.
 template <typename T>
 class ref : public ref_base<T> {
  private:
@@ -236,10 +236,10 @@ class auto_cast_t {
 };
 }  // namespace detail
 
-/// QueryInterface‚ğ—p‚¢‚éƒLƒƒƒXƒgiƒeƒ“ƒvƒŒ[ƒgˆø”È—ª”Åj.
+/// QueryInterfaceã‚’ç”¨ã„ã‚‹ã‚­ãƒ£ã‚¹ãƒˆï¼ˆãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆå¼•æ•°çœç•¥ç‰ˆï¼‰.
 inline detail::auto_cast_t cast(IUnknown* ptr) throw() { return detail::auto_cast_t(ptr); }
 
-/// QueryInterface‚ğ—p‚¢‚éƒLƒƒƒXƒg.
+/// QueryInterfaceã‚’ç”¨ã„ã‚‹ã‚­ãƒ£ã‚¹ãƒˆ.
 template <typename T>
 inline ref<T> cast(IUnknown* ptr) throw() {
   ref<T> p;
@@ -249,7 +249,7 @@ inline ref<T> cast(IUnknown* ptr) throw() {
 
 //==============================================================================
 
-/// IEnumUnknown ‚ğŠÈ’P‚Ég‚¤‚½‚ß‚Ìƒwƒ‹ƒp.
+/// IEnumUnknown ã‚’ç°¡å˜ã«ä½¿ã†ãŸã‚ã®ãƒ˜ãƒ«ãƒ‘.
 template <typename T>
 class each : public ref<T> {
  private:
@@ -277,7 +277,7 @@ class each : public ref<T> {
 ///
 template <typename TSequence>
 class EnumUnknownBase : public IEnumUnknown {
-  // TODO: TSequence ‚ªƒ‰ƒ“ƒ_ƒ€ƒAƒNƒZƒX‰Â”\‚Å‚È‚¢ê‡‚Ö‚Ì‘Î‰.
+  // TODO: TSequence ãŒãƒ©ãƒ³ãƒ€ãƒ ã‚¢ã‚¯ã‚»ã‚¹å¯èƒ½ã§ãªã„å ´åˆã¸ã®å¯¾å¿œ.
  public:
   using sequence = TSequence;
 
@@ -353,7 +353,7 @@ class EnumUnknownBase : public IEnumUnknown {
   }
 };
 
-/// STLƒRƒ“ƒeƒi‚Ö‚ÌQÆ‚ğ—ñ‹“‚·‚é.
+/// STLã‚³ãƒ³ãƒ†ãƒŠã¸ã®å‚ç…§ã‚’åˆ—æŒ™ã™ã‚‹.
 template <typename TSequence>
 class EnumUnknown : public EnumUnknownBase<TSequence> {
   using super = EnumUnknownBase<TSequence>;
@@ -376,7 +376,7 @@ class EnumUnknown : public EnumUnknownBase<TSequence> {
   }
 };
 
-/// ƒXƒ}[ƒgƒ|ƒCƒ“ƒ^‚Ì”z—ñ.
+/// ã‚¹ãƒãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿ã®é…åˆ—.
 template <class T, template <class T, class TAlloc> class TSequence = std::vector,
           template <class T> class TAlloc = std::allocator>
 class array {
@@ -498,7 +498,7 @@ class array {
   }
 };
 
-/// IEnumUnknown ‚Æ ”z—ñ‚ªˆê‘Ì‰»‚³‚ê‚Ä‚¢‚é.
+/// IEnumUnknown ã¨ é…åˆ—ãŒä¸€ä½“åŒ–ã•ã‚Œã¦ã„ã‚‹.
 template <class T, template <class T, class TAlloc> class TSequence = std::vector,
           template <class T> class TAlloc = std::allocator>
 class Enumerator : public array<T, TSequence, TAlloc>, public EnumUnknownBase<typename array<T, TSequence, TAlloc>::sequence> {

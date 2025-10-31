@@ -1,4 +1,4 @@
-// commandline.cpp
+ï»¿// commandline.cpp
 
 #include "stdafx.h"
 #include "avesta.hpp"
@@ -40,51 +40,51 @@ class CommandLine : public mew::Root<mew::implements<avesta::ICommandLine> > {
     while (true) {
       switch (*end) {
         case _T('\0'):
-          // ƒRƒ}ƒ“ƒhƒ‰ƒCƒ“I—¹
+          // ã‚³ãƒãƒ³ãƒ‰ãƒ©ã‚¤ãƒ³çµ‚äº†
           if (beg < end) args.push_back(ParseOption(beg));
           return;
         case _T('\"'):
-          if (quoted) {  // ƒNƒH[ƒg‚³‚ê‚½•¶š—ñ‚Ì’Šo
+          if (quoted) {  // ã‚¯ã‚©ãƒ¼ãƒˆã•ã‚ŒãŸæ–‡å­—åˆ—ã®æŠ½å‡º
             *end = _T('\0');
             args.push_back(ParseOption(beg));
             quoted = false;
             beg = ++end;
-          } else {  // ƒNƒH[ƒgŠJn
+          } else {  // ã‚¯ã‚©ãƒ¼ãƒˆé–‹å§‹
             quoted = true;
             beg = ++end;
           }
           break;
         case _T(' '):
-          if (quoted) {  // ƒNƒH[ƒg’†‚ÌƒXƒy[ƒX‚Í•¶š‚Æ‚µ‚Äˆµ‚¤
+          if (quoted) {  // ã‚¯ã‚©ãƒ¼ãƒˆä¸­ã®ã‚¹ãƒšãƒ¼ã‚¹ã¯æ–‡å­—ã¨ã—ã¦æ‰±ã†
             end++;
-          } else {  // ƒNƒH[ƒg‚³‚ê‚Ä‚¢‚È‚¢ƒXƒy[ƒX‚Í‹æØ‚è‚Æ‚µ‚Äˆµ‚¤
+          } else {  // ã‚¯ã‚©ãƒ¼ãƒˆã•ã‚Œã¦ã„ãªã„ã‚¹ãƒšãƒ¼ã‚¹ã¯åŒºåˆ‡ã‚Šã¨ã—ã¦æ‰±ã†
             *end = _T('\0');
             if (beg < end) args.push_back(ParseOption(beg));
             beg = ++end;
           }
           break;
         default:
-          // ‚»‚Ì‘¼‚Í•¶š‚Æ‚µ‚Äˆµ‚¤
+          // ãã®ä»–ã¯æ–‡å­—ã¨ã—ã¦æ‰±ã†
           end = mew::str::inc(end);
       }
     }
   }
   static Argv ParseOption(PTSTR argv) {
     struct Argv arg;
-    if (argv[0] == _T('-') || argv[0] == _T('/')) {  // ƒIƒvƒVƒ‡ƒ“‚Æ’l‚Ì•ª—£
+    if (argv[0] == _T('-') || argv[0] == _T('/')) {  // ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã¨å€¤ã®åˆ†é›¢
       TCHAR* strOption = argv + 1;
       TCHAR* strValue = mew::str::find_some_of(argv, _T(":="));
-      if (strValue) {  // ˆø”•t‚«ƒIƒvƒVƒ‡ƒ“
+      if (strValue) {  // å¼•æ•°ä»˜ãã‚ªãƒ—ã‚·ãƒ§ãƒ³
         *strValue = _T('\0');
         strValue++;
         arg.Option = strOption;
         arg.Value = strValue;
-      } else {  // ˆø”‚È‚µƒIƒvƒVƒ‡ƒ“
+      } else {  // å¼•æ•°ãªã—ã‚ªãƒ—ã‚·ãƒ§ãƒ³
         strValue++;
         arg.Option = strOption;
         arg.Value = nullptr;
       }
-    } else {  // ƒIƒvƒVƒ‡ƒ“‚È‚µGå‚Éƒtƒ@ƒCƒ‹ƒpƒX
+    } else {  // ã‚ªãƒ—ã‚·ãƒ§ãƒ³ãªã—ï¼›ä¸»ã«ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹
       arg.Option = nullptr;
       arg.Value = argv;
     }
@@ -95,11 +95,11 @@ class CommandLine : public mew::Root<mew::implements<avesta::ICommandLine> > {
 
 //==============================================================================
 
-namespace avesta{
+namespace avesta {
 mew::ref<ICommandLine> ParseCommandLine(PCWSTR args) {
   if (mew::str::empty(args)) {
     return mew::null;
   }
   return mew::objnew<CommandLine>(args);
 }
-}
+}  // namespace avesta

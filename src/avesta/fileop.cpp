@@ -1,4 +1,4 @@
-// fileop.cpp
+ï»¿// fileop.cpp
 
 #include "stdafx.h"
 #include "avesta.hpp"
@@ -111,17 +111,17 @@ class SHFileOpHack : public CWindowImpl<SHFileOpHack> {
     TCHAR wndtext[MAX_PATH];
     ::GetWindowText(hwnd, wndtext, MAX_PATH);
     TRACE(L"$1 / $2", clsname, wndtext);
-    if (lstrcmp(wndtext, _T("ˆÚ“®‚µ‚Ä‚¢‚Ü‚·...")) == 0) {
+    if (lstrcmp(wndtext, _T("ç§»å‹•ã—ã¦ã„ã¾ã™...")) == 0) {
       return FO_MOVE;
     }
-    if (lstrcmp(wndtext, _T("ƒRƒs[‚µ‚Ä‚¢‚Ü‚·...")) == 0) {
+    if (lstrcmp(wndtext, _T("ã‚³ãƒ”ãƒ¼ã—ã¦ã„ã¾ã™...")) == 0) {
       return FO_COPY;
     }
-    if (lstrcmp(wndtext, _T("íœ‚µ‚Ä‚¢‚Ü‚·...")) == 0) {
+    if (lstrcmp(wndtext, _T("å‰Šé™¤ã—ã¦ã„ã¾ã™...")) == 0) {
       return FO_DELETE;
     }
-    // TODO: ‚±‚êƒzƒ“ƒgHŒ©‚½‚±‚Æ‚ª–³‚¢‚Ì‚Åƒ^ƒCƒgƒ‹‚ª‚í‚©‚è‚Ü‚¹‚ñB
-    if (lstrcmp(wndtext, _T("–¼‘O‚ğ•ÏX‚µ‚Ä‚¢‚Ü‚·...")) == 0) {
+    // TODO: ã“ã‚Œãƒ›ãƒ³ãƒˆï¼Ÿè¦‹ãŸã“ã¨ãŒç„¡ã„ã®ã§ã‚¿ã‚¤ãƒˆãƒ«ãŒã‚ã‹ã‚Šã¾ã›ã‚“ã€‚
+    if (lstrcmp(wndtext, _T("åå‰ã‚’å¤‰æ›´ã—ã¦ã„ã¾ã™...")) == 0) {
       return FO_RENAME;
     }
     return 0;  // non-SHOp
@@ -147,12 +147,12 @@ static BOOL CALLBACK EnumFileDialog(HWND hwnd, LPARAM lParam) {
   }
   if (IsEqualClassName(hwnd, _T("#32770")) && IsEqualClassName(::GetDlgItem(hwnd, 0x00000461), _T("SHELLDLL_DefView")) &&
       IsEqualClassName(hComboBox = ::GetDlgItem(hwnd, 0x0000047C), _T("ComboBoxEx32"))) {
-    // ƒgƒbƒvƒŒƒxƒ‹ ƒtƒ@ƒCƒ‹ƒ_ƒCƒAƒƒO
+    // ãƒˆãƒƒãƒ—ãƒ¬ãƒ™ãƒ« ãƒ•ã‚¡ã‚¤ãƒ«ãƒ€ã‚¤ã‚¢ãƒ­ã‚°
     *(HWND*)lParam = hComboBox;
     return FALSE;
   }
 
-  // ƒtƒ@ƒCƒ‹ƒ_ƒCƒAƒƒO‚Å‚Í‚È‚¢‚Ì‚Åq‹Ÿ‚ğ‘{‚·
+  // ãƒ•ã‚¡ã‚¤ãƒ«ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã§ã¯ãªã„ã®ã§å­ä¾›ã‚’æœã™
   if (HWND hwndChild = FindWindowEx(hwnd, nullptr, _T("#32770"), nullptr)) {
     if (IsEqualClassName(::GetDlgItem(hwndChild, 0x00000461), _T("SHELLDLL_DefView")) &&
         IsEqualClassName(hComboBox = ::GetDlgItem(hwndChild, 0x0000047C), _T("ComboBoxEx32"))) {
@@ -175,14 +175,14 @@ HRESULT FileOperationHack(HWND hwndProgress, HWND hwndOwner) {
   if (!op) {
     return E_FAIL;
   }
-  // SHFileOperationƒEƒBƒ“ƒhƒE‚Ì\¬
+  // SHFileOperationã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®æ§‹æˆ
   // - #32770
   //    +- SysAnimate32
-  //    +- Static : FROM ‚©‚ç TO ‚Ö
+  //    +- Static : FROM ã‹ã‚‰ TO ã¸
   //    +- Static : FILENAME
   //    +- msctls_progress32
-  //    +- Static : c‚è N•ª
-  //    +- Button : ƒLƒƒƒ“ƒZƒ‹
+  //    +- Static : æ®‹ã‚Š Nåˆ†
+  //    +- Button : ã‚­ãƒ£ãƒ³ã‚»ãƒ«
   HRESULT hr = S_FALSE;
   if (!SHFileOpHack::GetSubclass(hwndProgress)) {
     new SHFileOpHack(hwndProgress);

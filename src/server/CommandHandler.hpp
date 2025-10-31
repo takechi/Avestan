@@ -1,4 +1,4 @@
-// Command.h
+Ôªø// Command.h
 #pragma once
 
 namespace {
@@ -16,7 +16,7 @@ inline mew::message StyleMsg(INT32 style) {
 }  // namespace
 
 void Main::InitCommands() {
-  // ÉRÉ}ÉìÉh
+  // „Ç≥„Éû„É≥„Éâ
   m_commands = CreateCommands(COMMANDS, sizeof(COMMANDS) / sizeof(COMMANDS[0]));
   mew::function current(this, &Main::ForwardToCurrent);
   mew::function all(this, &Main::ForwardToAll);
@@ -272,7 +272,7 @@ void Main::InitCommands() {
   CommandHandler(L"AutoCopy.Name", &Main::ProcessAutoCopy, mew::ui::CopyName, &Main::ObserveAutoCopy, mew::ui::CopyName);
   CommandHandler(L"AutoCopy.Path", &Main::ProcessAutoCopy, mew::ui::CopyPath, &Main::ObserveAutoCopy, mew::ui::CopyPath);
 
-  // Ç†Ç∆Ç≈Ç»Ç≠Ç»ÇÈÇ‡ÇÃ
+  // „ÅÇ„Å®„Åß„Å™„Åè„Å™„Çã„ÇÇ„ÅÆ
   CommandProcess(L"Option.WallPaper", &Main::OptionWallPaper);
   CommandHandler(L"Option.Insert.Head", &Main::OptionInsert, mew::ui::InsertHead, &Main::ObserveInsert, mew::ui::InsertHead);
   CommandHandler(L"Option.Insert.Tail", &Main::OptionInsert, mew::ui::InsertTail, &Main::ObserveInsert, mew::ui::InsertTail);

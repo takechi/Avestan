@@ -1,4 +1,4 @@
-// imagelist.cpp
+ï»¿// imagelist.cpp
 
 #include "stdafx.h"
 #include "drawing.hpp"
@@ -46,11 +46,11 @@ class ImageList : public mew::Root<mew::implements<mew::drawing::IImageList2, II
       Gdiplus::Rect rcLock(0, 0, w, h);
       Gdiplus::BitmapData bits;
       if (image->LockBits(&rcLock, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, &bits) == Gdiplus::Ok) {
-        // TODO: ƒrƒbƒgƒ}ƒbƒv‚ÌƒRƒs[‚ğŒ¸‚ç‚·‚×‚µB
-        // Œ»İAGDI+ Bitmap ¨ DIBSection ¨ ImageList“àƒoƒbƒtƒ@ ‚Æ•¡”‰ñ‚ÌƒRƒs[‚ª”­¶‚µ‚Ä‚¢‚éB
-        // DIBSection ‚ğƒXƒLƒbƒv‚Å‚«‚ê‚ÎAƒRƒs[‚ğŒ¸‚ç‚¹‚éB‚»‚Ì‚½‚ß‚É‚ÍˆÈ‰º‚Ì‚Ç‚¿‚ç‚©‚Ì•û–@‚ª‚ ‚éB
-        // EGDI+ Bitmap‚Ì“à•”ƒf[ƒ^‚ğ’¼ÚQÆ‚·‚éDIBitmap‚ğì¬‚·‚éB
-        // EImageList“à‚Ìƒoƒbƒtƒ@‚É’¼Ú‘‚«‚ŞB
+        // TODO: ãƒ“ãƒƒãƒˆãƒãƒƒãƒ—ã®ã‚³ãƒ”ãƒ¼ã‚’æ¸›ã‚‰ã™ã¹ã—ã€‚
+        // ç¾åœ¨ã€GDI+ Bitmap â†’ DIBSection â†’ ImageListå†…ãƒãƒƒãƒ•ã‚¡ ã¨è¤‡æ•°å›ã®ã‚³ãƒ”ãƒ¼ãŒç™ºç”Ÿã—ã¦ã„ã‚‹ã€‚
+        // DIBSection ã‚’ã‚¹ã‚­ãƒƒãƒ—ã§ãã‚Œã°ã€ã‚³ãƒ”ãƒ¼ã‚’æ¸›ã‚‰ã›ã‚‹ã€‚ãã®ãŸã‚ã«ã¯ä»¥ä¸‹ã®ã©ã¡ã‚‰ã‹ã®æ–¹æ³•ãŒã‚ã‚‹ã€‚
+        // ãƒ»GDI+ Bitmapã®å†…éƒ¨ãƒ‡ãƒ¼ã‚¿ã‚’ç›´æ¥å‚ç…§ã™ã‚‹DIBitmapã‚’ä½œæˆã™ã‚‹ã€‚
+        // ãƒ»ImageListå†…ã®ãƒãƒƒãƒ•ã‚¡ã«ç›´æ¥æ›¸ãè¾¼ã‚€ã€‚
         const int bpp = 4;  // sizeof(pixel for PixelFormat32bppARGB)
         WTL::CBitmap bitmap;
         BITMAPINFO info = {0};
@@ -70,7 +70,7 @@ class ImageList : public mew::Root<mew::implements<mew::drawing::IImageList2, II
       }
     }
 
-    // ƒAƒ‹ƒtƒ@‚È‚µƒrƒbƒgƒ}ƒbƒv
+    // ã‚¢ãƒ«ãƒ•ã‚¡ãªã—ãƒ“ãƒƒãƒˆãƒãƒƒãƒ—
     WTL::CBitmap bitmap;
     if (image->GetHBITMAP(mew::drawing::SysColor(COLOR_3DFACE), &bitmap.m_hBitmap) != Gdiplus::Ok) {
       return nullptr;

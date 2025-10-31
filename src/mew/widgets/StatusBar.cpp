@@ -1,4 +1,4 @@
-// StatusBar.cpp
+﻿// StatusBar.cpp
 
 #include "stdafx.h"
 #include "../private.h"
@@ -168,4 +168,3 @@ AVESTA_EXPORT(StatusBar)
 
 }  // namespace ui
 }  // namespace mew
-

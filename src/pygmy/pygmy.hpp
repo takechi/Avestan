@@ -1,5 +1,5 @@
-/// @file pygmy.hpp
-/// ƒVƒFƒ‹‚Æƒtƒ@ƒCƒ‹ƒVƒXƒeƒ€.
+ï»¿/// @file pygmy.hpp
+/// ã‚·ã‚§ãƒ«ã¨ãƒ•ã‚¡ã‚¤ãƒ«ã‚·ã‚¹ãƒ†ãƒ .
 #pragma once
 
 #pragma push_macro("_DEBUG")
@@ -450,13 +450,13 @@ class Tuple : public Object {
    public:
     Proxy(PyObject* obj, int index) : m_self(obj), m_index(index) {}
     Proxy& operator=(PyObject* obj) {
-      // PyTuple_SetItem : QÆƒJƒEƒ“ƒg‚ğ‘‰Á‚³‚¹‚È‚¢
+      // PyTuple_SetItem : å‚ç…§ã‚«ã‚¦ãƒ³ãƒˆã‚’å¢—åŠ ã•ã›ãªã„
       PyTuple_SetItem(m_self, m_index, obj);
       Py_XINCREF(obj);
       return *this;
     }
     operator Object() const {
-      // PyTuple_GetItem : QÆƒJƒEƒ“ƒg‚ğ‘‰Á‚³‚¹‚È‚¢
+      // PyTuple_GetItem : å‚ç…§ã‚«ã‚¦ãƒ³ãƒˆã‚’å¢—åŠ ã•ã›ãªã„
       return Object(PyTuple_GetItem(m_self, m_index));
     }
   };
@@ -477,7 +477,7 @@ class Tuple : public Object {
     }
   }
   void set(int index, PyObject* obj) {
-    // PyTuple_SetItem : QÆƒJƒEƒ“ƒg‚ğ‘‰Á‚³‚¹‚È‚¢
+    // PyTuple_SetItem : å‚ç…§ã‚«ã‚¦ãƒ³ãƒˆã‚’å¢—åŠ ã•ã›ãªã„
     PyTuple_SetItem(m_self, index, obj);
     Py_XINCREF(obj);
   }
@@ -505,13 +505,13 @@ class List : public Object {
    public:
     Proxy(PyObject* obj, int index) : m_self(obj), m_index(index) {}
     Proxy& operator=(PyObject* obj) {
-      // PyList_SetItem : QÆƒJƒEƒ“ƒg‚ğ‘‰Á‚³‚¹‚È‚¢
+      // PyList_SetItem : å‚ç…§ã‚«ã‚¦ãƒ³ãƒˆã‚’å¢—åŠ ã•ã›ãªã„
       PyList_SetItem(m_self, m_index, obj);
       Py_XINCREF(obj);
       return *this;
     }
     operator Object() const {
-      // PyList_GetItem : QÆƒJƒEƒ“ƒg‚ğ‘‰Á‚³‚¹‚È‚¢
+      // PyList_GetItem : å‚ç…§ã‚«ã‚¦ãƒ³ãƒˆã‚’å¢—åŠ ã•ã›ãªã„
       return Object(PyList_GetItem(m_self, m_index));
     }
   };
@@ -532,7 +532,7 @@ class List : public Object {
     }
   }
   void set(int index, PyObject* obj) {
-    // PyList_SetItem : QÆƒJƒEƒ“ƒg‚ğ‘‰Á‚³‚¹‚È‚¢
+    // PyList_SetItem : å‚ç…§ã‚«ã‚¦ãƒ³ãƒˆã‚’å¢—åŠ ã•ã›ãªã„
     PyList_SetItem(m_self, index, obj);
     Py_XINCREF(obj);
   }
@@ -705,7 +705,7 @@ class Host {
   }
   void Terminate() {
     if (m_init) {
-      PyErr_Clear();  // ƒGƒ‰[‚ğƒNƒŠƒA‚¹‚¸‚É Py_Finalize() ‚·‚é‚ÆAabort() ‚µ‚Ä‚µ‚Ü‚¤
+      PyErr_Clear();  // ã‚¨ãƒ©ãƒ¼ã‚’ã‚¯ãƒªã‚¢ã›ãšã« Py_Finalize() ã™ã‚‹ã¨ã€abort() ã—ã¦ã—ã¾ã†
       Py_Finalize();
       m_init = false;
     }
@@ -725,7 +725,7 @@ inline bool fetch_error(ErrorInfo& error) {
   }
   error.exception.attach(exception);
   error.value.attach(value);
-  // ƒGƒ‰[‚Ìí—Ş‚É‚æ‚Á‚Ä‚ÍA‚±‚ÌŒÄ‚Ño‚µ‚Å segfault ‚·‚é‚½‚ßAtry-catch ‚ÅˆÍ‚ñ‚Å‚µ‚Ü‚¤.
+  // ã‚¨ãƒ©ãƒ¼ã®ç¨®é¡ã«ã‚ˆã£ã¦ã¯ã€ã“ã®å‘¼ã³å‡ºã—ã§ segfault ã™ã‚‹ãŸã‚ã€try-catch ã§å›²ã‚“ã§ã—ã¾ã†.
   try {
     error.traceback = Module::import("traceback")["extract_tb"](traceback);
   } catch (...) {

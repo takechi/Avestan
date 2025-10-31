@@ -1,4 +1,4 @@
-// dialogs.cpp
+ï»¿// dialogs.cpp
 
 #include "stdafx.h"
 #include "widgets.hpp"
@@ -26,7 +26,7 @@ void CreateFileFilter(mew::StringBuffer& buffer, const mew::string& filter) {
 }
 
 //==============================================================================
-// ƒ_ƒCƒAƒƒO‚ğƒZƒ“ƒ^ƒŠƒ“ƒO‚·‚é‚½‚ß.
+// ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚’ã‚»ãƒ³ã‚¿ãƒªãƒ³ã‚°ã™ã‚‹ãŸã‚.
 class FileDlg : public CFileDialogImpl<FileDlg> {
   using super = CFileDialogImpl<FileDlg>;
 

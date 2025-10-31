@@ -1,5 +1,5 @@
-/// @file mew.hpp
-/// ƒ‰ƒCƒuƒ‰ƒŠ‹¤’Ê’è‹`.
+ï»¿/// @file mew.hpp
+/// ãƒ©ã‚¤ãƒ–ãƒ©ãƒªå…±é€šå®šç¾©.
 #pragma once
 
 #include "detail/headers.hpp"
@@ -16,10 +16,10 @@
 
 //==============================================================================
 
-/// ƒ‰ƒCƒuƒ‰ƒŠƒ‹[ƒg–¼‘O‹óŠÔ.
+/// ãƒ©ã‚¤ãƒ–ãƒ©ãƒªãƒ«ãƒ¼ãƒˆåå‰ç©ºé–“.
 namespace mew {
 //==============================================================================
-// ƒCƒ“ƒ^ƒtƒF[ƒX.
+// ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹.
 
 __interface __declspec(uuid("8A33A952-42CA-446D-8F1D-7589C2792242")) IString;
 __interface __declspec(uuid("EDB2A453-4879-410E-A3B9-4FCE94E7FA02")) IDisposable;
@@ -28,13 +28,13 @@ __interface __declspec(uuid("8BC045E4-1A58-4712-ADF3-D4595DBE079E")) IMessage;
 
 template <class T>
 class ref;
-using string = ref<IString>;    ///< •¶š—ñ. ÀÛ‚É‚ÍQÆ‚¾‚ªAimmutable
-                                ///< ‚Ì‚½‚ß’lŒ^‚¾‚Æl‚¦‚Ä‚à\‚í‚È‚¢.
-using message = ref<IMessage>;  ///< ƒƒbƒZ[ƒW.
-using Stream = ref<IStream>;    ///< ƒXƒgƒŠ[ƒ€.
+using string = ref<IString>;    ///< æ–‡å­—åˆ—. å®Ÿéš›ã«ã¯å‚ç…§ã ãŒã€immutable
+                                ///< ã®ãŸã‚å€¤å‹ã ã¨è€ƒãˆã¦ã‚‚æ§‹ã‚ãªã„.
+using message = ref<IMessage>;  ///< ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸.
+using Stream = ref<IStream>;    ///< ã‚¹ãƒˆãƒªãƒ¼ãƒ .
 
 //==============================================================================
-// ƒfƒoƒbƒOx‰‡.
+// ãƒ‡ãƒãƒƒã‚°æ”¯æ´.
 
 #ifdef _DEBUG
 MEW_API void Trace(const string& msg);
@@ -105,9 +105,9 @@ PP_REPEAT_FROM_1(10, MEW_PP_TRACE)
 
 namespace mew {
 //==============================================================================
-// \‘¢‘Ì.
+// æ§‹é€ ä½“.
 
-/// ‚Ê‚é‚Û.
+/// ã¬ã‚‹ã½.
 const struct Null {
   template <typename T>
   operator T*() const throw() {
@@ -115,7 +115,7 @@ const struct Null {
   }
 } null;
 
-/// Œ^•t‚¯‚³‚ê‚½ƒCƒ“ƒ^ƒtƒF[ƒXƒ|ƒCƒ“ƒ^‚ÌQÆ.
+/// å‹ä»˜ã‘ã•ã‚ŒãŸã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹ãƒã‚¤ãƒ³ã‚¿ã®å‚ç…§.
 struct REFINTF {
   REFIID iid;
   void** const pp;
@@ -145,14 +145,14 @@ struct bitof_t {
   operator T() const throw() { return value & mask; }
 };
 
-/// ƒrƒbƒg‚ğæ“¾Eİ’è‚·‚é.
+/// ãƒ“ãƒƒãƒˆã‚’å–å¾—ãƒ»è¨­å®šã™ã‚‹.
 template <typename T, typename M>
 inline bitof_t<T> bitof(T& value, M mask) throw() {
   return bitof_t<T>(value, static_cast<T>(mask));
 }
 
-/// POD(Plain Old Data) ‚Å‚ ‚é‚±‚Æ‚ğ¦‚·ƒ^ƒO.
-/// POD‚Å‚ ‚é‚±‚Æ‚ğ¦‚·‚É‚ÍA‚±‚ê‚ğŒp³‚·‚é‚©AIsPOD‚ğ“Áê‰»‚·‚é.
+/// POD(Plain Old Data) ã§ã‚ã‚‹ã“ã¨ã‚’ç¤ºã™ã‚¿ã‚°.
+/// PODã§ã‚ã‚‹ã“ã¨ã‚’ç¤ºã™ã«ã¯ã€ã“ã‚Œã‚’ç¶™æ‰¿ã™ã‚‹ã‹ã€IsPODã‚’ç‰¹æ®ŠåŒ–ã™ã‚‹.
 template <class T>
 struct POD {
   friend IStream& operator<<(IStream& stream, const POD& pod) {
@@ -165,7 +165,7 @@ struct POD {
   }
 };
 
-/// ‚ ‚éŒ^‚ªPODŒ^‚©”Û‚©‚ğ”»’è‚·‚é.
+/// ã‚ã‚‹å‹ãŒPODå‹ã‹å¦ã‹ã‚’åˆ¤å®šã™ã‚‹.
 template <typename T>
 struct IsPOD {
   enum { value = meta::Convertable<T, POD<T> >::value };
@@ -175,7 +175,7 @@ struct IsPOD<T[size]> {
   enum { value = false };
 };
 
-/// ƒCƒ“ƒfƒbƒNƒX‚Ü‚½‚Íƒ|ƒCƒ“ƒ^.
+/// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã¾ãŸã¯ãƒã‚¤ãƒ³ã‚¿.
 template <class T>
 struct IndexOr {
   INT_PTR value;
@@ -212,7 +212,7 @@ struct IndexOr {
 #endif
 };
 
-/// 4‚Â‚Ì•¶š‚Å•\‚³‚ê‚½¯•Êq.
+/// 4ã¤ã®æ–‡å­—ã§è¡¨ã•ã‚ŒãŸè­˜åˆ¥å­.
 struct FourCC : POD<FourCC> {
   UINT32 Value;
   FourCC() throw() {}
@@ -229,11 +229,11 @@ const GUID GUID_Index = {0x00000000, 0x69be, 0x4828, {0xa2, 0x1f, 0x6, 0x4b, 0x8
 /// {????????-C4F1-4667-8A96-ECCC6B91B971}
 const GUID GUID_ClipboardFormat = {0x00000000, 0xc4f1, 0x4667, {0x8a, 0x96, 0xec, 0xcc, 0x6b, 0x91, 0xb9, 0x71}};
 
-/// GUID for FourCC. ‚±‚ê‚ÍƒIƒtƒBƒVƒƒƒ‹‚É‹K’è‚³‚ê‚Ä‚¢‚é‚ç‚µ‚¢.
+/// GUID for FourCC. ã“ã‚Œã¯ã‚ªãƒ•ã‚£ã‚·ãƒ£ãƒ«ã«è¦å®šã•ã‚Œã¦ã„ã‚‹ã‚‰ã—ã„.
 /// {????????-0000-0010-8000-00AA00389B71}
 const GUID GUID_FourCC = {0x00000000, 0x0000, 0x0010, {0x80, 0x00, 0x00, 0xAA, 0x00, 0x38, 0x9B, 0x71}};
 
-/// GUID‚Ü‚½‚Í16•¶š‚Ü‚Å‚Ìƒ}ƒ‹ƒ`ƒoƒCƒg•¶š—ñ‚Å•\‚³‚ê‚½¯•Êq.
+/// GUIDã¾ãŸã¯16æ–‡å­—ã¾ã§ã®ãƒãƒ«ãƒãƒã‚¤ãƒˆæ–‡å­—åˆ—ã§è¡¨ã•ã‚ŒãŸè­˜åˆ¥å­.
 struct Guid : GUID {
   Guid() {}
   Guid(REFGUID x) : GUID(x) {}
@@ -244,7 +244,7 @@ struct Guid : GUID {
   friend bool operator<(const Guid& lhs, const Guid& rhs) throw() { return memcmp(&lhs, &rhs, sizeof(Guid)) < 0; }
 };
 
-/// ƒNƒŠƒeƒBƒJƒ‹ƒZƒNƒVƒ‡ƒ“.
+/// ã‚¯ãƒªãƒ†ã‚£ã‚«ãƒ«ã‚»ã‚¯ã‚·ãƒ§ãƒ³.
 class CriticalSection {
  private:
   CRITICAL_SECTION m_cs;
@@ -261,7 +261,7 @@ class CriticalSection {
   CriticalSection& operator=(const CriticalSection&);
 };
 
-/// ƒNƒŠƒeƒBƒJƒ‹ƒZƒNƒVƒ‡ƒ“‚Ì©“®ƒƒbƒN.
+/// ã‚¯ãƒªãƒ†ã‚£ã‚«ãƒ«ã‚»ã‚¯ã‚·ãƒ§ãƒ³ã®è‡ªå‹•ãƒ­ãƒƒã‚¯.
 class AutoLock {
  private:
   CriticalSection& m_cs;
@@ -276,64 +276,64 @@ class AutoLock {
 };
 
 //==============================================================================
-// ƒCƒ“ƒ^ƒtƒF[ƒX’è‹`.
+// ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹å®šç¾©.
 
-/// –¾¦“I‚È”jŠü‚ğƒTƒ|[ƒg‚·‚é.
+/// æ˜ç¤ºçš„ãªç ´æ£„ã‚’ã‚µãƒãƒ¼ãƒˆã™ã‚‹.
 __interface IDisposable : IUnknown {
-  /// ƒIƒuƒWƒFƒNƒg‚ğ”jŠü‚·‚é.
-  /// zŠÂQÆ‚âƒlƒCƒeƒBƒuƒŠƒ\[ƒX‚ğ‰ğ•ú‚·‚é‚½‚ß‚Ég—p‚·‚é.
-  /// ‚±‚Ìƒƒ\ƒbƒh‚ÌŒÄo‚µŒãADispose()ˆÈŠO‚Ì‚·‚×‚Ä‚Ìƒƒ\ƒbƒh‚ÌŒÄ‚Ño‚µ‚Í•s³‚Å‚ ‚é.
+  /// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç ´æ£„ã™ã‚‹.
+  /// å¾ªç’°å‚ç…§ã‚„ãƒã‚¤ãƒ†ã‚£ãƒ–ãƒªã‚½ãƒ¼ã‚¹ã‚’è§£æ”¾ã™ã‚‹ãŸã‚ã«ä½¿ç”¨ã™ã‚‹.
+  /// ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã®å‘¼å‡ºã—å¾Œã€Dispose()ä»¥å¤–ã®ã™ã¹ã¦ã®ãƒ¡ã‚½ãƒƒãƒ‰ã®å‘¼ã³å‡ºã—ã¯ä¸æ­£ã§ã‚ã‚‹.
   void Dispose() throw();
 };
 
-/// ƒXƒgƒŠ[ƒ€‚Ö‚Ì’¼—ñ‰»‚ğƒTƒ|[ƒg‚·‚é.
-/// ‚±‚ÌƒCƒ“ƒ^ƒtƒF[ƒX‚ğƒTƒ|[ƒg‚·‚éê‡‚ÍA
-/// readable IStream‚ğˆø”‚É‚Æ‚éƒRƒ“ƒXƒgƒ‰ƒNƒ^‚àÀ‘•‚·‚é•K—v‚ª‚ ‚é.
+/// ã‚¹ãƒˆãƒªãƒ¼ãƒ ã¸ã®ç›´åˆ—åŒ–ã‚’ã‚µãƒãƒ¼ãƒˆã™ã‚‹.
+/// ã“ã®ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹ã‚’ã‚µãƒãƒ¼ãƒˆã™ã‚‹å ´åˆã¯ã€
+/// readable IStreamã‚’å¼•æ•°ã«ã¨ã‚‹ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚‚å®Ÿè£…ã™ã‚‹å¿…è¦ãŒã‚ã‚‹.
 __interface ISerializable : IUnknown {
 #ifndef DOXYGEN
   REFCLSID get_Class() throw();
 #endif  // DOXYGEN
 
-  /// ‹tƒVƒŠƒAƒ‰ƒCƒY‚ÌÛ‚Ég—p‚·‚éƒNƒ‰ƒXID [get].
+  /// é€†ã‚·ãƒªã‚¢ãƒ©ã‚¤ã‚ºã®éš›ã«ä½¿ç”¨ã™ã‚‹ã‚¯ãƒ©ã‚¹ID [get].
   __declspec(property(get = get_Class)) CLSID Class;
-  /// Stream ‚Ö©g‚Ì’¼—ñ‰»î•ñ‚ğ‘‚«o‚·.
+  /// Stream ã¸è‡ªèº«ã®ç›´åˆ—åŒ–æƒ…å ±ã‚’æ›¸ãå‡ºã™.
   void Serialize(IStream & stream);
 };
 
 //==============================================================================
-// ŠÖ”.
+// é–¢æ•°.
 
 using FactoryProc = void (*)(REFINTF, IUnknown*);
 
-/// ƒIƒuƒWƒFƒNƒg‚ğ¶¬‚·‚é.
-MEW_API void CreateInstance(REFCLSID clsid,       ///< ƒNƒ‰ƒXID.
-                            REFINTF ppInterface,  ///< ì¬‚³‚ê‚½ƒIƒuƒWƒFƒNƒg.
-                            IUnknown* arg         ///< ƒRƒ“ƒXƒgƒ‰ƒNƒ^ˆø”.
+/// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç”Ÿæˆã™ã‚‹.
+MEW_API void CreateInstance(REFCLSID clsid,       ///< ã‚¯ãƒ©ã‚¹ID.
+                            REFINTF ppInterface,  ///< ä½œæˆã•ã‚ŒãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ.
+                            IUnknown* arg         ///< ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿å¼•æ•°.
                             ) throw(...);
 
-/// ƒNƒ‰ƒX‚ğ“o˜^‚·‚é.
-MEW_API void RegisterFactory(REFCLSID clsid,      ///< ƒNƒ‰ƒXID.
-                             FactoryProc factory  ///< ì¬ŠÖ”.
+/// ã‚¯ãƒ©ã‚¹ã‚’ç™»éŒ²ã™ã‚‹.
+MEW_API void RegisterFactory(REFCLSID clsid,      ///< ã‚¯ãƒ©ã‚¹ID.
+                             FactoryProc factory  ///< ä½œæˆé–¢æ•°.
                              ) throw();
 
-/// •¶š—ñ‚ğì¬‚·‚é.
-MEW_API void CreateString(IString** ppString,          ///< ì¬‚³‚ê‚½•¶š—ñ.
-                          PCWSTR format,               ///< ‘®•¶š—ñ.
-                          size_t length = (size_t)-1,  ///< ‘®•¶š—ñ‚Ì’·‚³.
-                          size_t argc = 0,             ///< ‘®•¶š—ñ‚Ìˆø”‚Ì”.
-                          PCWSTR argv[] = 0            ///< ‘®•¶š—ñ‚Ìˆø”‚Ì”z—ñ.
+/// æ–‡å­—åˆ—ã‚’ä½œæˆã™ã‚‹.
+MEW_API void CreateString(IString** ppString,          ///< ä½œæˆã•ã‚ŒãŸæ–‡å­—åˆ—.
+                          PCWSTR format,               ///< æ›¸å¼æ–‡å­—åˆ—.
+                          size_t length = (size_t)-1,  ///< æ›¸å¼æ–‡å­—åˆ—ã®é•·ã•.
+                          size_t argc = 0,             ///< æ›¸å¼æ–‡å­—åˆ—ã®å¼•æ•°ã®æ•°.
+                          PCWSTR argv[] = 0            ///< æ›¸å¼æ–‡å­—åˆ—ã®å¼•æ•°ã®é…åˆ—.
                           ) throw();
 
-/// ƒŠƒ\[ƒX‚©‚ç•¶š—ñ‚ğì¬‚·‚é.
-MEW_API void CreateString(IString** ppString,  ///< ì¬‚³‚ê‚½•¶š—ñ.
-                          UINT nID,            ///< •¶š—ñID.
-                          HMODULE hModule,     ///< ƒŠƒ\[ƒXƒe[ƒuƒ‹‚ğŠÜ‚Şƒ‚ƒWƒ…[ƒ‹.
-                          size_t argc = 0,     ///< ‘®•¶š—ñ‚Ìˆø”‚Ì”.
-                          PCWSTR argv[] = 0    ///< ‘®•¶š—ñ‚Ìˆø”‚Ì”z—ñ.
+/// ãƒªã‚½ãƒ¼ã‚¹ã‹ã‚‰æ–‡å­—åˆ—ã‚’ä½œæˆã™ã‚‹.
+MEW_API void CreateString(IString** ppString,  ///< ä½œæˆã•ã‚ŒãŸæ–‡å­—åˆ—.
+                          UINT nID,            ///< æ–‡å­—åˆ—ID.
+                          HMODULE hModule,     ///< ãƒªã‚½ãƒ¼ã‚¹ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’å«ã‚€ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«.
+                          size_t argc = 0,     ///< æ›¸å¼æ–‡å­—åˆ—ã®å¼•æ•°ã®æ•°.
+                          PCWSTR argv[] = 0    ///< æ›¸å¼æ–‡å­—åˆ—ã®å¼•æ•°ã®é…åˆ—.
                           ) throw();
 
-/// ƒIƒuƒWƒFƒNƒg‚Ì•¶š—ñ•\Œ»‚ğ“¾‚é.
-void ObjectToString(IString** ppString,  ///< ì¬‚³‚ê‚½•¶š—ñ‚ğó‚¯æ‚é.
-                    IUnknown* pObject    ///< •¶š—ñ•\Œ»‚ğ“¾‚½‚¢ƒIƒuƒWƒFƒNƒg. null‚Å‚à‚æ‚¢.
+/// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®æ–‡å­—åˆ—è¡¨ç¾ã‚’å¾—ã‚‹.
+void ObjectToString(IString** ppString,  ///< ä½œæˆã•ã‚ŒãŸæ–‡å­—åˆ—ã‚’å—ã‘å–ã‚‹.
+                    IUnknown* pObject    ///< æ–‡å­—åˆ—è¡¨ç¾ã‚’å¾—ãŸã„ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ. nullã§ã‚‚ã‚ˆã„.
                     ) throw();
 }  // namespace mew

@@ -1,5 +1,5 @@
-/// @file path.hpp
-/// ƒpƒX‘€ì.
+ï»¿/// @file path.hpp
+/// ãƒ‘ã‚¹æ“ä½œ.
 #pragma once
 
 #include "string.hpp"
@@ -7,7 +7,7 @@
 namespace mew {
 namespace io {
 //==============================================================================
-// “ÁêƒtƒHƒ‹ƒ_‚ÌƒpƒX
+// ç‰¹æ®Šãƒ•ã‚©ãƒ«ãƒ€ã®ãƒ‘ã‚¹
 
 const WCHAR GUID_MyDocument[] = L"::{450D8FBA-AD25-11D0-98A8-0800361B1103}";
 const WCHAR GUID_Network[] = L"::{208D2C60-3AEA-1069-A2D7-08002B30309D}";
@@ -25,7 +25,7 @@ const INT_PTR IDList_Parent = 1;
 const INT_PTR IDList_Linked = 0x0000FFFF;
 
 //==============================================================================
-// ƒCƒ“ƒ^ƒtƒF[ƒX
+// ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹
 
 interface __declspec(uuid("409E5925-F847-44F8-A505-26A619AB793D")) IEntry;
 __interface __declspec(uuid("4F030BAB-544F-4898-A73A-8901BB631D35")) IEntryList;
@@ -33,7 +33,7 @@ __interface __declspec(uuid("B44AEEF2-4EC8-436C-B87D-F28DD1CC2C6A")) IFolder;
 __interface __declspec(uuid("3F2929E4-BCC8-4D51-A9C9-A30CC0C3FA22")) IDragSource;
 
 //==============================================================================
-// ì¬‰Â”\‚ÈƒNƒ‰ƒX
+// ä½œæˆå¯èƒ½ãªã‚¯ãƒ©ã‚¹
 
 class __declspec(uuid("B9847445-80E8-4EBB-BB30-09FF879A31B2")) Entry;
 class __declspec(uuid("0BB31216-4BB7-4B10-957E-83AFF7B4C212")) EntryList;
@@ -41,24 +41,24 @@ class __declspec(uuid("1D502BC3-DA23-4AB1-8E65-6354D1EAA39D")) FolderMenu;
 class __declspec(uuid("6B69FE4C-66D3-4C06-B112-423732354AF4")) DragSource;
 
 //==============================================================================
-// ƒCƒ“ƒ^ƒtƒF[ƒX’è‹`.
+// ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹å®šç¾©.
 
 using IndexOrIDList = IndexOr<const ITEMIDLIST>;
 
-/// ƒVƒFƒ‹ƒGƒ“ƒgƒŠ(ITEMIDLIST).
+/// ã‚·ã‚§ãƒ«ã‚¨ãƒ³ãƒˆãƒª(ITEMIDLIST).
 interface __declspec(novtable) IEntry : IUnknown {
-  /// ƒGƒ“ƒgƒŠ‚Ì–¼‘O‚Ìí—Ş.
+  /// ã‚¨ãƒ³ãƒˆãƒªã®åå‰ã®ç¨®é¡.
   enum NameType {
-    NAME,          ///< ƒGƒNƒXƒvƒ[ƒ‰‚Å•\¦‚³‚ê‚é–¼‘O.
-    PATH,          ///< ƒtƒ‹ƒpƒX.
-    LEAF,          ///< ––’[ƒtƒ@ƒCƒ‹–¼.
-    BASE,          ///< Šg’£q‚ğœ‚¢‚½––’[ƒtƒ@ƒCƒ‹–¼.
-    EXTENSION,     ///< Šg’£q‚Ì‚İ.
-    URL,           ///< URLŒ`®. file:///C:/foo.txt
-    IDENTIFIER,    ///< ƒVƒFƒ‹–¼‘O‹óŠÔ‚Å‚ÌƒtƒHƒ‹ƒ_–¼.
-    PATH_OR_NAME,  ///< ƒtƒ‹ƒpƒXA‹ó‚Ìê‡‚Í–¼‘O.
-    LEAF_OR_NAME,  ///< ––’[ƒtƒ@ƒCƒ‹–¼A‹ó‚Ìê‡‚Í–¼‘O.
-    BASE_OR_NAME,  ///< Šg’£q‚ğœ‚¢‚½––’[ƒtƒ@ƒCƒ‹–¼A‹ó‚Ìê‡‚Í–¼‘O.
+    NAME,          ///< ã‚¨ã‚¯ã‚¹ãƒ—ãƒ­ãƒ¼ãƒ©ã§è¡¨ç¤ºã•ã‚Œã‚‹åå‰.
+    PATH,          ///< ãƒ•ãƒ«ãƒ‘ã‚¹.
+    LEAF,          ///< æœ«ç«¯ãƒ•ã‚¡ã‚¤ãƒ«å.
+    BASE,          ///< æ‹¡å¼µå­ã‚’é™¤ã„ãŸæœ«ç«¯ãƒ•ã‚¡ã‚¤ãƒ«å.
+    EXTENSION,     ///< æ‹¡å¼µå­ã®ã¿.
+    URL,           ///< URLå½¢å¼. file:///C:/foo.txt
+    IDENTIFIER,    ///< ã‚·ã‚§ãƒ«åå‰ç©ºé–“ã§ã®ãƒ•ã‚©ãƒ«ãƒ€å.
+    PATH_OR_NAME,  ///< ãƒ•ãƒ«ãƒ‘ã‚¹ã€ç©ºã®å ´åˆã¯åå‰.
+    LEAF_OR_NAME,  ///< æœ«ç«¯ãƒ•ã‚¡ã‚¤ãƒ«åã€ç©ºã®å ´åˆã¯åå‰.
+    BASE_OR_NAME,  ///< æ‹¡å¼µå­ã‚’é™¤ã„ãŸæœ«ç«¯ãƒ•ã‚¡ã‚¤ãƒ«åã€ç©ºã®å ´åˆã¯åå‰.
   };
 
 #ifndef DOXYGEN
@@ -69,24 +69,24 @@ interface __declspec(novtable) IEntry : IUnknown {
 #endif
   __declspec(property(get = get_Name)) string Name;
   __declspec(property(get = get_Path)) string Path;
-  __declspec(property(get = get_ID)) LPCITEMIDLIST ID;  ///< ƒVƒFƒ‹IDƒŠƒXƒg.
-  __declspec(property(get = get_Image)) int Image;      ///< ƒCƒ[ƒWƒŠƒXƒgƒCƒ“ƒfƒNƒX.
+  __declspec(property(get = get_ID)) LPCITEMIDLIST ID;  ///< ã‚·ã‚§ãƒ«IDãƒªã‚¹ãƒˆ.
+  __declspec(property(get = get_Image)) int Image;      ///< ã‚¤ãƒ¡ãƒ¼ã‚¸ãƒªã‚¹ãƒˆã‚¤ãƒ³ãƒ‡ã‚¯ã‚¹.
 
-  /// ƒGƒ“ƒgƒŠ‚Ì–¼‘O‚ğæ“¾‚·‚é.
+  /// ã‚¨ãƒ³ãƒˆãƒªã®åå‰ã‚’å–å¾—ã™ã‚‹.
   virtual string GetName(NameType what) = 0;
-  /// ƒGƒ“ƒgƒŠ‚Ì–¼‘O‚ğİ’è‚·‚é.
+  /// ã‚¨ãƒ³ãƒˆãƒªã®åå‰ã‚’è¨­å®šã™ã‚‹.
   virtual HRESULT SetName(PCWSTR name, HWND hwnd = null) = 0;
 
-  /// ‘Š‘ÎƒpƒX‚ğw’è‚µ‚ÄƒIƒuƒWƒFƒNƒg‚ğæ“¾‚·‚é.
-  /// ƒtƒHƒ‹ƒ_‚Å‚È‚¢ê‡‚Í¸”s‚·‚é.
+  /// ç›¸å¯¾ãƒ‘ã‚¹ã‚’æŒ‡å®šã—ã¦ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—ã™ã‚‹.
+  /// ãƒ•ã‚©ãƒ«ãƒ€ã§ãªã„å ´åˆã¯å¤±æ•—ã™ã‚‹.
   virtual HRESULT QueryObject(REFINTF ppObject,  ///< IEntry or IShellFolder.
-                              IndexOrIDList relpath = 0  ///< ‘Š‘ÎƒpƒX / null‚Ìê‡‚Í©•ª©g / 65535ˆÈ‰º‚Ìê‡‚Íe•ûŒü.
+                              IndexOrIDList relpath = 0  ///< ç›¸å¯¾ãƒ‘ã‚¹ / nullã®å ´åˆã¯è‡ªåˆ†è‡ªèº« / 65535ä»¥ä¸‹ã®å ´åˆã¯è¦ªæ–¹å‘.
                               ) = 0;
   ///
   virtual HRESULT ParseDisplayName(REFINTF ppObject,  ///< IEntry or IShellFolder.
-                                   PCWSTR relpath  ///< ‘Š‘ÎƒpƒX / null‚Ìê‡‚Í©•ª©g / 65535ˆÈ‰º‚Ìê‡‚Íe•ûŒü.
+                                   PCWSTR relpath  ///< ç›¸å¯¾ãƒ‘ã‚¹ / nullã®å ´åˆã¯è‡ªåˆ†è‡ªèº« / 65535ä»¥ä¸‹ã®å ´åˆã¯è¦ªæ–¹å‘.
                                    ) = 0;
-  /// ƒGƒNƒXƒvƒ[ƒ‰‚ÅƒtƒHƒ‹ƒ_‚Æ‚µ‚Ä•\¦‚Å‚«‚é‚©”Û‚©.
+  /// ã‚¨ã‚¯ã‚¹ãƒ—ãƒ­ãƒ¼ãƒ©ã§ãƒ•ã‚©ãƒ«ãƒ€ã¨ã—ã¦è¡¨ç¤ºã§ãã‚‹ã‹å¦ã‹.
   virtual bool IsFolder() = 0;
   ///
   virtual bool Exists() = 0;
@@ -101,14 +101,14 @@ interface __declspec(novtable) IEntry : IUnknown {
 };
 
 //==============================================================================
-// ƒpƒX.
+// ãƒ‘ã‚¹.
 
 bool PathIsRegistory(PCWSTR name);
 bool PathIsFolder(PCWSTR path);
 inline LPCWSTR PathFindLeaf(STRING path) { return ::PathFindFileName(path); }
 
 enum PathFrom {
-  None,  // ‘Š‘ÎƒpƒX‚Ìê‡‚ÍƒGƒ‰[.
+  None,  // ç›¸å¯¾ãƒ‘ã‚¹ã®å ´åˆã¯ã‚¨ãƒ©ãƒ¼.
   Top,   // AVESTA
   Bin,   // AVESTA/bin
   Man,   // AVESTA/man
@@ -134,7 +134,7 @@ ref<IEntry> CreateEntry(STRING src, PathFrom from = None);
 // HRESULT PathGetLink(WCHAR dst[MAX_PATH], PCWSTR src);
 
 //==============================================================================
-// INIƒtƒ@ƒCƒ‹.
+// INIãƒ•ã‚¡ã‚¤ãƒ«.
 
 string IniGetString(PCTSTR filename, PCTSTR group, PCTSTR key, PCTSTR defaultValue);
 bool IniGetBool(PCTSTR filename, PCTSTR group, PCTSTR key, bool defaultValue);

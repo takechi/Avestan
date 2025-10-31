@@ -1,4 +1,4 @@
-// WTLControls.hpp
+ï»¿// WTLControls.hpp
 #pragma once
 
 #ifndef __ATLCTRLS_H__
@@ -69,7 +69,7 @@ class CTypedList : public TBase {
     DeleteAllItems();
     DeleteAllColumn();
   }
-  // SelectedColumn ‚ÍAXPˆÈã‚ğ—v‹.
+  // SelectedColumn ã¯ã€XPä»¥ä¸Šã‚’è¦æ±‚.
   INT32 GetSelectedColumn() const throw() { return m_SelectedColumn; }
   void SetSelectedColumn(INT32 column) throw() {
     if (column < 0 || column >= GetColumnCount()) {
@@ -110,7 +110,7 @@ class __declspec(novtable) CTypedListImpl : public mew::ui::CWindowImplEx<TFinal
     SortItems((PFNLVCOMPARE)CompareItemThunk, (LPARAM)&param);
   }
   void SortElements(INT32 column, SortFlags flags) {
-    if (column < 0 || column >= GetColumnCount()) {  // •s³‚È‚Ì‚ÅAƒfƒtƒHƒ‹ƒg (0, ascending) ‚Éİ’è‚·‚é
+    if (column < 0 || column >= GetColumnCount()) {  // ä¸æ­£ãªã®ã§ã€ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆ (0, ascending) ã«è¨­å®šã™ã‚‹
       column = 0;
       if (flags == SortDefault) flags = SortAscending;
     }
@@ -141,11 +141,11 @@ class __declspec(novtable) CTypedListImpl : public mew::ui::CWindowImplEx<TFinal
 
  public:
   BEGIN_MSG_MAP(_)
-  // ƒfƒtƒHƒ‹ƒgƒnƒ“ƒhƒ‰‚Åˆ—‚³‚¹‚½‚¢‚½‚ßBƒtƒŒ[ƒ€ƒ[ƒN‚É‚Ü‚í‚·‚ÆREFLECT_NOTIFICATIONS()‚µ‚Ä‚µ‚Ü‚¤
+  // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆãƒãƒ³ãƒ‰ãƒ©ã§å‡¦ç†ã•ã›ãŸã„ãŸã‚ã€‚ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¯ãƒ¼ã‚¯ã«ã¾ã‚ã™ã¨REFLECT_NOTIFICATIONS()ã—ã¦ã—ã¾ã†
   MSG_LAMBDA(WM_NOTIFY, { lResult = DefWindowProc(uMsg, wParam, lParam); })
   MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
   MESSAGE_HANDLER(WM_CONTEXTMENU, OnContextMenu)
-  // WindowsXPƒXƒ^ƒCƒ‹‚ğg‚¤‚ÆUnicode”Å‚ªŒÄ‚Î‚ê‚é‚Û‚¢
+  // WindowsXPã‚¹ã‚¿ã‚¤ãƒ«ã‚’ä½¿ã†ã¨Unicodeç‰ˆãŒå‘¼ã°ã‚Œã‚‹ã½ã„
   REFLECTED_NOTIFY_CODE_HANDLER(LVN_GETDISPINFOW, OnGetDispInfo)
   REFLECTED_NOTIFY_CODE_HANDLER(LVN_INSERTITEM, OnInsertItem)
   REFLECTED_NOTIFY_CODE_HANDLER(LVN_DELETEITEM, OnDeleteItem)
@@ -157,7 +157,7 @@ class __declspec(novtable) CTypedListImpl : public mew::ui::CWindowImplEx<TFinal
   END_MSG_MAP()
 
   LRESULT OnDestroy(UINT, WPARAM, LPARAM, BOOL& bHandled) {
-    MakeEmpty();  // ”jŠü‚É‚Í©“®“I‚É LVM_DELETEALLITEMS ‚ÍŒÄ‚Î‚ê‚È‚¢‚à‚æ‚¤
+    MakeEmpty();  // ç ´æ£„æ™‚ã«ã¯è‡ªå‹•çš„ã« LVM_DELETEALLITEMS ã¯å‘¼ã°ã‚Œãªã„ã‚‚ã‚ˆã†
     bHandled = false;
     return 0;
   }
@@ -330,7 +330,7 @@ class __declspec(novtable) CTypedTreeImpl : public mew::ui::CWindowImplEx<TFinal
 
  public:
   BEGIN_MSG_MAP(_)
-  // ƒfƒtƒHƒ‹ƒgƒnƒ“ƒhƒ‰‚Åˆ—‚³‚¹‚½‚¢‚½‚ßBƒtƒŒ[ƒ€ƒ[ƒN‚É‚Ü‚í‚·‚ÆREFLECT_NOTIFICATIONS()‚µ‚Ä‚µ‚Ü‚¤
+  // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆãƒãƒ³ãƒ‰ãƒ©ã§å‡¦ç†ã•ã›ãŸã„ãŸã‚ã€‚ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¯ãƒ¼ã‚¯ã«ã¾ã‚ã™ã¨REFLECT_NOTIFICATIONS()ã—ã¦ã—ã¾ã†
   MSG_LAMBDA(WM_NOTIFY, { lResult = DefWindowProc(uMsg, wParam, lParam); })
   MSG_HANDLER(WM_LBUTTONDBLCLK, OnLButtonDblClk)
   MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
@@ -351,7 +351,7 @@ class __declspec(novtable) CTypedTreeImpl : public mew::ui::CWindowImplEx<TFinal
   END_MSG_MAP()
 
   LRESULT OnDestroy(UINT, WPARAM, LPARAM, BOOL& bHandled) {
-    MakeEmpty();  // ”jŠü‚É‚Í©“®“I‚É LVM_DELETEALLITEMS ‚ÍŒÄ‚Î‚ê‚È‚¢‚à‚æ‚¤
+    MakeEmpty();  // ç ´æ£„æ™‚ã«ã¯è‡ªå‹•çš„ã« LVM_DELETEALLITEMS ã¯å‘¼ã°ã‚Œãªã„ã‚‚ã‚ˆã†
     bHandled = false;
     return 0;
   }
@@ -389,20 +389,20 @@ class __declspec(novtable) CTypedTreeImpl : public mew::ui::CWindowImplEx<TFinal
   }
   LRESULT OnRButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) { return 0; }
   LRESULT OnRButtonUp(UINT uMsg, WPARAM wParam, LPARAM lParam,
-                      BOOL& bHandled) {  // ƒcƒŠ[ƒrƒ…[‚Å‚Í‚È‚­AƒfƒtƒHƒ‹ƒgiWM_CONTEXTMENU‚ğ”­¶‚³‚¹‚éj
+                      BOOL& bHandled) {  // ãƒ„ãƒªãƒ¼ãƒ“ãƒ¥ãƒ¼ã§ã¯ãªãã€ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆï¼ˆWM_CONTEXTMENUã‚’ç™ºç”Ÿã•ã›ã‚‹ï¼‰
     ::DefWindowProc(m_hWnd, uMsg, wParam, lParam);
     return 0;
   }
-  LRESULT OnItemReturn(int, LPNMHDR /*pnmh*/, BOOL& /*bHandled*/) {  // ƒfƒtƒHƒ‹ƒg“®ì‚Íuƒr[ƒv‚ğ–Â‚ç‚·v‚Ì‚ÅAƒLƒƒƒ“ƒZƒ‹‚·‚éB
+  LRESULT OnItemReturn(int, LPNMHDR /*pnmh*/, BOOL& /*bHandled*/) {  // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå‹•ä½œã¯ã€Œãƒ“ãƒ¼ãƒ—ã‚’é³´ã‚‰ã™ã€ã®ã§ã€ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã™ã‚‹ã€‚
     return 1;
   }
   LRESULT OnItemKeyDown(int, LPNMHDR pnmh,
-                        BOOL& bHandled) {  // NM_RETURN ‚Å‚ÍACtrl+Return ‚ğæ“¾‚Å‚«‚È‚¢‚½‚ßATVN_KEYDOWN ‚ğƒnƒ“ƒhƒ‹‚·‚éB
+                        BOOL& bHandled) {  // NM_RETURN ã§ã¯ã€Ctrl+Return ã‚’å–å¾—ã§ããªã„ãŸã‚ã€TVN_KEYDOWN ã‚’ãƒãƒ³ãƒ‰ãƒ«ã™ã‚‹ã€‚
     NMTVKEYDOWN* key = (NMTVKEYDOWN*)pnmh;
     switch (key->wVKey) {
       case VK_RETURN:
         final.OnExecuteItem(GetSelectedItem());
-        return 1;  // non-zero ƒCƒ“ƒNƒŠƒƒ“ƒ^ƒ‹ƒT[ƒ`‚ÉŠÜ‚Ü‚È‚¢
+        return 1;  // non-zero ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ã‚¿ãƒ«ã‚µãƒ¼ãƒã«å«ã¾ãªã„
       case VK_SPACE:
         Expand(GetSelectedItem(), TVE_TOGGLE);
         return 1;
@@ -425,7 +425,7 @@ class __declspec(novtable) CTypedTreeImpl : public mew::ui::CWindowImplEx<TFinal
     Notify* nm = (Notify*)pnmh;
     HTREEITEM hItem = nm->itemNew.hItem;
     final.OnExpanding(hItem, (ParamType)nm->itemNew.lParam, nm->action == TVE_EXPAND);
-    if (!GetNextItem(hItem, TVGN_CHILD)) {  // ŠJ‚¢‚Ä‚İ‚½‚çAÀ‚Íq‹Ÿ‚ğ‚Á‚Ä‚¢‚È‚©‚Á‚½
+    if (!GetNextItem(hItem, TVGN_CHILD)) {  // é–‹ã„ã¦ã¿ãŸã‚‰ã€å®Ÿã¯å­ä¾›ã‚’æŒã£ã¦ã„ãªã‹ã£ãŸ
       Item item(TVIF_HANDLE | TVIF_CHILDREN);
       item.hItem = hItem;
       item.cChildren = 0;
@@ -540,7 +540,7 @@ class __declspec(novtable) CTypedTabImpl : public mew::ui::CWindowImplEx<TFinal,
   }
   bool GetTabsRect(LPRECT rc) const {
     RECT rcTab;
-    GetItemRect(0, &rcTab);  // ƒ^ƒu‚ª–³‚­‚Ä‚à‚‚³‚Íæ‚ê‚é‚ªAfalse‚ª•Ô‚é‚à‚æ‚¤
+    GetItemRect(0, &rcTab);  // ã‚¿ãƒ–ãŒç„¡ãã¦ã‚‚é«˜ã•ã¯å–ã‚Œã‚‹ãŒã€falseãŒè¿”ã‚‹ã‚‚ã‚ˆã†
     GetClientRect(rc);
     rc->bottom = rcTab.bottom;
     return true;
@@ -548,7 +548,7 @@ class __declspec(novtable) CTypedTabImpl : public mew::ui::CWindowImplEx<TFinal,
 
  public:
   BEGIN_MSG_MAP(_)
-  // ƒfƒtƒHƒ‹ƒgƒnƒ“ƒhƒ‰‚Åˆ—‚³‚¹‚½‚¢‚½‚ßBƒtƒŒ[ƒ€ƒ[ƒN‚É‚Ü‚í‚·‚ÆREFLECT_NOTIFICATIONS()‚µ‚Ä‚µ‚Ü‚¤
+  // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆãƒãƒ³ãƒ‰ãƒ©ã§å‡¦ç†ã•ã›ãŸã„ãŸã‚ã€‚ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¯ãƒ¼ã‚¯ã«ã¾ã‚ã™ã¨REFLECT_NOTIFICATIONS()ã—ã¦ã—ã¾ã†
   MSG_LAMBDA(WM_NOTIFY, { lResult = DefWindowProc(uMsg, wParam, lParam); })
   REFLECTED_NOTIFY_CODE_LAMBDA(TCN_SELCHANGE, { final.OnSelChange(GetCurSel()); })
   REFLECTED_NOTIFY_CODE_LAMBDA(NM_CLICK, { final.OnLeftClick(GetCurSel()); })

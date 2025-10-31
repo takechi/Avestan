@@ -1,4 +1,4 @@
-// command.cpp
+ï»¿// command.cpp
 
 #include "stdafx.h"
 #include "private.h"
@@ -100,7 +100,7 @@ class CompoundCommand : public mew::Root<mew::implements<mew::ICommand> > {
   bool InvoleCommand(ICommand* command) {
     command->Invoke();
     afx::PumpMessage();
-    Sleep(1);  // ‚Æ‚è‚ ‚¦‚¸ƒXƒŠ[ƒv‚ğ“ü‚ê‚ÄA2T‰ñ‚µ‚Ä‚İ‚éB
+    Sleep(1);  // ã¨ã‚Šã‚ãˆãšã‚¹ãƒªãƒ¼ãƒ—ã‚’å…¥ã‚Œã¦ã€2é€±å›ã—ã¦ã¿ã‚‹ã€‚
     afx::PumpMessage();
     return true;
   }
@@ -124,7 +124,7 @@ class Commands : public Root<implements<ICommands> > {
   HRESULT Add(string name, ICommand* command) {
     if (m_map.find(name) != m_map.end()) {
       TRACE(name);
-      ASSERT(!"“¯‚¶–¼‘O‚ÌƒRƒ}ƒ“ƒh‚ğ“o˜^‚µ‚æ‚¤‚Æ‚µ‚Ü‚µ‚½");
+      ASSERT(!"åŒã˜åå‰ã®ã‚³ãƒãƒ³ãƒ‰ã‚’ç™»éŒ²ã—ã‚ˆã†ã¨ã—ã¾ã—ãŸ");
       return E_FAIL;
     }
     m_map[name] = command;
@@ -133,7 +133,7 @@ class Commands : public Root<implements<ICommands> > {
   HRESULT Add(string name, string description) {
     if (m_map.find(name) != m_map.end()) {
       TRACE(name);
-      ASSERT(!"“¯‚¶–¼‘O‚ÌƒRƒ}ƒ“ƒh‚ğ“o˜^‚µ‚æ‚¤‚Æ‚µ‚Ü‚µ‚½");
+      ASSERT(!"åŒã˜åå‰ã®ã‚³ãƒãƒ³ãƒ‰ã‚’ç™»éŒ²ã—ã‚ˆã†ã¨ã—ã¾ã—ãŸ");
       return E_FAIL;
     }
     m_map[name] = objnew<Command>(name, description);
@@ -163,7 +163,7 @@ class Commands : public Root<implements<ICommands> > {
 
       while (string nm = token.next()) {
         Map::iterator j = m_map.find(nm);
-        if (j == m_map.end()) {  // ‚Ğ‚Æ‚Â‚Å‚àŒ©‚Â‚©‚ç‚È‚¢ƒRƒ}ƒ“ƒh‚ª‚ ‚ê‚Î¸”s
+        if (j == m_map.end()) {  // ã²ã¨ã¤ã§ã‚‚è¦‹ã¤ã‹ã‚‰ãªã„ã‚³ãƒãƒ³ãƒ‰ãŒã‚ã‚Œã°å¤±æ•—
           TRACE(name);
           ASSERT(!"command not found");
           *ppInterface.pp = null;
@@ -175,8 +175,8 @@ class Commands : public Root<implements<ICommands> > {
       if (!cmd) {
         return E_INVALIDARG;
       }
-      // TODO: •¡‡ƒRƒ}ƒ“ƒh‚ğ“o˜^‚·‚éB‚µ‚©‚µA‚±‚±‚ÅŸè‚É“o˜^‚·‚é‚ÆA‰ğ•ú‚³‚ê‚È‚­‚È‚Á‚Ä‚µ‚Ü‚¤B
-      // •¡‡ƒRƒ}ƒ“ƒhê—p‚ÉAddRef()‚µ‚È‚¢”z—ñ‚ğ—pˆÓ‚µ‚ÄAãQÆ‚Æ‚µ‚Äˆµ‚¤‚×‚«‚©H
+      // TODO: è¤‡åˆã‚³ãƒãƒ³ãƒ‰ã‚’ç™»éŒ²ã™ã‚‹ã€‚ã—ã‹ã—ã€ã“ã“ã§å‹æ‰‹ã«ç™»éŒ²ã™ã‚‹ã¨ã€è§£æ”¾ã•ã‚Œãªããªã£ã¦ã—ã¾ã†ã€‚
+      // è¤‡åˆã‚³ãƒãƒ³ãƒ‰å°‚ç”¨ã«AddRef()ã—ãªã„é…åˆ—ã‚’ç”¨æ„ã—ã¦ã€å¼±å‚ç…§ã¨ã—ã¦æ‰±ã†ã¹ãã‹ï¼Ÿ
       // Add(name);
       return cmd->QueryInterface(ppInterface);
     } else {

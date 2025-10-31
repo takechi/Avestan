@@ -1,4 +1,4 @@
-// Preview.cpp
+ï»¿// Preview.cpp
 
 #include "stdafx.h"
 #include "../private.h"
@@ -191,7 +191,7 @@ class Text : public Drawable {
     mew::Rect rc(0, 0, screen.w, screen.h);
     dc.FillRect(&rc, ::GetSysColorBrush(COLOR_WINDOW));
     ::DrawTextA(dc, m_text, m_length, &rc, DT_NOPREFIX | DT_EXPANDTABS);
-    // ˆês‚È‚çAˆÈ‰º‚ªƒxƒXƒgB
+    // ä¸€è¡Œãªã‚‰ã€ä»¥ä¸‹ãŒãƒ™ã‚¹ãƒˆã€‚
     // ::ExtTextOutA(dc, 0, 0, ETO_OPAQUE, &rc, m_text, m_length, NULL);
   }
 };
@@ -206,10 +206,10 @@ class Executable {
       PCTSTR author = ver.QueryValue(_T("LegalCopyright"));
       PCTSTR comment = ver.QueryValue(_T("Comments"));
       mew::string text = mew::string::format(
-          L"–¼‘O\t\t: $1\n"
-          L"ƒo[ƒWƒ‡ƒ“\t: $2\n"
-          L"’˜ìÒ\t\t: $3\n"
-          L"ƒRƒƒ“ƒg\t\t: $4",
+          L"åå‰\t\t: $1\n"
+          L"ãƒãƒ¼ã‚¸ãƒ§ãƒ³\t: $2\n"
+          L"è‘—ä½œè€…\t\t: $3\n"
+          L"ã‚³ãƒ¡ãƒ³ãƒˆ\t\t: $4",
           name, version, author, comment);
       ver.Close();
       return new MessageDrawable(text, DT_NOPREFIX | DT_EXPANDTABS);
@@ -268,7 +268,7 @@ class Preview : public WindowImpl<CWindowImplEx<Preview, PreviewBase>, implement
   ref<io::IEntry> m_entry;
   ref<io::IEntry> m_linked;
   HANDLE m_complete;
-  bool m_HideOnOwnerMinimize;  // FIXME: ‚±‚ñ‚È‚±‚Æ‚µ‚È‚­‚Ä‚à‚æ‚¢‚Æv‚¤‚ñ‚¾‚ªH
+  bool m_HideOnOwnerMinimize;  // FIXME: ã“ã‚“ãªã“ã¨ã—ãªãã¦ã‚‚ã‚ˆã„ã¨æ€ã†ã‚“ã ãŒï¼Ÿ
 
   enum {
     LOAD_TIMEOUT = 200,
@@ -383,7 +383,7 @@ class Preview : public WindowImpl<CWindowImplEx<Preview, PreviewBase>, implement
     return 0;
   }
 
-  LRESULT OnClose(UINT, WPARAM, LPARAM, BOOL&) {  // •Â‚¶‚¸‚ÉA‰B‚·
+  LRESULT OnClose(UINT, WPARAM, LPARAM, BOOL&) {  // é–‰ã˜ãšã«ã€éš ã™
     this->Visible = false;
     return 0;
   }
@@ -499,7 +499,7 @@ class Preview : public WindowImpl<CWindowImplEx<Preview, PreviewBase>, implement
     return true;
   }
 
-  /// @result ƒXƒƒbƒv‚³‚ê‚½‚çtrueB
+  /// @result ã‚¹ãƒ¯ãƒƒãƒ—ã•ã‚ŒãŸã‚‰trueã€‚
   template <typename T>
   static bool AutoPtrSwapIfNull(CAutoPtr<T>& lhs, CAutoPtr<T>& rhs) {
     if (::InterlockedCompareExchangePointer((void**)&lhs.m_p, rhs, null)) {
@@ -514,7 +514,7 @@ class Preview : public WindowImpl<CWindowImplEx<Preview, PreviewBase>, implement
     rhs.m_p = (T*)::InterlockedExchangePointer((void**)&lhs.m_p, rhs);
   }
 
-  /// @result XV‚³‚ê‚½‚çtrueB
+  /// @result æ›´æ–°ã•ã‚ŒãŸã‚‰trueã€‚
   bool Load() {
     if (m_drawable || !m_entry) {
       return false;
@@ -525,7 +525,7 @@ class Preview : public WindowImpl<CWindowImplEx<Preview, PreviewBase>, implement
       m_drawable.Attach(new NotSupported(m_entry->Name));
       return true;
     }
-    // ”ñ“¯Šú“Ç‚İ‚İ
+    // éåŒæœŸèª­ã¿è¾¼ã¿
     ::ResetEvent(m_complete);
     ::QueueUserWorkItem(AsyncLoad, this, WT_EXECUTEDEFAULT);
     if (::WaitForSingleObject(m_complete, LOAD_TIMEOUT) == WAIT_TIMEOUT) {
@@ -537,7 +537,7 @@ class Preview : public WindowImpl<CWindowImplEx<Preview, PreviewBase>, implement
     return true;
   }
   volatile void AsyncLoad() {
-    // “Ç‚İ‚İ’†‚É•Ï‰»‚·‚éê‡‚ª‚ ‚é‚½‚ßAƒ[ƒJƒ‹•Ï”‚É•Û‘¶‚µ‚Ä‚¨‚­B
+    // èª­ã¿è¾¼ã¿ä¸­ã«å¤‰åŒ–ã™ã‚‹å ´åˆãŒã‚ã‚‹ãŸã‚ã€ãƒ­ãƒ¼ã‚«ãƒ«å¤‰æ•°ã«ä¿å­˜ã—ã¦ãŠãã€‚
     ref<io::IEntry> linked = m_linked;
     if (!linked) {
       return;
@@ -560,7 +560,7 @@ class Preview : public WindowImpl<CWindowImplEx<Preview, PreviewBase>, implement
     //
     ASSERT(drawable);
     string text = drawable->GetText(this);
-    // ‚·‚Å‚É•Ê‚Ìƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ‚ğ‹‚ß‚ç‚ê‚Ä‚¢‚éB
+    // ã™ã§ã«åˆ¥ã®ãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿ã‚’æ±‚ã‚ã‚‰ã‚Œã¦ã„ã‚‹ã€‚
     if (linked != ((volatile Preview*)this)->m_linked.get()) {
       return;
     }

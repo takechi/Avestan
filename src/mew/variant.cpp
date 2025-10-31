@@ -1,4 +1,4 @@
-// variant.cpp
+ï»¿// variant.cpp
 
 #include "stdafx.h"
 #include "private.h"
@@ -66,12 +66,12 @@ ToString<Guid>::ToString(const Guid& value) throw() {
 
 //==============================================================================
 
-#pragma warning(disable : 4702)  // TRESPASS() ‚É§Œä‚ª‚í‚½‚ç‚È‚¢‚½‚ß
+#pragma warning(disable : 4702)  // TRESPASS() ã«åˆ¶å¾¡ãŒã‚ãŸã‚‰ãªã„ãŸã‚
 
-#define MEW_CASE(exp, type_t)       \
+#define MEW_CASE(exp, type_t)            \
   case mew::VariantType<type_t>::Code: { \
-    exp(type_t)                     \
-  }                                 \
+    exp(type_t)                          \
+  }                                      \
     TRESPASS();
 
 #define MEW_EXPAND_INTRINSIC(exp) \
@@ -120,7 +120,7 @@ void StringToPOD(PCWSTR s, mew::Rect& result) throw() {
 }  // namespace
 
 namespace {
-// warning C4244: 'from' ‚©‚ç 'to' ‚É•ÏŠ·‚µ‚Ü‚µ‚½Bƒf[ƒ^‚ª¸‚í‚ê‚Ä‚¢‚é‚©‚à‚µ‚ê‚Ü‚¹‚ñB
+// warning C4244: 'from' ã‹ã‚‰ 'to' ã«å¤‰æ›ã—ã¾ã—ãŸã€‚ãƒ‡ãƒ¼ã‚¿ãŒå¤±ã‚ã‚Œã¦ã„ã‚‹ã‹ã‚‚ã—ã‚Œã¾ã›ã‚“ã€‚
 #pragma warning(disable : 4244)
 
 template <typename To>
@@ -164,10 +164,10 @@ inline void ConvertPOD<bool>(mew::TypeCode from, const mew::variant::Union& var,
     return;                               \
   }
   switch (from) {
-    case mew::TypeNull:  // Null Ë false
+    case mew::TypeNull:  // Null â‡’ false
       result = false;
       return;
-    case mew::TypeUnknown:  // 0 Ë false
+    case mew::TypeUnknown:  // 0 â‡’ false
       if (mew::string str = mew::cast(var.unknown)) {
         StringToPOD(str.str(), result);
         return;
@@ -187,7 +187,7 @@ inline static void ConvertPOD(mew::TypeCode from, const mew::variant::Union& var
     case mew::TypeNull:
       result = TResult::Zero;
       return;
-    case mew::TypeSize:  // Size‚ÆPoint‚Íƒƒ‚ƒŠƒCƒ[ƒW‚ª‹¤’Ê
+    case mew::TypeSize:  // Sizeã¨Pointã¯ãƒ¡ãƒ¢ãƒªã‚¤ãƒ¡ãƒ¼ã‚¸ãŒå…±é€š
     case mew::TypePoint:
       memcpy(&result, var.buffer, sizeof(result));
       return;
@@ -208,7 +208,7 @@ inline static void ConvertPOD(mew::TypeCode from, const mew::variant::Union& var
     case mew::TypeNull:
       result = TResult::Zero;
       return;
-    case mew::TypeSize:  // Size‚ÆPoint‚Íƒƒ‚ƒŠƒCƒ[ƒW‚ª‹¤’Ê
+    case mew::TypeSize:  // Sizeã¨Pointã¯ãƒ¡ãƒ¢ãƒªã‚¤ãƒ¡ãƒ¼ã‚¸ãŒå…±é€š
     case mew::TypePoint:
       memcpy(&result, var.buffer, sizeof(result));
       return;

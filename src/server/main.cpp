@@ -1,4 +1,4 @@
-// main.cpp
+ï»¿// main.cpp
 
 #include "stdafx.h"
 
@@ -70,11 +70,11 @@ class __declspec(novtable) MainBase : public mew::StaticLife<TBase>, public Aves
   mew::ui::IWindow* get_display() const { return m_forms[0].window; }
   __declspec(property(get = get_display)) mew::ui::IWindow* m_display;
 
-  mew::ref<mew::ui::IForm> m_form;        ///< ƒƒCƒ“ƒtƒŒ[ƒ€ƒEƒBƒ“ƒhƒE.
-  mew::ref<mew::ui::ITabPanel> m_tab;     ///< ƒƒCƒ“ƒrƒ…[ƒRƒ“ƒeƒi.
-  mew::ref<mew::ui::ITree> m_status;      ///< ƒXƒe[ƒ^ƒXƒo[.
-  mew::ref<mew::ui::ITreeView> m_tree;    ///< ƒtƒHƒ‹ƒ_ƒcƒŠ[.
-  mew::ref<mew::ui::IPreview> m_preview;  ///< ƒvƒŒƒrƒ…[.
+  mew::ref<mew::ui::IForm> m_form;        ///< ãƒ¡ã‚¤ãƒ³ãƒ•ãƒ¬ãƒ¼ãƒ ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦.
+  mew::ref<mew::ui::ITabPanel> m_tab;     ///< ãƒ¡ã‚¤ãƒ³ãƒ“ãƒ¥ãƒ¼ã‚³ãƒ³ãƒ†ãƒŠ.
+  mew::ref<mew::ui::ITree> m_status;      ///< ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒãƒ¼.
+  mew::ref<mew::ui::ITreeView> m_tree;    ///< ãƒ•ã‚©ãƒ«ãƒ€ãƒ„ãƒªãƒ¼.
+  mew::ref<mew::ui::IPreview> m_preview;  ///< ãƒ—ãƒ¬ãƒ“ãƒ¥ãƒ¼.
   mew::ref<ICallback> m_callback;
 
  protected:  // status
@@ -84,14 +84,14 @@ class __declspec(novtable) MainBase : public mew::StaticLife<TBase>, public Aves
     if (!m_status) {
       return;
     }
-    // TODO: ƒƒbƒZ[ƒWƒLƒ…[‰»
+    // TODO: ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚­ãƒ¥ãƒ¼åŒ–
     HWND hwndStatus = m_status->Handle;
     int len = SendMessage(hwndStatus, SB_GETTEXTLENGTH, 1, 0);
     DWORD now = ::GetTickCount();
     if (len == 0 || now - m_StatusLastModify > 1000 || m_Notify <= priority) {
       m_StatusLastModify = now;
       m_Notify = priority;
-      /// FIXME: u–¼‘Ov‚ÆuƒeƒLƒXƒgv‚ğ•Ê‚É‚¿‚½‚¢‚Ì‚ÅA2‚Â–Ú‚ÌƒyƒCƒ“‚ğg‚¤B
+      /// FIXME: ã€Œåå‰ã€ã¨ã€Œãƒ†ã‚­ã‚¹ãƒˆã€ã‚’åˆ¥ã«æŒã¡ãŸã„ã®ã§ã€2ã¤ç›®ã®ãƒšã‚¤ãƒ³ã‚’ä½¿ã†ã€‚
       SendMessage(hwndStatus, SB_SETTEXT, 1, (LPARAM)text.str());
       // m_status->Name = text;
     }
@@ -199,7 +199,7 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
         }
       }
       maximized = msg["Form.Maximize"];
-      if (isSameResolution) {  // ‰ğ‘œ“x‚ª•Ï‚í‚Á‚Ä‚¢‚È‚¢ê‡‚Ì‚İB
+      if (isSameResolution) {  // è§£åƒåº¦ãŒå¤‰ã‚ã£ã¦ã„ãªã„å ´åˆã®ã¿ã€‚
         m_form->Bounds = msg["Form.Bounds"];
         if (!IsMinimizeShowCommand(sw) && maximized) {
           sw = SW_SHOWMAXIMIZED;
@@ -208,9 +208,9 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
       }
       SetAlwaysTop(msg["Form.AlwaysTop"] | false);
     } catch (mew::exceptions::Error&) {
-      // config.xml ‚ª–³‚¢‚Ì‚©‚ÈH
+      // config.xml ãŒç„¡ã„ã®ã‹ãªï¼Ÿ
     }
-    // ƒtƒHƒ“ƒg.
+    // ãƒ•ã‚©ãƒ³ãƒˆ.
     if (m_tab && m_fonts[avesta::FontTab]) {
       SetFont(m_tab, m_fonts[avesta::FontTab]);
     }
@@ -219,24 +219,24 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
     }
     // Python
     if (m_booleans[avesta::BoolPython]) {
-      // ƒ`ƒFƒbƒN‚Ì‚½‚ß‚Ìƒ[ƒh
+      // ãƒã‚§ãƒƒã‚¯ã®ãŸã‚ã®ãƒ­ãƒ¼ãƒ‰
       if (HINSTANCE hPython = LoadLibrary(_T("python311"))) {
         thePygmy = LoadLibrary(_T("pygmy.pyd"));
         if (thePygmy) {
           m_callback.create(__uuidof(PythonCallback));
-          // pygmy‘¤‚Åƒ[ƒh‚µ‚Ä‚¢‚é‚½‚ßAƒ`ƒFƒbƒN—p‚ÌQÆ‚ğ‰ğ•ú‚·‚é
+          // pygmyå´ã§ãƒ­ãƒ¼ãƒ‰ã—ã¦ã„ã‚‹ãŸã‚ã€ãƒã‚§ãƒƒã‚¯ç”¨ã®å‚ç…§ã‚’è§£æ”¾ã™ã‚‹
           ::FreeLibrary(hPython);
         }
       }
       if (!m_callback) {
         PCTSTR errormsg =
-            _T("python311.dll ‚Ü‚½‚Í pygmy.pyd ")
-            _T("‚ªŒ©‚Â‚©‚ç‚È‚¢‚½‚ßAƒXƒNƒŠƒvƒgŠg’£‚ª\n")
-            _T("g—p‚Å‚«‚Ü‚¹‚ñB\n")
-            _T("ƒXƒNƒŠƒvƒgŠg’£‚ğg‚¤‚½‚ß‚É‚ÍApython ")
-            _T("‚ğƒCƒ“ƒXƒg[ƒ‹‚µ‚Ä‚­‚¾‚³‚¢B\n\n")
-            _T("Ÿ‰ñ‹N“®‚ÉA‚à‚¤ˆê“x python ‚Ì—L–³‚ğŠm”F‚µ‚Ü‚·‚©H\n")
-            _T("u‚¢‚¢‚¦v‚Ìê‡‚É‚ÍApython Šg’£‚ğ–³Œø‚É‚µ‚Ü‚·B");
+            _T("python311.dll ã¾ãŸã¯ pygmy.pyd ")
+            _T("ãŒè¦‹ã¤ã‹ã‚‰ãªã„ãŸã‚ã€ã‚¹ã‚¯ãƒªãƒ—ãƒˆæ‹¡å¼µãŒ\n")
+            _T("ä½¿ç”¨ã§ãã¾ã›ã‚“ã€‚\n")
+            _T("ã‚¹ã‚¯ãƒªãƒ—ãƒˆæ‹¡å¼µã‚’ä½¿ã†ãŸã‚ã«ã¯ã€python ")
+            _T("ã‚’ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã—ã¦ãã ã•ã„ã€‚\n\n")
+            _T("æ¬¡å›èµ·å‹•æ™‚ã«ã€ã‚‚ã†ä¸€åº¦ python ã®æœ‰ç„¡ã‚’ç¢ºèªã—ã¾ã™ã‹ï¼Ÿ\n")
+            _T("ã€Œã„ã„ãˆã€ã®å ´åˆã«ã¯ã€python æ‹¡å¼µã‚’ç„¡åŠ¹ã«ã—ã¾ã™ã€‚");
         switch (::MessageBox(NULL, errormsg, _T("Avesta"), MB_YESNO | MB_ICONINFORMATION)) {
           case IDYES:
             m_booleans[avesta::BoolPython] = true;
@@ -358,8 +358,8 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
       ParseCommandLine(args);
 
       if (!CurrentView() &&
-          m_booleans[avesta::BoolRestoreCond]) {  // ‹N“®‚ÉŠJ‚­ƒtƒHƒ‹ƒ_‚ª—^‚¦‚ç‚ê‚Ä‚¢‚È‚¯‚ê‚ÎAó‘Ô‚ğ•œŒ³‚·‚é
-        // ‹N“®’†‚ÍOpenNotify‚ğ–³Œø‰»
+          m_booleans[avesta::BoolRestoreCond]) {  // èµ·å‹•æ™‚ã«é–‹ããƒ•ã‚©ãƒ«ãƒ€ãŒä¸ãˆã‚‰ã‚Œã¦ã„ãªã‘ã‚Œã°ã€çŠ¶æ…‹ã‚’å¾©å…ƒã™ã‚‹
+        // èµ·å‹•ä¸­ã¯OpenNotifyã‚’ç„¡åŠ¹åŒ–
         bool tmp = m_booleans[avesta::BoolOpenNotify];
         m_booleans[avesta::BoolOpenNotify] = false;
         mew::string error;
@@ -367,7 +367,7 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
         m_booleans[avesta::BoolOpenNotify] = tmp;
       }
 
-      if (!CurrentView()) {  // ˆê‚Â‚ÌƒtƒHƒ‹ƒ_‚ğŠJ‚¢‚Ä‚¢‚È‚¢ê‡AƒLƒƒƒvƒVƒ‡ƒ“‚ª‹ó‚Ì‚Ü‚Ü‚É‚È‚Á‚Ä‚¢‚éB
+      if (!CurrentView()) {  // ä¸€ã¤ã®ãƒ•ã‚©ãƒ«ãƒ€ã‚’é–‹ã„ã¦ã„ãªã„å ´åˆã€ã‚­ãƒ£ãƒ—ã‚·ãƒ§ãƒ³ãŒç©ºã®ã¾ã¾ã«ãªã£ã¦ã„ã‚‹ã€‚
         UpdateCaption(mew::null);
       }
 
@@ -426,7 +426,7 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
   }
   HRESULT OptionPython(mew::message = mew::null) {
     m_booleans[avesta::BoolPython] = !m_booleans[avesta::BoolPython];
-    ave::InfoBox(m_form, L"Ä‹N“®Œã—LŒø‚É‚È‚è‚Ü‚·");
+    ave::InfoBox(m_form, L"å†èµ·å‹•å¾Œæœ‰åŠ¹ã«ãªã‚Šã¾ã™");
     return S_OK;
   }
   HRESULT OptionBoolean(mew::message msg) {
@@ -481,10 +481,10 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
     ASSERT(entry);
     if (mew::string filepath = entry->Path) {
       if (PathMatchSpec(filepath.str(),
-                        _T("*.ave"))) {  // *.ave ƒtƒ@ƒCƒ‹—p‚Ì“Á•Êˆ—
+                        _T("*.ave"))) {  // *.ave ãƒ•ã‚¡ã‚¤ãƒ«ç”¨ã®ç‰¹åˆ¥å‡¦ç†
         mew::string error;
         if (m_tab && FAILED(DoOpen(filepath, error))) {
-          ave::WarningBox(m_form, mew::string::format(_T("“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½B\n\n$1"), error));
+          ave::WarningBox(m_form, mew::string::format(_T("èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸã€‚\n\n$1"), error));
         }
         return mew::null;
       }
@@ -495,7 +495,7 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
     try {
       return OpenEntry(mew::ref<mew::io::IEntry>(__uuidof(mew::io::Entry), path), navi);
     } catch (mew::exceptions::Error& e) {
-      theAvesta->Notify(avesta::NotifyError, mew::string::format(_T("error: '$1' ‚ğŠJ‚¯‚Ü‚¹‚ñ‚Å‚µ‚½ ($2)"), path, e.Message));
+      theAvesta->Notify(avesta::NotifyError, mew::string::format(_T("error: '$1' ã‚’é–‹ã‘ã¾ã›ã‚“ã§ã—ãŸ ($2)"), path, e.Message));
       return mew::null;
     }
   }
@@ -543,8 +543,8 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
       // check goto navigate
       switch (naviModified) {
         case avesta::NaviGoto:
-        case avesta::NaviGotoAlways: {  // FIXME: m_callback ‚ğ–³Œø‰»‚·‚é‚±‚Æ‚ÅA
-          // NaviGoto‚ğÄ•]‰¿‚·‚é‚±‚Æ‚ğ”ğ‚¯‚Ä‚¢‚éB”ü‚µ‚­‚È‚¢I
+        case avesta::NaviGotoAlways: {  // FIXME: m_callback ã‚’ç„¡åŠ¹åŒ–ã™ã‚‹ã“ã¨ã§ã€
+          // NaviGotoã‚’å†è©•ä¾¡ã™ã‚‹ã“ã¨ã‚’é¿ã‘ã¦ã„ã‚‹ã€‚ç¾ã—ããªã„ï¼
           mew::ref<ICallback> reserve = m_callback;
           m_callback = mew::null;
           current->Go(resolved);
@@ -559,8 +559,8 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
       if (!m_booleans[avesta::BoolOpenDups]) {
         view = FindFolder(resolved);
       }
-      if (view) {  // Šù‚ÉŠJ‚¢‚Ä‚¢‚½
-      } else {     // V‚½‚ÉŠJ‚­
+      if (view) {  // æ—¢ã«é–‹ã„ã¦ã„ãŸ
+      } else {     // æ–°ãŸã«é–‹ã
         view = CreateFolderList(m_tab, folder);
         if (!view) {
           TRACE(L"OpenFolder failed.");
@@ -728,13 +728,13 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
     }
 
     if (m_status) {  // status
-      /// FIXME: u–¼‘Ov‚ÆuƒeƒLƒXƒgv‚ğ•Ê‚É‚¿‚½‚¢‚Ì‚ÅA2‚Â–Ú‚ÌƒyƒCƒ“‚ğg‚¤B
+      /// FIXME: ã€Œåå‰ã€ã¨ã€Œãƒ†ã‚­ã‚¹ãƒˆã€ã‚’åˆ¥ã«æŒã¡ãŸã„ã®ã§ã€2ã¤ç›®ã®ãƒšã‚¤ãƒ³ã‚’ä½¿ã†ã€‚
       int w[] = {0, -1};
       SendMessage(m_status->Handle, SB_SIMPLE, FALSE, 0);
       SendMessage(m_status->Handle, SB_SETPARTS, 2, (LPARAM)w);
     }
 
-    // ƒRƒ}ƒ“ƒh‰Šú‰»
+    // ã‚³ãƒãƒ³ãƒ‰åˆæœŸåŒ–
     InitCommands();
     RegisterForms(m_forms, m_commands);
 
@@ -784,15 +784,15 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
       return E_UNEXPECTED;
     }
 
-    // TODO: current ‚Í string Œ^‚Å\•ª‚¾‚ªA
-    // pygmy.dll ‚ÌŒİŠ·«‚Ì‚½‚ß IEntry ‚ğg‚Á‚Ä‚¢‚éB
-    // Ÿ‚ÌƒƒWƒƒ[ƒo[ƒWƒ‡ƒ“ƒAƒbƒv‚Å•ÏX‚·‚é‚±‚ÆB
+    // TODO: current ã¯ string å‹ã§ååˆ†ã ãŒã€
+    // pygmy.dll ã®äº’æ›æ€§ã®ãŸã‚ IEntry ã‚’ä½¿ã£ã¦ã„ã‚‹ã€‚
+    // æ¬¡ã®ãƒ¡ã‚¸ãƒ£ãƒ¼ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã‚¢ãƒƒãƒ—ã§å¤‰æ›´ã™ã‚‹ã“ã¨ã€‚
     mew::ref<mew::io::IEntry> current = CurrentFolder();
 
     if (mew::string path = entry->Path) {
       if (mew::str::equals_nocase(mew::io::PathFindLeaf(path), L"avesta.dll")) {
-        switch (::MessageBox(m_form->Handle, mew::string::format(L"$1 ‚É’u‚«Š·‚¦‚Ü‚·‚©H", path).str(),
-                             L"AvestaƒAƒbƒvƒf[ƒgŠm”F", MB_YESNOCANCEL | MB_ICONINFORMATION)) {
+        switch (::MessageBox(m_form->Handle, mew::string::format(L"$1 ã«ç½®ãæ›ãˆã¾ã™ã‹ï¼Ÿ", path).str(),
+                             L"Avestaã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆç¢ºèª", MB_YESNOCANCEL | MB_ICONINFORMATION)) {
           case IDYES:
             Restart(path.str());
             return S_OK;
@@ -869,7 +869,7 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
     }
     mew::ref<mew::ui::IShellListView> current = msg["what"];
     UpdateCaption(current);
-    if (!current) {  // ÅŒã‚Ìƒ^ƒu‚ª•Â‚¶‚ç‚ê‚½‚Ì‚ÅAƒXƒe[ƒ^ƒXƒo[‚ğƒNƒŠƒA‚·‚é.
+    if (!current) {  // æœ€å¾Œã®ã‚¿ãƒ–ãŒé–‰ã˜ã‚‰ã‚ŒãŸã®ã§ã€ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒãƒ¼ã‚’ã‚¯ãƒªã‚¢ã™ã‚‹.
       SetStatusText(avesta::NotifyInfo, mew::null);
       UpdatePreview(nullptr);
     }
@@ -886,14 +886,14 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
       if (HWND hwnd = ::FindWindowEx(::FindWindowEx(view->Handle, NULL, _T("SHELLDLL_DefView"), NULL), NULL,
                                      _T("SysListView32"), NULL)) {
         int index = -1;
-        if (mew::ui::IsKeyPressed(VK_LBUTTON)) {  // ƒ}ƒEƒX¶ƒ{ƒ^ƒ“‰Ÿ‰º‚°’†ƒhƒ‰ƒbƒO‘I‘ğ’†H
+        if (mew::ui::IsKeyPressed(VK_LBUTTON)) {  // ãƒã‚¦ã‚¹å·¦ãƒœã‚¿ãƒ³æŠ¼ä¸‹ã’ä¸­ï¼ãƒ‰ãƒ©ãƒƒã‚°é¸æŠä¸­ï¼Ÿ
           LVHITTESTINFO hit;
           ::GetCursorPos(&hit.pt);
           ::ScreenToClient(hwnd, &hit.pt);
           index = ListView_HitTest(hwnd, &hit);
           if (index < 0 || ListView_GetItemState(hwnd, index, LVIS_SELECTED) !=
                                LVIS_SELECTED) {  // FIXME:
-                                                 // ‚±‚Ìó‘Ô‚Ìê‡A‰½‚ğƒvƒŒƒrƒ…[Œó•â‚É‘I‘ğ‚·‚é‚©‚Í“ï‚µ‚¢cc
+                                                 // ã“ã®çŠ¶æ…‹ã®å ´åˆã€ä½•ã‚’ãƒ—ãƒ¬ãƒ“ãƒ¥ãƒ¼å€™è£œã«é¸æŠã™ã‚‹ã‹ã¯é›£ã—ã„â€¦â€¦
             TRACE(L"UpdatePreview.FIXME");
             return;
           }
@@ -1054,8 +1054,8 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
         if (!!path) {
           TCHAR msg_[1024];
           wsprintf(msg_,
-                   _T("ƒLƒƒƒbƒVƒ…‚ğXV‚·‚é‚½‚ßA\"%s\" ˆÈ‰º‚Ì‚·‚×‚Ä‚Ì ")
-                   _T("Thumbs.db ƒtƒ@ƒCƒ‹‚ğÁ‹‚µ‚Ü‚·B\n\n‚æ‚ë‚µ‚¢‚Å‚·‚©H"),
+                   _T("ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’æ›´æ–°ã™ã‚‹ãŸã‚ã€\"%s\" ä»¥ä¸‹ã®ã™ã¹ã¦ã® ")
+                   _T("Thumbs.db ãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ¶ˆå»ã—ã¾ã™ã€‚\n\nã‚ˆã‚ã—ã„ã§ã™ã‹ï¼Ÿ"),
                    path.str());
           if (ave::QuestionBox(m_form, msg_, MB_OKCANCEL) == IDOK) {
             CWaitCursor wait;
@@ -1228,7 +1228,7 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
         entry->Path.copyto(tab.path, MAX_PATH);
         for (PTSTR c = tab.path; *c; c = mew::str::inc(c)) {
           if (*c == _T('\\')) {
-            *c = (TCHAR)1;  // NULL•¶š‚Å‚È‚¢A¬‚³‚È”š‚É’uŠ·‚·‚é
+            *c = (TCHAR)1;  // NULLæ–‡å­—ã§ãªã„ã€å°ã•ãªæ•°å­—ã«ç½®æ›ã™ã‚‹
           }
         }
       }
@@ -1236,9 +1236,9 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
     }
     //
     std::sort(tabs.begin(), tabs.end());
-    // ‚¢‚Á‚½‚ñ‰B‚µ‚Ä‚¨‚­‚ÆA‚¢‚¿‚¢‚¿ƒŒƒCƒAƒEƒg‚ªs‚í‚ê‚È‚¢‚½‚ßA‚‘¬‰»‚·‚éB
+    // ã„ã£ãŸã‚“éš ã—ã¦ãŠãã¨ã€ã„ã¡ã„ã¡ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆãŒè¡Œã‚ã‚Œãªã„ãŸã‚ã€é«˜é€ŸåŒ–ã™ã‚‹ã€‚
     SetWindowPos(m_tab->Handle, nullptr, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_HIDEWINDOW);
-    // ‚¹‚¢‚º‚¢ˆêŒ…‚È‚Ì‚ÅAƒwƒ^ƒŒ‚Èƒ\[ƒg•û–@‚Å‚²‚ß‚ñ‚È‚³‚¢
+    // ã›ã„ãœã„ä¸€æ¡ãªã®ã§ã€ãƒ˜ã‚¿ãƒ¬ãªã‚½ãƒ¼ãƒˆæ–¹æ³•ã§ã”ã‚ã‚“ãªã•ã„
     bool done = false;
     while (!done) {
       done = true;
@@ -1354,13 +1354,13 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
     return S_OK;
   }
   HRESULT ProcessFolderOptionsShow(mew::message = mew::null) {
-    // ƒvƒƒgƒ^ƒCƒv‚ª‚¢‚Ü‚¢‚¿‚æ‚­•ª‚©‚ç‚È‚¢‚Ì‚ÅAShellExecuteŒo—R‚ÅŒÄ‚Ô
+    // ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—ãŒã„ã¾ã„ã¡ã‚ˆãåˆ†ã‹ã‚‰ãªã„ã®ã§ã€ShellExecuteçµŒç”±ã§å‘¼ã¶
     ShellExecute(m_form->Handle, nullptr, _T("rundll32.exe"), _T("shell32.dll,Options_RunDLL 0"), nullptr, SW_SHOW);
-    // ‚±‚Ì‚Ü‚Ü‚¾‚ÆA‚±‚ÌƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚æ‚è‚à”w–Ê‚É•\¦‚µ‚Ä‚µ‚Ü‚¤‚Ì‚Åcc
+    // ã“ã®ã¾ã¾ã ã¨ã€ã“ã®ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã‚ˆã‚Šã‚‚èƒŒé¢ã«è¡¨ç¤ºã—ã¦ã—ã¾ã†ã®ã§â€¦â€¦
     HWND hFolderOptions = nullptr;
     for (int i = 0; i < 10 && !hFolderOptions; ++i) {
       Sleep(100);
-      hFolderOptions = ::FindWindow(_T("#32770"), _T("ƒtƒHƒ‹ƒ_ ƒIƒvƒVƒ‡ƒ“"));
+      hFolderOptions = ::FindWindow(_T("#32770"), _T("ãƒ•ã‚©ãƒ«ãƒ€ ã‚ªãƒ—ã‚·ãƒ§ãƒ³"));
     }
     if (hFolderOptions) {
       ::BringWindowToTop(hFolderOptions);
@@ -1469,11 +1469,11 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
     if (!current) {
       return true;
     }
-    // Œ»İ­‚È‚­‚Æ‚à‚Ğ‚Æ‚ÂˆÈã‚ÌƒtƒHƒ‹ƒ_‚ªŠJ‚©‚ê‚Ä‚¢‚é
+    // ç¾åœ¨å°‘ãªãã¨ã‚‚ã²ã¨ã¤ä»¥ä¸Šã®ãƒ•ã‚©ãƒ«ãƒ€ãŒé–‹ã‹ã‚Œã¦ã„ã‚‹
     switch (ave::QuestionBox(m_form,
-                        L"ƒtƒHƒ‹ƒ_ƒŠƒXƒg‚ğŠJ‚«‚Ü‚·B\n\nŒ»İ "
-                        L"ŠJ‚©‚ê‚Ä‚¢‚éƒtƒHƒ‹ƒ_‚ğ‚·‚×‚Ä•Â‚¶‚Ü‚·‚©H",
-                        MB_YESNOCANCEL)) {
+                             L"ãƒ•ã‚©ãƒ«ãƒ€ãƒªã‚¹ãƒˆã‚’é–‹ãã¾ã™ã€‚\n\nç¾åœ¨ "
+                             L"é–‹ã‹ã‚Œã¦ã„ã‚‹ãƒ•ã‚©ãƒ«ãƒ€ã‚’ã™ã¹ã¦é–‰ã˜ã¾ã™ã‹ï¼Ÿ",
+                             MB_YESNOCANCEL)) {
       case IDYES:
         ForwardToAll(mew::ui::CommandClose);
         m_display->Update();
@@ -1529,7 +1529,7 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
     }
     return count;
   }
-  /// @return ŠJ‚¢‚½ƒtƒHƒ‹ƒ_‚ÌŒÂ”. ƒGƒ‰[‚Ìê‡‚Í•‰”.
+  /// @return é–‹ã„ãŸãƒ•ã‚©ãƒ«ãƒ€ã®å€‹æ•°. ã‚¨ãƒ©ãƒ¼ã®å ´åˆã¯è² æ•°.
   HRESULT DoOpen(mew::string filename, mew::string& error) {
     try {
       mew::Stream stream(__uuidof(mew::io::FileReader), filename);
@@ -1540,7 +1540,7 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
       } else if (version == STATUS_VERSION_2) {
         return DoOpenVersion(stream, error, 2);
       } else {
-        error = _T("ì‹Æó‹µƒtƒ@ƒCƒ‹‚ÌŒ`®‚ª•s³‚Å‚·");
+        error = _T("ä½œæ¥­çŠ¶æ³ãƒ•ã‚¡ã‚¤ãƒ«ã®å½¢å¼ãŒä¸æ­£ã§ã™");
         return E_FAIL;
       }
     } catch (mew::exceptions::Error& e) {
@@ -1548,7 +1548,7 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
       return e.Code;
     }
   }
-  /// @return •Û‘¶‚µ‚½ƒtƒHƒ‹ƒ_‚ÌŒÂ”. ƒGƒ‰[‚Ìê‡‚Í•‰”.
+  /// @return ä¿å­˜ã—ãŸãƒ•ã‚©ãƒ«ãƒ€ã®å€‹æ•°. ã‚¨ãƒ©ãƒ¼ã®å ´åˆã¯è² æ•°.
   HRESULT DoSave(mew::string filename, mew::string& error) {
     using Entries = std::vector<EntryAndStatus>;
     Entries entries;
@@ -1591,7 +1591,7 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
     if (mew::string filename = mew::ui::OpenDialog(m_form->Handle, mew::string::load(IDS_FILEFILTER))) {
       mew::string error;
       if FAILED (DoOpen(filename, error)) {
-        ave::WarningBox(m_form, mew::string::format(_T("“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½B\n\n$1"), error));
+        ave::WarningBox(m_form, mew::string::format(_T("èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸã€‚\n\n$1"), error));
       }
     }
     return S_OK;
@@ -1599,7 +1599,7 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
   HRESULT FileSave(mew::message) {
     mew::string error;
     if FAILED (DoSave(mew::null, error)) {
-      ave::WarningBox(m_form, mew::string::format(_T("•Û‘¶‚É¸”s‚µ‚Ü‚µ‚½B\n\n$1"), error));
+      ave::WarningBox(m_form, mew::string::format(_T("ä¿å­˜ã«å¤±æ•—ã—ã¾ã—ãŸã€‚\n\n$1"), error));
     }
     return S_OK;
   }
@@ -1742,7 +1742,7 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
     bool optLink = false;
     avesta::Navigation optNavigate = avesta::NaviOpen;
 
-    // ’ZŠÔ‚ÌŠÔ‚ÉŠJ‚©‚ê‚½ê‡‚ÍAˆê“x‚ÉŠJ‚©‚ê‚½‚Æ‚İ‚È‚·
+    // çŸ­æ™‚é–“ã®é–“ã«é–‹ã‹ã‚ŒãŸå ´åˆã¯ã€ä¸€åº¦ã«é–‹ã‹ã‚ŒãŸã¨ã¿ãªã™
     DWORD now = GetTickCount();
     if (now - m_ParseCommandLineTime < theAvesta->GetCommandLineInterval()) {
       optNavigate = avesta::NaviAppend;
@@ -1759,15 +1759,15 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
           theAvesta->Notify(avesta::NotifyWarning, mew::string::load(IDS_ERR_COMMAND_NOT_FOUND, value));
         }
       } else if (mew::str::equals_nocase(option, _T("link"))) {  // -link
-        if (value) {                                             // link ‚Íˆê“x‚ÅŒø‰ÊÁ–Å
+        if (value) {                                             // link ã¯ä¸€åº¦ã§åŠ¹æœæ¶ˆæ»…
           OpenFromCommandLine(value, optNavigate, true);
           optLink = false;
-        } else {  // Ÿ‚ÌOpenƒRƒ}ƒ“ƒh‚Ü‚ÅŒø‰Ê‚ªc‚é
+        } else {  // æ¬¡ã®Openã‚³ãƒãƒ³ãƒ‰ã¾ã§åŠ¹æœãŒæ®‹ã‚‹
           optLink = true;
         }
       } else {  // default
         optNavigate = ParseNavigate(option, optNavigate);
-        if (value) {  // link ‚Íˆê“x‚ÅŒø‰ÊÁ–Å
+        if (value) {  // link ã¯ä¸€åº¦ã§åŠ¹æœæ¶ˆæ»…
           OpenFromCommandLine(value, optNavigate, optLink);
           optLink = false;
         }
@@ -1795,11 +1795,11 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
       if (key & mew::ui::MouseButtonRight) {
         CMenu menu;
         menu.CreatePopupMenu();
-        menu.AppendMenu(MF_STRING, avesta::NaviOpen, _T("V‹K‚ÉŠJ‚­(&N)"));
-        menu.AppendMenu(MF_STRING, avesta::NaviAppend, _T("’Ç‰Á‚ÅŠJ‚­(&A)"));
-        menu.AppendMenu(MF_STRING, avesta::NaviReserve, _T("”ñ•\¦‚ÅŠJ‚­(&H)"));
+        menu.AppendMenu(MF_STRING, avesta::NaviOpen, _T("æ–°è¦ã«é–‹ã(&N)"));
+        menu.AppendMenu(MF_STRING, avesta::NaviAppend, _T("è¿½åŠ ã§é–‹ã(&A)"));
+        menu.AppendMenu(MF_STRING, avesta::NaviReserve, _T("éè¡¨ç¤ºã§é–‹ã(&H)"));
         menu.AppendMenu(MF_SEPARATOR);
-        menu.AppendMenu(MF_STRING, static_cast<UINT_PTR>(0), _T("ƒLƒƒƒ“ƒZƒ‹"));
+        menu.AppendMenu(MF_STRING, static_cast<UINT_PTR>(0), _T("ã‚­ãƒ£ãƒ³ã‚»ãƒ«"));
         menu.SetMenuDefaultItem(0, MF_BYPOSITION);
         UINT cmd = menu.TrackPopupMenu(TPM_RIGHTBUTTON | TPM_RETURNCMD, pt.x, pt.y, m_form->Handle, nullptr);
         if (cmd != 0) {
@@ -1862,12 +1862,12 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
       return E_FAIL;
     }
     if (!m_form->Visible || m_tab->Count <= 0) {
-      ave::WarningBox(m_form, L"ˆ—‚Ì“s‡‚Ì‚½‚ßAˆê‚ÂˆÈã‚ÌƒtƒHƒ‹ƒ_‚ğŠJ‚¢‚½ó‘Ô‚Ås‚Á‚Ä‚­‚¾‚³‚¢");
+      ave::WarningBox(m_form, L"å‡¦ç†ã®éƒ½åˆã®ãŸã‚ã€ä¸€ã¤ä»¥ä¸Šã®ãƒ•ã‚©ãƒ«ãƒ€ã‚’é–‹ã„ãŸçŠ¶æ…‹ã§è¡Œã£ã¦ãã ã•ã„");
       return S_OK;
     }
 
     mew::ref<mew::ui::IExpose> expose(__uuidof(mew::ui::Expose));
-    expose->SetTitle(_T("ƒtƒHƒ“ƒgİ’è‰ÓŠ‚ğ‘I‚ñ‚Å‚­‚¾‚³‚¢"));
+    expose->SetTitle(_T("ãƒ•ã‚©ãƒ³ãƒˆè¨­å®šç®‡æ‰€ã‚’é¸ã‚“ã§ãã ã•ã„"));
     HWND hwndRoot = ::GetAncestor(m_form->Handle, GA_ROOT);
 
     enum {
@@ -1886,7 +1886,7 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
       expose->AddRect(ExposeTab, 0, rc, 'T');
     }
     for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone); i.next();) {
-      if (i->Visible) {  // TODO: ‚à‚¤‚¿‚å‚¢‚Ç‚¤‚É‚©
+      if (i->Visible) {  // TODO: ã‚‚ã†ã¡ã‚‡ã„ã©ã†ã«ã‹
         if (HWND hComboBox = ::FindWindowEx(i->Handle, NULL, _T("ComboBoxEx32"), NULL)) {
           mew::Rect rc;
           ::GetWindowRect(hComboBox, &rc);
@@ -1912,19 +1912,19 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
     HRESULT hr = expose->Go(hwndRoot, theAvesta->GetExposeTime());
     switch (hr) {
       case ExposeTab:
-        mew::ui::FontDialog(m_form->Handle, m_fonts[avesta::FontTab], L"ƒ^ƒu‚ÌƒtƒHƒ“ƒgİ’è",
+        mew::ui::FontDialog(m_form->Handle, m_fonts[avesta::FontTab], L"ã‚¿ãƒ–ã®ãƒ•ã‚©ãƒ³ãƒˆè¨­å®š",
                             mew::function(this, &Main::OptionFont_Tab));
         break;
       case ExposeAddress:
-        mew::ui::FontDialog(m_form->Handle, m_fonts[avesta::FontAddress], L"ƒAƒhƒŒƒXƒo[‚ÌƒtƒHƒ“ƒgİ’è",
+        mew::ui::FontDialog(m_form->Handle, m_fonts[avesta::FontAddress], L"ã‚¢ãƒ‰ãƒ¬ã‚¹ãƒãƒ¼ã®ãƒ•ã‚©ãƒ³ãƒˆè¨­å®š",
                             mew::function(this, &Main::OptionFont_Address));
         break;
       case ExposeList:
-        mew::ui::FontDialog(m_form->Handle, m_fonts[avesta::FontList], L"ƒtƒ@ƒCƒ‹ƒŠƒXƒg‚ÌƒtƒHƒ“ƒgİ’è",
+        mew::ui::FontDialog(m_form->Handle, m_fonts[avesta::FontList], L"ãƒ•ã‚¡ã‚¤ãƒ«ãƒªã‚¹ãƒˆã®ãƒ•ã‚©ãƒ³ãƒˆè¨­å®š",
                             mew::function(this, &Main::OptionFont_List));
         break;
       case ExposeStatus:
-        mew::ui::FontDialog(m_form->Handle, m_fonts[avesta::FontStatus], L"ƒXƒe[ƒ^ƒXƒo[‚ÌƒtƒHƒ“ƒgİ’è",
+        mew::ui::FontDialog(m_form->Handle, m_fonts[avesta::FontStatus], L"ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒãƒ¼ã®ãƒ•ã‚©ãƒ³ãƒˆè¨­å®š",
                             mew::function(this, &Main::OptionFont_Status));
         break;
       default:
@@ -1938,8 +1938,8 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
   //
  private:
   ThreeStateBool m_dropmode;  //
-  mew::Rect m_dropRestore;    // ƒhƒƒbƒvƒ‚[ƒh•œŒ³Œã
-  mew::Point m_dropLocation;  // ƒhƒƒbƒvƒ‚[ƒh‚ÌˆÊ’u
+  mew::Rect m_dropRestore;    // ãƒ‰ãƒ­ãƒƒãƒ—ãƒ¢ãƒ¼ãƒ‰å¾©å…ƒå¾Œ
+  mew::Point m_dropLocation;  // ãƒ‰ãƒ­ãƒƒãƒ—ãƒ¢ãƒ¼ãƒ‰ã®ä½ç½®
  public:
   void DropMode(bool mode) {
     if (!m_form || !m_tab) {
@@ -2014,7 +2014,7 @@ extern "C" __declspec(dllexport) int AvestaMain(PCWSTR args, INT sw, PWSTR* newA
 
   OleInitialize(nullptr);
 
-  // ƒ[ƒh•ƒAƒ“ƒ[ƒh‚ğŒJ‚è•Ô‚µ‚Ä‚¢‚é‚æ‚¤‚È‚Ì‚ÅA‚ ‚ç‚©‚¶‚ßƒ[ƒh‚µ‚Ä‚¨‚­B
+  // ãƒ­ãƒ¼ãƒ‰ï¼†ã‚¢ãƒ³ãƒ­ãƒ¼ãƒ‰ã‚’ç¹°ã‚Šè¿”ã—ã¦ã„ã‚‹ã‚ˆã†ãªã®ã§ã€ã‚ã‚‰ã‹ã˜ã‚ãƒ­ãƒ¼ãƒ‰ã—ã¦ãŠãã€‚
   const PCWSTR PRELOADS[] = {
       L"shimgvw.dll",
       L"shdocvw.dll",
@@ -2048,7 +2048,7 @@ extern "C" __declspec(dllexport) int AvestaMain(PCWSTR args, INT sw, PWSTR* newA
 
   OleUninitialize();
 
-  // ‘S‚Ä‚ÌƒƒbƒZ[ƒW‚ğœ‹
+  // å…¨ã¦ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’é™¤å»
   MSG msg;
   while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
   }

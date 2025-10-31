@@ -1,4 +1,4 @@
-// dragdrop.cpp
+ï»¿// dragdrop.cpp
 
 #include "stdafx.h"
 #include <atlcoll.h>
@@ -85,7 +85,7 @@ const CLIPFORMAT CF_INETURL = CF_INETURLW;
 const CLIPFORMAT CF_INETURL = CF_INETURLA;
 #endif
 
-// tymed ‚Ì•ÏŠ·‚Ís‚¤‚ªAƒf[ƒ^Œ`®‚Ì•ÏŠ·‚Ís‚í‚È‚¢
+// tymed ã®å¤‰æ›ã¯è¡Œã†ãŒã€ãƒ‡ãƒ¼ã‚¿å½¢å¼ã®å¤‰æ›ã¯è¡Œã‚ãªã„
 static HRESULT DuplicateStgMedium(const STGMEDIUM* src, STGMEDIUM* dst, const FORMATETC* fmt, DWORD tymed = 0) {
   HRESULT hr;
   if (tymed == 0 || (tymed & src->tymed) != 0) {
@@ -102,7 +102,7 @@ static HRESULT DuplicateStgMedium(const STGMEDIUM* src, STGMEDIUM* dst, const FO
       case TYMED_HGLOBAL:
       case TYMED_FILE:
       case TYMED_ISTREAM:
-        // ‚Ç‚ê‚àƒ|ƒCƒ“ƒ^‚È‚Ì‚ÅA‘ã“üŒã‚ÌƒoƒCƒiƒŠ’l‚Í“™‚µ‚¢B‚Æ‚è‚ ‚¦‚¸ hGlobal ‚Æ‚µ‚Äó‚¯æ‚Á‚Ä‚¨‚­
+        // ã©ã‚Œã‚‚ãƒã‚¤ãƒ³ã‚¿ãªã®ã§ã€ä»£å…¥å¾Œã®ãƒã‚¤ãƒŠãƒªå€¤ã¯ç­‰ã—ã„ã€‚ã¨ã‚Šã‚ãˆãš hGlobal ã¨ã—ã¦å—ã‘å–ã£ã¦ãŠã
         dst->hGlobal = (HGLOBAL)OleDuplicateData(src->hGlobal, fmt->cfFormat, 0);
         if (!dst->hGlobal) return E_FAIL;
         break;
@@ -152,12 +152,12 @@ static HRESULT DuplicateStgMedium(const STGMEDIUM* src, STGMEDIUM* dst, const FO
   return S_OK;
 }
 
-// •ªŠ„‚µ‚È‚¢‚ÆzŠÂQÆ‚ª¶‚¶‚é‚Ì‚©‚àH
-// ˆê‚É‚µ‚Ä‚µ‚Ü‚¤‚ÆAƒAƒvƒŠƒP[ƒVƒ‡ƒ“I—¹‚ÉŒÅ‚Ü‚é‚±‚Æ‚ª‚ ‚éB
+// åˆ†å‰²ã—ãªã„ã¨å¾ªç’°å‚ç…§ãŒç”Ÿã˜ã‚‹ã®ã‹ã‚‚ï¼Ÿ
+// ä¸€ç·’ã«ã—ã¦ã—ã¾ã†ã¨ã€ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†æ™‚ã«å›ºã¾ã‚‹ã“ã¨ãŒã‚ã‚‹ã€‚
 class DropSource : public mew::Root<mew::implements<IDropSource>, mew::mixin<mew::StaticLife> > {
  public:  // IDropSource
   STDMETHODIMP QueryContinueDrag(BOOL bEscapePressed, DWORD mk) {
-    // u‚Q‚ÂˆÈã‚Ìƒ}ƒEƒXƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚Ä‚¢‚½‚çv‚ğ‚à‚Á‚ÆƒXƒ}[ƒg‚É”»’è‚Å‚«‚È‚¢‚©H
+    // ã€Œï¼’ã¤ä»¥ä¸Šã®ãƒã‚¦ã‚¹ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚Œã¦ã„ãŸã‚‰ã€ã‚’ã‚‚ã£ã¨ã‚¹ãƒãƒ¼ãƒˆã«åˆ¤å®šã§ããªã„ã‹ï¼Ÿ
     if (bEscapePressed || ((mk & MK_LBUTTON) && (mk & (MK_MBUTTON | MK_RBUTTON))) ||
         ((mk & MK_MBUTTON) && (mk & (MK_LBUTTON | MK_RBUTTON))) || ((mk & MK_RBUTTON) && (mk & (MK_LBUTTON | MK_MBUTTON)))) {
       return DRAGDROP_S_CANCEL;
@@ -525,5 +525,3 @@ AVESTA_EXPORT(DragSource)
 
 }  // namespace io
 }  // namespace mew
-
-

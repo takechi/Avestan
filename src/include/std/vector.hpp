@@ -1,4 +1,4 @@
-/// @file vector.hpp
+ï»¿/// @file vector.hpp
 /// UNDOCUMENTED
 #pragma once
 
@@ -8,7 +8,7 @@
 #include "sequence.hpp"
 
 //==============================================================================
-// std::vector<T, Alloc>‚É‘Î‚·‚éBinary“üo—ÍƒIƒyƒŒ[ƒ^
+// std::vector<T, Alloc>ã«å¯¾ã™ã‚‹Binaryå…¥å‡ºåŠ›ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
 
 template <typename T, class Alloc>
 inline IStream& operator<<(IStream& stream, const std::vector<T, Alloc>& v) throw(...) {

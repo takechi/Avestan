@@ -1,4 +1,4 @@
-/// @file message.hpp
+ï»¿/// @file message.hpp
 /// message.
 #pragma once
 
@@ -7,7 +7,7 @@
 namespace mew {
 //==============================================================================
 
-/// variant‚ÉŠi”[‚³‚ê‚½ƒf[ƒ^ƒ^ƒCƒv.
+/// variantã«æ ¼ç´ã•ã‚ŒãŸãƒ‡ãƒ¼ã‚¿ã‚¿ã‚¤ãƒ—.
 enum Code {
   TypeNull = 0,           ///< empty.
   TypeBool = 'BOOL',      ///< 1byte.
@@ -44,15 +44,15 @@ using TypeCode = FourCC;
 /// variant.
 class variant {
  public:
-  static const size_t INTERNAL_BUFFER_SIZE = 8;  ///< “à•”‚ÉŠi”[‚Å‚«‚é\‘¢‘Ì‚ÌÅ‘åƒTƒCƒY.
+  static const size_t INTERNAL_BUFFER_SIZE = 8;  ///< å†…éƒ¨ã«æ ¼ç´ã§ãã‚‹æ§‹é€ ä½“ã®æœ€å¤§ã‚µã‚¤ã‚º.
   union Union {
     IUnknown* unknown;
     UINT8 buffer[INTERNAL_BUFFER_SIZE];
   };
 
  private:
-  TypeCode m_type;  ///< ƒ^ƒCƒvƒR[ƒh.
-  Union m_var;      ///< ƒf[ƒ^ƒoƒbƒtƒ@.
+  TypeCode m_type;  ///< ã‚¿ã‚¤ãƒ—ã‚³ãƒ¼ãƒ‰.
+  Union m_var;      ///< ãƒ‡ãƒ¼ã‚¿ãƒãƒƒãƒ•ã‚¡.
 
  private:
   template <typename T, bool isPOD>
@@ -163,7 +163,7 @@ class variant {
   // propertries
   bool empty() const throw() { return m_type == TypeNull; }
   TypeCode get_type() const throw() { return m_type; }
-  __declspec(property(get = get_type)) TypeCode type;  ///< ƒ^ƒCƒv.
+  __declspec(property(get = get_type)) TypeCode type;  ///< ã‚¿ã‚¤ãƒ—.
 
   // operations
   void clear() throw() {
@@ -204,39 +204,39 @@ class variant {
 __declspec(selectany) const variant variant::null;
 
 //==============================================================================
-// ƒCƒ“ƒ^ƒtƒF[ƒX
+// ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹
 
 __interface __declspec(uuid("DBBCEE59-E76B-4F0D-B946-976F8FF0F5F3")) IEnumVariant;
 __interface __declspec(uuid("B09128A7-CC7D-406C-A8BF-6BBB95B6C0A5")) IPersistMessage;
 
 //==============================================================================
-// ƒCƒ“ƒ^ƒtƒF[ƒX’è‹`.
+// ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹å®šç¾©.
 
 using EventCode = FourCC;
 
-/// ƒƒbƒZ[ƒW.
+/// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸.
 /// @see ref<IMessage>
 __interface IMessage : ISerializable {
-  /// ƒGƒ“ƒgƒŠ’l‚ğæ“¾‚·‚é.
-  /// w’è‚µ‚½–¼‘O‚ªŒ©‚Â‚©‚ç‚È‚¢ê‡‚Í‹ó‚Ìvariant‚ª•Ô‚³‚ê‚é.
+  /// ã‚¨ãƒ³ãƒˆãƒªå€¤ã‚’å–å¾—ã™ã‚‹.
+  /// æŒ‡å®šã—ãŸåå‰ãŒè¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã¯ç©ºã®variantãŒè¿”ã•ã‚Œã‚‹.
   const variant& Get(const Guid& key) throw();
-  /// ƒGƒ“ƒgƒŠ’l‚ğİ’è‚·‚é.
+  /// ã‚¨ãƒ³ãƒˆãƒªå€¤ã‚’è¨­å®šã™ã‚‹.
   void Set(const Guid& key, const variant& var) throw();
-  /// “à•”ƒGƒ“ƒgƒŠ‚ğ—ñ‹“‚·‚é.
+  /// å†…éƒ¨ã‚¨ãƒ³ãƒˆãƒªã‚’åˆ—æŒ™ã™ã‚‹.
   ref<IEnumVariant> Enumerate() throw();
 };
 
-/// ƒƒbƒZ[ƒW‚ğì¬‚·‚é.
-void CreateMessage(IMessage** ppMessage,  ///< ì¬‚³‚ê‚½ƒƒbƒZ[ƒW.
-                   EventCode code,        ///< ‰ŠúƒƒbƒZ[ƒWƒR[ƒh.
-                   IUnknown* arg = null   ///< ƒRƒ“ƒXƒgƒ‰ƒNƒ^ˆø”.
+/// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ä½œæˆã™ã‚‹.
+void CreateMessage(IMessage** ppMessage,  ///< ä½œæˆã•ã‚ŒãŸãƒ¡ãƒƒã‚»ãƒ¼ã‚¸.
+                   EventCode code,        ///< åˆæœŸãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚³ãƒ¼ãƒ‰.
+                   IUnknown* arg = null   ///< ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿å¼•æ•°.
 );
 
 /// verb.
 /// {9A2442FD-FA30-4bcb-BB88-A920570A336E}
 const GUID GUID_Verb = {0x9a2442fd, 0xfa30, 0x4bcb, {0xbb, 0x88, 0xa9, 0x20, 0x57, 0xa, 0x33, 0x6e}};
 
-/// ƒƒbƒZ[ƒW.
+/// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸.
 /// @see IMessage
 template <>
 class ref<IMessage> : public ref_base<IMessage> {
@@ -340,16 +340,16 @@ class ref<IMessage> : public ref_base<IMessage> {
   }
 };
 
-/// –¼‘O•t‚«variant—ñ‹“.
+/// åå‰ä»˜ãvariantåˆ—æŒ™.
 __interface IEnumVariant : IUnknown {
-  /// Œ»İ‚ÌƒIƒuƒWƒFƒNƒg‚ğ•Ô‚µA“à•”ƒCƒeƒŒ[ƒ^‚ğ‚Ğ‚Æ‚Âi‚ß‚éB
-  /// ‚·‚Å‚ÉI’[‚É’B‚µ‚Ä‚¢‚éê‡‚Í false ‚ğ•Ô‚·.
+  /// ç¾åœ¨ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’è¿”ã—ã€å†…éƒ¨ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’ã²ã¨ã¤é€²ã‚ã‚‹ã€‚
+  /// ã™ã§ã«çµ‚ç«¯ã«é”ã—ã¦ã„ã‚‹å ´åˆã¯ false ã‚’è¿”ã™.
   bool Next(GUID * key, variant * var);
-  /// ‚à‚¤ˆê“x‚Í‚¶‚ß‚©‚ç—ñ‹“‚·‚é.
+  /// ã‚‚ã†ä¸€åº¦ã¯ã˜ã‚ã‹ã‚‰åˆ—æŒ™ã™ã‚‹.
   void Reset();
 };
 
-/// ƒƒbƒZ[ƒWƒVƒ“ƒN.
+/// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚·ãƒ³ã‚¯.
 /// HRESULT function(message msg);
 class function {
  public:
@@ -411,7 +411,7 @@ class function {
   }
 };
 
-/// ƒƒbƒZ[ƒW‚Æ‚µ‚Äó‘Ô‚ğ•Û‘¶E•œŒ³‚Å‚«‚é.
+/// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã¨ã—ã¦çŠ¶æ…‹ã‚’ä¿å­˜ãƒ»å¾©å…ƒã§ãã‚‹.
 __interface IPersistMessage : IUnknown {
   ///
   void LoadFromMessage(const message& msg);
@@ -430,7 +430,7 @@ namespace mew {
 #ifndef _WIN64
 STATIC_ASSERT(sizeof(FourCC) == 4);    // == sizeof(INT32)
 STATIC_ASSERT(sizeof(Guid) == 16);     // == sizeof(GUID)
-STATIC_ASSERT(sizeof(variant) == 12);  // XXX: 8ƒoƒCƒg‹«ŠE‚É•À‚Ô‚æ‚¤‚É‚·‚×‚«?
+STATIC_ASSERT(sizeof(variant) == 12);  // XXX: 8ãƒã‚¤ãƒˆå¢ƒç•Œã«ä¸¦ã¶ã‚ˆã†ã«ã™ã¹ã?
 #endif
 
 template <>

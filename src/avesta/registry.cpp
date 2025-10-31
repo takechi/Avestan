@@ -1,10 +1,10 @@
-// registry.cpp
+﻿// registry.cpp
 
 #include "stdafx.h"
 #include "avesta.hpp"
 #include "std/str.hpp"
 
-// ���W�X�g������֐�.
+// レジストリ操作関数.
 
 namespace {
 
@@ -14,12 +14,12 @@ HRESULT RegGetAssocCommand(PCWSTR key, WCHAR command[MAX_PATH]) {
   if (mew::str::empty(key)) {
     return AtlHresultFromWin32(ERROR_REGISTRY_IO_FAILED);
   }
-  // �f�t�H���g�R�}���h���擾
+  // デフォルトコマンドを取得
   wsprintf(buffer, _T("%s\\shell"), key);
   if (FAILED(avesta::RegGetString(HKEY_CLASSES_ROOT, buffer, NULL, def)) || mew::str::empty(def)) {
     lstrcpy(def, _T("open"));
   }
-  // �R�}���h�̓��e���擾
+  // コマンドの内容を取得
   wsprintf(buffer, _T("%s\\shell\\%s\\command"), key, def);
   if FAILED (hr = avesta::RegGetString(HKEY_CLASSES_ROOT, buffer, NULL, command)) {
     return hr;
@@ -69,7 +69,7 @@ HRESULT RegGetString(HKEY hKey, PCWSTR subkey, PCWSTR value, WCHAR outString[], 
   }
 }
 
-// �ǂ�������݂���t�@�C���łȂ��ƃG���[�ɂȂ�̂Ŏg���Ȃ��I
+// どちらも存在するファイルでないとエラーになるので使えない！
 // if(FindExecutable(s, NULL, exe) > (HINSTANCE)32)
 // if SUCCEEDED(hr = AssocQueryString(ASSOCF_OPEN_BYEXENAME | ASSOCF_NOTRUNCATE, ASSOCSTR_EXECUTABLE, s, _T("open"), exe,
 //&ln))
@@ -83,7 +83,7 @@ HRESULT RegGetAssocExe(PCWSTR extension, WCHAR exe[MAX_PATH]) {
     }
   }
 
-  // ���A'EXE "%1"' ���낤�̂ŁA�͂��߂̃G���g���������擾����
+  // 大抵、'EXE "%1"' だろうので、はじめのエントリだけを取得する
   PCWSTR src = command;
   TCHAR delim = _T(' ');
   if (src[0] == _T('"')) {
@@ -99,4 +99,3 @@ HRESULT RegGetAssocExe(PCWSTR extension, WCHAR exe[MAX_PATH]) {
 }
 
 }  // namespace avesta
-

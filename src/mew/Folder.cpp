@@ -1,4 +1,4 @@
-// FolderMenu.cpp
+Ôªø// FolderMenu.cpp
 
 #include "stdafx.h"
 #include "private.h"
@@ -7,7 +7,7 @@
 #include "signal.hpp"
 
 namespace {
-static mew::string STRING_EMPTY(_T("ÅiÇ»ÇµÅj"));
+static mew::string STRING_EMPTY(_T("Ôºà„Å™„ÅóÔºâ"));
 
 class EmptyMenu : public mew::Root<mew::implements<mew::ui::ITreeItem>, mew::mixin<mew::StaticLife> > {
  public:  // ITreeItem

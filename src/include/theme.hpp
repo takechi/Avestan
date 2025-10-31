@@ -1,11 +1,11 @@
-/// @file theme.hpp
-/// ƒe[ƒ}.
+ï»¿/// @file theme.hpp
+/// ãƒ†ãƒ¼ãƒ.
 #pragma once
 
 #include <uxtheme.h>
 
 namespace mew {
-/// ƒe[ƒ}.
+/// ãƒ†ãƒ¼ãƒ.
 namespace theme {
 //==============================================================================
 // Basic
@@ -38,11 +38,11 @@ void TabDrawItem(HDC hDC, RECT bounds, PCWSTR text, DWORD status, HFONT hFontNor
 //==============================================================================
 // Menu
 
-/// ƒƒjƒ…[ƒo[‚Ìƒ{ƒ^ƒ“‚ğ•`‚«‚Ü‚·.
+/// ãƒ¡ãƒ‹ãƒ¥ãƒ¼ãƒãƒ¼ã®ãƒœã‚¿ãƒ³ã‚’æãã¾ã™.
 bool MenuDrawButton(NMTBCUSTOMDRAW* draw, HFONT hFont, bool bShowKeyboardCues, bool bIsMenuDropped);
-/// ƒ|ƒbƒvƒAƒbƒvƒƒjƒ…[‚Ì€–Ú‚ğ•`‚«‚Ü‚·.
+/// ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®é …ç›®ã‚’æãã¾ã™.
 void MenuDrawItem(HDC hDC, const RECT& rcBounds, DWORD dwStatus, PCWSTR wcsText, IImageList* pImageList, int nImage);
-/// ƒ|ƒbƒvƒAƒbƒvƒƒjƒ…[‚Ì€–Ú‚Ì‚‚³‚ğŒvZ‚µ‚Ü‚·.
+/// ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®é …ç›®ã®é«˜ã•ã‚’è¨ˆç®—ã—ã¾ã™.
 SIZE MenuMeasureItem(PCWSTR wcsText, IImageList* pImageList, int nImage);
 }  // namespace theme
 }  // namespace mew

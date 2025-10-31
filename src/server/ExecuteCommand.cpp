@@ -1,4 +1,4 @@
-// ExecuteCommand.cpp
+ï»¿// ExecuteCommand.cpp
 
 #include "stdafx.h"
 #include "main.hpp"
@@ -28,14 +28,14 @@ enum ExecuteType {
 };
 
 static HRESULT Execute(PCWSTR path, PCWSTR args) {
-  // ©ŒÈŒÄ‚Ño‚µ‚ÌÅ“K‰»
+  // è‡ªå·±å‘¼ã³å‡ºã—ã®æœ€é©åŒ–
   TCHAR selfname[MAX_PATH];
   ::GetModuleFileName(NULL, selfname, MAX_PATH);
   if (mew::str::equals_nocase(path, selfname)) {
     theAvesta->ParseCommandLine(args);
     return S_OK;
   }
-  // ©•ªˆÈŠO
+  // è‡ªåˆ†ä»¥å¤–
   mew::string dir = theAvesta->CurrentPath();
   return avesta::PathExecute(path, nullptr, args, dir.str());
 }
@@ -152,7 +152,7 @@ class __declspec(novtable) ExecuteCommandBase : public mew::Root<mew::implements
     QueryFolders(status, files);
     for (size_t i = 0; i < files.size(); ++i) {
       if (PathIsRoot(files[i].str())) {
-        files[i] = mew::io::GUID_MyComputer;  // ƒhƒ‰ƒCƒu‚Ìã‚ÌƒtƒHƒ‹ƒ_‚Íƒ}ƒCƒRƒ“ƒsƒ…[ƒ^
+        files[i] = mew::io::GUID_MyComputer;  // ãƒ‰ãƒ©ã‚¤ãƒ–ã®ä¸Šã®ãƒ•ã‚©ãƒ«ãƒ€ã¯ãƒã‚¤ã‚³ãƒ³ãƒ”ãƒ¥ãƒ¼ã‚¿
       } else {
         WCHAR parent[MAX_PATH];
         files[i].copyto(parent);
@@ -234,7 +234,7 @@ class ExecuteAllCommand : public ExecuteCommandBase {
     }
     const size_t count = files.size();
     mew::StringBuffer params;
-    params.reserve(m_argsL.length() + m_argsR.length() + MAX_PATH + 128 * count);  // “K“–‚È—Ê‚ğŠm•Û
+    params.reserve(m_argsL.length() + m_argsR.length() + MAX_PATH + 128 * count);  // é©å½“ãªé‡ã‚’ç¢ºä¿
     params.append(m_argsL.str());
     for (size_t i = 0; i < count; ++i) {
       params.append_path(files[i].str());
@@ -305,14 +305,14 @@ bool PathIsNonFile(PCWSTR path) {
 }  // namespace
 
 mew::ref<mew::ICommand> CreateExecuteCommand(mew::string path, mew::string args) {
-  // path ‚ÌƒpƒX‚ğ‰ğŒˆ‚·‚é.
+  // path ã®ãƒ‘ã‚¹ã‚’è§£æ±ºã™ã‚‹.
   if (!PathIsNonFile(path.str())) {
     path = ave::ResolvePath(path);
     if (!path) {
       return mew::null;
     }
-    if (!PathFileExists(path.str())) {  // •sŠ®‘S‚ÈƒpƒXH
-      // ‚Æ‚è‚ ‚¦‚¸A©“®•âŠ®‚³‚ê‚éÀsƒtƒ@ƒCƒ‹‚ÌŠg’£q‚ğ•â‚Á‚Ä‚µ‚Ä‚İ‚éB
+    if (!PathFileExists(path.str())) {  // ä¸å®Œå…¨ãªãƒ‘ã‚¹ï¼Ÿ
+      // ã¨ã‚Šã‚ãˆãšã€è‡ªå‹•è£œå®Œã•ã‚Œã‚‹å®Ÿè¡Œãƒ•ã‚¡ã‚¤ãƒ«ã®æ‹¡å¼µå­ã‚’è£œã£ã¦è©¦ã—ã¦ã¿ã‚‹ã€‚
       if (!PathExtensionExists(path, L".exe") && !PathExtensionExists(path, L".bat") && !PathExtensionExists(path, L".cmd")) {
         return mew::null;
       }

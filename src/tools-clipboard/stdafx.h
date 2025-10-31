@@ -1,4 +1,4 @@
-// stdafx.h
+﻿// stdafx.h
 #pragma once
 
 #include "pygmy.hpp"

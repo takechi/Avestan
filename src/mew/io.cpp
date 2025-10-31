@@ -1,4 +1,4 @@
-// io.cpp
+Ôªø// io.cpp
 
 #include "stdafx.h"
 #include "private.h"
@@ -14,12 +14,10 @@ inline void StreamSeek(IStream* stream, STREAM_SEEK origin, INT64 param, UINT64*
 }
 
 namespace {
-#define CSIDL_ENTRY(name) \
-  { L#name, CSIDL_##name }
+#define CSIDL_ENTRY(name) {L#name, CSIDL_##name}
 #define CSIDL_PLURA(name) \
   {L#name, CSIDL_##name##S}, { L#name L"S", CSIDL_##name##S }
-#define CSIDL_ALIAS(name, csidl) \
-  { L#name, CSIDL_##csidl }
+#define CSIDL_ALIAS(name, csidl) {L#name, CSIDL_##csidl}
 static const struct CSIDL_Map {
   PCWSTR name;
   int csidl;
@@ -67,7 +65,7 @@ static const struct CSIDL_Map {
     CSIDL_PLURA(PRINTER),
     CSIDL_ENTRY(PRINTHOOD),
     CSIDL_ENTRY(PROFILE),
-    // CSIDL_ENTRY( PROFILES ), // MSDN Ç…ÇÕÇ†ÇÈÇ‡ÇÃÇÃÅAÉwÉbÉ_Ç…ÇÕèëÇ¢ÇƒÇ»Ç¢ÅH
+    // CSIDL_ENTRY( PROFILES ), // MSDN „Å´„ÅØ„ÅÇ„Çã„ÇÇ„ÅÆ„ÅÆ„ÄÅ„Éò„ÉÉ„ÉÄ„Å´„ÅØÊõ∏„ÅÑ„Å¶„Å™„ÅÑÔºü
     CSIDL_ALIAS(PROGRAM, PROGRAMS),
     CSIDL_PLURA(PROGRAM_FILE),
     CSIDL_ENTRY(PROGRAM_FILES_COMMON),
@@ -95,7 +93,7 @@ struct CSIDLVerifier {
       if (!(CSIDL_MAP[i] < CSIDL_MAP[i + 1].name)) {
         PCWSTR lhs = CSIDL_MAP[i].name;
         PCWSTR rhs = CSIDL_MAP[i + 1].name;
-        ASSERT(!"CSIDL_MAP ÇÕÉ\Å[ÉgçœÇ›Ç≈Ç»ÇØÇÍÇŒÇ»ÇÁÇ»Ç¢");
+        ASSERT(!"CSIDL_MAP „ÅØ„ÇΩ„Éº„ÉàÊ∏à„Åø„Åß„Å™„Åë„Çå„Å∞„Å™„Çâ„Å™„ÅÑ");
       }
     }
   }
@@ -302,7 +300,7 @@ string PathResolvePath(PCWSTR src, PCWSTR approot, int appcsidl) {
 }
 
 //==============================================================================
-// INIÉtÉ@ÉCÉã.
+// INI„Éï„Ç°„Ç§„É´.
 
 string IniGetString(PCTSTR filename, PCTSTR group, PCTSTR key, PCTSTR defaultValue) {
   TCHAR buffer[MAX_PATH];

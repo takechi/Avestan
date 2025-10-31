@@ -1,5 +1,5 @@
-/// @file string.hpp
-/// •¶š—ñ.
+ï»¿/// @file string.hpp
+/// æ–‡å­—åˆ—.
 #pragma once
 
 #include "reference.hpp"
@@ -12,16 +12,16 @@ extern HMODULE Handle;
 
 namespace mew {
 //==============================================================================
-// ƒNƒ‰ƒX
+// ã‚¯ãƒ©ã‚¹
 
 class __declspec(uuid("1E2C5D5A-C248-4A87-B4D9-389C64E96B74")) String;
 
 //==============================================================================
-/// •¶š—ñƒCƒ“ƒ^ƒtƒF[ƒX.
+/// æ–‡å­—åˆ—ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹.
 __interface IString : ISerializable {
-  /// nullI’[‚ÌUNICODE•¶š—ñ‚ğ•Ô‚·.
+  /// nullçµ‚ç«¯ã®UNICODEæ–‡å­—åˆ—ã‚’è¿”ã™.
   PCWSTR GetBuffer() throw();
-  /// UNICODE•¶š—ñ‚Ì•¶š”‚ğ•Ô‚·.
+  /// UNICODEæ–‡å­—åˆ—ã®æ–‡å­—æ•°ã‚’è¿”ã™.
   size_t GetLength() throw();
 };
 
@@ -53,7 +53,7 @@ class ToStringDefault<IUnknown*> {
 };
 }  // namespace detail
 
-/// •¶š—ñ‚Ö‚Ì•ÏŠ·.
+/// æ–‡å­—åˆ—ã¸ã®å¤‰æ›.
 template <class X>
 class ToString {
   using Detail = mew::detail::ToStringDefault<typename meta::If<meta::Convertable<X, IUnknown*>::value, IUnknown*, X>::Result>;
@@ -64,7 +64,7 @@ class ToString {
   operator PCWSTR() const { return m_str; }
 };
 
-/// •¶š—ñ.
+/// æ–‡å­—åˆ—.
 template <>
 class ref<IString> : public ref_base<IString> {
   using super = ref_base<IString>;
@@ -192,7 +192,7 @@ class ref<IString> : public ref_base<IString> {
 
 //==============================================================================
 
-// •¶š—ñ‚Ö‚Ì•ÏŠ·(bool).
+// æ–‡å­—åˆ—ã¸ã®å¤‰æ›(bool).
 template <>
 class ToString<bool> {
  private:
@@ -203,7 +203,7 @@ class ToString<bool> {
   operator PCWSTR() const throw() { return m_value ? _T("true") : _T("false"); }
 };
 
-// •¶š—ñ‚Ö‚Ì•ÏŠ·(DWORD).
+// æ–‡å­—åˆ—ã¸ã®å¤‰æ›(DWORD).
 template <>
 class ToString<DWORD> {
  private:
@@ -251,7 +251,7 @@ DECLARE_STRING_CAST(double)
 
 #undef DECLARE_STRING_CAST
 
-// •¶š—ñ‚Ö‚Ì•ÏŠ·(GUID).
+// æ–‡å­—åˆ—ã¸ã®å¤‰æ›(GUID).
 template <>
 class ToString<GUID> {
  private:
@@ -278,10 +278,10 @@ struct STRING {
 
 class StringSplit {
  private:
-  string m_src;  ///< ƒ\[ƒX•¶š—ñ.
+  string m_src;  ///< ã‚½ãƒ¼ã‚¹æ–‡å­—åˆ—.
   PCWSTR m_cur;
-  string m_sep;   ///< ‹æØ‚è•¶š.
-  string m_trim;  ///< ‹æØ‚è•¶š‚Ì‘OŒã‚Åæ‚èœ‚­•¶š.
+  string m_sep;   ///< åŒºåˆ‡ã‚Šæ–‡å­—.
+  string m_trim;  ///< åŒºåˆ‡ã‚Šæ–‡å­—ã®å‰å¾Œã§å–ã‚Šé™¤ãæ–‡å­—.
 
  public:
   StringSplit() {}

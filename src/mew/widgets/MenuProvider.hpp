@@ -1,4 +1,4 @@
-// MenuProvider.hpp
+﻿// MenuProvider.hpp
 #pragma once
 
 #include "widgets.hpp"

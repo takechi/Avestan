@@ -1,5 +1,5 @@
-/// @file xml.hpp
-/// XML‚Ì“Ç‚İ‘‚«.
+ï»¿/// @file xml.hpp
+/// XMLã®èª­ã¿æ›¸ã.
 
 #pragma once
 
@@ -8,40 +8,40 @@
 namespace mew {
 __interface IMessage;
 
-/// XMLƒp[ƒTƒ‰ƒbƒp.
+/// XMLãƒ‘ãƒ¼ã‚µãƒ©ãƒƒãƒ‘.
 namespace xml {
 //==============================================================================
-// ƒCƒ“ƒ^ƒtƒF[ƒX
+// ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹
 
 __interface __declspec(uuid("A7FBAD61-1BF3-4A72-92EF-6B9D547CFD09")) IXMLReader;
 __interface __declspec(uuid("B6090454-00DB-458A-BF81-0342EBF4C954")) IXMLWriter;
 
 //==============================================================================
-// ì¬‰Â”\‚ÈƒNƒ‰ƒX
+// ä½œæˆå¯èƒ½ãªã‚¯ãƒ©ã‚¹
 
 class __declspec(uuid("98AA90C3-22DD-41EF-8AC4-931C95E02C6B")) XMLReader;
 class __declspec(uuid("8294FEA9-2FE2-4508-95DD-DCF51B1F64D9")) XMLWriter;
 
 //==============================================================================
-// ŠÖ”.
+// é–¢æ•°.
 
-/// XML‚©‚çmessage‚ğ“Ç‚İ‚Ş.
+/// XMLã‹ã‚‰messageã‚’èª­ã¿è¾¼ã‚€.
 message LoadMessage(IUnknown* src, IXMLReader* sax = null);
-/// message‚ğXML‚Æ‚µ‚Ä‘‚«o‚·.
-/// Šî–{PODŒ^AƒƒbƒZ[ƒWA•¶š—ñˆÈŠO‚ÌƒIƒuƒWƒFƒNƒg‚ğŠÜ‚ñ‚Å‚¢‚Ä‚Í‚È‚ç‚È‚¢.
+/// messageã‚’XMLã¨ã—ã¦æ›¸ãå‡ºã™.
+/// åŸºæœ¬PODå‹ã€ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã€æ–‡å­—åˆ—ä»¥å¤–ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å«ã‚“ã§ã„ã¦ã¯ãªã‚‰ãªã„.
 HRESULT SaveMessage(const message& msg, IUnknown* dst, IXMLWriter* sax = null);
 
 //==============================================================================
-// ƒCƒ“ƒ^ƒtƒF[ƒX’è‹`.
+// ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹å®šç¾©.
 
-/// ‘®«.
+/// å±æ€§.
 struct __declspec(novtable) XMLAttributes {
   virtual string operator[](PCWSTR name) throw() = 0;
   virtual string operator[](size_t index) throw() = 0;
   virtual size_t length() throw() = 0;
 };
 
-/// SAX2ƒnƒ“ƒhƒ‰.
+/// SAX2ãƒãƒ³ãƒ‰ãƒ©.
 __interface IXMLHandler {
   HRESULT StartDocument();
   HRESULT EndDocument();
@@ -54,13 +54,13 @@ __interface IXMLHandler {
   HRESULT Warning(UINT line, UINT column, PCWSTR msg);
 };
 
-/// SAX2ƒŠ[ƒ_.
+/// SAX2ãƒªãƒ¼ãƒ€.
 __interface IXMLReader : IUnknown {
-  /// XML‚ğ“Ç‚İ‚Ş.
+  /// XMLã‚’èª­ã¿è¾¼ã‚€.
   HRESULT Parse(IXMLHandler * handler, IUnknown * source);
 };
 
-/// IXMLHandler‚Ì‹ó‚ÌÀ‘•.
+/// IXMLHandlerã®ç©ºã®å®Ÿè£….
 class XMLHandlerImpl : public IXMLHandler {
  public:
   HRESULT StartDocument() { return S_OK; }
@@ -74,7 +74,7 @@ class XMLHandlerImpl : public IXMLHandler {
   HRESULT Warning(UINT line, UINT column, PCWSTR msg) { return E_FAIL; }
 };
 
-/// ƒVƒ“ƒvƒ‹‚ÈXMLo—Í‹@\.
+/// ã‚·ãƒ³ãƒ—ãƒ«ãªXMLå‡ºåŠ›æ©Ÿæ§‹.
 __interface IXMLWriter : IUnknown {
   void StartDocument(IStream * stream, PCWSTR encoding = L"Shift_JIS");
   void EndDocument();

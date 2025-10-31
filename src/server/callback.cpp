@@ -1,4 +1,4 @@
-// callback.cpp
+ï»¿// callback.cpp
 
 #include "stdafx.h"
 #include "main.hpp"
@@ -10,10 +10,10 @@ namespace ave {
 MEW_API void GetDriveLetter(PCWSTR path, PWSTR buffer) {
   size_t pathlen = mew::str::length(path);
   PCTSTR pathstr = path;
-  if (pathlen > 1 && pathstr[1] == _T(':')) {  // ’Êíƒhƒ‰ƒCƒu(C, D, etc.)
+  if (pathlen > 1 && pathstr[1] == _T(':')) {  // é€šå¸¸ãƒ‰ãƒ©ã‚¤ãƒ–(C, D, etc.)
     buffer[0] = pathstr[0];
     buffer[1] = _T('\0');
-  } else {  // ƒlƒbƒgƒ[ƒNƒhƒ‰ƒCƒu
+  } else {  // ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ãƒ‰ãƒ©ã‚¤ãƒ–
     while (*pathstr == _T('\\')) {
       ++pathstr;
     }
@@ -22,7 +22,7 @@ MEW_API void GetDriveLetter(PCWSTR path, PWSTR buffer) {
       size_t length = end - pathstr;
       lstrcpyn(buffer, pathstr, length + 1);
       buffer[length + 1] = _T('\0');
-    } else {  // ‘½•ª‚ ‚è‚¦‚È‚¢‚ª
+    } else {  // å¤šåˆ†ã‚ã‚Šãˆãªã„ãŒ
       lstrcpy(buffer, pathstr);
     }
   }
@@ -128,7 +128,7 @@ class DefaultCallback : public mew::Root<mew::implements<ICallback, mew::IDispos
     int selectedCount = view->SelectedCount;
     int totalCount = view->Count;
 
-    if (selectedCount == 0) {  // ‘I‘ğ‚È‚µ
+    if (selectedCount == 0) {  // é¸æŠãªã—
       mew::ref<mew::io::IEntry> folder;
       view->GetFolder(&folder);
       mew::string path;
@@ -136,7 +136,7 @@ class DefaultCallback : public mew::Root<mew::implements<ICallback, mew::IDispos
         path = folder->Path;
       }
       if (!path) {
-        return mew::string::format(_T("$1 ŒÂ‚ÌƒIƒuƒWƒFƒNƒg"), totalCount);
+        return mew::string::format(_T("$1 å€‹ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ"), totalCount);
       } else {
         UINT64 uTotalBytes = 0, uFreeBytes = 0;
         TCHAR sDrive[MAX_PATH] = _T("");
@@ -145,24 +145,24 @@ class DefaultCallback : public mew::Root<mew::implements<ICallback, mew::IDispos
           GetDiskFreeSpaceEx(path.str(), (ULARGE_INTEGER*)&uFreeBytes, nullptr, nullptr);
           ave::GetDriveLetter(path.str(), sDrive);
         }
-        if (totalCount > 0) {  // totalCount == 0 ‚Ìê‡A‚Ü‚¾ƒtƒHƒ‹ƒ_‚ğŒvZ’†‚Ì‰Â”\«‚ª‚ ‚èA
-          // ‚±‚Ì‚Æ‚«‚É—ñ‹“‚·‚é‚Æ‚µ‚Î‚ç‚­‰“š‚µ‚È‚­‚È‚éê‡‚ª‚ ‚éB
+        if (totalCount > 0) {  // totalCount == 0 ã®å ´åˆã€ã¾ã ãƒ•ã‚©ãƒ«ãƒ€ã‚’è¨ˆç®—ä¸­ã®å¯èƒ½æ€§ãŒã‚ã‚Šã€
+          // ã“ã®ã¨ãã«åˆ—æŒ™ã™ã‚‹ã¨ã—ã°ã‚‰ãå¿œç­”ã—ãªããªã‚‹å ´åˆãŒã‚ã‚‹ã€‚
           uTotalBytes = ave::GetTotalBytes(view);
         }
         StrFormatByteSize64(uTotalBytes, sTotalSize, 32);
         StrFormatByteSize64(uFreeBytes, sFreeBytes, 32);
-        return mew::string::format(_T("$1 ŒÂ‚ÌƒIƒuƒWƒFƒNƒg ( $2 ) / ‹ó‚«ƒfƒBƒXƒN—Ìˆæ [$3] $4"), totalCount, sTotalSize, sDrive,
+        return mew::string::format(_T("$1 å€‹ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ ( $2 ) / ç©ºããƒ‡ã‚£ã‚¹ã‚¯é ˜åŸŸ [$3] $4"), totalCount, sTotalSize, sDrive,
                                    sFreeBytes);
       }
-    } else {  // •¡”‘I‘ğ
+    } else {  // è¤‡æ•°é¸æŠ
       TCHAR sSelectBytes[32];
       StrFormatByteSize64(ave::GetSelectedBytes(view), sSelectBytes, 32);
-      return mew::string::format(_T("$1 / $2 ŒÂ‚ÌƒIƒuƒWƒFƒNƒg‚ğ‘I‘ğ ( $3 )"), selectedCount, totalCount, sSelectBytes);
+      return mew::string::format(_T("$1 / $2 å€‹ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’é¸æŠ ( $3 )"), selectedCount, totalCount, sSelectBytes);
     }
   }
   mew::string GestureText(const mew::ui::Gesture gesture[], size_t length, const mew::string& description) {
     static const PCTSTR GESTURE_CHAR[] = {
-        _T("¶"), _T("‰E"), _T("’†"), _T("‚S"), _T("‚T"), _T("¢"), _T("¤"), _T("©"), _T("¨"), _T("ª"), _T("«"),
+        _T("å·¦"), _T("å³"), _T("ä¸­"), _T("ï¼”"), _T("ï¼•"), _T("â–³"), _T("â–½"), _T("â†"), _T("â†’"), _T("â†‘"), _T("â†“"),
     };
     mew::StringBuffer text;
     text.reserve(64);
@@ -171,9 +171,9 @@ class DefaultCallback : public mew::Root<mew::implements<ICallback, mew::IDispos
     }
     text.push_back(_T('\0'));
     if (description) {
-      return mew::string::format(_T("ƒWƒFƒXƒ`ƒƒ F $1i$2j"), text.str(), description);
+      return mew::string::format(_T("ã‚¸ã‚§ã‚¹ãƒãƒ£ ï¼š $1ï¼ˆ$2ï¼‰"), text.str(), description);
     } else {
-      return mew::string::format(_T("ƒWƒFƒXƒ`ƒƒ F $1"), text.str());
+      return mew::string::format(_T("ã‚¸ã‚§ã‚¹ãƒãƒ£ ï¼š $1"), text.str());
     }
   }
   avesta::Navigation NavigateVerb(mew::io::IEntry* current, mew::io::IEntry* where, UINT mods, bool locked,

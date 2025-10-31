@@ -1,4 +1,4 @@
-// afx.hpp
+ï»¿// afx.hpp
 #pragma once
 
 __interface IShellFolder;
@@ -15,13 +15,13 @@ struct __declspec(uuid("BCFCE0A0-EC17-11d0-8D10-00A0C90F2719")) IContextMenu3;
 #include "string.hpp"
 #include "struct.hpp"
 
-/// WindowsŠg’£.
+/// Windowsæ‹¡å¼µ.
 namespace afx {
 //==============================================================================
-// ƒEƒBƒ“ƒhƒE.
+// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦.
 
 bool PumpMessage();
-/// ƒ}ƒEƒXƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚Ä‚¢‚Ä‚àAƒc[ƒ‹ƒ`ƒbƒv‚ð•\Ž¦‚·‚é.
+/// ãƒžã‚¦ã‚¹ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚Œã¦ã„ã¦ã‚‚ã€ãƒ„ãƒ¼ãƒ«ãƒãƒƒãƒ—ã‚’è¡¨ç¤ºã™ã‚‹.
 HRESULT TipRelayEvent(HWND hTip, HWND hOwner, int xScreen, int yScreen);
 HRESULT MimicDoubleClick(int x, int y);
 HRESULT PrintWindow(HWND hwnd, HDC hdcBlt, UINT nFlags);
@@ -106,7 +106,7 @@ inline void SetVisible(HWND hwnd, bool value) {
 }
 
 //==============================================================================
-// ƒGƒfƒBƒbƒg.
+// ã‚¨ãƒ‡ã‚£ãƒƒãƒˆ.
 
 enum SingleLineEditOptions {
   KeybindNormal = 0x0000,
@@ -124,7 +124,7 @@ enum SingleLineEditOptions {
 HRESULT Edit_SubclassSingleLineTextBox(HWND hwndEdit, LPCWSTR fullpath, DWORD options);
 
 //==============================================================================
-// ƒŠƒXƒgƒrƒ…[.
+// ãƒªã‚¹ãƒˆãƒ“ãƒ¥ãƒ¼.
 
 HRESULT ListView_GetSortKey(HWND hwndListView, int* column, bool* ascending);
 HRESULT ListView_SetSortKey(HWND hwndListView, int column, bool ascending);
@@ -133,27 +133,27 @@ HRESULT ListView_AdjustToItems(HWND hwndListView);
 HRESULT ListView_SelectReverse(HWND hwndListView);
 
 //==============================================================================
-// ƒRƒ“ƒ{ƒ{ƒbƒNƒX.
+// ã‚³ãƒ³ãƒœãƒœãƒƒã‚¯ã‚¹.
 
 inline HWND ComboBoxEx_GetEdit(HWND hwndComboBoxEx) { return (HWND)::SendMessage(hwndComboBoxEx, CBEM_GETEDITCONTROL, 0, 0); }
 inline HWND ComboBoxEx_GetCombo(HWND hwndComboBoxEx) { return (HWND)::SendMessage(hwndComboBoxEx, CBEM_GETCOMBOCONTROL, 0, 0); }
 bool ComboBoxEx_IsAutoCompleting(HWND hwndComboBoxEx);
 
 //==============================================================================
-// ƒpƒX.
+// ãƒ‘ã‚¹.
 
 bool PathIsRegistory(PCWSTR name);
 bool PathIsFolder(PCWSTR path);
 HRESULT PathNormalize(WCHAR dst[MAX_PATH], PCWSTR src);
 
 //==============================================================================
-// ƒVƒFƒ‹ƒtƒ@ƒCƒ‹ˆ—.
+// ã‚·ã‚§ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«å‡¦ç†.
 
 HICON ExtractIcon(LPCTSTR filename, int index, int w, int h);
 HRESULT SHResolveLink(PCWSTR shortcut, WCHAR resolved[MAX_PATH]);
 
 //==============================================================================
-// ƒVƒFƒ‹ƒƒjƒ…[.
+// ã‚·ã‚§ãƒ«ãƒ¡ãƒ‹ãƒ¥ãƒ¼.
 
 HMENU SHBeginContextMenu(IContextMenu* pMenu);
 HMENU SHBeginContextMenu(IShellView* pView, UINT svgio, IContextMenu** ppMenu);
@@ -161,15 +161,15 @@ UINT SHPopupContextMenu(IContextMenu* pMenu, HMENU hMenu, POINT ptScreen);
 HRESULT SHEndContextMenu(IContextMenu* pMenu, int command, HWND hwnd, PWSTR verb = NULL);
 
 //==============================================================================
-// ƒNƒŠƒbƒvƒ{[ƒh.
+// ã‚¯ãƒªãƒƒãƒ—ãƒœãƒ¼ãƒ‰.
 
-/// ƒNƒŠƒbƒvƒ{[ƒh‚É‚ ‚éƒeƒLƒXƒg‚ðŽæ“¾‚·‚é.
+/// ã‚¯ãƒªãƒƒãƒ—ãƒœãƒ¼ãƒ‰ã«ã‚ã‚‹ãƒ†ã‚­ã‚¹ãƒˆã‚’å–å¾—ã™ã‚‹.
 mew::string GetClipboardText(HWND hwnd = NULL);
 ///
 bool SetClipboard(HGLOBAL hMem, int format, HWND hWnd = NULL);
 
 //==============================================================================
-// ƒGƒNƒXƒvƒ[ƒ‰ŠÖ˜A.
+// ã‚¨ã‚¯ã‚¹ãƒ—ãƒ­ãƒ¼ãƒ©é–¢é€£.
 
 HANDLE SHAllocShared(LPVOID data, ULONG size, DWORD pid);
 LPVOID SHLockShared(HANDLE hData, DWORD dwOtherProcId);
@@ -188,7 +188,7 @@ HRESULT ExpSetThumbnailSize(DWORD dwSize);
 HRESULT ExpGetNavigateSound(WCHAR path[MAX_PATH]);
 
 //==============================================================================
-// ITEMIDLIST ŠÖ”.
+// ITEMIDLIST é–¢æ•°.
 
 // ITEMIDLIST* ILCreateFromPathW(PCWSTR pwszPath);
 // void ILFree(ITEMIDLIST* pidl);
@@ -216,15 +216,15 @@ LPITEMIDLIST ILFromPath(PCWSTR path, DWORD* pdwAttr);
 LPITEMIDLIST ILFromShared(HANDLE hMem, DWORD dwProcId);
 LPITEMIDLIST ILFromExplorer(HWND hwndExplorer);
 
-/// eƒVƒFƒ‹ƒtƒHƒ‹ƒ_‚ÌŽæ“¾.
+/// è¦ªã‚·ã‚§ãƒ«ãƒ•ã‚©ãƒ«ãƒ€ã®å–å¾—.
 inline HRESULT ILGetParentFolder(LPCITEMIDLIST pidl, IShellFolder** ppParent, LPCITEMIDLIST* ppRelative = NULL) {
   return SHBindToParent(pidl, IID_IShellFolder, (void**)ppParent, ppRelative);
 }
 
-/// Ž©•ªŽ©g‚ÌƒVƒFƒ‹ƒtƒHƒ‹ƒ_‚ÌŽæ“¾.
+/// è‡ªåˆ†è‡ªèº«ã®ã‚·ã‚§ãƒ«ãƒ•ã‚©ãƒ«ãƒ€ã®å–å¾—.
 HRESULT ILGetSelfFolder(LPCITEMIDLIST pidl, IShellFolder** ppFolder);
 
-/// ITEMIDLIST ‚ð”äŠr‚µA-1, 0, +1 ‚Ì‚¢‚Ã‚ê‚©‚ð•Ô‚·.
+/// ITEMIDLIST ã‚’æ¯”è¼ƒã—ã€-1, 0, +1 ã®ã„ã¥ã‚Œã‹ã‚’è¿”ã™.
 inline int ILCompare(LPCITEMIDLIST lhs, LPCITEMIDLIST rhs) {
   if (lhs == rhs) return 0;
   if (!lhs) return -1;
@@ -236,7 +236,7 @@ inline int ILCompare(LPCITEMIDLIST lhs, LPCITEMIDLIST rhs) {
   return memcmp(lhs, rhs, lhsSize);
 }
 
-/// SHGetFileInfo ‚Ì IDList ƒo[ƒWƒ‡ƒ“.
+/// SHGetFileInfo ã® IDList ãƒãƒ¼ã‚¸ãƒ§ãƒ³.
 inline DWORD_PTR ILGetFileInfo(LPCITEMIDLIST pidl, SHFILEINFO* info, DWORD flags, DWORD dwFileAttr = 0) {
   return ::SHGetFileInfo((PCWSTR)pidl, dwFileAttr, info, sizeof(SHFILEINFO), flags | SHGFI_PIDL);
 }
@@ -244,7 +244,7 @@ inline DWORD_PTR ILGetFileInfo(LPCITEMIDLIST pidl, SHFILEINFO* info, DWORD flags
 HRESULT ILGetDisplayName(IShellFolder* folder, LPCITEMIDLIST leaf, DWORD shgdn, WCHAR name[], size_t bufsize);
 
 //==============================================================================
-// CIDA ŠÖ”.
+// CIDA é–¢æ•°.
 
 inline size_t CIDAGetCount(const CIDA* pCIDA) {
   ASSERT(pCIDA);
@@ -264,9 +264,9 @@ inline size_t CIDAGetSize(const CIDA* pCIDA) {
   return pCIDA->aoffset[pCIDA->cidl] + ILGetSize(CIDAGetAt(pCIDA, CIDAGetCount(pCIDA) - 1));
 }
 HGLOBAL CIDAFromSingleIDList(LPCITEMIDLIST pidl);
-HGLOBAL CIDAToHDROP(const CIDA* pCIDA);  ///< CIDA‚ðHDROP‚É•ÏŠ·.
-HGLOBAL CIDAToTextA(const CIDA* pCIDA);  ///< CIDA‚ðMBCS‚É•ÏŠ·.
-HGLOBAL CIDAToTextW(const CIDA* pCIDA);  ///< CIDA‚ðWCS‚É•ÏŠ·.
+HGLOBAL CIDAToHDROP(const CIDA* pCIDA);  ///< CIDAã‚’HDROPã«å¤‰æ›.
+HGLOBAL CIDAToTextA(const CIDA* pCIDA);  ///< CIDAã‚’MBCSã«å¤‰æ›.
+HGLOBAL CIDAToTextW(const CIDA* pCIDA);  ///< CIDAã‚’WCSã«å¤‰æ›.
 
 //==============================================================================
 

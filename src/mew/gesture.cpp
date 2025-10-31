@@ -1,4 +1,4 @@
-// gesture.cpp
+﻿// gesture.cpp
 
 #include "stdafx.h"
 #include "widgets.hpp"

@@ -1,4 +1,4 @@
-/// @file deque.hpp
+ï»¿/// @file deque.hpp
 /// UNDOCUMENTED
 #pragma once
 
@@ -7,7 +7,7 @@
 #include "sequence.hpp"
 
 //==============================================================================
-// std::deque<T, Alloc>‚É‘Î‚·‚éBinary“üo—ÍƒIƒyƒŒ[ƒ^
+// std::deque<T, Alloc>ã«å¯¾ã™ã‚‹Binaryå…¥å‡ºåŠ›ã‚ªãƒšãƒ¬ãƒ¼ã‚¿
 
 template <typename T, class Alloc>
 inline IStream& operator<<(IStream& stream, const std::deque<T, Alloc>& v) throw(...) {

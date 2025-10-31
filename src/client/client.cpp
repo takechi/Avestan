@@ -1,4 +1,4 @@
-// avesta.cpp
+ï»¿// avesta.cpp
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -19,11 +19,11 @@ static TCHAR EXEPATH[MAX_PATH], DLLPATH[MAX_PATH];
 
 //======================================================================
 
-const PCWSTR MSG_DLL_ERROR = L"avesta.dll ‚ª•s³‚Å‚·B";
-const PCWSTR MSG_INIT_ERROR = L"avesta.dll ‚ð‰Šú‰»‚Å‚«‚Ü‚¹‚ñB";
-const PCWSTR MSG_PASS_ERROR = L"ˆø”‚ÌŽó‚¯“n‚µ‚ÉŽ¸”s‚µ‚Ü‚µ‚½";
-const PCWSTR MSG_UPDATE_OK = L"ƒIƒ“ƒ‰ƒCƒ“ƒAƒbƒvƒf[ƒg‚É¬Œ÷‚µ‚Ü‚µ‚½B\nÄ‹N“®‚µ‚Ü‚·‚©H";
-const PCWSTR MSG_UPDATE_ERROR = L"ƒIƒ“ƒ‰ƒCƒ“ƒAƒbƒvƒf[ƒg‚ÉŽ¸”s‚µ‚Ü‚µ‚½B";
+const PCWSTR MSG_DLL_ERROR = L"avesta.dll ãŒä¸æ­£ã§ã™ã€‚";
+const PCWSTR MSG_INIT_ERROR = L"avesta.dll ã‚’åˆæœŸåŒ–ã§ãã¾ã›ã‚“ã€‚";
+const PCWSTR MSG_PASS_ERROR = L"å¼•æ•°ã®å—ã‘æ¸¡ã—ã«å¤±æ•—ã—ã¾ã—ãŸ";
+const PCWSTR MSG_UPDATE_OK = L"ã‚ªãƒ³ãƒ©ã‚¤ãƒ³ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆã«æˆåŠŸã—ã¾ã—ãŸã€‚\nå†èµ·å‹•ã—ã¾ã™ã‹ï¼Ÿ";
+const PCWSTR MSG_UPDATE_ERROR = L"ã‚ªãƒ³ãƒ©ã‚¤ãƒ³ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆã«å¤±æ•—ã—ã¾ã—ãŸã€‚";
 
 inline int MsgBox(PCWSTR msg, int mb) { return ::MessageBox(NULL, msg, APPNAME, mb); }
 
@@ -66,7 +66,7 @@ inline static int RunAvesta(PWSTR args, INT sw) {
   PWSTR newAvesta = NULL;
   HINSTANCE hDllAvesta = ::LoadLibrary(DLLPATH);
   if (hDllAvesta) {
-    using AvestaMain = int (*)(PCWSTR args, INT sw, PWSTR * newAvesta);
+    using AvestaMain = int (*)(PCWSTR args, INT sw, PWSTR* newAvesta);
     if (AvestaMain fnMain = (AvestaMain)::GetProcAddress(hDllAvesta, "AvestaMain"))
       ret = fnMain(args, sw, &newAvesta);
     else
@@ -75,13 +75,13 @@ inline static int RunAvesta(PWSTR args, INT sw) {
     MsgBox(MSG_INIT_ERROR, MB_OK | MB_ICONERROR);
   }
 
-  // Ä‹N“®‚ª—v‹‚³‚ê‚Ä‚¢‚é‚Ì‚ÅAƒAƒ“ƒ[ƒh‚·‚éB
+  // å†èµ·å‹•ãŒè¦æ±‚ã•ã‚Œã¦ã„ã‚‹ã®ã§ã€ã‚¢ãƒ³ãƒ­ãƒ¼ãƒ‰ã™ã‚‹ã€‚
   if (ret > 0) {
     ForceUnload(hDllAvesta);
     for (size_t i = 0; i < sizeof(DLLs) / sizeof(DLLs[0]); ++i) ForceUnload(::LoadLibrary(DLLs[i]));
   }
 
-  // ƒzƒbƒgƒAƒbƒvƒf[ƒg
+  // ãƒ›ãƒƒãƒˆã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆ
   if (newAvesta) {
     if (UpdateAvesta(newAvesta)) {
       if (MsgBox(MSG_UPDATE_OK, MB_OKCANCEL | MB_ICONINFORMATION) != IDOK) ret = 0;
@@ -101,7 +101,7 @@ static bool GetProcessFromWindow(HWND hWnd, PWSTR filename, DWORD nSize) {
     HMODULE hModule;
     DWORD dwNeed;
     if (EnumProcessModules(hProcess, &hModule, sizeof(hModule), &dwNeed)) {
-      // ƒ‚ƒWƒ…[ƒ‹ƒnƒ“ƒhƒ‹‚©‚çƒtƒ‹ƒpƒX–¼‚ðŽæ“¾
+      // ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ãƒãƒ³ãƒ‰ãƒ«ã‹ã‚‰ãƒ•ãƒ«ãƒ‘ã‚¹åã‚’å–å¾—
       if (GetModuleFileNameEx(hProcess, hModule, filename, nSize)) result = true;
     }
     CloseHandle(hProcess);

@@ -1,4 +1,4 @@
-// objectimpl.hpp
+ï»¿// objectimpl.hpp
 #pragma once
 
 namespace mew {
@@ -15,7 +15,7 @@ inline HRESULT InterfaceAssign(IUnknown* p, void** pp) {
 template <class TInherits, class TSupports>
 class __declspec(novtable) Interface : public meta::Inherits<TInherits> {
  public:
-  using __primary__ = typename TInherits::Head;  ///< OID‚É‘Î‰‚·‚éƒCƒ“ƒ^ƒtƒF[ƒX.
+  using __primary__ = typename TInherits::Head;  ///< OIDã«å¯¾å¿œã™ã‚‹ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹.
   IUnknown* get_OID() throw() { return static_cast<IUnknown*>(static_cast<__primary__*>(this)); }
   __declspec(property(get = get_OID)) IUnknown* OID;
 
@@ -66,7 +66,7 @@ class Object2 {
     using __inherits__ = meta::Union<typename TLeft::__inherits__, TInherits>;
     using __supports__ = meta::Union<typename TLeft::__supports__, TSupports>;
 
-    // IUnknown‚ÌÀ‘•‚Í‚·‚×‚ÄTLeft‚Ö“]‘—‚·‚éB
+    // IUnknownã®å®Ÿè£…ã¯ã™ã¹ã¦TLeftã¸è»¢é€ã™ã‚‹ã€‚
     using __primary__ = typename TLeft::__primary__;
     HRESULT __stdcall QueryInterface(REFIID iid, void** pp) throw() {
       HRESULT hr = TLeft::QueryInterface(iid, pp);
@@ -89,7 +89,7 @@ class Object2<meta::Void, TSupports, TMixin> {
   using mixin = typename TMixin::template Result1<Interface<TInherits, TSupports> >::Result;
 
  public:
-  // ‚±‚ê‚ªƒ‹[ƒgƒNƒ‰ƒX.
+  // ã“ã‚ŒãŒãƒ«ãƒ¼ãƒˆã‚¯ãƒ©ã‚¹.
   class __declspec(novtable) Result : public mixin {
    public:
     using __inherits__ = TInherits;

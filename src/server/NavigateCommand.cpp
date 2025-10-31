@@ -1,4 +1,4 @@
-// NavigateCommand.cpp
+ï»¿// NavigateCommand.cpp
 
 #include "stdafx.h"
 #include "main.hpp"
@@ -50,15 +50,15 @@ class NavigateCommand : public mew::Root<mew::implements<mew::ICommand> > {
   }
 
  private:
-  /// ŠJ‚­iCüƒL[‚Í©“®j.
+  /// é–‹ãï¼ˆä¿®é£¾ã‚­ãƒ¼ã¯è‡ªå‹•ï¼‰.
   static void Open(mew::io::IEntry* entry) { theAvesta->OpenFolder(entry, avesta::NaviOpen); }
-  /// ŠJ‚«A‚»‚ê‚Ì‚İ‚ğ‘I‘ğ‚·‚é.
+  /// é–‹ãã€ãã‚Œã®ã¿ã‚’é¸æŠã™ã‚‹.
   static void OpenAlways(mew::io::IEntry* entry) { theAvesta->OpenFolder(entry, avesta::NaviOpenAlways); }
-  /// ’Ç‰Á‚ÅŠJ‚­.
+  /// è¿½åŠ ã§é–‹ã.
   static void OpenAppend(mew::io::IEntry* entry) { theAvesta->OpenFolder(entry, avesta::NaviAppend); }
-  /// ”ñ•\¦‚ÅŠJ‚­.
+  /// éè¡¨ç¤ºã§é–‹ã.
   static void OpenReserve(mew::io::IEntry* entry) { theAvesta->OpenFolder(entry, avesta::NaviReserve); }
-  /// ˆÚ“®‚·‚éiCüƒL[‚Í©“®j.
+  /// ç§»å‹•ã™ã‚‹ï¼ˆä¿®é£¾ã‚­ãƒ¼ã¯è‡ªå‹•ï¼‰.
   static void Goto(mew::io::IEntry* entry) {
     ASSERT(entry);
     mew::ref<mew::ui::IShellListView> current;
@@ -68,9 +68,9 @@ class NavigateCommand : public mew::Root<mew::implements<mew::ICommand> > {
       theAvesta->OpenFolder(entry, avesta::NaviOpen);
     }
   }
-  /// í‚ÉˆÚ“®‚·‚é.
+  /// å¸¸ã«ç§»å‹•ã™ã‚‹.
   static void GotoAlways(mew::io::IEntry* entry) {
-    // TODO: ‚±‚êƒoƒOI
+    // TODO: ã“ã‚Œãƒã‚°ï¼
     afx::SetModifierState(0, 0);
     Goto(entry);
     afx::RestoreModifierState(0);

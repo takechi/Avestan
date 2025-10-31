@@ -1,4 +1,4 @@
-// Form.cpp
+ï»¿// Form.cpp
 
 #include "stdafx.h"
 #include "../private.h"
@@ -149,7 +149,7 @@ class DockPanel : public DockBase<DockPanel, implements<IWindow, ISignal, IDispo
   DECLARE_WND_CLASS_EX(_T("mew.ui.DockPanel"), CS_BYTEALIGNWINDOW, -1)
 
   BEGIN_MSG_MAP_(HandleWindowMessage)
-  MESSAGE_HANDLER(WM_PAINT, OnPaint)  // WM_ERASEBKGND‚æ‚è‚àAƒNƒŠƒbƒsƒ“ƒO‚ÌŠÖŒW‚ÅWM_PAINT‚Ì‚Ù‚¤‚ª‚æ‚³‚°
+  MESSAGE_HANDLER(WM_PAINT, OnPaint)  // WM_ERASEBKGNDã‚ˆã‚Šã‚‚ã€ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°ã®é–¢ä¿‚ã§WM_PAINTã®ã»ã†ãŒã‚ˆã•ã’
   MESSAGE_HANDLER(WM_PRINTCLIENT, OnPrintClient)
   MESSAGE_HANDLER(WM_PARENTNOTIFY, OnParentNotify)
   CHAIN_MSG_MAP_TO(ProcessSplitterMessage)
@@ -285,7 +285,7 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
     if (!hWnd) {
       throw mew::exceptions::RuntimeError(string(IDS_ERR_CREATEWINDOW), AtlHresultFromLastError());
     }
-    // ƒEƒBƒ“ƒhƒEƒAƒCƒRƒ“‚ğEXE‚Æ“¯‚¶‚à‚Ì‚É‚·‚é.
+    // ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚¢ã‚¤ã‚³ãƒ³ã‚’EXEã¨åŒã˜ã‚‚ã®ã«ã™ã‚‹.
     HICON hIconSmall = null, hIconLarge = null;
     io::Path pathIcon = path;
     pathIcon.Append(L"..\\..\\usr\\main.ico");
@@ -427,7 +427,7 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
       case WM_RBUTTONDBLCLK:
       case WM_MBUTTONDBLCLK:
       case WM_XBUTTONDBLCLK:
-        // ƒ}ƒEƒXƒWƒFƒXƒ`ƒƒƒTƒ|[ƒg.
+        // ãƒã‚¦ã‚¹ã‚¸ã‚§ã‚¹ãƒãƒ£ã‚µãƒãƒ¼ãƒˆ.
         if (ProcessMouseGesture(m_hWnd, msg)) {
           return true;
         }
@@ -480,7 +480,7 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
     if (!menu) {
       return;
     }
-    // ‘O‰ñg‚Á‚½‚Æ‚«‚Ì—LŒø«‚ªc‚Á‚Ä‚¢‚é‚Ì‚ÅA©‘O‚ÅOn/Off‚ğİ’è‚·‚é
+    // å‰å›ä½¿ã£ãŸã¨ãã®æœ‰åŠ¹æ€§ãŒæ®‹ã£ã¦ã„ã‚‹ã®ã§ã€è‡ªå‰ã§On/Offã‚’è¨­å®šã™ã‚‹
     if (IsIconic()) {
       menu.EnableMenuItem(SC_MAXIMIZE, MF_BYCOMMAND | MF_ENABLED);
       menu.EnableMenuItem(SC_MINIMIZE, MF_BYCOMMAND | MF_GRAYED);
@@ -500,7 +500,7 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
       menu.EnableMenuItem(SC_MOVE, MF_BYCOMMAND | MF_ENABLED);
       menu.EnableMenuItem(SC_SIZE, MF_BYCOMMAND | MF_ENABLED);
     }
-    // ‚±‚ê‚ğ‚µ‚È‚¢‚ÆA”ñƒAƒNƒeƒBƒu‚É‚È‚Á‚½‚Æ‚«‚Éƒƒjƒ…[‚ªÁ‚¦‚È‚­‚È‚é.
+    // ã“ã‚Œã‚’ã—ãªã„ã¨ã€éã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã«ãªã£ãŸã¨ãã«ãƒ¡ãƒ‹ãƒ¥ãƒ¼ãŒæ¶ˆãˆãªããªã‚‹.
     SetForegroundWindow(m_hWnd);
     if (UINT wID = menu.TrackPopupMenu(TPM_LEFTBUTTON | TPM_RIGHTBUTTON | TPM_RETURNCMD, pt.x, pt.y, m_hWnd, null)) {
       if (ref<ITreeItem> item = FindByCommand(menu, wID)) {
@@ -518,7 +518,7 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
 
   LRESULT OnMouseWheel(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     Point where(Point(GET_XY_LPARAM(lParam)));
-    ScreenToClient(&where);  // WM_MOUSEWHEEL‚Ìƒ}ƒEƒXˆÊ’u‚ÍƒXƒNƒŠ[ƒ“À•WŒn.
+    ScreenToClient(&where);  // WM_MOUSEWHEELã®ãƒã‚¦ã‚¹ä½ç½®ã¯ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ç³».
     UINT32 state = GET_KEYSTATE_WPARAM(wParam);
     if (IsKeyPressed(VK_MENU)) {
       state |= ModifierAlt;
@@ -566,13 +566,13 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
 
   ref<IDropTarget> QueryDropTargetToDescent(POINTL ptScreen) {
     HWND hWnd = m_hWnd;
-    // ChildWindowFromPoint() ‚ÍA’¼‰º‚Ìq‹Ÿ‚µ‚©ŒŸõ‚µ‚È‚¢‚½‚ßAƒ‹[ƒv‚µ‚Äq‹Ÿ‚ğ‰º‚Á‚Ä‚¢‚­.
+    // ChildWindowFromPoint() ã¯ã€ç›´ä¸‹ã®å­ä¾›ã—ã‹æ¤œç´¢ã—ãªã„ãŸã‚ã€ãƒ«ãƒ¼ãƒ—ã—ã¦å­ä¾›ã‚’ä¸‹ã£ã¦ã„ã.
     while (true) {
       POINT ptClient = {ptScreen.x, ptScreen.y};
       ::ScreenToClient(hWnd, &ptClient);
       HWND hChild = ::ChildWindowFromPointEx(hWnd, ptClient, CWP_SKIPINVISIBLE | CWP_SKIPDISABLED | CWP_SKIPTRANSPARENT);
-      if (!hChild || hChild == hWnd) {  // hChild == null ‚ÍAˆÊ’u‚ªƒNƒ‰ƒCƒAƒ“ƒg—ÌˆæŠO‚Ìê‡‚É‹N‚±‚è‚¤‚é.
-        // hChild == hWnd ‚ÍAˆÊ’u‚Éq‹Ÿ‚ª‚È‚¢ê‡‚É‹N‚±‚è‚¤‚é.
+      if (!hChild || hChild == hWnd) {  // hChild == null ã¯ã€ä½ç½®ãŒã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆé ˜åŸŸå¤–ã®å ´åˆã«èµ·ã“ã‚Šã†ã‚‹.
+        // hChild == hWnd ã¯ã€ä½ç½®ã«å­ä¾›ãŒãªã„å ´åˆã«èµ·ã“ã‚Šã†ã‚‹.
         break;
       }
       hWnd = hChild;
@@ -619,7 +619,7 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
       }
       m_drop->DragEnter(pDataObject, key, pt, pdwEffect);
     }
-    // ‚±‚±‚Å‹‘”Û‚·‚é‚Æ¡Œã‚ÌDragOver‚ªŒÄ‚Î‚ê‚È‚¢‚Ì‚ÅA‚Æ‚è‚ ‚¦‚¸‚·‚×‚Ä‚ğó‚¯“ü‚ê‚é
+    // ã“ã“ã§æ‹’å¦ã™ã‚‹ã¨ä»Šå¾Œã®DragOverãŒå‘¼ã°ã‚Œãªã„ã®ã§ã€ã¨ã‚Šã‚ãˆãšã™ã¹ã¦ã‚’å—ã‘å…¥ã‚Œã‚‹
     *pdwEffect = DROPEFFECT_COPY | DROPEFFECT_MOVE | DROPEFFECT_LINK;
     return S_OK;
   }
@@ -813,8 +813,8 @@ AVESTA_EXPORT(Form)
 //==============================================================================
 
 namespace {
-const int GESTURE_SKIP_DISTANCE = 10;  // [px] ‚±‚Ì‹——£ˆÈ‰º‚Ìƒ}ƒEƒXˆÚ“®‚ÍŠ´’m‚µ‚È‚¢
-const int GESTURE_WAIT_TIME = 300;  // [msec] ‚±‚êˆÈãŠÔ‚ªŒo‚Á‚½ê‡‚ÍV‚½‚ÈƒWƒFƒXƒ`ƒƒ‚Æ‚İ‚È‚·iªª‚È‚Çj
+const int GESTURE_SKIP_DISTANCE = 10;  // [px] ã“ã®è·é›¢ä»¥ä¸‹ã®ãƒã‚¦ã‚¹ç§»å‹•ã¯æ„ŸçŸ¥ã—ãªã„
+const int GESTURE_WAIT_TIME = 300;     // [msec] ã“ã‚Œä»¥ä¸Šæ™‚é–“ãŒçµŒã£ãŸå ´åˆã¯æ–°ãŸãªã‚¸ã‚§ã‚¹ãƒãƒ£ã¨ã¿ãªã™ï¼ˆâ†‘â†‘ãªã©ï¼‰
 
 struct GestureDesc {
   mew::ui::CWindowEx owner;
@@ -883,7 +883,7 @@ HRESULT EndGesture(GestureDesc& desc) {
   return hr;
 }
 
-// ƒWƒFƒXƒ`ƒƒƒV[ƒPƒ“ƒX‚ª•Ï‰»‚µ‚½‚ÉŒÄ‚Î‚ê‚éB
+// ã‚¸ã‚§ã‚¹ãƒãƒ£ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ãŒå¤‰åŒ–ã—ãŸæ™‚ã«å‘¼ã°ã‚Œã‚‹ã€‚
 void OnGestureUpdate(GestureDesc& desc) {
   ASSERT(desc.gesture);
   if (desc.gesture) {
@@ -892,7 +892,7 @@ void OnGestureUpdate(GestureDesc& desc) {
   }
 }
 
-// ƒWƒFƒXƒ`ƒƒ‚ª³í‚ÉŠ®—¹‚µ‚½ê‡‚ÉŒÄ‚Î‚ê‚éB
+// ã‚¸ã‚§ã‚¹ãƒãƒ£ãŒæ­£å¸¸ã«å®Œäº†ã—ãŸå ´åˆã«å‘¼ã°ã‚Œã‚‹ã€‚
 HRESULT OnGestureFinish(GestureDesc& desc) {
   ASSERT(desc.gesture);
   if (!desc.gesture) {
@@ -916,17 +916,17 @@ void OnGestureUp(GestureDesc& desc, const MSG* msg) {
     return;
   }
   ::ReleaseCapture();
-  if (FAILED(OnGestureFinish(desc)) && desc.history.size() == 1) {  // ƒWƒFƒXƒ`ƒƒ‚ª–³‚¢‚Ì‚ÅA’Êí‚Ì‰EƒNƒŠƒbƒN
+  if (FAILED(OnGestureFinish(desc)) && desc.history.size() == 1) {  // ã‚¸ã‚§ã‚¹ãƒãƒ£ãŒç„¡ã„ã®ã§ã€é€šå¸¸ã®å³ã‚¯ãƒªãƒƒã‚¯
     mew::Point pt = desc.cursor;
     desc.window.ScreenToClient(&pt);
     LPARAM lParamClient = MAKELPARAM(pt.x, pt.y);
-    // áƒeƒNƒjƒbƒNâ
-    // WM_RBUTTONUP ‚ğƒƒbƒZ[ƒWƒLƒ…[‚É“ü‚ê‚½ŒãAWM_RBUTTONDOWN ‚ğ’¼ÚSendMessage‚·‚éB
-    // ÀÛ‚Éó‚¯æ‚é‡”Ô‚ÍARDOWN => RUP => CONTEXTMENUB
-    // SendMessage()‚Ì‘O‚Éƒ|ƒXƒg‚µ‚Ä‚¨‚­•K—v‚ª‚ ‚é‚Ì‚ÍA
-    // ‰Eƒhƒ‰ƒbƒO‚ª—LŒø‚Èƒ^ƒCƒv‚ÌƒRƒ“ƒgƒ[ƒ‹iƒŠƒXƒgAƒcƒŠ[‚È‚Çj‚Å
-    // WM_RBUTTONDOWN ‚©‚ç‹A‚Á‚Ä‚±‚È‚­‚È‚é‚½‚ßB
-    // ‚¿‚È‚İ‚ÉAWM_RBUTTONDOWN ‚ğPostMessage‚·‚é‚ÆAƒ}ƒEƒXƒWƒFƒXƒ`ƒƒ‚Æ—‚ñ‚Å–³ŒÀƒ‹[ƒv‚É‚È‚éB
+    // â‰ªãƒ†ã‚¯ãƒ‹ãƒƒã‚¯â‰«
+    // WM_RBUTTONUP ã‚’ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚­ãƒ¥ãƒ¼ã«å…¥ã‚ŒãŸå¾Œã€WM_RBUTTONDOWN ã‚’ç›´æ¥SendMessageã™ã‚‹ã€‚
+    // å®Ÿéš›ã«å—ã‘å–ã‚‹é †ç•ªã¯ã€RDOWN => RUP => CONTEXTMENUã€‚
+    // SendMessage()ã®å‰ã«ãƒã‚¹ãƒˆã—ã¦ãŠãå¿…è¦ãŒã‚ã‚‹ã®ã¯ã€
+    // å³ãƒ‰ãƒ©ãƒƒã‚°ãŒæœ‰åŠ¹ãªã‚¿ã‚¤ãƒ—ã®ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ï¼ˆãƒªã‚¹ãƒˆã€ãƒ„ãƒªãƒ¼ãªã©ï¼‰ã§
+    // WM_RBUTTONDOWN ã‹ã‚‰å¸°ã£ã¦ã“ãªããªã‚‹ãŸã‚ã€‚
+    // ã¡ãªã¿ã«ã€WM_RBUTTONDOWN ã‚’PostMessageã™ã‚‹ã¨ã€ãƒã‚¦ã‚¹ã‚¸ã‚§ã‚¹ãƒãƒ£ã¨çµ¡ã‚“ã§ç„¡é™ãƒ«ãƒ¼ãƒ—ã«ãªã‚‹ã€‚
     switch (msg->message) {
       case WM_LBUTTONUP:
         desc.window.PostMessage(WM_LBUTTONUP, msg->wParam, lParamClient);
@@ -972,7 +972,7 @@ void OnGestureMouseMove(GestureDesc& desc, WPARAM, LPARAM lParam) {
   ::GetCursorPos(&pt);
 
   int dx = pt.x - desc.cursor.x, dy = pt.y - desc.cursor.y;
-  if ((dx * dx + dy * dy) < GESTURE_SKIP_DISTANCE * GESTURE_SKIP_DISTANCE) {  // •sŠ´‹——£
+  if ((dx * dx + dy * dy) < GESTURE_SKIP_DISTANCE * GESTURE_SKIP_DISTANCE) {  // ä¸æ„Ÿè·é›¢
     return;
   }
 
@@ -981,7 +981,7 @@ void OnGestureMouseMove(GestureDesc& desc, WPARAM, LPARAM lParam) {
 
   DWORD dwTimeNow = ::GetTickCount();
   if (desc.history.empty() || desc.history.back() != dir ||
-      (dwTimeNow - desc.lastTime) > GESTURE_WAIT_TIME) {  // V‚µ‚¢ƒWƒFƒXƒ`ƒƒ
+      (dwTimeNow - desc.lastTime) > GESTURE_WAIT_TIME) {  // æ–°ã—ã„ã‚¸ã‚§ã‚¹ãƒãƒ£
     desc.history.push_back(dir);
     OnGestureUpdate(desc);
   }

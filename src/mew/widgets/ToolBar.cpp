@@ -1,4 +1,4 @@
-// ToolBar.cpp
+ï»¿// ToolBar.cpp
 
 #include "stdafx.h"
 #include "../private.h"
@@ -11,11 +11,11 @@
 #include "theme.hpp"
 #include "drawing.hpp"
 
-#include "../server/main.hpp"  // ‚à‚¤‚®‚¿‚á‚®‚¿‚ácc
+#include "../server/main.hpp"  // ã‚‚ã†ãã¡ã‚ƒãã¡ã‚ƒâ€¦â€¦
 
 namespace {
 const int ID_FIRST_ITEM = 100;
-const int BTNOFF = 1;  // ‚È‚º‚©ƒc[ƒ‹ƒo[‚Ìˆê‚Â–Ú‚Ìƒ{ƒ^ƒ“‚Í“®ì‚ª‚¨‚©‚µ‚¢‚Ì‚ÅAƒ_ƒ~[‚ğ’Ç‰Á‚·‚é
+const int BTNOFF = 1;  // ãªãœã‹ãƒ„ãƒ¼ãƒ«ãƒãƒ¼ã®ä¸€ã¤ç›®ã®ãƒœã‚¿ãƒ³ã¯å‹•ä½œãŒãŠã‹ã—ã„ã®ã§ã€ãƒ€ãƒŸãƒ¼ã‚’è¿½åŠ ã™ã‚‹
 
 class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CToolBarCtrlT<mew::ui::WindowImplBase> >,
                                          public mew::ui::MenuProvider {
@@ -33,8 +33,8 @@ class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CTo
   bool m_bPopupItem : 1;
   bool m_bEscapePressed : 1;
   bool m_bSkipMsg : 1;
-  bool m_bUseKeyboardCues : 1;    ///< ƒVƒXƒeƒ€İ’è‚É]‚¤
-  bool m_bShowKeyboardCues : 1;   ///< ƒVƒXƒeƒ€İ’è‚É]‚¤
+  bool m_bUseKeyboardCues : 1;    ///< ã‚·ã‚¹ãƒ†ãƒ è¨­å®šã«å¾“ã†
+  bool m_bShowKeyboardCues : 1;   ///< ã‚·ã‚¹ãƒ†ãƒ è¨­å®šã«å¾“ã†
   bool m_bAllowKeyboardCues : 1;  ///<
 
  public:
@@ -100,7 +100,7 @@ class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CTo
   }
   void ResetButtons() {
     MakeEmpty();
-    // ¶’[‚Ìƒ{ƒ^ƒ“‚Í“®ì‚ª‚¨‚©‚µ‚¢‚½‚ßAƒ_ƒ~[ƒ{ƒ^ƒ“‚ğ“ü‚ê‚é
+    // å·¦ç«¯ã®ãƒœã‚¿ãƒ³ã¯å‹•ä½œãŒãŠã‹ã—ã„ãŸã‚ã€ãƒ€ãƒŸãƒ¼ãƒœã‚¿ãƒ³ã‚’å…¥ã‚Œã‚‹
     TBBUTTON btn = {I_IMAGENONE};
     btn.fsStyle = BTNS_BUTTON;
     btn.fsState = TBSTATE_HIDDEN;
@@ -484,8 +484,8 @@ class __declspec(novtable) ToolBarBase : public WTLEX::CTypedToolBar<LPARAM, CTo
           ShowKeyboardCues(true);
         }
         TakeFocus();
-        if (IsWholeDropDown(nBtn)) {  // ƒfƒtƒHƒ‹ƒg‚Ì“®ì‚ÍAƒƒjƒ…[‚ğŠJ‚­B
-          // ‚³‚ç‚ÉAƒƒjƒ…[‚ÌÅ‰‚Ì€–Ú‚ÉƒJ[ƒ\ƒ‹‚ğ‡‚í‚¹‚é‚½‚ß‚É‰ºƒL[‚ğ“ü—Í‚·‚éB
+        if (IsWholeDropDown(nBtn)) {  // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®å‹•ä½œã¯ã€ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’é–‹ãã€‚
+          // ã•ã‚‰ã«ã€ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®æœ€åˆã®é …ç›®ã«ã‚«ãƒ¼ã‚½ãƒ«ã‚’åˆã‚ã›ã‚‹ãŸã‚ã«ä¸‹ã‚­ãƒ¼ã‚’å…¥åŠ›ã™ã‚‹ã€‚
           PostKeyDown(VK_DOWN);
         }
         SetHotItem(nBtn);
@@ -955,7 +955,7 @@ class LinkBar : public Object<ToolBar, implements<IDropTarget> > {
       Point ptClient(GET_XY_LPARAM(lParam));
       int index = HitTest(&ptClient);
       if (index > 0) {
-        // TODO: ƒ†[ƒU‚ªƒJƒXƒ^ƒ}ƒCƒY‚Å‚«‚é‚æ‚¤‚É
+        // TODO: ãƒ¦ãƒ¼ã‚¶ãŒã‚«ã‚¹ã‚¿ãƒã‚¤ã‚ºã§ãã‚‹ã‚ˆã†ã«
         UINT32 mods = ui::GetCurrentModifiers();
         if (mods == 0) {
           mods = m;
@@ -1006,14 +1006,14 @@ class LinkBar : public Object<ToolBar, implements<IDropTarget> > {
     return 0;
   }
   UINT PopupContextMenu(IContextMenu* menu, CMenuHandle popup, POINT ptScreen, int index) {
-    // ƒVƒ‡[ƒgƒJƒbƒg‚Ìì¬(&S), íœ(&D), –¼‘O‚Ì•ÏX(&M) ‚ğæ‚èœ‚­
+    // ã‚·ãƒ§ãƒ¼ãƒˆã‚«ãƒƒãƒˆã®ä½œæˆ(&S), å‰Šé™¤(&D), åå‰ã®å¤‰æ›´(&M) ã‚’å–ã‚Šé™¤ã
     for (int i = popup.GetMenuItemCount() - 1; i >= 0; --i) {
       TCHAR text[MAX_PATH];
       if (popup.GetMenuString(i, text, MAX_PATH, MF_BYPOSITION) == 0) {
         continue;
       }
-      if (str::equals(text, _T("ƒVƒ‡[ƒgƒJƒbƒg‚Ìì¬(&S)")) || str::equals(text, _T("íœ(&D)")) ||
-          str::equals(text, _T("–¼‘O‚Ì•ÏX(&M)"))) {
+      if (str::equals(text, _T("ã‚·ãƒ§ãƒ¼ãƒˆã‚«ãƒƒãƒˆã®ä½œæˆ(&S)")) || str::equals(text, _T("å‰Šé™¤(&D)")) ||
+          str::equals(text, _T("åå‰ã®å¤‰æ›´(&M)"))) {
         popup.DeleteMenu(i, MF_BYPOSITION);
       }
     }
