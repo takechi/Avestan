@@ -124,14 +124,14 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
 
    public:
     MenuData(HMENU menu) : m_menu(menu) {}
-    size_t GetDepth() const throw() { return m_stack.size(); }
-    void Push(HWND hwndMenu) throw() { m_stack.push_back(hwndMenu); }
-    void Pop(HWND hwndMenu) throw() {
+    size_t GetDepth() const noexcept { return m_stack.size(); }
+    void Push(HWND hwndMenu) noexcept { m_stack.push_back(hwndMenu); }
+    void Pop(HWND hwndMenu) noexcept {
       if (!m_stack.empty() && m_stack.back() == hwndMenu) {
         m_stack.pop_back();
       }
     }
-    CWindowEx GetAt(int index) const throw() {
+    CWindowEx GetAt(int index) const noexcept {
       if (m_stack.empty()) {
         return NULL;
       }
@@ -186,7 +186,7 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
     m_quitRequested = false;
     m_msgr.create(__uuidof(Messenger));
   }
-  void Dispose() {
+  void Dispose() noexcept {
     OnQuitRequested();
     m_GlobalKeymap.Dispose();
     m_msgr.dispose();
@@ -203,7 +203,7 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
   }
 
  public:  // ISignal
-  bool SupportsEvent(EventCode code) const throw() {
+  bool SupportsEvent(EventCode code) const noexcept {
     switch (code) {
       case EventOtherFocus:
         return true;
@@ -213,7 +213,7 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
   }
 
  public:  // IDisplay
-  UINT PopupMenu(HMENU hMenu, UINT tpm, int x, int y, HWND hOwner, const RECT* rcExclude) {
+  UINT PopupMenu(HMENU hMenu, UINT tpm, int x, int y, HWND hOwner, const RECT* rcExclude) noexcept {
     m_menuStack.push_back(MenuData(hMenu));
     TPMPARAMS params, *pParams = NULL;
     if (rcExclude) {
@@ -226,13 +226,13 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
     m_menuStack.pop_back();
     return ret;
   }
-  size_t GetMenuDepth() throw() {
+  size_t GetMenuDepth() noexcept {
     if (m_menuStack.empty()) {
       return 0;
     }
     return m_menuStack.back().GetDepth();
   }
-  HWND GetMenu(int index = -1) throw() {
+  HWND GetMenu(int index = -1) noexcept {
     if (m_menuStack.empty()) {
       return 0;
     }
@@ -430,7 +430,7 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
     return false;
   }
   /// メニューループまたはウィンドウの移動・リサイズ中の場合は真.
-  static bool IsInMenuOrMoveOrSize(DWORD dwThreadID) throw() {
+  static bool IsInMenuOrMoveOrSize(DWORD dwThreadID) noexcept {
     GUITHREADINFO info = {sizeof(GUITHREADINFO)};
     return ::GetGUIThreadInfo(dwThreadID, &info) && (info.flags & (GUI_INMENUMODE | GUI_INMOVESIZE)) != 0;
   }

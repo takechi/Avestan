@@ -25,10 +25,10 @@ class CWindowEx : public ATL::CWindow {
     return m_hWnd == hCurrentFocus || ::IsChild(m_hWnd, hCurrentFocus);
   }
 
-  BOOL ModifyClassStyle(DWORD dwRemove, DWORD dwAdd, UINT nFlags = 0) throw();
+  BOOL ModifyClassStyle(DWORD dwRemove, DWORD dwAdd, UINT nFlags = 0) noexcept;
   bool DragDetect(POINT pt);
   using super::SendMessageToDescendants;
-  void SendMessageToDescendants(UINT msg, WPARAM wParam, LPARAM lParam, BOOL(__stdcall* op)(HWND)) throw();
+  void SendMessageToDescendants(UINT msg, WPARAM wParam, LPARAM lParam, BOOL(__stdcall* op)(HWND)) noexcept;
 };
 }
 }

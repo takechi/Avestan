@@ -51,7 +51,7 @@ class ShellMenuBase : public mew::Root<mew::implements<mew::io::IFolder, mew::ui
       m_pEntry.create(__uuidof(mew::io::Entry));  // desktop;
     }
   }
-  virtual mew::io::FolderMenu* GetRoot() const throw() = 0;
+  virtual mew::io::FolderMenu* GetRoot() const noexcept = 0;
   virtual void InitSubMenu() {
     if (!m_Children.empty()) {
       return;
@@ -61,7 +61,7 @@ class ShellMenuBase : public mew::Root<mew::implements<mew::io::IFolder, mew::ui
   void AddSubMenu();
 
  public:
-  void Dispose() throw() {
+  void Dispose() noexcept {
     m_pEntry.clear();
     m_ArgForEntry.clear();
     m_Children.clear();
@@ -155,7 +155,7 @@ class SubMenu : public ShellMenuBase {
     InitWithEntry(entry);
     m_Level = depth;
   }
-  void Dispose() throw() {
+  void Dispose() noexcept {
     m_pRoot = nullptr;
     __super::Dispose();
   }
@@ -163,7 +163,7 @@ class SubMenu : public ShellMenuBase {
   void set_IncludeFiles(bool value) { TRESPASS(); }
   int get_Depth();
   void set_Depth(int depth) { TRESPASS(); }
-  virtual mew::io::FolderMenu* GetRoot() const throw() { return m_pRoot; }
+  virtual mew::io::FolderMenu* GetRoot() const noexcept { return m_pRoot; }
 };
 }  // namespace
 
@@ -186,7 +186,7 @@ class FolderMenu : public Object<ShellMenuBase, implements<ISignal>, mixin<Signa
     InitWithArg(arg);
     m_msgr.create(__uuidof(Messenger));
   }
-  void Dispose() throw() {
+  void Dispose() noexcept {
     m_msgr.clear();
     ShellMenuBase::Dispose();
   }
@@ -211,7 +211,7 @@ class FolderMenu : public Object<ShellMenuBase, implements<ISignal>, mixin<Signa
     __super::AddSubMenu();
   }
 
-  HRESULT Connect(EventCode code, function fn, message msg = null) throw() {
+  HRESULT Connect(EventCode code, function fn, message msg = null) noexcept {
     switch (code) {
       case EventInvoke:
         return __super::Connect(code, fn, msg);
@@ -220,8 +220,8 @@ class FolderMenu : public Object<ShellMenuBase, implements<ISignal>, mixin<Signa
         return E_INVALIDARG;
     }
   }
-  IMessenger* GetMessenger() const throw() { return m_msgr; }
-  virtual FolderMenu* GetRoot() const throw() { return const_cast<FolderMenu*>(this); }
+  IMessenger* GetMessenger() const noexcept { return m_msgr; }
+  virtual FolderMenu* GetRoot() const noexcept { return const_cast<FolderMenu*>(this); }
 };
 
 AVESTA_EXPORT(FolderMenu)

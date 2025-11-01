@@ -17,7 +17,7 @@ class KeymapTable : public Root<implements<IKeymapTable, IKeymap> > {
 
  public:  // Object
   void __init__(IUnknown* arg) { ASSERT(!arg); }
-  void Dispose() throw() { m_Binds.clear(); }
+  void Dispose() noexcept { m_Binds.clear(); }
 
  public:  // IKeymap
   HRESULT OnKeyDown(IWindow* window, UINT16 modifiers, UINT8 vkey) {

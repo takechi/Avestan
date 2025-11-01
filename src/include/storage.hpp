@@ -121,7 +121,7 @@ class StorageT {
       --mapped.locks;
     return S_OK;
   }
-  void Dispose() throw() { m_map.clear(); }
+  void Dispose() noexcept { m_map.clear(); }
   template <typename Pred>
   void DeleteIf(Pred pred) {
     for (Map::iterator i = m_map.begin(); i != m_map.end();) {

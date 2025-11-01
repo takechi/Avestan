@@ -445,7 +445,7 @@ Shell::Shell()
   UpdateShellState();
 }
 Shell::~Shell() { DisposeShellView(); }
-void Shell::DisposeShellView() throw() {
+void Shell::DisposeShellView() noexcept {
   SaveViewState();
   if (m_wndHeader) {
     m_wndHeader.UnsubclassWindow();

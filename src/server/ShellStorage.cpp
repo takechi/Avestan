@@ -39,7 +39,7 @@ class ShellStorage : public mew::Root<mew::implements<mew::ui::IShellStorage, me
       m_buffer.reserve(200);
       if (writable) m_buffer.clear();  // truncate
     }
-    void Dispose() {
+    void Dispose() noexcept {
       if (m_owner) {
         m_owner->OnStreamClose(this);
         m_owner = nullptr;
@@ -89,10 +89,10 @@ class ShellStorage : public mew::Root<mew::implements<mew::ui::IShellStorage, me
       Deserialize(stream);
     }
   }
-  void Dispose() throw() { m_storage.Dispose(); }
+  void Dispose() noexcept { m_storage.Dispose(); }
 
  public:  // ISerializable
-  REFCLSID get_Class() throw() { return __uuidof(this); }
+  REFCLSID get_Class() noexcept { return __uuidof(this); }
   void Deserialize(IStream& stream) { stream >> m_storage; }
 
   void Serialize(IStream& stream) {

@@ -109,15 +109,15 @@ class variant {
  public:
   static const variant null;
   // constructor & destructor
-  variant() throw() { Zero(); }
-  variant(const Null&) throw() { Zero(); }
-  variant(const variant& rhs) throw() { FromVariant(rhs); }
+  variant() noexcept { Zero(); }
+  variant(const Null&) noexcept { Zero(); }
+  variant(const variant& rhs) noexcept { FromVariant(rhs); }
   template <typename T>
-  explicit variant(const T& rhs) throw() {
+  explicit variant(const T& rhs) noexcept {
     Set<T>::set(this, rhs);
   }
   variant(TypeCode typecode, string str) { FromString(typecode, str); }
-  ~variant() throw() { MakeEmpty(); }
+  ~variant() noexcept { MakeEmpty(); }
 
   // get & operator cast
   template <typename T>
@@ -125,34 +125,34 @@ class variant {
     return Get<T>::get(this);
   }
   template <typename T>
-  operator T() const throw() {
+  operator T() const noexcept {
     return Get<T>::get(this);
   }
 
   // set & operator =
-  variant& operator=(const variant& rhs) throw() {
+  variant& operator=(const variant& rhs) noexcept {
     set(rhs);
     return *this;
   }
   template <typename T>
-  variant& operator=(const T& rhs) throw() {
+  variant& operator=(const T& rhs) noexcept {
     set(rhs);
     return *this;
   }
   template <typename T>
-  void set(const T& v) throw() {
+  void set(const T& v) noexcept {
     MakeEmpty();
     Set<T>::set(this, v);
   }
   template <>
-  void set<variant>(const variant& v) throw() {
+  void set<variant>(const variant& v) noexcept {
     if (this != &v) {
       MakeEmpty();
       FromVariant(v);
     }
   }
   template <>
-  void set<Null>(const Null&) throw() {
+  void set<Null>(const Null&) noexcept {
     clear();
   }
   void set(TypeCode typecode, string str) {
@@ -161,12 +161,12 @@ class variant {
   }
 
   // propertries
-  bool empty() const throw() { return m_type == TypeNull; }
-  TypeCode get_type() const throw() { return m_type; }
+  bool empty() const noexcept { return m_type == TypeNull; }
+  TypeCode get_type() const noexcept { return m_type; }
   __declspec(property(get = get_type)) TypeCode type;  ///< タイプ.
 
   // operations
-  void clear() throw() {
+  void clear() noexcept {
     MakeEmpty();
     Zero();
   }
@@ -174,13 +174,13 @@ class variant {
   void save(IStream& stream) const;
 
  private:
-  void Zero() throw() { memset(this, 0, sizeof(variant)); }
-  void FromVariant(const variant& rhs) throw();
+  void Zero() noexcept { memset(this, 0, sizeof(variant)); }
+  void FromVariant(const variant& rhs) noexcept;
   void FromFunction(const function& handler);
   void FromString(TypeCode typecode, string str);
   void FromPOD(TypeCode code, const void* data, size_t size);
   template <typename T>
-  void FromUnknown(const T& v) throw() {
+  void FromUnknown(const T& v) noexcept {
     VariantType<T>::ToUnknown(v, &m_var.unknown);
     if (m_var.unknown)
       m_type = TypeUnknown;
@@ -189,7 +189,7 @@ class variant {
   }
   void ToPOD(TypeCode code, void* data, size_t size) const;
   void ToUnknown(REFINTF ppInterface) const;
-  MEW_API void MakeEmpty();
+  MEW_API void MakeEmpty() noexcept;
 
   friend IStream& operator>>(IStream& stream, variant& v) {
     v.load(stream);
@@ -219,11 +219,11 @@ using EventCode = FourCC;
 __interface IMessage : ISerializable {
   /// エントリ値を取得する.
   /// 指定した名前が見つからない場合は空のvariantが返される.
-  const variant& Get(const Guid& key) throw();
+  const variant& Get(const Guid& key) noexcept;
   /// エントリ値を設定する.
-  void Set(const Guid& key, const variant& var) throw();
+  void Set(const Guid& key, const variant& var) noexcept;
   /// 内部エントリを列挙する.
-  ref<IEnumVariant> Enumerate() throw();
+  ref<IEnumVariant> Enumerate() noexcept;
 };
 
 /// メッセージを作成する.
@@ -295,13 +295,13 @@ class ref<IMessage> : public ref_base<IMessage> {
   }
 
  public:
-  ref() throw() {}
-  ref(const Null&) throw() {}
-  ref(const ref& p) throw() : super(p) {}
-  ref(pointer_in p) throw() : super(p) {}
+  ref() noexcept {}
+  ref(const Null&) noexcept {}
+  ref(const ref& p) noexcept : super(p) {}
+  ref(pointer_in p) noexcept : super(p) {}
   ref(INT32 code, IUnknown* arg = null) throw(...) { create(code, arg); }
   ref(EventCode code, IUnknown* arg = null) throw(...) { create(code, arg); }
-  ref& operator=(const ref& p) throw() {
+  ref& operator=(const ref& p) noexcept {
     super::operator=(p);
     return *this;
   }
@@ -312,7 +312,7 @@ class ref<IMessage> : public ref_base<IMessage> {
     ASSERT(m_ptr);
   }
 
-  EventCode get_code() const throw() {
+  EventCode get_code() const noexcept {
     if (!m_ptr) return 0;
     const variant& verb = m_ptr->Get(GUID_Verb);
     if (verb.empty())
@@ -367,19 +367,19 @@ class function {
   };
 
  public:
-  function() throw() : m_FUNCTION(0) {}
-  function(const Null&) throw() : m_FUNCTION(0) {}
-  function(static_function m) throw() : m_fnStatic(m) {}
+  function() noexcept : m_FUNCTION(0) {}
+  function(const Null&) noexcept : m_FUNCTION(0) {}
+  function(static_function m) noexcept : m_fnStatic(m) {}
   template <class T, class U>
-  function(const T& p, HRESULT (U::*m)(message)) throw() {
+  function(const T& p, HRESULT (U::*m)(message)) noexcept {
     assign(&*p, m);
   }
-  void assign(static_function m) throw() {
+  void assign(static_function m) noexcept {
     m_target.clear();
     m_fnStatic = m;
   }
   template <class T, class U>
-  void assign(T* p, HRESULT (U::*m)(message)) throw() {
+  void assign(T* p, HRESULT (U::*m)(message)) noexcept {
     __if_exists(T::__primary__) {
       m_target = static_cast<typename T::__primary__*>(p);
       using method = typename instance_function_t<T::__primary__>;
@@ -390,7 +390,7 @@ class function {
       m_fnInstance = static_cast<instance_function>(m);
     }
   }
-  IUnknown* get_target() const throw() { return m_target; }
+  IUnknown* get_target() const noexcept { return m_target; }
   __declspec(property(get = get_target)) IUnknown* target;
   operator bool() const { return m_FUNCTION != 0; }
   bool operator!() const { return m_FUNCTION == 0; }
@@ -398,7 +398,7 @@ class function {
     if (lhs.m_FUNCTION != rhs.m_FUNCTION) return false;
     return objcmp(lhs.m_target, rhs.m_target);
   }
-  void clear() throw() {
+  void clear() noexcept {
     m_target.clear();
     m_FUNCTION = 0;
   }
@@ -439,8 +439,8 @@ class ToString<FourCC> {
   WCHAR m_str[8];
 
  public:
-  ToString(FourCC value) throw();
-  operator PCWSTR() const throw() { return m_str; }
+  ToString(FourCC value) noexcept;
+  operator PCWSTR() const noexcept { return m_str; }
 };
 
 template <>
@@ -449,8 +449,8 @@ class ToString<Guid> {
   WCHAR m_str[40];
 
  public:
-  ToString(const Guid& value) throw();
-  operator PCWSTR() const throw() { return m_str; }
+  ToString(const Guid& value) noexcept;
+  operator PCWSTR() const noexcept { return m_str; }
 };
 
 template <>
@@ -459,8 +459,8 @@ class ToString<variant> {
   string m_str;
 
  public:
-  ToString(const variant& value) throw() : m_str(value) {}
-  operator PCWSTR() const throw() { return m_str.str(); }
+  ToString(const variant& value) noexcept : m_str(value) {}
+  operator PCWSTR() const noexcept { return m_str.str(); }
 };
 
 //==============================================================================
@@ -523,11 +523,11 @@ struct VariantType<Color> {
 template <>
 struct VariantType<IUnknown*> {
   enum { Code = TypeUnknown };
-  static void ToUnknown(IUnknown* p, IUnknown** pp) throw() { objcpy(p, pp); }
+  static void ToUnknown(IUnknown* p, IUnknown** pp) noexcept { objcpy(p, pp); }
 };
 template <>
 struct VariantType<wchar_t*> : VariantType<IUnknown*> {
-  static void ToUnknown(const wchar_t* v, IUnknown** pp) throw() { string(v).copyto(pp); }
+  static void ToUnknown(const wchar_t* v, IUnknown** pp) noexcept { string(v).copyto(pp); }
 };
 template <typename T>
 struct VariantType<T*> : VariantType<IUnknown*> {};

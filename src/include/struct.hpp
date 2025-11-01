@@ -277,8 +277,8 @@ class ToString<Size> {
   WCHAR m_str[80];
 
  public:
-  ToString(const Size& value) throw() { swprintf(m_str, L"%d %d", value.w, value.h); }
-  operator PCWSTR() const throw() { return m_str; }
+  ToString(const Size& value) noexcept { swprintf(m_str, L"%d %d", value.w, value.h); }
+  operator PCWSTR() const noexcept { return m_str; }
 };
 
 // 文字列への変換(Point).
@@ -288,8 +288,8 @@ class ToString<Point> {
   WCHAR m_str[80];
 
  public:
-  ToString(const Point& value) throw() { swprintf(m_str, L"%d %d", value.x, value.y); }
-  operator PCWSTR() const throw() { return m_str; }
+  ToString(const Point& value) noexcept { swprintf(m_str, L"%d %d", value.x, value.y); }
+  operator PCWSTR() const noexcept { return m_str; }
 };
 
 // 文字列への変換(Rect).
@@ -299,8 +299,8 @@ class ToString<Rect> {
   WCHAR m_str[160];
 
  public:
-  ToString(const Rect& value) throw() { swprintf(m_str, L"%d %d %d %d", value.left, value.top, value.right, value.bottom); }
-  operator PCWSTR() const throw() { return m_str; }
+  ToString(const Rect& value) noexcept { swprintf(m_str, L"%d %d %d %d", value.left, value.top, value.right, value.bottom); }
+  operator PCWSTR() const noexcept { return m_str; }
 };
 
 // 文字列への変換(Color).
@@ -309,10 +309,10 @@ class ToString<Color> {
  private:
   WCHAR m_str[10];  // "#RRGGBBAA" : 9 chars
  public:
-  ToString(const Color& value) throw() {
+  ToString(const Color& value) noexcept {
     swprintf(m_str, L"#%02X%02X%02X%02X", value.GetR(), value.GetG(), value.GetB(), value.GetA());
   }
-  operator PCWSTR() const throw() { return m_str; }
+  operator PCWSTR() const noexcept { return m_str; }
 };
 }  // namespace mew
 

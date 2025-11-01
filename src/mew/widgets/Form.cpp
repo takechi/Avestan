@@ -299,7 +299,7 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
   }
 
  public:  // ISignal
-  bool SupportsEvent(EventCode code) const throw() {
+  bool SupportsEvent(EventCode code) const noexcept {
     if (__super::SupportsEvent(code)) {
       return true;
     }

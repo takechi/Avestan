@@ -154,7 +154,7 @@ class ShellListView
    public:  // IWindow
     ShellListView() : m_ComboBox(NULL, this, 1), m_EditBox(NULL, this, 2), m_EditBoxAutoComplete(false) {}
     void DoCreate(CWindowEx parent) { __super::DoCreate(parent); }
-    bool SupportsEvent(EventCode code) const throw() {
+    bool SupportsEvent(EventCode code) const noexcept {
       if (__super::SupportsEvent(code)) {
         return true;
       }

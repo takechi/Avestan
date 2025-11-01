@@ -59,7 +59,7 @@ class PythonCallback : public mew::Root<mew::implements<ICallback, mew::IDisposa
     m_fnExecuteVerb = callback["ExecuteVerb"];
     m_fnWallPaper = callback["WallPaper"];
   }
-  void Dispose() throw() { m_host.Terminate(); }
+  void Dispose() noexcept { m_host.Terminate(); }
 
  public:  // ICallback
   mew::string Caption(const mew::string& name, const mew::string& path) {

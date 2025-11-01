@@ -153,7 +153,7 @@ class ReBar
   bool m_locked;
 
  public:
-  bool SupportsEvent(EventCode code) const throw() {
+  bool SupportsEvent(EventCode code) const noexcept {
     if (__super::SupportsEvent(code)) {
       return true;
     }

@@ -54,8 +54,8 @@ namespace mew {
 template <class TBase>
 class __declspec(novtable) StaticLife : public TBase {
  public:
-  ULONG __stdcall AddRef() throw() { return 1; }
-  ULONG __stdcall Release() throw() { return 1; }
+  ULONG __stdcall AddRef() noexcept { return 1; }
+  ULONG __stdcall Release() noexcept { return 1; }
 };
 
 /// ヒープ上に作られるオブジェクトの生存期間管理.
@@ -63,8 +63,8 @@ template <class TBase>
 class __declspec(novtable) DynamicLife : public TBase {
  protected:
   volatile LONG m_refcount;
-  DynamicLife() throw() : m_refcount(1) {}
-  virtual ~DynamicLife() throw() {
+  DynamicLife() noexcept : m_refcount(1) {}
+  virtual ~DynamicLife() noexcept {
     DEBUG_ONLY(if (m_refcount != 0) { __debugbreak(); });
   }
 
@@ -73,11 +73,11 @@ class __declspec(novtable) DynamicLife : public TBase {
   DynamicLife& operator=(const DynamicLife&);
 
  public:
-  ULONG __stdcall AddRef() throw() {
+  ULONG __stdcall AddRef() noexcept {
     DEBUG_ONLY(if (m_refcount <= 0) { __debugbreak(); });
     return ::InterlockedIncrement(&m_refcount);
   }
-  ULONG __stdcall Release() throw() {
+  ULONG __stdcall Release() noexcept {
     DEBUG_ONLY(if (m_refcount <= 0) { __debugbreak(); });
     ULONG refcount = ::InterlockedDecrement(&m_refcount);
     if (refcount == 0) {
@@ -93,8 +93,8 @@ class __declspec(novtable) DynamicLife : public TBase {
     return new T();
   }
   void __init__(IUnknown* arg) {}
-  virtual void Dispose() throw() {}
-  virtual void __free__() throw() { delete this; }
+  virtual void Dispose() noexcept {}
+  virtual void __free__() noexcept { delete this; }
 };
 
 //==============================================================================
@@ -108,10 +108,10 @@ class __declspec(novtable) Object : public detail::Object1<TBase, TImplements, T
 
   // IUnknown* OID; // COMアイデンティティとしてのIUnknownポインタ.
 
-  // HRESULT __stdcall QueryInterface(REFIID iid, void** pp) throw();
-  // HRESULT __stdcall QueryInterface(REFINTF pp) throw();
-  // ULONG __stdcall AddRef() throw();
-  // ULONG __stdcall Release() throw();
+  // HRESULT __stdcall QueryInterface(REFIID iid, void** pp) noexcept;
+  // HRESULT __stdcall QueryInterface(REFINTF pp) noexcept;
+  // ULONG __stdcall AddRef() noexcept;
+  // ULONG __stdcall Release() noexcept;
 };
 
 template <typename TImplements, typename TMixin = mixin<DynamicLife> >

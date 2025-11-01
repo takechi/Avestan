@@ -12,9 +12,9 @@ namespace drawing {
 
 ///
 __interface __declspec(uuid("0779F971-F896-41A9-88E6-1C66978ECE65")) IImageList2 : IImageList {
-  HIMAGELIST get_Normal() throw();
-  HIMAGELIST get_Disabled() throw();
-  HIMAGELIST get_Hot() throw();
+  HIMAGELIST get_Normal() noexcept;
+  HIMAGELIST get_Disabled() noexcept;
+  HIMAGELIST get_Hot() noexcept;
 
   __declspec(property(get = get_Normal)) HIMAGELIST Normal;
   __declspec(property(get = get_Disabled)) HIMAGELIST Disabled;
@@ -83,16 +83,16 @@ class DCT : public CDCT<t_bManaged> {
  public:
   DCT() : super() {}
   DCT(HDC hDC) : super(hDC) {}
-  void DrawLine(int x1, int y1, int x2, int y2) throw() {
+  void DrawLine(int x1, int y1, int x2, int y2) noexcept {
     MoveTo(x1, y1);
     LineTo(x2, y2);
   }
-  void DrawLine(HPEN pen, int x1, int y1, int x2, int y2) throw() {
+  void DrawLine(HPEN pen, int x1, int y1, int x2, int y2) noexcept {
     PenHandle penDefault = SelectPen(pen);
     DrawLine(x1, y1, x2, y2);
     SelectPen(penDefault);
   }
-  void DrawRect(const RECT& rc, COLORREF penColor, COLORREF brushColor) throw() {
+  void DrawRect(const RECT& rc, COLORREF penColor, COLORREF brushColor) noexcept {
     Pen pen(penColor);
     Brush brush(brushColor);
     PenHandle penDefault = SelectPen(pen);

@@ -722,7 +722,7 @@ class ToolBarImpl
     }
     return SUCCEEDED(OID->QueryInterface(pp));
   }
-  // bool SupportsEvent(EventCode code) const throw()
+  // bool SupportsEvent(EventCode code) const noexcept
   //{
   // if(__super::SupportsEvent(code))
   //   return true;
@@ -1151,7 +1151,7 @@ class MenuBar : public ToolBarImpl<MenuBar> {
   }
 
  public:
-  bool SupportsEvent(EventCode code) const throw() {
+  bool SupportsEvent(EventCode code) const noexcept {
     if (__super::SupportsEvent(code)) {
       return true;
     }

@@ -14,8 +14,8 @@ class Error {
   virtual ~Error() {}
 
 #ifndef DOXYGEN
-  virtual string get_Message() throw() = 0;
-  virtual HRESULT get_Code() throw() = 0;
+  virtual string get_Message() noexcept = 0;
+  virtual HRESULT get_Code() noexcept = 0;
 #endif  // DOXYGEN
 
   /// 例外メッセージ [get].
@@ -34,8 +34,8 @@ class SystemError : public Error {
   SystemError(const string& msg, HRESULT code) : m_Message(msg), m_Code(code) {}
 
 #ifndef DOXYGEN
-  virtual string get_Message() throw() { return m_Message; }
-  virtual HRESULT get_Code() throw() { return m_Code; }
+  virtual string get_Message() noexcept { return m_Message; }
+  virtual HRESULT get_Code() noexcept { return m_Code; }
 #endif  // DOXYGEN
 };
 

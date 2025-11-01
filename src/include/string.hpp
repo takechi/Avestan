@@ -20,9 +20,9 @@ class __declspec(uuid("1E2C5D5A-C248-4A87-B4D9-389C64E96B74")) String;
 /// 文字列インタフェース.
 __interface IString : ISerializable {
   /// null終端のUNICODE文字列を返す.
-  PCWSTR GetBuffer() throw();
+  PCWSTR GetBuffer() noexcept;
   /// UNICODE文字列の文字数を返す.
-  size_t GetLength() throw();
+  size_t GetLength() noexcept;
 };
 
 void StringReplace(IString** pp, IString* s, WCHAR from, WCHAR to);
@@ -48,8 +48,8 @@ class ToStringDefault<IUnknown*> {
 
  public:
   using argument_type = IUnknown*;
-  ToStringDefault(argument_type value) throw() { ObjectToString(&m_str, value); }
-  operator PCWSTR() const throw() { return m_str->GetBuffer(); }
+  ToStringDefault(argument_type value) noexcept { ObjectToString(&m_str, value); }
+  operator PCWSTR() const noexcept { return m_str->GetBuffer(); }
 };
 }  // namespace detail
 
@@ -80,46 +80,46 @@ class ref<IString> : public ref_base<IString> {
   static const size_type npos = (size_type)-1;
 
  public:
-  string() throw() {}
-  string(const Null&) throw() {}
-  string(IString* p) throw() : super(p) {}
-  string(const string& p) throw() : super(p) {}
-  string(PCWSTR format, size_t length = npos, size_t argc = 0, PCWSTR argv[] = 0) throw() {
+  string() noexcept {}
+  string(const Null&) noexcept {}
+  string(IString* p) noexcept : super(p) {}
+  string(const string& p) noexcept : super(p) {}
+  string(PCWSTR format, size_t length = npos, size_t argc = 0, PCWSTR argv[] = 0) noexcept {
     CreateString(&m_ptr, format, length, argc, argv);
   }
-  string(PCWSTR beg, PCWSTR end, size_t argc = 0, PCWSTR argv[] = 0) throw() {
+  string(PCWSTR beg, PCWSTR end, size_t argc = 0, PCWSTR argv[] = 0) noexcept {
     CreateString(&m_ptr, beg, end - beg, argc, argv);
   }
-  explicit string(UINT nID, HMODULE hModule = ::GetModuleHandle(0), size_t argc = 0, PCWSTR argv[] = 0) throw() {
+  explicit string(UINT nID, HMODULE hModule = ::GetModuleHandle(0), size_t argc = 0, PCWSTR argv[] = 0) noexcept {
     CreateString(&m_ptr, nID, hModule, argc, argv);
   }
-  string& operator=(const string& s) throw() {
+  string& operator=(const string& s) noexcept {
     super::operator=(s);
     return *this;
   }
 
   // basic_string compatible methods
 
-  void assign(IString* str) throw() { super::operator=(str); }
-  void assign(PCWSTR str, size_t length = npos) throw() {
+  void assign(IString* str) noexcept { super::operator=(str); }
+  void assign(PCWSTR str, size_t length = npos) noexcept {
     clear();
     CreateString(&m_ptr, str, length);
   }
-  void assign(PCWSTR first, PCWSTR last) throw() {
+  void assign(PCWSTR first, PCWSTR last) noexcept {
     clear();
     CreateString(&m_ptr, first, last - first);
   }
 
-  PCWSTR str() const throw() { return m_ptr ? m_ptr->GetBuffer() : L""; }
-  size_t length() const throw() { return m_ptr ? m_ptr->GetLength() : 0; }
-  PCWSTR begin() const throw() { return str(); }
-  PCWSTR end() const throw() { return str() + length(); }
+  PCWSTR str() const noexcept { return m_ptr ? m_ptr->GetBuffer() : L""; }
+  size_t length() const noexcept { return m_ptr ? m_ptr->GetLength() : 0; }
+  PCWSTR begin() const noexcept { return str(); }
+  PCWSTR end() const noexcept { return str() + length(); }
 
   template <typename T>
-  HRESULT copyto(T** pp) const throw() {
+  HRESULT copyto(T** pp) const noexcept {
     return mew::objcpy(m_ptr, pp);
   }
-  HRESULT copyto(REFINTF pp) const throw() { return mew::objcpy(m_ptr, pp); }
+  HRESULT copyto(REFINTF pp) const noexcept { return mew::objcpy(m_ptr, pp); }
   void copyto(PWSTR dst) const {
     if (m_ptr)
       str::copy(dst, m_ptr->GetBuffer());
@@ -150,34 +150,34 @@ class ref<IString> : public ref_base<IString> {
 
   // compare operations
 
-  friend bool operator==(const string& lhs, const string& rhs) throw() { return lhs.equals(rhs); }
-  friend bool operator==(const string& lhs, PCWSTR rhs) throw() { return lhs.equals(rhs); }
-  friend bool operator==(PCWSTR lhs, const string& rhs) throw() { return rhs.equals(lhs); }
-  friend bool operator!=(const string& lhs, const string& rhs) throw() { return !(lhs == rhs); }
-  friend bool operator!=(const string& lhs, PCWSTR rhs) throw() { return !(lhs == rhs); }
-  friend bool operator!=(PCWSTR lhs, const string& rhs) throw() { return !(lhs == rhs); }
-  friend bool operator<(const string& lhs, const string& rhs) throw() { return lhs.compare(rhs) < 0; }
-  friend bool operator<(const string& lhs, PCWSTR rhs) throw() { return lhs.compare(rhs) < 0; }
-  friend bool operator<(PCWSTR lhs, const string& rhs) throw() { return rhs.compare(lhs) > 0; }
+  friend bool operator==(const string& lhs, const string& rhs) noexcept { return lhs.equals(rhs); }
+  friend bool operator==(const string& lhs, PCWSTR rhs) noexcept { return lhs.equals(rhs); }
+  friend bool operator==(PCWSTR lhs, const string& rhs) noexcept { return rhs.equals(lhs); }
+  friend bool operator!=(const string& lhs, const string& rhs) noexcept { return !(lhs == rhs); }
+  friend bool operator!=(const string& lhs, PCWSTR rhs) noexcept { return !(lhs == rhs); }
+  friend bool operator!=(PCWSTR lhs, const string& rhs) noexcept { return !(lhs == rhs); }
+  friend bool operator<(const string& lhs, const string& rhs) noexcept { return lhs.compare(rhs) < 0; }
+  friend bool operator<(const string& lhs, PCWSTR rhs) noexcept { return lhs.compare(rhs) < 0; }
+  friend bool operator<(PCWSTR lhs, const string& rhs) noexcept { return rhs.compare(lhs) > 0; }
 
  public:  // format
 #define MEW_PP_STRING_TMP(n) ToString<TArg##n> str##n(arg##n);
 #define MEW_PP_STRING_STR(n) str##n
 #define MEW_PP_STRING_FMT(n)                                                  \
   template <PP_TYPENAMES(n)>                                                  \
-  static string format(PCWSTR format, PP_ARGS_CONST(n)) throw() {             \
+  static string format(PCWSTR format, PP_ARGS_CONST(n)) noexcept {             \
     PP_REPEAT(n, MEW_PP_STRING_TMP)                                           \
     PCWSTR args[] = {PP_CSV1(n, MEW_PP_STRING_STR)};                          \
     return string(format, npos, n, args);                                     \
   }                                                                           \
   template <PP_TYPENAMES(n)>                                                  \
-  static string format(UINT nID, HMODULE hModule, PP_ARGS_CONST(n)) throw() { \
+  static string format(UINT nID, HMODULE hModule, PP_ARGS_CONST(n)) noexcept { \
     PP_REPEAT(n, MEW_PP_STRING_TMP)                                           \
     PCWSTR args[] = {PP_CSV1(n, MEW_PP_STRING_STR)};                          \
     return string(nID, hModule, n, args);                                     \
   }                                                                           \
   template <PP_TYPENAMES(n)>                                                  \
-  static string load(UINT nID, PP_ARGS_CONST(n)) throw() {                    \
+  static string load(UINT nID, PP_ARGS_CONST(n)) noexcept {                    \
     return format(nID, module::Handle, PP_ARG_VALUES(n));                     \
   }
 
@@ -187,7 +187,7 @@ class ref<IString> : public ref_base<IString> {
 #undef MEW_PP_STRING_STR
 #undef MEW_PP_STRING_TMP
 
-  static string load(UINT nID) throw() { return string(nID, module::Handle); }
+  static string load(UINT nID) noexcept { return string(nID, module::Handle); }
 };
 
 //==============================================================================
@@ -199,8 +199,8 @@ class ToString<bool> {
   bool m_value;
 
  public:
-  ToString(bool value) throw() : m_value(value) {}
-  operator PCWSTR() const throw() { return m_value ? _T("true") : _T("false"); }
+  ToString(bool value) noexcept : m_value(value) {}
+  operator PCWSTR() const noexcept { return m_value ? _T("true") : _T("false"); }
 };
 
 // 文字列への変換(DWORD).
@@ -209,8 +209,8 @@ class ToString<DWORD> {
  private:
   WCHAR m_str[12];  // 0x12345678
  public:
-  ToString(int value) throw() { _stprintf(m_str, _T("0x%08X"), value); }
-  operator PCWSTR() const throw() { return m_str; }
+  ToString(int value) noexcept { _stprintf(m_str, _T("0x%08X"), value); }
+  operator PCWSTR() const noexcept { return m_str; }
 };
 
 #define DECLARE_STRING_CAST(type)                             \
@@ -220,8 +220,8 @@ class ToString<DWORD> {
     WCHAR m_str[sizeof(type) > 4 ? 24 : 12];                  \
                                                               \
    public:                                                    \
-    ToString(type value) throw() { str::itoa(m_str, value); } \
-    operator PCWSTR() const throw() { return m_str; }         \
+    ToString(type value) noexcept { str::itoa(m_str, value); } \
+    operator PCWSTR() const noexcept { return m_str; }         \
   };
 
 DECLARE_STRING_CAST(INT8)
@@ -242,8 +242,8 @@ DECLARE_STRING_CAST(UINT64)
     WCHAR m_str[32];                                          \
                                                               \
    public:                                                    \
-    ToString(type value) throw() { str::ftoa(m_str, value); } \
-    operator PCWSTR() const throw() { return m_str; }         \
+    ToString(type value) noexcept { str::ftoa(m_str, value); } \
+    operator PCWSTR() const noexcept { return m_str; }         \
   };
 
 DECLARE_STRING_CAST(float)
@@ -257,8 +257,8 @@ class ToString<GUID> {
  private:
   WCHAR m_str[40];  // {12345678-1234-1234-1234-1234567890AB} : 38 chars
  public:
-  ToString(const GUID& value) throw() { str::guidtoa(m_str, value, true); }
-  operator PCWSTR() const throw() { return m_str; }
+  ToString(const GUID& value) noexcept { str::guidtoa(m_str, value, true); }
+  operator PCWSTR() const noexcept { return m_str; }
 };
 
 //==============================================================================
@@ -266,12 +266,12 @@ class ToString<GUID> {
 struct STRING {
   const PCWSTR str;
 
-  STRING(PCWSTR s) throw() : str(s) {}
-  STRING(IString* s) throw() : str(s ? s->GetBuffer() : null) {}
-  STRING(const string& s) throw() : str(s.str()) {}
+  STRING(PCWSTR s) noexcept : str(s) {}
+  STRING(IString* s) noexcept : str(s ? s->GetBuffer() : null) {}
+  STRING(const string& s) noexcept : str(s.str()) {}
 
-  operator PCWSTR() const throw() { return str; }
-  bool operator!() const throw() { return str::empty(str); }
+  operator PCWSTR() const noexcept { return str; }
+  bool operator!() const noexcept { return str::empty(str); }
 };
 
 //==============================================================================

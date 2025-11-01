@@ -21,7 +21,7 @@ class DefaultTreeItem : public Root<implements<ITreeItem, IEditableTreeItem> > {
     m_TimeStamp = 0;
     m_Image = I_IMAGENONE;
   }
-  void Dispose() throw() {
+  void Dispose() noexcept {
     m_Text.clear();
     m_pCommand.clear();
     m_Children.clear();

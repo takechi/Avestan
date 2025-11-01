@@ -29,7 +29,7 @@ class Command : public mew::Root<mew::implements<mew::ICommand, mew::ISignal>, m
   Command(mew::string name, mew::string description) : m_Name(name), m_Description(description) {
     m_msgr.create(__uuidof(mew::Messenger));
   }
-  void Dispose() throw() { m_msgr.dispose(); }
+  void Dispose() noexcept { m_msgr.dispose(); }
 
  public:  // ICommand
   mew::string get_Description() { return m_Description; }
@@ -43,7 +43,7 @@ class Command : public mew::Root<mew::implements<mew::ICommand, mew::ISignal>, m
   }
 
  public:  // ISignal
-  HRESULT Connect(mew::EventCode code, mew::function fn, mew::message msg = mew::null) throw() {
+  HRESULT Connect(mew::EventCode code, mew::function fn, mew::message msg = mew::null) noexcept {
     switch (code) {
       case mew::EventInvoke:
       case mew::EventQueryState:
@@ -118,7 +118,7 @@ class Commands : public Root<implements<ICommands> > {
 
  public:  // Object
   void __init__(IUnknown* arg) { ASSERT(!arg); }
-  void Dispose() throw() { m_map.clear(); }
+  void Dispose() noexcept { m_map.clear(); }
 
  public:  // ICommands
   HRESULT Add(string name, ICommand* command) {

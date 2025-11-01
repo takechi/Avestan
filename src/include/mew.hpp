@@ -110,7 +110,7 @@ namespace mew {
 /// ぬるぽ.
 const struct Null {
   template <typename T>
-  operator T*() const throw() {
+  operator T*() const noexcept {
     return 0;
   }
 } null;
@@ -134,20 +134,20 @@ struct bitof_t {
   T& value;
   const T mask;
 
-  bitof_t(T& v, T m) throw() : value(v), mask(m) {}
-  void operator=(bool b) throw() {
+  bitof_t(T& v, T m) noexcept : value(v), mask(m) {}
+  void operator=(bool b) noexcept {
     if (b) {
       value |= mask;
     } else {
       value &= ~mask;
     }
   }
-  operator T() const throw() { return value & mask; }
+  operator T() const noexcept { return value & mask; }
 };
 
 /// ビットを取得・設定する.
 template <typename T, typename M>
-inline bitof_t<T> bitof(T& value, M mask) throw() {
+inline bitof_t<T> bitof(T& value, M mask) noexcept {
   return bitof_t<T>(value, static_cast<T>(mask));
 }
 
@@ -215,10 +215,10 @@ struct IndexOr {
 /// 4つの文字で表された識別子.
 struct FourCC : POD<FourCC> {
   UINT32 Value;
-  FourCC() throw() {}
-  FourCC(INT32 x) throw() : Value((UINT32)x) {}
-  operator UINT32() const throw() { return Value; }
-  friend bool operator<(const FourCC& lhs, const FourCC& rhs) throw() { return lhs.Value < rhs.Value; }
+  FourCC() noexcept {}
+  FourCC(INT32 x) noexcept : Value((UINT32)x) {}
+  operator UINT32() const noexcept { return Value; }
+  friend bool operator<(const FourCC& lhs, const FourCC& rhs) noexcept { return lhs.Value < rhs.Value; }
 };
 
 /// GUID for index.
@@ -240,8 +240,8 @@ struct Guid : GUID {
   explicit Guid(PCSTR x) { strncpy((PSTR)this, x, sizeof(Guid)); }
   explicit Guid(int x) : GUID(GUID_Index) { this->Data1 = x; }
   explicit Guid(FourCC x) : GUID(GUID_FourCC) { this->Data1 = x.Value; }
-  operator const void*() const throw() { return memcmp(this, &GUID_NULL, sizeof(Guid)) ? this : 0; }
-  friend bool operator<(const Guid& lhs, const Guid& rhs) throw() { return memcmp(&lhs, &rhs, sizeof(Guid)) < 0; }
+  operator const void*() const noexcept { return memcmp(this, &GUID_NULL, sizeof(Guid)) ? this : 0; }
+  friend bool operator<(const Guid& lhs, const Guid& rhs) noexcept { return memcmp(&lhs, &rhs, sizeof(Guid)) < 0; }
 };
 
 /// クリティカルセクション.
@@ -250,11 +250,11 @@ class CriticalSection {
   CRITICAL_SECTION m_cs;
 
  public:
-  CriticalSection() throw() { ::InitializeCriticalSection(&m_cs); }
+  CriticalSection() noexcept { ::InitializeCriticalSection(&m_cs); }
   ~CriticalSection() noexcept { ::DeleteCriticalSection(&m_cs); }
-  void Lock() throw() { ::EnterCriticalSection(&m_cs); }
-  void Unlock() throw() { ::LeaveCriticalSection(&m_cs); }
-  BOOL TryLock() throw() { return ::TryEnterCriticalSection(&m_cs); }
+  void Lock() noexcept { ::EnterCriticalSection(&m_cs); }
+  void Unlock() noexcept { ::LeaveCriticalSection(&m_cs); }
+  BOOL TryLock() noexcept { return ::TryEnterCriticalSection(&m_cs); }
 
  private:  // non-copyable
   CriticalSection(const CriticalSection&);
@@ -267,7 +267,7 @@ class AutoLock {
   CriticalSection& m_cs;
 
  public:
-  AutoLock(CriticalSection& cs) throw() : m_cs(cs) { m_cs.Lock(); }
+  AutoLock(CriticalSection& cs) noexcept : m_cs(cs) { m_cs.Lock(); }
   ~AutoLock() noexcept { m_cs.Unlock(); }
 
  private:  // non-copyable
@@ -283,7 +283,7 @@ __interface IDisposable : IUnknown {
   /// オブジェクトを破棄する.
   /// 循環参照やネイティブリソースを解放するために使用する.
   /// このメソッドの呼出し後、Dispose()以外のすべてのメソッドの呼び出しは不正である.
-  void Dispose() throw();
+  void Dispose() noexcept;
 };
 
 /// ストリームへの直列化をサポートする.
@@ -291,7 +291,7 @@ __interface IDisposable : IUnknown {
 /// readable IStreamを引数にとるコンストラクタも実装する必要がある.
 __interface ISerializable : IUnknown {
 #ifndef DOXYGEN
-  REFCLSID get_Class() throw();
+  REFCLSID get_Class() noexcept;
 #endif  // DOXYGEN
 
   /// 逆シリアライズの際に使用するクラスID [get].
@@ -314,7 +314,7 @@ MEW_API void CreateInstance(REFCLSID clsid,       ///< クラスID.
 /// クラスを登録する.
 MEW_API void RegisterFactory(REFCLSID clsid,      ///< クラスID.
                              FactoryProc factory  ///< 作成関数.
-                             ) throw();
+                             ) noexcept;
 
 /// 文字列を作成する.
 MEW_API void CreateString(IString** ppString,          ///< 作成された文字列.
@@ -322,7 +322,7 @@ MEW_API void CreateString(IString** ppString,          ///< 作成された文�
                           size_t length = (size_t)-1,  ///< 書式文字列の長さ.
                           size_t argc = 0,             ///< 書式文字列の引数の数.
                           PCWSTR argv[] = 0            ///< 書式文字列の引数の配列.
-                          ) throw();
+                          ) noexcept;
 
 /// リソースから文字列を作成する.
 MEW_API void CreateString(IString** ppString,  ///< 作成された文字列.
@@ -330,10 +330,10 @@ MEW_API void CreateString(IString** ppString,  ///< 作成された文字列.
                           HMODULE hModule,     ///< リソーステーブルを含むモジュール.
                           size_t argc = 0,     ///< 書式文字列の引数の数.
                           PCWSTR argv[] = 0    ///< 書式文字列の引数の配列.
-                          ) throw();
+                          ) noexcept;
 
 /// オブジェクトの文字列表現を得る.
 void ObjectToString(IString** ppString,  ///< 作成された文字列を受け取る.
                     IUnknown* pObject    ///< 文字列表現を得たいオブジェクト. nullでもよい.
-                    ) throw();
+                    ) noexcept;
 }  // namespace mew

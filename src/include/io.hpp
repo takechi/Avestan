@@ -32,11 +32,11 @@ class ref<IStream> : public ref_base<IStream> {
   using super = ref_base<IStream>;
 
  public:
-  Stream() throw() {}
-  Stream(IStream* p) throw() : super(p) {}
-  Stream(const Stream& p) throw() : super(p) {}
+  Stream() noexcept {}
+  Stream(IStream* p) noexcept : super(p) {}
+  Stream(const Stream& p) noexcept : super(p) {}
   explicit ref(REFCLSID clsid, IUnknown* arg = null) throw(...) { create(clsid, arg); }
-  Stream& operator=(const Stream& s) throw() {
+  Stream& operator=(const Stream& s) noexcept {
     super::operator=(s);
     return *this;
   }

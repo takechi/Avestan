@@ -19,13 +19,13 @@ PP_REPEAT(10, MEW_PP_NEW)
 #undef MEW_PP_NEW
 
 template <class T>
-inline void objinc(T* p) throw() {
+inline void objinc(T* p) noexcept {
   if (p) {
     p->AddRef();
   }
 }
 template <class T>
-inline void objdec(T*& p) throw() {
+inline void objdec(T*& p) noexcept {
   if (p) {
     T* tmp = p;
     p = null;
@@ -33,17 +33,17 @@ inline void objdec(T*& p) throw() {
   }
 }
 template <class T>
-inline void objdec(ref<T>& p) throw() {
+inline void objdec(ref<T>& p) noexcept {
   p.clear();
 }
 template <class T>
-inline HRESULT objcpy(IUnknown* p, T** pp) throw() {
+inline HRESULT objcpy(IUnknown* p, T** pp) noexcept {
   return p ? p->QueryInterface(__uuidof(T), (void**)pp) : (*pp = null, E_POINTER);
 }
-inline HRESULT objcpy(IUnknown* p, REFINTF pp) throw() {
+inline HRESULT objcpy(IUnknown* p, REFINTF pp) noexcept {
   return p ? p->QueryInterface(pp.iid, pp.pp) : (*pp.pp = null, E_POINTER);
 }
-inline bool objcmp(IUnknown* lhs, IUnknown* rhs) throw() {
+inline bool objcmp(IUnknown* lhs, IUnknown* rhs) noexcept {
   if (lhs == rhs) return true;
   if (!lhs || !rhs) return false;
   IUnknown* punk1 = null;
@@ -74,8 +74,8 @@ class ref_base {
     }
 
    private:
-    ULONG __stdcall AddRef() = 0;
-    ULONG __stdcall Release() = 0;
+    ULONG __stdcall AddRef() noexcept = 0;
+    ULONG __stdcall Release() noexcept = 0;
     ~thunk();  // operator delete is forbidden.
   };
 #pragma warning(default : 4510)
@@ -93,55 +93,55 @@ class ref_base {
  private:
   void operator[](size_t) const;  // 配列に対するスマートポインタは有り得ない.
  public:
-  ref_base() throw() : m_ptr(null) {}
-  ref_base(const ref_base& p) throw() : m_ptr(p.m_ptr) {
+  ref_base() noexcept : m_ptr(null) {}
+  ref_base(const ref_base& p) noexcept : m_ptr(p.m_ptr) {
     if (m_ptr) m_ptr->AddRef();
   }
-  ref_base(pointer_in ptr) throw() : m_ptr(ptr) {
+  ref_base(pointer_in ptr) noexcept : m_ptr(ptr) {
     if (m_ptr) m_ptr->AddRef();
   }
-  ~ref_base() throw() { clear(); }
-  ref_base& operator=(ref_base& p) throw() { return operator=(p.m_ptr); }
-  ref_base& operator=(pointer_in p) throw() {
+  ~ref_base() noexcept { clear(); }
+  ref_base& operator=(ref_base& p) noexcept { return operator=(p.m_ptr); }
+  ref_base& operator=(pointer_in p) noexcept {
     if (p) p->AddRef();
     clear();
     m_ptr = p;
     return *this;
   }
   // operators
-  operator pointer_out() const throw() { return static_cast<pointer_out>(m_ptr); }
-  reference_out operator*() const throw() {
+  operator pointer_out() const noexcept { return static_cast<pointer_out>(m_ptr); }
+  reference_out operator*() const noexcept {
     ASSERT(m_ptr);
     return *static_cast<pointer_out>(m_ptr);
   }
-  pointer_in* operator&() throw() {
+  pointer_in* operator&() noexcept {
     ASSERT(!m_ptr);
     return &m_ptr;
   }
-  pointer_out operator->() const throw() {
+  pointer_out operator->() const noexcept {
     ASSERT(m_ptr);
     return static_cast<pointer_out>(m_ptr);
   }
-  bool operator!() const throw() { return !m_ptr; }
-  bool operator<(pointer_in p) const throw() { return m_ptr < p; }
-  bool operator==(pointer_in p) const throw() { return m_ptr == p; }
-  bool operator!=(pointer_in p) const throw() { return m_ptr != p; }
+  bool operator!() const noexcept { return !m_ptr; }
+  bool operator<(pointer_in p) const noexcept { return m_ptr < p; }
+  bool operator==(pointer_in p) const noexcept { return m_ptr == p; }
+  bool operator!=(pointer_in p) const noexcept { return m_ptr != p; }
   // methods
-  pointer_in get() const throw() { return m_ptr; }
-  pointer_in get() const volatile throw() { return m_ptr; }
-  void clear() throw() {
+  pointer_in get() const noexcept { return m_ptr; }
+  pointer_in get() const volatile noexcept { return m_ptr; }
+  void clear() noexcept {
     if (m_ptr) detach()->Release();
   }
-  void attach(pointer_in p) throw() {
+  void attach(pointer_in p) noexcept {
     clear();
     m_ptr = p;
   }
-  pointer_in detach() throw() {
+  pointer_in detach() noexcept {
     pointer_in tmp = m_ptr;
     m_ptr = null;
     return tmp;
   }
-  static ref<T> from(pointer_in p) throw() {
+  static ref<T> from(pointer_in p) noexcept {
     ref<T> ptr;
     ptr.attach(p);
     return ptr;
@@ -151,7 +151,7 @@ class ref_base {
     mew::CreateInstance(clsid, &m_ptr, arg);
     ASSERT(m_ptr);
   }
-  void dispose() throw() {
+  void dispose() noexcept {
     if (T* p = detach()) {
       __if_exists(T::Dispose) { p->Dispose(); }
       __if_not_exists(T::Dispose) {
@@ -165,10 +165,10 @@ class ref_base {
     }
   }
   template <typename T>
-  HRESULT copyto(T** pp) const throw() {
+  HRESULT copyto(T** pp) const noexcept {
     return mew::objcpy(m_ptr, pp);
   }
-  HRESULT copyto(REFINTF pp) const throw() { return mew::objcpy(m_ptr, pp); }
+  HRESULT copyto(REFINTF pp) const noexcept { return mew::objcpy(m_ptr, pp); }
 };
 
 /// スマートポインタ.
@@ -178,27 +178,27 @@ class ref : public ref_base<T> {
   using super = ref_base<T>;
 
  public:
-  ref() throw() {}
-  ref(const Null&) throw() {}
-  ref(const ref& p) throw() : super(p) {}
-  ref(pointer_in p) throw() : super(p) {}
+  ref() noexcept {}
+  ref(const Null&) noexcept {}
+  ref(const ref& p) noexcept : super(p) {}
+  ref(pointer_in p) noexcept : super(p) {}
   template <class U>
-  ref(const ref_base<U>& p) throw() : super(p) {}
+  ref(const ref_base<U>& p) noexcept : super(p) {}
   explicit ref(REFCLSID clsid, IUnknown* arg = null) throw(...) { create(clsid, arg); }
-  ref& operator=(const ref& p) throw() {
+  ref& operator=(const ref& p) noexcept {
     super::operator=(p);
     return *this;
   }
-  ref& operator=(pointer_in p) throw() {
+  ref& operator=(pointer_in p) noexcept {
     super::operator=(p);
     return *this;
   }
-  ref& operator=(const Null&) throw() {
+  ref& operator=(const Null&) noexcept {
     clear();
     return *this;
   }
   template <class U>
-  ref& operator=(const ref_base<U>& p) throw() {
+  ref& operator=(const ref_base<U>& p) noexcept {
     super::operator=(p);
     return *this;
   }
@@ -209,25 +209,25 @@ class ref : public ref_base<T> {
 namespace detail {
 class auto_cast_t;
 }
-detail::auto_cast_t cast(IUnknown* ptr) throw();
+detail::auto_cast_t cast(IUnknown* ptr) noexcept;
 namespace detail {
 class auto_cast_t {
-  friend auto_cast_t mew::cast(IUnknown* ptr) throw();
+  friend auto_cast_t mew::cast(IUnknown* ptr) noexcept;
 
  private:
   IUnknown* m_ptr;
-  auto_cast_t(IUnknown* p) throw() : m_ptr(p) {}
+  auto_cast_t(IUnknown* p) noexcept : m_ptr(p) {}
 
  public:
   template <typename T>
-  operator ref<T>() const throw() {
+  operator ref<T>() const noexcept {
     if (!m_ptr) return ref<T>();
     ref<T> p;
     m_ptr->QueryInterface(&p);
     return p;
   }
   template <typename T>
-  operator ref_base<T>() const throw() {
+  operator ref_base<T>() const noexcept {
     if (!m_ptr) return ref_base<T>();
     ref_base<T> p;
     m_ptr->QueryInterface(&p);
@@ -237,11 +237,11 @@ class auto_cast_t {
 }  // namespace detail
 
 /// QueryInterfaceを用いるキャスト（テンプレート引数省略版）.
-inline detail::auto_cast_t cast(IUnknown* ptr) throw() { return detail::auto_cast_t(ptr); }
+inline detail::auto_cast_t cast(IUnknown* ptr) noexcept { return detail::auto_cast_t(ptr); }
 
 /// QueryInterfaceを用いるキャスト.
 template <typename T>
-inline ref<T> cast(IUnknown* ptr) throw() {
+inline ref<T> cast(IUnknown* ptr) noexcept {
   ref<T> p;
   objcpy(ptr, &p);
   return p;
@@ -257,9 +257,9 @@ class each : public ref<T> {
   ref<IEnumUnknown> m_enum;
 
  public:
-  each(IEnumUnknown* e) throw() : m_enum(e) {}
-  each(const each& p) throw() : m_enum(p.m_enum) {}
-  each& operator=(const each& p) throw() {
+  each(IEnumUnknown* e) noexcept : m_enum(e) {}
+  each(const each& p) noexcept : m_enum(p.m_enum) {}
+  each& operator=(const each& p) noexcept {
     super::operator=(p);
     m_enum = p.m_enum;
     return *this;
@@ -395,77 +395,77 @@ class array {
   sequence m_items;
 
  public:
-  array() throw() {}
-  array(const array& rhs) throw() : m_items(rhs.m_items) { std::for_each(m_items.begin(), m_items.end(), objinc); }
-  array& operator=(const array& rhs) throw() {
+  array() noexcept {}
+  array(const array& rhs) noexcept : m_items(rhs.m_items) { std::for_each(m_items.begin(), m_items.end(), objinc); }
+  array& operator=(const array& rhs) noexcept {
     sequence items(rhs.m_items);
     algorithm::for_all(items, objinc);
     clear();
     std::for_each(items.begin(), items.end(), objinc);
   }
-  ~array() throw() { clear(); }
-  pointer_out data() throw() { return empty() ? null : static_cast<pointer_out>(&m_items[0]); }
-  ref<IEnumUnknown> enumerate(IUnknown* owner) throw() {
+  ~array() noexcept { clear(); }
+  pointer_out data() noexcept { return empty() ? null : static_cast<pointer_out>(&m_items[0]); }
+  ref<IEnumUnknown> enumerate(IUnknown* owner) noexcept {
     if (m_items.empty())
       return null;
     else
       return enum_type::newobj(owner, m_items);
   }
-  HRESULT enumerate(REFINTF pp, IUnknown* owner) throw() {
+  HRESULT enumerate(REFINTF pp, IUnknown* owner) noexcept {
     if (m_items.empty()) return E_FAIL;
     return objnew<enum_type>(owner, m_items)->QueryInterface(pp);
   }
 
  public:  // vector compatible
-  void insert(pointer_in p, size_t index) throw() {
+  void insert(pointer_in p, size_t index) noexcept {
     if (p) p->AddRef();
     sequence::iterator i = m_items.begin();
     std::advance(i, math::min<size_type>(index, m_items.size()));
     m_items.insert(i, p);
   }
-  void clear() throw() {
+  void clear() noexcept {
     for (sequence::iterator i = m_items.begin(); i != m_items.end(); ++i) {
       if (*i) (*i)->Release();
     }
     m_items.clear();
   }
-  void push_back(pointer_in p) throw() {
+  void push_back(pointer_in p) noexcept {
     if (p) p->AddRef();
     m_items.push_back(p);
   }
-  void pop_back() throw() {
+  void pop_back() noexcept {
     if (pointer_in p = m_items.back()) p->Release();
     m_items.pop_back();
   }
-  size_type size() const throw() { return m_items.size(); }
-  bool empty() const throw() { return m_items.empty(); }
-  pointer_out front() const throw() { return static_cast<pointer_out>(m_items.front()); }
-  pointer_out back() const throw() { return static_cast<pointer_out>(m_items.back()); }
-  pointer_out at(size_type index) const throw() { return static_cast<pointer_out>(m_items[index]); }
-  pointer_out operator[](size_type index) const throw() { return static_cast<pointer_out>(m_items[index]); }
-  // void resize(size_type size) throw() {
+  size_type size() const noexcept { return m_items.size(); }
+  bool empty() const noexcept { return m_items.empty(); }
+  pointer_out front() const noexcept { return static_cast<pointer_out>(m_items.front()); }
+  pointer_out back() const noexcept { return static_cast<pointer_out>(m_items.back()); }
+  pointer_out at(size_type index) const noexcept { return static_cast<pointer_out>(m_items[index]); }
+  pointer_out operator[](size_type index) const noexcept { return static_cast<pointer_out>(m_items[index]); }
+  // void resize(size_type size) noexcept {
   //  m_items.resize(size);
   //}
-  void reserve(size_type count) throw() { m_items.reserve(count); }
-  void erase(iterator i) throw() {
+  void reserve(size_type count) noexcept { m_items.reserve(count); }
+  void erase(iterator i) noexcept {
     if (*i) (*i)->Release();
     m_items.erase(i);
   }
-  bool erase(pointer_in p) throw() {
+  bool erase(pointer_in p) noexcept {
     sequence::iterator i = std::find_if(m_items.begin(), m_items.end(), std::bind1st(std::ptr_fun(&objcmp), p));
     if (i == m_items.end()) return false;
     erase(i);
     return true;
   }
-  bool erase(size_t index) throw() {
+  bool erase(size_t index) noexcept {
     if ((size_type)index >= m_items.size()) return false;
     if (!p || objcmp(m_items[index], p)) erase(m_items.begin() + index);
     return true;
   }
-  iterator begin() throw() { return m_items.begin(); }
-  iterator end() throw() { return m_items.end(); }
-  const_iterator begin() const throw() { return m_items.begin(); }
-  const_iterator end() const throw() { return m_items.end(); }
+  iterator begin() noexcept { return m_items.begin(); }
+  iterator end() noexcept { return m_items.end(); }
+  const_iterator begin() const noexcept { return m_items.begin(); }
+  const_iterator end() const noexcept { return m_items.end(); }
 
  public:  // algorithm extension
   template <class Op>

@@ -20,8 +20,8 @@ namespace ui {
 template <class TFinal, class TClient = CWindowEx, class TWinTraits = ATL::CControlWinTraits>
 class __declspec(novtable) CWindowImplEx : public ATL::CWindowImpl<TFinal, TClient, TWinTraits> {
  public:
-  const TFinal& get_final() const throw() { return *static_cast<TFinal*>(this); }
-  TFinal& get_final() throw() { return *static_cast<TFinal*>(this); }
+  const TFinal& get_final() const noexcept { return *static_cast<TFinal*>(this); }
+  TFinal& get_final() noexcept { return *static_cast<TFinal*>(this); }
   __declspec(property(get = get_final)) TFinal final;
 
   DECLARE_EMPTY_MSG_MAP()
@@ -95,7 +95,7 @@ class WindowImplBase : public CWindowEx {
 template <class TBase>
 class WindowMessageSource : public SignalImpl<DynamicLife<TBase> > {
  public:
-  bool SupportsEvent(EventCode code) const throw() {
+  bool SupportsEvent(EventCode code) const noexcept {
     switch (code) {
       case EventDispose:
       case EventPreClose:
@@ -191,13 +191,13 @@ class __declspec(novtable) WindowImpl : public Root<TImplements, TMixin>, public
       throw mew::exceptions::RuntimeError(string(IDS_ERR_CREATEWINDOW), AtlHresultFromLastError());
     }
   }
-  void Dispose() throw() {
+  void Dispose() noexcept {
     if (m_msgr && IsWindow()) {
       DestroyWindow();
     }
     m_msgr.dispose();
   }
-  HRESULT Connect(EventCode code, function fn, message msg = null) throw() {
+  HRESULT Connect(EventCode code, function fn, message msg = null) noexcept {
     if (final.SupportsEvent(code)) {
       return __super::Connect(code, fn, msg);
     } else {

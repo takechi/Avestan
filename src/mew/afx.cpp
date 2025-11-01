@@ -24,7 +24,7 @@ enum {
 
 // この関数は排他制御を行わなくて良い。
 // 無駄にはなるが、どうせ同じポインタが取れるので。
-static bool DynamicLoadVoidPtr(void** fn, PCWSTR module, PCSTR name, int64_t index) throw() {
+static bool DynamicLoadVoidPtr(void** fn, PCWSTR module, PCSTR name, int64_t index) noexcept {
   ASSERT(fn);
   if (*fn == INVALID_FUNCTION_POINTER) {
     return false;
@@ -46,7 +46,7 @@ static bool DynamicLoadVoidPtr(void** fn, PCWSTR module, PCSTR name, int64_t ind
 }
 
 template <typename T>
-inline bool DynamicLoad(T** fn, PCWSTR module, PCSTR name, int64_t index) throw() {
+inline bool DynamicLoad(T** fn, PCWSTR module, PCSTR name, int64_t index) noexcept {
   return DynamicLoadVoidPtr((void**)fn, module, name, index);
 }
 }  // namespace

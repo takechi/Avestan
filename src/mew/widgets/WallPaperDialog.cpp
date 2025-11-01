@@ -19,7 +19,7 @@ class WallPaperDialog : public Root<implements<IWallPaperDialog> >, public CDial
       m_hParent = w->Handle;
     }
   }
-  void Dispose() throw() { RemoveAll(); }
+  void Dispose() noexcept { RemoveAll(); }
 
  private:
   struct Target {

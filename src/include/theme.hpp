@@ -58,7 +58,7 @@ class Theme {
   Theme();
   ~Theme();
   bool Create(HWND hwnd, PCWSTR scheme);
-  void Dispose() throw();
+  void Dispose() noexcept;
 
   void Icon(HDC hDC, int part, int state, const RECT* rc, HIMAGELIST hImageList, int index);
   void Background(HDC hDC, int part, int state, const RECT* rc, const RECT* clip = null);

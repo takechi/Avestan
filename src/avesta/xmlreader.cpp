@@ -20,7 +20,7 @@ class AttributesImpl : public mew::xml::XMLAttributes {
 
  public:
   AttributesImpl(MSXML2::ISAXAttributes* attr) : m_pAttr(attr) { ASSERT(m_pAttr); }
-  virtual mew::string operator[](PCWSTR name) throw() {
+  virtual mew::string operator[](PCWSTR name) noexcept {
     static XMLSTR EMPTY_ATTR = (XMLSTR)(L"");
     PCWSTR val;
     INT len;
@@ -30,7 +30,7 @@ class AttributesImpl : public mew::xml::XMLAttributes {
       return mew::string();
     }
   }
-  virtual mew::string operator[](size_t index) throw() {
+  virtual mew::string operator[](size_t index) noexcept {
     PCWSTR val;
     INT len;
     if SUCCEEDED (m_pAttr->getValue(index, (XMLSTR*)&val, &len)) {
@@ -39,7 +39,7 @@ class AttributesImpl : public mew::xml::XMLAttributes {
       return mew::string();
     }
   }
-  virtual size_t length() throw() {
+  virtual size_t length() noexcept {
     INT len = 0;
     m_pAttr->getLength(&len);
     return len;
@@ -151,7 +151,7 @@ class XMLReader : public Root<implements<IXMLReader> > {
     m_pNativeReader->putContentHandler(&m_Adapter);
     m_pNativeReader->putErrorHandler(&m_Adapter);
   }
-  void Dispose() { m_pNativeReader.clear(); }
+  void Dispose() noexcept { m_pNativeReader.clear(); }
 
  public:  // IXMLReader
   HRESULT Parse(IXMLHandler* handler, IUnknown* pSource) {

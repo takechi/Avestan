@@ -124,7 +124,7 @@ class ImageList : public mew::Root<mew::implements<mew::drawing::IImageList2, II
       // empty imagelist
     }
   }
-  void Dispose() throw() {
+  void Dispose() noexcept {
     if (m_normal) {
       m_normal.Destroy();
     }
@@ -239,9 +239,9 @@ class ImageList : public mew::Root<mew::implements<mew::drawing::IImageList2, II
   HRESULT __stdcall GetOverlayImage(int iOverlay, int *piIndex) { return E_NOTIMPL; }
 
  public:
-  HIMAGELIST get_Normal() throw() { return m_normal; }
-  HIMAGELIST get_Disabled() throw() { return m_disabled; }
-  HIMAGELIST get_Hot() throw() { return m_hot; }
+  HIMAGELIST get_Normal() noexcept { return m_normal; }
+  HIMAGELIST get_Disabled() noexcept { return m_disabled; }
+  HIMAGELIST get_Hot() noexcept { return m_hot; }
 };
 
 //==============================================================================

@@ -18,11 +18,11 @@ class VariableLengthBuffer {
   size_t m_capacity;
 
  public:
-  VariableLengthBuffer() throw() : m_data(0), m_length(0), m_capacity(0) {}
+  VariableLengthBuffer() noexcept : m_data(0), m_length(0), m_capacity(0) {}
   ~VariableLengthBuffer() { ::free(detach()); }
-  T* va_data() throw() { return m_data; }
-  Struct* data() throw() { return m_data ? (Struct*)(((UINT8*)m_data) - sizeof(Struct)) : 0; }
-  Struct* detach() throw() {
+  T* va_data() noexcept { return m_data; }
+  Struct* data() noexcept { return m_data ? (Struct*)(((UINT8*)m_data) - sizeof(Struct)) : 0; }
+  Struct* detach() noexcept {
     Struct* head = data();
     m_data = 0;
     m_length = 0;
@@ -31,23 +31,23 @@ class VariableLengthBuffer {
   }
 
  public:  // std::vector compatible methods
-  void append(PCWSTR data, size_t len) throw() {
+  void append(PCWSTR data, size_t len) noexcept {
     reserve(m_length + len);
     memcpy(m_data + m_length, data, len * sizeof(T));
     m_length += len;
   }
-  void push_back(T c) throw() {
+  void push_back(T c) noexcept {
     reserve(m_length + 1);
     m_data[m_length] = c;
     ++m_length;
   }
-  bool empty() const throw() { return m_length == 0; }
-  size_t size() const throw() { return m_length; }
-  void resize(size_t sz) throw() {
+  bool empty() const noexcept { return m_length == 0; }
+  size_t size() const noexcept { return m_length; }
+  void resize(size_t sz) noexcept {
     reserve(sz);
     m_length = sz;
   }
-  void reserve(size_t capacity) throw() {
+  void reserve(size_t capacity) noexcept {
     if (m_capacity >= capacity) {
       return;
     }
@@ -55,11 +55,11 @@ class VariableLengthBuffer {
     const size_t bytesize = sizeof(Struct) + m_capacity * sizeof(T);
     m_data = (T*)((UINT8*)::realloc(data(), bytesize) + sizeof(Struct));
   }
-  void clear() throw() { m_length = 0; }
+  void clear() noexcept { m_length = 0; }
 
  private:  // non-copyable
-  VariableLengthBuffer(VariableLengthBuffer&) throw();
-  VariableLengthBuffer& operator=(VariableLengthBuffer&) throw();
+  VariableLengthBuffer(VariableLengthBuffer&) noexcept;
+  VariableLengthBuffer& operator=(VariableLengthBuffer&) noexcept;
 };
 }  // namespace
 
@@ -77,7 +77,7 @@ class String : public Root<implements<IString, ISerializable> > {
 #pragma warning(default : 4200)
 
  public:  // ISerializable
-  REFCLSID get_Class() throw() { return __uuidof(this); }
+  REFCLSID get_Class() noexcept { return __uuidof(this); }
   void Serialize(IStream& stream) {
     size_t len = GetLength();
     PCWSTR str = GetBuffer();
@@ -86,25 +86,25 @@ class String : public Root<implements<IString, ISerializable> > {
   }
 
  public:  // IString
-  PCWSTR GetBuffer() throw() { return m_buffer; }
-  size_t GetLength() throw() { return m_length; }
+  PCWSTR GetBuffer() noexcept { return m_buffer; }
+  size_t GetLength() noexcept { return m_length; }
 
  private:
-  String(PCWSTR str, size_t len) throw() {
+  String(PCWSTR str, size_t len) noexcept {
     m_length = len;
     str::copy(m_buffer, str, len);
     m_buffer[len] = '\0';
   }
-  String(size_t len) throw() { m_length = len; }
+  String(size_t len) noexcept { m_length = len; }
   String(const String&);
   String& operator=(const String&);
 
  private:
-  static void* Allocate(size_t len) throw() { return ::malloc(sizeof(String) + (len + 1) * sizeof(WCHAR)); }
+  static void* Allocate(size_t len) noexcept { return ::malloc(sizeof(String) + (len + 1) * sizeof(WCHAR)); }
 
  public:
   /// @param src 所有権は譲渡される.
-  static IString* NewHere(void* src, size_t len) throw() {
+  static IString* NewHere(void* src, size_t len) noexcept {
     ASSERT(src);
     ASSERT(len > 0);
     String* s = new (src) String(len);
@@ -112,20 +112,20 @@ class String : public Root<implements<IString, ISerializable> > {
     return s;
   }
   /// @param src 所有権は呼び出し元のまま.
-  static IString* NewCopy(PCWSTR src, size_t len) throw() {
+  static IString* NewCopy(PCWSTR src, size_t len) noexcept {
     ASSERT(len > 0);
     void* p = Allocate(len);
     return new (p) String(src, len);
   }
   ///
-  static PWSTR NewRaw(IString** pp, size_t len) throw() {
+  static PWSTR NewRaw(IString** pp, size_t len) noexcept {
     ASSERT(len > 0);
     void* p = Allocate(len);
     String* s = new (p) String(len);
     *pp = s;
     return s->m_buffer;
   }
-  void __free__() throw() {
+  void __free__() noexcept {
     this->~String();
     ::free(this);
   }
@@ -162,7 +162,7 @@ AVESTA_EXPORT_FUNC(String)
 //==============================================================================
 namespace {
 
-static void FormatString(mew::IString** pp, PCWSTR format, size_t length, size_t argc, PCWSTR argv[]) throw() {
+static void FormatString(mew::IString** pp, PCWSTR format, size_t length, size_t argc, PCWSTR argv[]) noexcept {
   ASSERT(pp);
   ASSERT(format);
   const size_t MAX_ARGS = 9;
@@ -198,7 +198,7 @@ static void FormatString(mew::IString** pp, PCWSTR format, size_t length, size_t
 
 //==============================================================================
 namespace mew {
-MEW_API void CreateString(mew::IString** pp, PCWSTR format, size_t length, size_t argc, PCWSTR argv[]) throw() {
+MEW_API void CreateString(mew::IString** pp, PCWSTR format, size_t length, size_t argc, PCWSTR argv[]) noexcept {
   if (length == (size_t)-1) {
     length = mew::str::length(format);
   }
@@ -211,7 +211,7 @@ MEW_API void CreateString(mew::IString** pp, PCWSTR format, size_t length, size_
   }
 }
 
-MEW_API void CreateString(mew::IString** pp, UINT nID, HMODULE hModule, size_t argc, PCWSTR argv[]) throw() {
+MEW_API void CreateString(mew::IString** pp, UINT nID, HMODULE hModule, size_t argc, PCWSTR argv[]) noexcept {
   const int BUFEXPAND = 256;
   int bufsize = BUFEXPAND, length;
   CHeapPtr<WCHAR> buffer;
@@ -239,7 +239,7 @@ void mew::StringReplace(IString** pp, IString* s, WCHAR from, WCHAR to) {
   dst[len] = L'\0';
 }
 
-void mew::ObjectToString(IString** pp, IUnknown* obj) throw() {
+void mew::ObjectToString(IString** pp, IUnknown* obj) noexcept {
   if (!obj) {  // ぬるぽ
     CreateString(pp, L"null", string::npos, 0, null);
   } else if SUCCEEDED (objcpy(obj, pp)) {  // ok. already string

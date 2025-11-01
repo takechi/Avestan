@@ -13,14 +13,14 @@ inline UINT PopupMenu(HMENU hMenu, UINT tpm, int x, int y, HWND hOwner, const RE
     return 0;
 }
 
-inline size_t GetMenuDepth() throw() {
+inline size_t GetMenuDepth() noexcept {
   if (IDisplay* thread = GetThread())
     return thread->GetMenuDepth();
   else
     return 0;
 }
 
-inline HWND GetMenu(int index = -1) throw() {
+inline HWND GetMenu(int index = -1) noexcept {
   if (IDisplay* thread = GetThread())
     return thread->GetMenu(index);
   else

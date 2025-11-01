@@ -25,13 +25,13 @@ class Messenger : public Root<implements<IMessenger, ISignal, IDisposable> > {
       if FAILED (hr) clear();
       return hr;
     }
-    bool equals(const function& p) const throw() { return m_function == p; }
-    bool equals(IUnknown* p) const throw() { return objcmp(p, m_function.target); }
-    void clear() throw() {
+    bool equals(const function& p) const noexcept { return m_function == p; }
+    bool equals(IUnknown* p) const noexcept { return objcmp(p, m_function.target); }
+    void clear() noexcept {
       m_function.clear();
       msg.clear();
     }
-    bool empty() const throw() { return !m_function; }
+    bool empty() const noexcept { return !m_function; }
   };
   using Map = std::multimap<EventCode, Closure>;
   using iterator = Map::iterator;
@@ -53,8 +53,8 @@ class Messenger : public Root<implements<IMessenger, ISignal, IDisposable> > {
     const range_type m_range;
     message m_orig, m_args;
 
-    iterator begin() const throw() { return m_range.first; }
-    iterator end() const throw() { return m_range.second; }
+    iterator begin() const noexcept { return m_range.first; }
+    iterator end() const noexcept { return m_range.second; }
 
     class EnumVariantTwo : public Root<implements<IEnumVariant> > {
      private:
@@ -77,7 +77,7 @@ class Messenger : public Root<implements<IMessenger, ISignal, IDisposable> > {
 
    public:
     Invoker(Messenger* msgr, range_type range) : m_msgr(msgr), m_range(range) {}
-    void Dispose() throw() {
+    void Dispose() noexcept {
       m_orig.clear();
       m_args.clear();
       // m_msgr.clear();
@@ -118,11 +118,11 @@ class Messenger : public Root<implements<IMessenger, ISignal, IDisposable> > {
     }
 
    public:  // ISerializable
-    REFCLSID get_Class() throw() { return GUID_NULL; }
+    REFCLSID get_Class() noexcept { return GUID_NULL; }
     void Serialize(IStream& stream) { throw exceptions::LogicError(L"Invoker does not support serialize.", E_NOTIMPL); }
 
    public:  // IMesasge
-    const variant& Get(const Guid& key) throw() {
+    const variant& Get(const Guid& key) noexcept {
       if (m_orig) {
         const variant& var = m_orig->Get(key);
         if (!var.empty()) return var;
@@ -132,10 +132,10 @@ class Messenger : public Root<implements<IMessenger, ISignal, IDisposable> > {
       }
       return variant::null;
     }
-    void Set(const Guid& key, const variant& var) throw() {
+    void Set(const Guid& key, const variant& var) noexcept {
       if (m_args) m_args->Set(key, var);
     }
-    ref<IEnumVariant> Enumerate() throw() {
+    ref<IEnumVariant> Enumerate() noexcept {
       ref<IEnumVariant> orig, args;
       if (m_orig) {
         orig = m_orig->Enumerate();
@@ -153,11 +153,11 @@ class Messenger : public Root<implements<IMessenger, ISignal, IDisposable> > {
   };
 
  public:
-  void BeginInvoke() throw() {
+  void BeginInvoke() noexcept {
     m_cs.Lock();
     ++m_depth;
   }
-  void EndInvoke() throw() {
+  void EndInvoke() noexcept {
     --m_depth;
     if (m_depth == 0 && m_removed) {
       m_removed = false;
@@ -175,7 +175,7 @@ class Messenger : public Root<implements<IMessenger, ISignal, IDisposable> > {
     m_depth = 0;
     m_removed = false;
   }
-  void Dispose() throw() {
+  void Dispose() noexcept {
     try {
       if (m_depth == 0)
         m_map.clear();
@@ -190,7 +190,7 @@ class Messenger : public Root<implements<IMessenger, ISignal, IDisposable> > {
   }
 
  public:  // ISignal
-  HRESULT Connect(EventCode code, function fn, message msg = null) throw() {
+  HRESULT Connect(EventCode code, function fn, message msg = null) noexcept {
     if (!fn) return E_INVALIDARG;
     iterator i = Find(code, fn);
     if (i == m_map.end()) {  // new fn
@@ -201,7 +201,7 @@ class Messenger : public Root<implements<IMessenger, ISignal, IDisposable> > {
     }
     return S_OK;
   }
-  size_t Disconnect(EventCode code, function fn, IUnknown* obj = null) throw() {
+  size_t Disconnect(EventCode code, function fn, IUnknown* obj = null) noexcept {
     AutoLock lock(m_cs);
     if (!fn) {
       if (code == 0)
@@ -219,14 +219,14 @@ class Messenger : public Root<implements<IMessenger, ISignal, IDisposable> > {
   }
 
  public:  // IMessenger
-  function Invoke(EventCode code) throw() {
+  function Invoke(EventCode code) noexcept {
     range_type range = m_map.equal_range(code);
     if (range.first == range.second) return null;
     return function(objnew<Invoker>(this, range), &Invoker::Send);
   }
 
  private:
-  iterator Find(EventCode code, function fn) throw() {
+  iterator Find(EventCode code, function fn) noexcept {
     range_type range = m_map.equal_range(code);
     for (iterator i = range.first; i != range.second; ++i) {
       if (i->second.equals(fn)) {
@@ -235,7 +235,7 @@ class Messenger : public Root<implements<IMessenger, ISignal, IDisposable> > {
     }
     return m_map.end();
   }
-  void RemoveAll() throw() {
+  void RemoveAll() noexcept {
     AutoLock lock(m_cs);
     if (m_depth == 0) {
       m_map.clear();
@@ -247,7 +247,7 @@ class Messenger : public Root<implements<IMessenger, ISignal, IDisposable> > {
     }
   }
   template <class T>
-  size_t RemoveRange(range_type range, const T& obj) throw() {
+  size_t RemoveRange(range_type range, const T& obj) noexcept {
     size_t num = 0;
     if (m_depth == 0) {
       for (iterator i = range.first; i != range.second;) {
@@ -269,14 +269,14 @@ class Messenger : public Root<implements<IMessenger, ISignal, IDisposable> > {
     return num;
   }
   template <class T>
-  size_t RemoveFunc(const T& obj) throw() {
+  size_t RemoveFunc(const T& obj) noexcept {
     return RemoveRange(range_type(m_map.begin(), m_map.end()), obj);
   }
   template <class T>
   size_t RemoveBoth(EventCode code, const T& obj) {
     return RemoveRange(m_map.equal_range(code), obj);
   }
-  size_t RemoveCode(EventCode code) throw() {
+  size_t RemoveCode(EventCode code) noexcept {
     if (m_depth == 0) {
       return m_map.erase(code);
     } else {

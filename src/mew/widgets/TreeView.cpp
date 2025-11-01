@@ -93,7 +93,7 @@ class __declspec(novtable) TreeViewBase
   }
 
  public:
-  bool SupportsEvent(mew::EventCode code) const throw() {
+  bool SupportsEvent(mew::EventCode code) const noexcept {
     if (__super::SupportsEvent(code)) {
       return true;
     }

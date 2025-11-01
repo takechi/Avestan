@@ -64,7 +64,7 @@ class GestureTable : public Root<implements<IGestureTable, IGesture> > {
 
  public:
   void __init__(IUnknown* arg) {}
-  void Dispose() { m_GestureMap.clear(); }
+  void Dispose() noexcept { m_GestureMap.clear(); }
 
  public:  // IGesture
   HRESULT OnGestureAccept(HWND hWnd, Point ptScreen, size_t length, const Gesture gesture[]) {

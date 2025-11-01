@@ -335,7 +335,7 @@ class DragSource : public Root<implements<IDragSource, IDataObject> >  // IAsync
 
  public:
   void __init__(IUnknown* arg) {}
-  void Dispose() throw() {
+  void Dispose() noexcept {
     m_helper.clear();
     m_data.RemoveAll();
   }

@@ -118,7 +118,7 @@ class TabPanel : public WindowImpl<CWindowImplEx<TabPanel, WTLEX::CTypedToolBar<
   int m_TabWidthMax;
 
  public:
-  bool SupportsEvent(EventCode code) const throw() {
+  bool SupportsEvent(EventCode code) const noexcept {
     if (__super::SupportsEvent(code)) {
       return true;
     }

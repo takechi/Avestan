@@ -36,9 +36,9 @@ HRESULT SaveMessage(const message& msg, IUnknown* dst, IXMLWriter* sax = null);
 
 /// 属性.
 struct __declspec(novtable) XMLAttributes {
-  virtual string operator[](PCWSTR name) throw() = 0;
-  virtual string operator[](size_t index) throw() = 0;
-  virtual size_t length() throw() = 0;
+  virtual string operator[](PCWSTR name) noexcept = 0;
+  virtual string operator[](size_t index) noexcept = 0;
+  virtual size_t length() noexcept = 0;
 };
 
 /// SAX2ハンドラ.

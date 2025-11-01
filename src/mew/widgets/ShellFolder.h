@@ -79,7 +79,7 @@ class Shell : public WindowImplBase {
  public:
   Shell();
   ~Shell();
-  void DisposeShellView();
+  void DisposeShellView() noexcept;
 
  public:
   io::IEntry* GetCurrentEntry() const { return m_pCurrentEntry; }

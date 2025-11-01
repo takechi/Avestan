@@ -17,7 +17,7 @@ namespace ui {
 class StatusBar
     : public WindowImpl<CWindowImplEx<StatusBar, StatusBarBase>, implements<ITree, IWindow, ISignal, IDisposable> > {
  public:
-  bool SupportsEvent(EventCode code) const throw() {
+  bool SupportsEvent(EventCode code) const noexcept {
     if (__super::SupportsEvent(code)) return true;
     switch (code) {
       // case EventItemFocus:

@@ -14,24 +14,24 @@ class BufferT : public CHeapPtr<T, TAlloc> {
   size_t m_capacity;
 
  public:
-  BufferT() throw() : m_length(0), m_capacity(0) {}
-  BufferT(const BufferT& rhs) throw() : m_length(0), m_capacity(0) { append(rhs, rhs.size()); }
-  BufferT& operator=(const BufferT& rhs) throw() {
+  BufferT() noexcept : m_length(0), m_capacity(0) {}
+  BufferT(const BufferT& rhs) noexcept : m_length(0), m_capacity(0) { append(rhs, rhs.size()); }
+  BufferT& operator=(const BufferT& rhs) noexcept {
     clear();
     append(rhs, rhs.size());
     return *this;
   }
 
  public:
-  T* data() throw() { return m_pData; }
-  const T* data() const throw() { return m_pData; }
-  void push_back(T c) throw() {
+  T* data() noexcept { return m_pData; }
+  const T* data() const noexcept { return m_pData; }
+  void push_back(T c) noexcept {
     reserve(m_length + 1);
     m_pData[m_length] = c;
     ++m_length;
   }
-  void append(T c) throw() { push_back(c); }
-  void append(const T* data, size_t len) throw() { write(m_length, data, len); }
+  void append(T c) noexcept { push_back(c); }
+  void append(const T* data, size_t len) noexcept { write(m_length, data, len); }
   size_t read(size_t pos, T* data, size_t len) {
     if (pos >= m_length) return 0;
     if (pos + len >= m_length) len = m_length - pos;
@@ -49,18 +49,18 @@ class BufferT : public CHeapPtr<T, TAlloc> {
     }
     memcpy(m_pData + pos, data, len * sizeof(T));
   }
-  bool empty() const throw() { return m_length == 0; }
-  size_t size() const throw() { return m_length; }
-  void resize(size_t sz) throw() {
+  bool empty() const noexcept { return m_length == 0; }
+  size_t size() const noexcept { return m_length; }
+  void resize(size_t sz) noexcept {
     reserve(sz);
     m_length = sz;
   }
-  void reserve(size_t capacity) throw() {
+  void reserve(size_t capacity) noexcept {
     if (m_capacity >= capacity) return;
     m_capacity = math::max(static_cast<size_t>(16), capacity, m_capacity * 2);
     Reallocate(m_capacity);
   }
-  void clear() throw() { m_length = 0; }
+  void clear() noexcept { m_length = 0; }
 
   friend inline IStream& operator>>(IStream& stream, BufferT& v) throw(...) {
     size_t size;

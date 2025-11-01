@@ -8,7 +8,7 @@
 
 namespace mew {
 namespace ui {
-BOOL CWindowEx::ModifyClassStyle(DWORD dwRemove, DWORD dwAdd, UINT nFlags) throw() {
+BOOL CWindowEx::ModifyClassStyle(DWORD dwRemove, DWORD dwAdd, UINT nFlags) noexcept {
   HWND hWnd = m_hWnd;
   ASSERT(::IsWindow(hWnd));
   DWORD dwStyle = ::GetClassLong(hWnd, GCL_STYLE);
@@ -56,7 +56,7 @@ bool CWindowEx::DragDetect(POINT pt) {
   }
 }
 
-void CWindowEx::SendMessageToDescendants(UINT msg, WPARAM wParam, LPARAM lParam, BOOL(__stdcall* op)(HWND)) throw() {
+void CWindowEx::SendMessageToDescendants(UINT msg, WPARAM wParam, LPARAM lParam, BOOL(__stdcall* op)(HWND)) noexcept {
   for (HWND hwnd = ::GetTopWindow(m_hWnd); hwnd != NULL; hwnd = ::GetNextWindow(hwnd, GW_HWNDNEXT)) {
     if (op(hwnd)) {
       ::SendMessage(hwnd, msg, wParam, lParam);
@@ -174,7 +174,7 @@ namespace
 }
 
 void CWindowEx::SendMessageToDescendants(HWND hParent, UINT msg, WPARAM wParam, LPARAM lParam, BOOL (__stdcall *fn)(HWND))
-throw()
+noexcept
 {
         for(HWND hwnd = ::GetTopWindow(hParent); hwnd != NULL; hwnd = ::GetNextWindow(hwnd, GW_HWNDNEXT))
         {
@@ -303,7 +303,7 @@ LRESULT CWindowEx::OnGetUnknown(UINT, WPARAM, LPARAM, BOOL&)
 }
 
 /*
-HRESULT avesta::ui::WindowFromHandle(REFINTF pp, HWND hwnd) throw()
+HRESULT avesta::ui::WindowFromHandle(REFINTF pp, HWND hwnd) noexcept
 {
         ref<IUnknown> p;
         p.attach((IUnknown*)SendMessage(hwnd, WM_GETUNKNOWN, 0, 0));

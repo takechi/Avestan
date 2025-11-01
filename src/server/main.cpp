@@ -380,7 +380,7 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
       throw;
     }
   }
-  void Dispose() throw() {
+  void Dispose() noexcept {
     __super::Dispose();
     FormDispose(m_forms);
     m_commands.dispose();

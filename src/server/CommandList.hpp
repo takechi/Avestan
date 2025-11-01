@@ -11,7 +11,7 @@ class CommandList : public mew::Root<mew::implements<mew::ICommand>, mew::mixin<
 
    public:
     CommandEntry(mew::io::IEntry* entry) : m_entry(entry), m_index(0) { ASSERT(m_entry); }
-    void Dispose() { m_entry.clear(); }
+    void Dispose() noexcept { m_entry.clear(); }
     mew::string get_Name() {
       if (!m_Text) {
         mew::string path_or_name = m_entry->GetName(mew::io::IEntry::PATH_OR_NAME);
@@ -92,7 +92,7 @@ class CommandTreeItem : public mew::Root<mew::implements<mew::ui::ITreeItem, mew
 
  public:
   CommandTreeItem(CommandList& mru) : m_List(mru) { m_Image = I_IMAGENONE; }
-  void Dispose() throw() { m_Text.clear(); }
+  void Dispose() noexcept { m_Text.clear(); }
 
   mew::string get_Name() { return m_Text; }
   mew::ref<mew::ICommand> get_Command() { return &m_List; }

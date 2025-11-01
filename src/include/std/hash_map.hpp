@@ -10,7 +10,7 @@
 #pragma warning(default : 4702)
 
 template <>
-inline size_t stdext::hash_value(REFGUID key) throw() {
+inline size_t stdext::hash_value(REFGUID key) noexcept {
   const size_t* var = reinterpret_cast<const size_t*>(&key);
 #ifdef _WIN64
   STATIC_ASSERT(sizeof(size_t) * 2 == sizeof(GUID));

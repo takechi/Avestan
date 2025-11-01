@@ -19,7 +19,7 @@ bool Theme::Create(HWND hwnd, PCWSTR scheme) {
   return m_hTheme != null;
 }
 
-void Theme::Dispose() throw() {
+void Theme::Dispose() noexcept {
   if (m_hTheme) {
     ::CloseThemeData(m_hTheme);
     m_hTheme = null;

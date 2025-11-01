@@ -35,7 +35,7 @@ class XMLWriter : public Root<implements<IXMLWriter> > {
 
  public:
   void __init__(IUnknown* arg) { ASSERT(!arg); }
-  void Dispose() {
+  void Dispose() noexcept {
     if (!m_stack.empty()) {
       TRACE(_T("warning: タグが閉じられないまま XMLWriter が破棄されました"));
       EndDocument();

@@ -206,13 +206,13 @@ inline wchar_t* ftoa(wchar_t* str, double value, int digits = 6) {
   return str;
 }
 ///
-inline char* guidtoa(char* str, REFGUID value, bool brace = false) throw() {
+inline char* guidtoa(char* str, REFGUID value, bool brace = false) noexcept {
   sprintf(str, brace ? "{%08X-%04X-%04X-%04X-%08X%04X}" : "%08X-%04X-%04X-%04X-%08X%04X", value.Data1, value.Data2, value.Data3,
           MAKEWORD(value.Data4[1], value.Data4[0]), MAKEDWORD(value.Data4[5], value.Data4[4], value.Data4[3], value.Data4[2]),
           MAKEWORD(value.Data4[7], value.Data4[6]));
   return str;
 }
-inline wchar_t* guidtoa(wchar_t* str, REFGUID value, bool brace = false) throw() {
+inline wchar_t* guidtoa(wchar_t* str, REFGUID value, bool brace = false) noexcept {
   swprintf(str, 40, brace ? L"{%08X-%04X-%04X-%04X-%08X%04X}" : L"%08X-%04X-%04X-%04X-%08X%04X", value.Data1, value.Data2,
            value.Data3, MAKEWORD(value.Data4[1], value.Data4[0]),
            MAKEDWORD(value.Data4[5], value.Data4[4], value.Data4[3], value.Data4[2]), MAKEWORD(value.Data4[7], value.Data4[6]));

@@ -58,15 +58,15 @@ class Message : public Root<implements<IMessage, ISerializable> > {
       Deserialize(stream);
     }
   }
-  void Dispose() throw() { m_vars.clear(); }
+  void Dispose() noexcept { m_vars.clear(); }
 
  public:  // ISerializable
-  REFCLSID get_Class() throw() { return __uuidof(this); }
+  REFCLSID get_Class() noexcept { return __uuidof(this); }
   void Deserialize(IStream& stream) { stream >> m_vars; }
   void Serialize(IStream& stream) { stream << m_vars; }
 
  public:  // IMessage
-  const variant& Get(const Guid& key) throw() {
+  const variant& Get(const Guid& key) noexcept {
     VariantMap::const_iterator i = m_vars.find(key);
     if (i == m_vars.end()) {
       return variant::null;
@@ -74,14 +74,14 @@ class Message : public Root<implements<IMessage, ISerializable> > {
       return i->second;
     }
   }
-  void Set(const Guid& key, const variant& var) throw() {
+  void Set(const Guid& key, const variant& var) noexcept {
     if (var.empty()) {
       m_vars.erase(key);
     } else {
       m_vars[key] = var;
     }
   }
-  ref<IEnumVariant> Enumerate() throw() {
+  ref<IEnumVariant> Enumerate() noexcept {
     if (m_vars.empty()) {
       return null;
     } else {

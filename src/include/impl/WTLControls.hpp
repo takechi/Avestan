@@ -70,8 +70,8 @@ class CTypedList : public TBase {
     DeleteAllColumn();
   }
   // SelectedColumn は、XP以上を要求.
-  INT32 GetSelectedColumn() const throw() { return m_SelectedColumn; }
-  void SetSelectedColumn(INT32 column) throw() {
+  INT32 GetSelectedColumn() const noexcept { return m_SelectedColumn; }
+  void SetSelectedColumn(INT32 column) noexcept {
     if (column < 0 || column >= GetColumnCount()) {
       column = -1;
     }
@@ -104,7 +104,7 @@ class __declspec(novtable) CTypedListImpl : public mew::ui::CWindowImplEx<TFinal
   int CompareElement(ParamType lhs, ParamType rhs, int column) { return lhs < rhs; }
 
  public:  // operation
-  bool IsSortedAscending() const throw() { return m_SortedAscending; }
+  bool IsSortedAscending() const noexcept { return m_SortedAscending; }
   void SortElements() {
     SortParam param(final, GetSelectedColumn(), IsSortedAscending());
     SortItems((PFNLVCOMPARE)CompareItemThunk, (LPARAM)&param);
@@ -528,7 +528,7 @@ class __declspec(novtable) CTypedTabImpl : public mew::ui::CWindowImplEx<TFinal,
   // void OnQueryText(int index, int column, PTSTR pszText, int cchTextMax) {}
 
  public:  // operation
-  int IndexFromParam(ParamType param) throw() {
+  int IndexFromParam(ParamType param) noexcept {
     int count = GetItemCount();
     for (int i = 0; i < count; ++i) {
       Item item(TCIF_PARAM);

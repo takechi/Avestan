@@ -16,13 +16,13 @@ template <class TInherits, class TSupports>
 class __declspec(novtable) Interface : public meta::Inherits<TInherits> {
  public:
   using __primary__ = typename TInherits::Head;  ///< OIDに対応するインタフェース.
-  IUnknown* get_OID() throw() { return static_cast<IUnknown*>(static_cast<__primary__*>(this)); }
+  IUnknown* get_OID() noexcept { return static_cast<IUnknown*>(static_cast<__primary__*>(this)); }
   __declspec(property(get = get_OID)) IUnknown* OID;
 
  public:  // IUnknown
-  HRESULT __stdcall QueryInterface(REFIID iid, void** pp) throw() { return InternalQueryInterface<TSupports>(iid, pp); }
-  ULONG __stdcall AddRef() throw() = 0;
-  ULONG __stdcall Release() throw() = 0;
+  HRESULT __stdcall QueryInterface(REFIID iid, void** pp) noexcept { return InternalQueryInterface<TSupports>(iid, pp); }
+  ULONG __stdcall AddRef() noexcept = 0;
+  ULONG __stdcall Release() noexcept = 0;
 
  private:
   template <typename Interface>
@@ -32,7 +32,7 @@ class __declspec(novtable) Interface : public meta::Inherits<TInherits> {
     return static_cast<Interface*>(static_cast<Derived*>(this));
   }
   template <typename TList>
-  HRESULT __stdcall InternalQueryInterface(REFIID iid, void** pp) throw() {
+  HRESULT __stdcall InternalQueryInterface(REFIID iid, void** pp) noexcept {
     if (iid == __uuidof(TList::Head)) {
       return InterfaceAssign(InternalGetInterface<TList::Head>(), pp);
     } else {
@@ -40,7 +40,7 @@ class __declspec(novtable) Interface : public meta::Inherits<TInherits> {
     }
   }
   template <>
-  HRESULT __stdcall InternalQueryInterface<meta::Void>(REFIID iid, void** pp) throw() {
+  HRESULT __stdcall InternalQueryInterface<meta::Void>(REFIID iid, void** pp) noexcept {
     if (iid == __uuidof(IUnknown)) {
       return InterfaceAssign(OID, pp);
     } else {
@@ -68,7 +68,7 @@ class Object2 {
 
     // IUnknownの実装はすべてTLeftへ転送する。
     using __primary__ = typename TLeft::__primary__;
-    HRESULT __stdcall QueryInterface(REFIID iid, void** pp) throw() {
+    HRESULT __stdcall QueryInterface(REFIID iid, void** pp) noexcept {
       HRESULT hr = TLeft::QueryInterface(iid, pp);
       if (hr != E_NOINTERFACE) {
         return hr;
@@ -76,9 +76,9 @@ class Object2 {
         return TRight::QueryInterface(iid, pp);
       }
     }
-    ULONG __stdcall AddRef() throw() { return TLeft::AddRef(); }
-    ULONG __stdcall Release() throw() { return TLeft::Release(); }
-    IUnknown* get_OID() throw() { return TLeft::get_OID(); }
+    ULONG __stdcall AddRef() noexcept { return TLeft::AddRef(); }
+    ULONG __stdcall Release() noexcept { return TLeft::Release(); }
+    IUnknown* get_OID() noexcept { return TLeft::get_OID(); }
     __declspec(property(get = get_OID)) IUnknown* OID;
   };
 };
@@ -94,11 +94,11 @@ class Object2<meta::Void, TSupports, TMixin> {
    public:
     using __inherits__ = TInherits;
     using __supports__ = TSupports;
-    HRESULT __stdcall QueryInterface(REFIID iid, void** pp) throw() {
+    HRESULT __stdcall QueryInterface(REFIID iid, void** pp) noexcept {
       if (!pp) {return E_INVALIDARG;}
       return __super::QueryInterface(iid, pp);
     }
-    HRESULT __stdcall QueryInterface(REFINTF pp) throw() { return QueryInterface(pp.iid, pp.pp); }
+    HRESULT __stdcall QueryInterface(REFINTF pp) noexcept { return QueryInterface(pp.iid, pp.pp); }
 
     DEBUG_ONLY(~Result() { mew::UnregisterInstance(OID); })
   };

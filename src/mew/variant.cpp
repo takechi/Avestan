@@ -9,7 +9,7 @@
 //==============================================================================
 
 namespace {
-static size_t find_tail(PCSTR str, size_t length) throw() {
+static size_t find_tail(PCSTR str, size_t length) noexcept {
   for (size_t i = length; i > 0; --i) {
     if (str[i - 1] != '\0') {
       return i;
@@ -17,7 +17,7 @@ static size_t find_tail(PCSTR str, size_t length) throw() {
   }
   return 0;
 }
-static bool isPrintable(PCSTR str, size_t length) throw() {
+static bool isPrintable(PCSTR str, size_t length) noexcept {
   WORD dst[16];
   if (!GetStringTypeExA(LOCALE_USER_DEFAULT, CT_CTYPE1, str, length, dst)) {
     return false;
@@ -33,7 +33,7 @@ static bool isPrintable(PCSTR str, size_t length) throw() {
 }  // namespace
 
 namespace mew {
-ToString<TypeCode>::ToString(TypeCode value) throw() {
+ToString<TypeCode>::ToString(TypeCode value) noexcept {
   UINT32 code = value;
   if (code < 65536) {
     _stprintf(m_str, _T("#%d"), code);
@@ -48,7 +48,7 @@ ToString<TypeCode>::ToString(TypeCode value) throw() {
     m_str[4] = _T('\0');
   }
 }
-ToString<Guid>::ToString(const Guid& value) throw() {
+ToString<Guid>::ToString(const Guid& value) noexcept {
   if (memcmp(((BYTE*)&value) + 4, ((BYTE*)&GUID_Index) + 4, 12) == 0) {
     m_str[0] = _T('#');
     str::itoa(m_str + 1, (int)value.Data1);  // as Index
@@ -94,27 +94,27 @@ ToString<Guid>::ToString(const Guid& value) throw() {
 //==============================================================================
 
 namespace {
-void StringToPOD(PCWSTR s, bool& result) throw() {
+void StringToPOD(PCWSTR s, bool& result) noexcept {
   result = s && (mew::str::equals_nocase(s, _T("true")) || mew::str::equals_nocase(s, _T("yes")));
 }
-void StringToPOD(PCWSTR s, INT8& result) throw() { result = (INT8)mew::str::atoi(s); }
-void StringToPOD(PCWSTR s, INT16& result) throw() { result = (INT16)mew::str::atoi(s); }
-void StringToPOD(PCWSTR s, INT32& result) throw() { result = mew::str::atoi(s); }
-void StringToPOD(PCWSTR s, INT64& result) throw() { result = mew::str::atoi64(s); }
-void StringToPOD(PCWSTR s, UINT8& result) throw() { result = (UINT8)mew::str::atoi(s); }
-void StringToPOD(PCWSTR s, UINT16& result) throw() { result = (UINT16)mew::str::atoi(s); }
-void StringToPOD(PCWSTR s, UINT32& result) throw() { result = mew::str::atou(s); }
-void StringToPOD(PCWSTR s, UINT64& result) throw() { result = mew::str::atoi64(s); }
-void StringToPOD(PCWSTR s, REAL32& result) throw() { result = (REAL32)mew::str::atof(s); }
-void StringToPOD(PCWSTR s, REAL64& result) throw() { result = mew::str::atof(s); }
-void StringToPOD(PCWSTR s, mew::Size& result) throw() { _stscanf(s, _T("%d%d"), &result.cx, &result.cy); }
-void StringToPOD(PCWSTR s, mew::Point& result) throw() { _stscanf(s, _T("%d%d"), &result.x, &result.y); }
-void StringToPOD(PCWSTR s, mew::Color& result) throw() {
+void StringToPOD(PCWSTR s, INT8& result) noexcept { result = (INT8)mew::str::atoi(s); }
+void StringToPOD(PCWSTR s, INT16& result) noexcept { result = (INT16)mew::str::atoi(s); }
+void StringToPOD(PCWSTR s, INT32& result) noexcept { result = mew::str::atoi(s); }
+void StringToPOD(PCWSTR s, INT64& result) noexcept { result = mew::str::atoi64(s); }
+void StringToPOD(PCWSTR s, UINT8& result) noexcept { result = (UINT8)mew::str::atoi(s); }
+void StringToPOD(PCWSTR s, UINT16& result) noexcept { result = (UINT16)mew::str::atoi(s); }
+void StringToPOD(PCWSTR s, UINT32& result) noexcept { result = mew::str::atou(s); }
+void StringToPOD(PCWSTR s, UINT64& result) noexcept { result = mew::str::atoi64(s); }
+void StringToPOD(PCWSTR s, REAL32& result) noexcept { result = (REAL32)mew::str::atof(s); }
+void StringToPOD(PCWSTR s, REAL64& result) noexcept { result = mew::str::atof(s); }
+void StringToPOD(PCWSTR s, mew::Size& result) noexcept { _stscanf(s, _T("%d%d"), &result.cx, &result.cy); }
+void StringToPOD(PCWSTR s, mew::Point& result) noexcept { _stscanf(s, _T("%d%d"), &result.x, &result.y); }
+void StringToPOD(PCWSTR s, mew::Color& result) noexcept {
   int c[4] = {0, 0, 0, 255};
   _stscanf(s, _T("%d%d%d%d"), &c[0], &c[1], &c[2], &c[3]);
   result = mew::Color((UINT8)c[0], (UINT8)c[1], (UINT8)c[2], (UINT8)c[3]);
 }
-void StringToPOD(PCWSTR s, mew::Rect& result) throw() {
+void StringToPOD(PCWSTR s, mew::Rect& result) noexcept {
   _stscanf(s, _T("%d%d%d%d"), &result.left, &result.top, &result.right, &result.bottom);
 }
 }  // namespace
@@ -124,7 +124,7 @@ namespace {
 #pragma warning(disable : 4244)
 
 template <typename To>
-inline static bool ObjectToPOD(IUnknown* obj, To& result) throw() {
+inline static bool ObjectToPOD(IUnknown* obj, To& result) noexcept {
   if (mew::string str = mew::cast(obj)) {
     StringToPOD(str.str(), result);
     return true;
@@ -352,7 +352,7 @@ void variant::FromPOD(TypeCode code, const void* data, size_t size) {
   }
   m_type = code;
 }
-void variant::FromVariant(const variant& rhs) throw() {
+void variant::FromVariant(const variant& rhs) noexcept {
   switch (rhs.m_type) {
     case TypeUnknown:
       m_type = rhs.m_type;
@@ -364,7 +364,7 @@ void variant::FromVariant(const variant& rhs) throw() {
       break;
   }
 }
-MEW_API void variant::MakeEmpty() throw() {
+MEW_API void variant::MakeEmpty() noexcept {
   switch (m_type) {
     case TypeUnknown:
       if (m_var.unknown) {

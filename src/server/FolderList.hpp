@@ -14,7 +14,7 @@ class __declspec(novtable) FolderListContainer : public TBase {
   mew::ref<mew::ui::IGestureTable> m_gesture;
 
  protected:
-  void Dispose() throw() {
+  void Dispose() noexcept {
     m_gesture.dispose();
     m_keymap.dispose();
   }

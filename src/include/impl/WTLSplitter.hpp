@@ -107,8 +107,8 @@ class __declspec(novtable) CSplitter : public CSplitterBase {
   /// 実際にドラッグ中のウィンドウをリサイズする.
   void OnResizeDragTargets(DragMode mode, mew::ui::CWindowEx wndDrag[2], POINT pt);
 
-  const T& get_final() const throw() { return *static_cast<T*>(this); }
-  T& get_final() throw() { return *static_cast<T*>(this); }
+  const T& get_final() const noexcept { return *static_cast<T*>(this); }
+  T& get_final() noexcept { return *static_cast<T*>(this); }
   __declspec(property(get = get_final)) T final;
 
  public:  // msg map

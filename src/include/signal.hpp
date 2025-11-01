@@ -26,19 +26,19 @@ __interface ISignal : IDisposable {
   HRESULT Connect(EventCode code,  ///< 登録するメッセージコード. サポートしていないメッセージコードの場合は呼び出しが失敗する.
                   function fn,     ///< 登録するシンク. nullの場合は呼び出しが失敗する.
                   message msg = null  ///< 送信されるメッセージ.
-                  ) throw();
+                  ) noexcept;
   /// シンクを登録解除する.
   /// @result 削除されたシンクの個数.
   size_t Disconnect(EventCode code,  ///< 削除するメッセージコード. 0の場合は全てのコードが削除される.
                     function fn,     ///< 削除するシンク. nullの場合は全ての関数が削除される.
                     IUnknown* obj = null  ///< 削除するシンクオブジェクト. fnがnull以外の場合は無視される.
-                    ) throw();
+                    ) noexcept;
 };
 
 /// メッセンジャー.
 __interface IMessenger : ISignal {
   /// メッセージの配信に使用される関数オブジェクトを返す.
-  function Invoke(EventCode code) throw();
+  function Invoke(EventCode code) noexcept;
 };
 
 ///
@@ -74,10 +74,10 @@ class __declspec(novtable) SignalImpl : public TBase {
 #undef MEW_PP_MSGR_FMT
 
  public:
-  HRESULT Connect(EventCode code, function fn, message msg = null) throw() {
+  HRESULT Connect(EventCode code, function fn, message msg = null) noexcept {
     return !m_msgr ? E_UNEXPECTED : m_msgr->Connect(code, fn, msg);
   }
-  size_t Disconnect(EventCode code, function fn, IUnknown* obj = null) throw() {
+  size_t Disconnect(EventCode code, function fn, IUnknown* obj = null) noexcept {
     return !m_msgr ? 0 : m_msgr->Disconnect(code, fn, obj);
   }
 };

@@ -63,14 +63,14 @@ struct StringAndLength {
   StringAndLength(PCWSTR s, size_t c) : str(s), cch(c) {}
 };
 
-inline static bool operator<(const Name2Type& lhs, const StringAndLength& rhs) throw() {
+inline static bool operator<(const Name2Type& lhs, const StringAndLength& rhs) noexcept {
   return wcsncmp(lhs.Guid, rhs.str, rhs.cch) < 0;
 }
-inline static bool operator==(const Name2Type& lhs, const StringAndLength& rhs) throw() {
+inline static bool operator==(const Name2Type& lhs, const StringAndLength& rhs) noexcept {
   return wcsncmp(lhs.Guid, rhs.str, rhs.cch) == 0;
 }
 
-static mew::TypeCode NameToType(PCWSTR name, size_t cch) throw() {
+static mew::TypeCode NameToType(PCWSTR name, size_t cch) noexcept {
 #ifdef _DEBUG
   static bool checked = false;
   if (!checked) {
@@ -88,7 +88,7 @@ static mew::TypeCode NameToType(PCWSTR name, size_t cch) throw() {
     return found->Type;
 }
 
-inline static bool equals(PCWSTR lhs, size_t cch, PCWSTR rhs) throw() { return mew::str::compare(lhs, rhs, cch) == 0; }
+inline static bool equals(PCWSTR lhs, size_t cch, PCWSTR rhs) noexcept { return mew::str::compare(lhs, rhs, cch) == 0; }
 
 class XMLMessageLoader : public mew::xml::XMLHandlerImpl {
  private:

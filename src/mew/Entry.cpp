@@ -306,7 +306,7 @@ class Entry : public Root<implements<IEntry, ISerializable> > {
     }
     return entry;
   }
-  void Dispose() throw() {
+  void Dispose() noexcept {
     if (m_pidl) {
       // TRACE(_T("info: Remove Entry( $1 )"), this->Name);
       RemoveFromPool(m_pidl);
@@ -398,11 +398,11 @@ class Entry : public Root<implements<IEntry, ISerializable> > {
   }
 
  public:  // ISerializable
-  REFCLSID get_Class() throw() { return __uuidof(this); }
+  REFCLSID get_Class() noexcept { return __uuidof(this); }
   void Serialize(IStream& stream) { ILSaveToStream(&stream, get_ID()); }
 
  public:  // IEntry
-  LPCITEMIDLIST get_ID() throw() { return m_pidl; }
+  LPCITEMIDLIST get_ID() noexcept { return m_pidl; }
   int get_Image() {
     if (m_image == NOIMAGE) {
       UpdateFileInfo();
@@ -595,13 +595,13 @@ class EntryAlias : public Root<implements<IEntry, ISerializable> > {
 
  public:
   EntryAlias(LPITEMIDLIST pidl, const string& name) : m_AliasName(name) { m_pInner.attach(Entry::NewEntry(pidl)); }
-  void Dispose() throw() {
+  void Dispose() noexcept {
     m_pInner.clear();
     m_AliasName.clear();
   }
 
  public:  // ISerializable
-  REFCLSID get_Class() throw() { return m_pInner->get_Class(); }
+  REFCLSID get_Class() noexcept { return m_pInner->get_Class(); }
   void Serialize(IStream& stream) { m_pInner->Serialize(stream); }
 
  public:  // IEntry
@@ -687,7 +687,7 @@ class EntryList : public Root<implements<IEntryList> > {
       throw mew::exceptions::ArgumentError(_T("invalid constructor args for EntryList"));
     }
   }
-  void Dispose() throw() {
+  void Dispose() noexcept {
     if (m_hGlobal) {
       ::GlobalUnlock(m_hGlobal);
       // ::GlobalFree(m_hGlobal); // XXX: 解放っていらないの？

@@ -13,13 +13,13 @@ class GdiInit {
 
  public:
   // コンストラクタ.
-  GdiInit() throw() { Gdiplus::GdiplusStartup(&m_Token, &m_StartupInput, null); }
-  ~GdiInit() throw() { Gdiplus::GdiplusShutdown(m_Token); }
+  GdiInit() noexcept { Gdiplus::GdiplusStartup(&m_Token, &m_StartupInput, null); }
+  ~GdiInit() noexcept { Gdiplus::GdiplusShutdown(m_Token); }
 };
 
 #endif
 
-inline void InitModule() throw() {
+inline void InitModule() noexcept {
 #ifdef _DEBUG
   _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF);
 #endif

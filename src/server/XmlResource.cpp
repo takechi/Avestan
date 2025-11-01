@@ -317,7 +317,7 @@ class LinkMenuItem : public mew::Root<mew::implements<mew::ui::ITreeItem, mew::u
     ASSERT(folder);
     m_TimeStamp = 0;
   }
-  void Dispose() throw() {
+  void Dispose() noexcept {
     m_Text.clear();
     m_pFolder.clear();
     m_Children.clear();
