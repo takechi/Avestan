@@ -71,18 +71,6 @@ class array_map : private std::vector<std::pair<K, V>, A>, private detail::Assoc
   using reverse_iterator = typename Base::reverse_iterator;
   using const_reverse_iterator = typename Base::const_reverse_iterator;
 
-  class value_compare : public std::binary_function<value_type, value_type, bool>, private key_compare {
-    friend class array_map;
-
-   protected:
-    value_compare(key_compare pred) : key_compare(pred) {}
-
-   public:
-    bool operator()(const value_type& lhs, const value_type& rhs) const {
-      return key_compare::operator()(lhs.first, rhs.first);
-    }
-  };
-
   // 23.3.1.1 construct/copy/destroy
 
   explicit array_map(const key_compare& comp = key_compare(), const A& alloc = A()) : Base(alloc), MyCompare(comp) {}
@@ -168,11 +156,6 @@ class array_map : private std::vector<std::pair<K, V>, A>, private detail::Assoc
 
   // observers:
   key_compare key_comp() const { return *this; }
-
-  value_compare value_comp() const {
-    const key_compare& comp = *this;
-    return value_compare(comp);
-  }
 
   // 23.3.1.3 map operations:
   template <typename KEY>

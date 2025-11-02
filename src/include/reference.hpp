@@ -452,7 +452,7 @@ class array {
     m_items.erase(i);
   }
   bool erase(pointer_in p) noexcept {
-    sequence::iterator i = std::find_if(m_items.begin(), m_items.end(), std::bind1st(std::ptr_fun(&objcmp), p));
+    auto i = std::find_if(m_items.begin(), m_items.end(), [&p](pointer_in item) { return objcmp(item, p); });
     if (i == m_items.end()) return false;
     erase(i);
     return true;

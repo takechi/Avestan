@@ -92,7 +92,7 @@ class WallPaperDialog : public Root<implements<IWallPaperDialog> >, public CDial
   LRESULT OnInitDialog(UINT, WPARAM, LPARAM, BOOL& bHandled) {
     bHandled = false;
     CenterWindow();
-    algorithm::for_all(m_targets, algorithm::mem_fun(this, &WallPaperDialog::AddToCombo));
+    algorithm::for_all(m_targets, [this](const Target& target) { AddToCombo(target); });
     m_LastSel = 0;
     SendDlgItemMessage(IDC_WALL_TARGET, CB_SETCURSEL, 0, 0);
     UpdateControls();

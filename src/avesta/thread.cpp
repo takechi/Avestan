@@ -206,7 +206,7 @@ HANDLE Thread::New(Routine fn, void* args) {
   }
 }
 
-int Thread::Loop(HWND hwnd) { return std::auto_ptr<MessageHook>(new MessageHook())->Loop(hwnd); }
+int Thread::Loop(HWND hwnd) { return std::unique_ptr<MessageHook>(new MessageHook())->Loop(hwnd); }
 
 int Thread::Run(Routine fn, void* args) {
   ASSERT(!theMainThreadId);

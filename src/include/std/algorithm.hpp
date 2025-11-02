@@ -70,52 +70,6 @@ struct operator_delete {
   }
 };
 
-/// _1->method()
-template <class T, class Result>
-std::mem_fun_t<Result, T> mem_fun(Result (T::*m)()) {
-  return std::mem_fun(m);
-}
-
-template <class P, class M, class R, class A>
-class ptr_method_1_t {
-  P p;
-  M m;
-
- public:
-  ptr_method_1_t(P pp, M mm) : p(pp), m(mm) {}
-  R operator()(A a) const { return (p->*m)(a); }
-};
-
-/// obj->method(_1)
-template <class Obj, class T, class Result, class Arg>
-ptr_method_1_t<Obj, Result (T::*)(Arg), Result, Arg> mem_fun(Obj obj, Result (T::*m)(Arg)) {
-  return ptr_method_1_t<Obj, Result (T::*)(Arg), Result, Arg>(obj, m);
-}
-/*  template < class Obj, class T, class Result, class Arg >
-                std::binder1st< std::mem_fun1_t<Result, T, Arg> >
-                mem_fun(Obj obj, Result (T::*m)(Arg))
-                {
-                        return std::bind1st(std::mem_fun1(m), obj);
-                }
-*/
-/// _1->method(obj)
-template <class T, class Result, class Arg, class Obj>
-std::binder2nd<std::mem_fun1_t<Result, T, Arg> > mem_fun(Result (T::*m)(Arg), Obj obj) {
-  return std::bind2nd(std::mem_fun1(m), obj);
-}
-
-/// obj->method(_1)
-template <class Obj, class T, class Result, class Arg>
-std::binder1st<std::mem_fun1_ref_t<Result, T, Arg> > mem_fun_ref(Obj obj, Result (T::*m)(Arg)) {
-  return std::bind1st(std::mem_fun1_ref(m), obj);
-}
-
-/// _1->method(obj)
-template <class T, class Result, class Arg, class Obj>
-std::binder2nd<std::mem_fun1_ref_t<Result, T, Arg> > mem_fun_ref(Result (T::*m)(Arg), Obj obj) {
-  return std::bind2nd(std::mem_fun1_ref(m), obj);
-}
-
 template <class First>
 class first_equals_t {
  private:

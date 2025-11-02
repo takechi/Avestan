@@ -1,15 +1,25 @@
 ﻿// registrar.cpp
 
+#include <unordered_map>
+
 #include "stdafx.h"
 #include "private.h"
-#include "std/hash_map.hpp"
 
 inline bool operator<(REFGUID lhs, REFGUID rhs) { return memcmp(&lhs, &rhs, sizeof(GUID)) < 0; }
 
 //==============================================================================
 
 namespace {
-using Registrar = stdext::hash_map<CLSID, mew::FactoryProc>;
+
+struct CLSIDHash {
+  size_t operator()(const CLSID& clsid) const {
+    const auto* var = reinterpret_cast<const size_t*>(&clsid);
+    STATIC_ASSERT(sizeof(CLSID) == sizeof(size_t) * 2);
+    return var[0] ^ var[1];
+  };
+};
+
+using Registrar = std::unordered_map<CLSID, mew::FactoryProc, CLSIDHash>;
 // 他のグローバル変数の初期化ルーチンから呼ばれるても良いように、
 // 関数ないスタティックにして構築順序を制御する必要がある。
 Registrar& GetRegistrar() {
@@ -27,8 +37,8 @@ MEW_API void CreateInstance(REFCLSID clsid, REFINTF ppInterface, IUnknown* arg) 
     i->second(ppInterface, arg);
     ASSERT(*ppInterface.pp);
     return;
-  } else if (SUCCEEDED(
-                 hr = ::CoCreateInstance(clsid, null, CLSCTX_ALL, ppInterface.iid, ppInterface.pp))) {  // COMクラスの作成に成功
+  } else if (SUCCEEDED(hr = ::CoCreateInstance(clsid, null, CLSCTX_ALL, ppInterface.iid,
+                                               ppInterface.pp))) {  // COMクラスの作成に成功
     TRACE(L"info: CoCreateInstance($1)", clsid);
     ASSERT(*ppInterface.pp);
     return;
