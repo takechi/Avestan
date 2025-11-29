@@ -1,7 +1,7 @@
 # Avestan
 a fork of Avesta ([http://lamoo.s53.xrea.com/](http://lamoo.s53.xrea.com/))
 
-タブ型ファイラ Avesta 0.3.1.9 (avesta-0.3.1.9src.zip) を Visual Studio Community 2022 で
+タブ型ファイラ Avesta 0.3.1.9 (avesta-0.3.1.9src.zip) を Visual Studio Community 2026 で
 ビルドできるようにしたもの。
 
 ## 実行ファイルのダウンロード
@@ -11,15 +11,15 @@ a fork of Avesta ([http://lamoo.s53.xrea.com/](http://lamoo.s53.xrea.com/))
 ## ソースからビルド
 ### 必要なもの
 * cmake
-* Visual Studio Community 2022
+* Visual Studio Community 2026
 * MSXML 6.0
 
 ### ビルド方法
 * my_cmake.bat を実行。
-* build/Avestan.sln を開いて F5 でビルドできるはず。
+* build/Avestan.slnx を開いて F5 でビルドできるはず。
 
 ### スクリプト拡張
-python によるスクリプト拡張を利用する場合は、Python 3.9 のインストールが必要。
+python によるスクリプト拡張を利用する場合は、Python 3.11 のインストールが必要。
 
 ## ライセンス
 * [Avesta License : version 1.0](https://github.com/takechi/Avestan/blob/master/licence.txt)
