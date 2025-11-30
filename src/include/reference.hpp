@@ -470,13 +470,13 @@ class array {
  public:  // algorithm extension
   template <class Op>
   void foreach (Op op, bool acceptNull = false) {
-    for (sequence::iterator i = m_items.begin(); i != m_items.end(); ++i) {
+    for (auto i = m_items.begin(); i != m_items.end(); ++i) {
       if (acceptNull || *i) op(*i);
     }
   }
   template <class T, class M>
   void foreach (T* p, M m, bool acceptNull = false) {
-    for (sequence::iterator i = m_items.begin(); i != m_items.end(); ++i) {
+    for (auto i = m_items.begin(); i != m_items.end(); ++i) {
       if (acceptNull || *i) (p->*m)(*i);
     }
   }
@@ -505,7 +505,7 @@ class Enumerator : public array<T, TSequence, TAlloc>, public EnumUnknownBase<ty
   using enum_type = EnumUnknownBase<typename array<T, TSequence, TAlloc>::sequence>;
 
  public:
-  Enumerator() : enum_type(m_items, 0) {}
+  Enumerator() : enum_type(this->m_items, 0) {}
   HRESULT __stdcall Clone(IEnumUnknown** ppEnum) { return enumerate(this).copyto(ppEnum); }
 };
 }  // namespace mew
