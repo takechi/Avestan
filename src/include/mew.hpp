@@ -151,6 +151,12 @@ inline bitof_t<T> bitof(T& value, M mask) noexcept {
   return bitof_t<T>(value, static_cast<T>(mask));
 }
 
+namespace io {
+/// 前方宣言
+void StreamWriteExact(IStream* stream, const void* buffer, size_t size);
+void StreamReadExact(IStream* stream, void* buffer, size_t size);
+}
+
 /// POD(Plain Old Data) であることを示すタグ.
 /// PODであることを示すには、これを継承するか、IsPODを特殊化する.
 template <class T>
@@ -214,7 +220,7 @@ struct IndexOr {
 
 /// 4つの文字で表された識別子.
 struct FourCC : POD<FourCC> {
-  UINT32 Value;
+  UINT32 Value = 0;
   FourCC() noexcept {}
   FourCC(INT32 x) noexcept : Value((UINT32)x) {}
   operator UINT32() const noexcept { return Value; }

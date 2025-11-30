@@ -76,7 +76,7 @@ class ref_base {
    private:
     ULONG __stdcall AddRef() noexcept = 0;
     ULONG __stdcall Release() noexcept = 0;
-    ~thunk();  // operator delete is forbidden.
+    ~thunk() = default;  // operator delete is forbidden.
   };
 #pragma warning(default : 4510)
 #pragma warning(default : 4610)
@@ -91,7 +91,7 @@ class ref_base {
   T* m_ptr;
 
  private:
-  void operator[](size_t) const;  // 配列に対するスマートポインタは有り得ない.
+  void operator[](size_t) const {};  // 配列に対するスマートポインタは有り得ない.
  public:
   ref_base() noexcept : m_ptr(null) {}
   ref_base(const ref_base& p) noexcept : m_ptr(p.m_ptr) {

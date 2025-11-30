@@ -5,6 +5,7 @@
 
 #include <shlwapi.h>
 
+#include "reference.hpp"
 #include "string.hpp"
 
 namespace mew {
@@ -32,9 +33,9 @@ class ref<IStream> : public ref_base<IStream> {
   using super = ref_base<IStream>;
 
  public:
-  Stream() noexcept {}
-  Stream(IStream* p) noexcept : super(p) {}
-  Stream(const Stream& p) noexcept : super(p) {}
+  ref() noexcept {}
+  ref(IStream* p) noexcept : super(p) {}
+  ref(const Stream& p) noexcept : super(p) {}
   explicit ref(REFCLSID clsid, IUnknown* arg = null) throw(...) { create(clsid, arg); }
   Stream& operator=(const Stream& s) noexcept {
     super::operator=(s);
