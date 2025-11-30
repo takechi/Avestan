@@ -80,17 +80,17 @@ class ref<IString> : public ref_base<IString> {
   static const size_type npos = (size_type)-1;
 
  public:
-  string() noexcept {}
-  string(const Null&) noexcept {}
-  string(IString* p) noexcept : super(p) {}
-  string(const string& p) noexcept : super(p) {}
-  string(PCWSTR format, size_t length = npos, size_t argc = 0, PCWSTR argv[] = 0) noexcept {
+  ref<IString>() noexcept {}
+  ref<IString>(const Null&) noexcept {}
+  ref<IString>(IString* p) noexcept : super(p) {}
+  ref<IString>(const string& p) noexcept : super(p) {}
+  ref<IString>(PCWSTR format, size_t length = npos, size_t argc = 0, PCWSTR argv[] = 0) noexcept {
     CreateString(&m_ptr, format, length, argc, argv);
   }
-  string(PCWSTR beg, PCWSTR end, size_t argc = 0, PCWSTR argv[] = 0) noexcept {
+  ref<IString>(PCWSTR beg, PCWSTR end, size_t argc = 0, PCWSTR argv[] = 0) noexcept {
     CreateString(&m_ptr, beg, end - beg, argc, argv);
   }
-  explicit string(UINT nID, HMODULE hModule = ::GetModuleHandle(0), size_t argc = 0, PCWSTR argv[] = 0) noexcept {
+  explicit ref<IString>(UINT nID, HMODULE hModule = ::GetModuleHandle(0), size_t argc = 0, PCWSTR argv[] = 0) noexcept {
     CreateString(&m_ptr, nID, hModule, argc, argv);
   }
   string& operator=(const string& s) noexcept {

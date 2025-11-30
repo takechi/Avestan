@@ -176,11 +176,11 @@ class RenameDlg : public avesta::Dialog {
     column.cx = (rcListView.right - ::GetSystemMetrics(SM_CXVSCROLL)) / 2;
     column.iSubItem = 0;
     column.iOrder = 0;
-    column.pszText = _T("変更前");
+    column.pszText = (LPWSTR)_T("変更前");
     ListView_InsertColumn(hListView, 0, &column);
     column.iSubItem = 1;
     column.iOrder = 1;
-    column.pszText = _T("変更後");
+    column.pszText = (LPWSTR)_T("変更後");
     ListView_InsertColumn(hListView, 0, &column);
 
     size_t count = m_src.size();

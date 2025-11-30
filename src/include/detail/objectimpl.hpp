@@ -100,7 +100,7 @@ class Object2<meta::Void, TSupports, TMixin> {
     }
     HRESULT __stdcall QueryInterface(REFINTF pp) noexcept { return QueryInterface(pp.iid, pp.pp); }
 
-    DEBUG_ONLY(~Result() { mew::UnregisterInstance(OID); })
+    DEBUG_ONLY(~Result() { mew::UnregisterInstance(mixin::OID); })
   };
 };
 

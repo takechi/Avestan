@@ -29,8 +29,8 @@ __interface ISignal : IDisposable {
                   ) noexcept;
   /// シンクを登録解除する.
   /// @result 削除されたシンクの個数.
-  size_t Disconnect(EventCode code,  ///< 削除するメッセージコード. 0の場合は全てのコードが削除される.
-                    function fn,     ///< 削除するシンク. nullの場合は全ての関数が削除される.
+  size_t Disconnect(EventCode code,       ///< 削除するメッセージコード. 0の場合は全てのコードが削除される.
+                    function fn,          ///< 削除するシンク. nullの場合は全ての関数が削除される.
                     IUnknown* obj = null  ///< 削除するシンクオブジェクト. fnがnull以外の場合は無視される.
                     ) noexcept;
 };
@@ -69,7 +69,105 @@ class __declspec(novtable) SignalImpl : public TBase {
     return msg;                                 \
   }
 
-  PP_REPEAT(10, MEW_PP_MSGR_FMT)
+  // PP_REPEAT(10, MEW_PP_MSGR_FMT)
+
+  template <int code, typename TArg0>
+  message InvokeEvent(const TArg0& arg0) const {
+    if (!m_msgr) return null;
+    function fn = m_msgr->Invoke(code);
+    if (!fn) return null;
+    message msg;
+    Event<code>::event(msg, arg0);
+    fn(msg);
+    return msg;
+  }
+  template <int code, typename TArg0, typename TArg1>
+  message InvokeEvent(const TArg0& arg0, const TArg1& arg1) const {
+    if (!m_msgr) return null;
+    function fn = m_msgr->Invoke(code);
+    if (!fn) return null;
+    message msg;
+    Event<code>::event(msg, arg0, arg1);
+    fn(msg);
+    return msg;
+  }
+  template <int code, typename TArg0, typename TArg1, typename TArg2>
+  message InvokeEvent(const TArg0& arg0, const TArg1& arg1, const TArg2& arg2) const {
+    if (!m_msgr) return null;
+    function fn = m_msgr->Invoke(code);
+    if (!fn) return null;
+    message msg;
+    Event<code>::event(msg, arg0, arg1, arg2);
+    fn(msg);
+    return msg;
+  }
+  template <int code, typename TArg0, typename TArg1, typename TArg2, typename TArg3>
+  message InvokeEvent(const TArg0& arg0, const TArg1& arg1, const TArg2& arg2, const TArg3& arg3) const {
+    if (!m_msgr) return null;
+    function fn = m_msgr->Invoke(code);
+    if (!fn) return null;
+    message msg;
+    Event<code>::event(msg, arg0, arg1, arg2, arg3);
+    fn(msg);
+    return msg;
+  }
+  template <int code, typename TArg0, typename TArg1, typename TArg2, typename TArg3, typename TArg4>
+  message InvokeEvent(const TArg0& arg0, const TArg1& arg1, const TArg2& arg2, const TArg3& arg3, const TArg4& arg4) const {
+    if (!m_msgr) return null;
+    function fn = m_msgr->Invoke(code);
+    if (!fn) return null;
+    message msg;
+    Event<code>::event(msg, arg0, arg1, arg2, arg3, arg4);
+    fn(msg);
+    return msg;
+  }
+  template <int code, typename TArg0, typename TArg1, typename TArg2, typename TArg3, typename TArg4, typename TArg5>
+  message InvokeEvent(const TArg0& arg0, const TArg1& arg1, const TArg2& arg2, const TArg3& arg3, const TArg4& arg4,
+                      const TArg5& arg5) const {
+    if (!m_msgr) return null;
+    function fn = m_msgr->Invoke(code);
+    if (!fn) return null;
+    message msg;
+    Event<code>::event(msg, arg0, arg1, arg2, arg3, arg4, arg5);
+    fn(msg);
+    return msg;
+  }
+  template <int code, typename TArg0, typename TArg1, typename TArg2, typename TArg3, typename TArg4, typename TArg5,
+            typename TArg6>
+  message InvokeEvent(const TArg0& arg0, const TArg1& arg1, const TArg2& arg2, const TArg3& arg3, const TArg4& arg4,
+                      const TArg5& arg5, const TArg6& arg6) const {
+    if (!m_msgr) return null;
+    function fn = m_msgr->Invoke(code);
+    if (!fn) return null;
+    message msg;
+    Event<code>::event(msg, arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+    fn(msg);
+    return msg;
+  }
+  template <int code, typename TArg0, typename TArg1, typename TArg2, typename TArg3, typename TArg4, typename TArg5,
+            typename TArg6, typename TArg7>
+  message InvokeEvent(const TArg0& arg0, const TArg1& arg1, const TArg2& arg2, const TArg3& arg3, const TArg4& arg4,
+                      const TArg5& arg5, const TArg6& arg6, const TArg7& arg7) const {
+    if (!m_msgr) return null;
+    function fn = m_msgr->Invoke(code);
+    if (!fn) return null;
+    message msg;
+    Event<code>::event(msg, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+    fn(msg);
+    return msg;
+  }
+  template <int code, typename TArg0, typename TArg1, typename TArg2, typename TArg3, typename TArg4, typename TArg5,
+            typename TArg6, typename TArg7, typename TArg8>
+  message InvokeEvent(const TArg0& arg0, const TArg1& arg1, const TArg2& arg2, const TArg3& arg3, const TArg4& arg4,
+                      const TArg5& arg5, const TArg6& arg6, const TArg7& arg7, const TArg8& arg8) const {
+    if (!m_msgr) return null;
+    function fn = m_msgr->Invoke(code);
+    if (!fn) return null;
+    message msg;
+    Event<code>::event(msg, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
+    fn(msg);
+    return msg;
+  }
 
 #undef MEW_PP_MSGR_FMT
 
