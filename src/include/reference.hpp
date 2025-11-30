@@ -462,11 +462,6 @@ class array {
     erase(i);
     return true;
   }
-  bool erase(size_t index) noexcept {
-    if ((size_type)index >= m_items.size()) return false;
-    if (!p || objcmp(m_items[index], p)) erase(m_items.begin() + index);
-    return true;
-  }
   iterator begin() noexcept { return m_items.begin(); }
   iterator end() noexcept { return m_items.end(); }
   const_iterator begin() const noexcept { return m_items.begin(); }
