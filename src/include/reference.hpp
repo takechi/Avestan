@@ -5,6 +5,7 @@
 #include "mew.hpp"
 #include "std/algorithm.hpp"
 #include "std/vector.hpp"
+#include "math.hpp"
 
 namespace mew {
 //==============================================================================
@@ -178,13 +179,14 @@ class ref : public ref_base<T> {
   using super = ref_base<T>;
 
  public:
+  using pointer_in = super::pointer_in;
   ref() noexcept {}
   ref(const Null&) noexcept {}
   ref(const ref& p) noexcept : super(p) {}
   ref(pointer_in p) noexcept : super(p) {}
   template <class U>
   ref(const ref_base<U>& p) noexcept : super(p) {}
-  explicit ref(REFCLSID clsid, IUnknown* arg = null) throw(...) { create(clsid, arg); }
+  explicit ref(REFCLSID clsid, IUnknown* arg = null) throw(...) { super::create(clsid, arg); }
   ref& operator=(const ref& p) noexcept {
     super::operator=(p);
     return *this;
@@ -194,7 +196,7 @@ class ref : public ref_base<T> {
     return *this;
   }
   ref& operator=(const Null&) noexcept {
-    clear();
+    super::clear();
     return *this;
   }
   template <class U>
@@ -266,9 +268,9 @@ class each : public ref<T> {
   }
   bool next() {
     if (!m_enum) return false;
-    clear();
+    super::clear();
     ref<IUnknown> unk;
-    if (m_enum->Next(1, &unk, null) == S_OK && SUCCEEDED(unk->QueryInterface(&m_ptr))) return true;
+    if (m_enum->Next(1, &unk, null) == S_OK && SUCCEEDED(unk->QueryInterface(&(super::m_ptr)))) return true;
     m_enum.clear();
     return false;
   }
@@ -288,7 +290,7 @@ class EnumUnknownBase : public IEnumUnknown {
 
  private:  // non-copyable
   EnumUnknownBase(const EnumUnknownBase&);
-  EnumUnknownBase& operator=(const EnumUnknownBase&);
+  EnumUnknownBase& operator=(const EnumUnknownBase&) {};
 
  protected:
   EnumUnknownBase(const sequence& seq, size_t iter = 0) : m_range(seq), m_iter(iter), m_refcount(1) {
@@ -361,6 +363,9 @@ class EnumUnknown : public EnumUnknownBase<TSequence> {
  protected:
   ref<IUnknown> m_owner;
 
+ public:
+  using sequence = super::sequence;
+
  private:
   EnumUnknown(IUnknown* owner, const sequence& seq, size_t iter = 0) : m_owner(owner), super(seq, iter) {}
 
@@ -370,7 +375,7 @@ class EnumUnknown : public EnumUnknownBase<TSequence> {
   }
   HRESULT __stdcall Clone(IEnumUnknown** ppEnum) {
     if (!ppEnum) return E_POINTER;
-    EnumUnknown* clone = new EnumUnknown(m_owner, m_range, m_iter);
+    EnumUnknown* clone = new EnumUnknown(m_owner, super::m_range, super::m_iter);
     *ppEnum = clone;
     return S_OK;
   }
@@ -419,12 +424,12 @@ class array {
  public:  // vector compatible
   void insert(pointer_in p, size_t index) noexcept {
     if (p) p->AddRef();
-    sequence::iterator i = m_items.begin();
+    auto i = m_items.begin();
     std::advance(i, math::min<size_type>(index, m_items.size()));
     m_items.insert(i, p);
   }
   void clear() noexcept {
-    for (sequence::iterator i = m_items.begin(); i != m_items.end(); ++i) {
+    for (auto i = m_items.begin(); i != m_items.end(); ++i) {
       if (*i) (*i)->Release();
     }
     m_items.clear();

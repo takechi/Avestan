@@ -2,6 +2,7 @@
 #pragma once
 
 #include "mew.hpp"
+#include "reference.hpp"
 
 namespace mew {
 template <bool IsArrayOfPOD = false>
