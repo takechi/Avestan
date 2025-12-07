@@ -81,6 +81,12 @@ class DCT : public CDCT<t_bManaged> {
   using super = CDCT<t_bManaged>;
 
  public:
+  using super::LineTo;
+  using super::MoveTo;
+  using super::Rectangle;
+  using super::SelectBrush;
+  using super::SelectFont;
+  using super::SelectPen;
   DCT() : super() {}
   DCT(HDC hDC) : super(hDC) {}
   void DrawLine(int x1, int y1, int x2, int y2) noexcept {
@@ -110,7 +116,7 @@ class DCT : public CDCT<t_bManaged> {
   SIZE GetTextExtent(HFONT font, PCWSTR text) {
     SIZE sz;
     CFontHandle fontDefault = SelectFont(font);
-    ::GetTextExtentPoint32(m_hDC, text, lstrlen(text), &sz);
+    ::GetTextExtentPoint32(super::m_hDC, text, lstrlen(text), &sz);
     SelectFont(fontDefault);
     return sz;
   }

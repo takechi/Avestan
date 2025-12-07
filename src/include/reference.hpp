@@ -506,6 +506,6 @@ class Enumerator : public array<T, TSequence, TAlloc>, public EnumUnknownBase<ty
 
  public:
   Enumerator() : enum_type(this->m_items, 0) {}
-  HRESULT __stdcall Clone(IEnumUnknown** ppEnum) { return enumerate(this).copyto(ppEnum); }
+  HRESULT __stdcall Clone(IEnumUnknown** ppEnum) { return this->enumerate(this).copyto(ppEnum); }
 };
 }  // namespace mew

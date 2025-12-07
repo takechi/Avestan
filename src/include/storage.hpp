@@ -102,7 +102,7 @@ class StorageT {
       if (mapped->locks != 0) return STG_E_SHAREVIOLATION;
       mapped->locks = UINT_MAX;
     } else {
-      Map::iterator iter = m_map.find(key);
+      auto iter = m_map.find(key);
       if (iter == m_map.end()) return STG_E_FILENOTFOUND;
       mapped = &iter->second;
       if (mapped->locks == UINT_MAX) return STG_E_SHAREVIOLATION;
@@ -124,7 +124,7 @@ class StorageT {
   void Dispose() noexcept { m_map.clear(); }
   template <typename Pred>
   void DeleteIf(Pred pred) {
-    for (Map::iterator i = m_map.begin(); i != m_map.end();) {
+    for (auto i = m_map.begin(); i != m_map.end();) {
       if (i->second.locks == 0 && pred(i->first, i->second.value))
         i = m_map.erase(i);
       else

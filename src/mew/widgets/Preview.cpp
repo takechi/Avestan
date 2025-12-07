@@ -411,13 +411,13 @@ class Preview : public WindowImpl<CWindowImplEx<Preview, PreviewBase>, implement
 
   LRESULT OnUpdateUIState(UINT, WPARAM, LPARAM, BOOL&) {
     if (IsWindowVisible()) {
-      CWindowEx owner = GetWindow(GW_OWNER);
+      CWindowEx owner = (HWND)GetWindow(GW_OWNER);
       if (owner.IsIconic() || !owner.IsWindowVisible()) {
         m_HideOnOwnerMinimize = true;
         ShowWindow(SW_HIDE);
       }
     } else if (m_HideOnOwnerMinimize) {
-      CWindowEx owner = GetWindow(GW_OWNER);
+      CWindowEx owner = (HWND)GetWindow(GW_OWNER);
       if (!owner.IsIconic() && owner.IsWindowVisible()) {
         m_HideOnOwnerMinimize = false;
         ShowWindow(SW_SHOW);

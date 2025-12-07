@@ -84,7 +84,7 @@ class ShellListView
       return true;  // on item => no gesture
     }
     if (gesture[0] == GestureButtonLeft) {
-      HeaderCtrl header = list.GetHeader();
+      HeaderCtrl header = (HWND)list.GetHeader();
       if (header && header.IsWindowVisible()) {
         if (afx::GetClientArea(header).contains(hit.pt.x, hit.pt.y)) {
           return true;  // on header
@@ -312,7 +312,7 @@ class ShellListView
         case CommandFocusHeader:
           if (WTL::CHeaderCtrl header = this->ListView.GetHeader()) {
             if (header.IsWindowVisible()) {
-              WTL::CListViewCtrl list = this->ListView;
+              WTL::CListViewCtrl list = (HWND)this->ListView;
               ref<IExpose> expose(__uuidof(Expose));
               expose->SetTitle(_T("ソート項目の選択"));
               HWND hwndRoot = ::GetAncestor(m_hWnd, GA_ROOT);

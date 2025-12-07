@@ -240,7 +240,7 @@ void ShellMenuBase::AddSubMenu() {
     CWaitCursor wait;
     mew::ref<mew::io::IEntry> entry;
     e->GetLinked(&entry);
-    for (mew::each<mew::io::IEntry> i = entry->EnumChildren(GetRoot()->IncludeFiles); i.next();) {
+    for (mew::each<mew::io::IEntry> i = entry->EnumChildren(GetRoot()->IncludeFiles).get(); i.next();) {
       SubMenu* sub = new SubMenu(i, GetRoot(), m_Level + 1);
       m_Children.push_back(sub);
       sub->Release();

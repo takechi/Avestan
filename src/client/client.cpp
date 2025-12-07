@@ -143,7 +143,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, PWSTR args, int sw) {
     return PassArgs(hwnd, args);
   }
   while (RunAvesta(args, sw) > 0) {
-    args = L"";
+    args = (PWSTR)L"";
   }
   return 0;
 }

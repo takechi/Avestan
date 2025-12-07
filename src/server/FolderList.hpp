@@ -22,7 +22,7 @@ class __declspec(novtable) FolderListContainer : public TBase {
  public:
   mew::ref<mew::ui::IShellListView> CurrentView() const {
     mew::ref<mew::ui::IShellListView> focus;
-    if SUCCEEDED (m_tab->GetContents(&focus, mew::FOCUSED)) {
+    if SUCCEEDED (this->m_tab->GetContents(&focus, mew::FOCUSED)) {
       return focus;
     } else {
       return mew::null;
@@ -45,9 +45,9 @@ class __declspec(novtable) FolderListContainer : public TBase {
   }
   int CurrentFolderIndex() const {
     mew::ref<mew::ui::IWindow> focus;
-    m_tab->GetContents(&focus, mew::FOCUSED);
+    this->m_tab->GetContents(&focus, mew::FOCUSED);
     size_t index;
-    if SUCCEEDED (m_tab->GetStatus(focus, mew::null, &index)) {
+    if SUCCEEDED (this->m_tab->GetStatus(focus, mew::null, &index)) {
       return (int)index;
     } else {
       return -1;
@@ -58,14 +58,14 @@ class __declspec(novtable) FolderListContainer : public TBase {
   HRESULT GetComponent(mew::REFINTF pp, avesta::AvestaComponent type, size_t index = (size_t)-1) {
     switch (type) {
       case avesta::AvestaForm:
-        return m_form.copyto(pp);
+        return this->m_form.copyto(pp);
       case avesta::AvestaTab:
-        return m_tab.copyto(pp);
+        return this->m_tab.copyto(pp);
       case avesta::AvestaFolder:
         if (index == (size_t)-1) {
-          return m_tab->GetContents(pp, mew::FOCUSED);
+          return this->m_tab->GetContents(pp, mew::FOCUSED);
         } else {
-          return m_tab ? m_tab->GetAt(pp, index) : E_UNEXPECTED;
+          return this->m_tab ? this->m_tab->GetAt(pp, index) : E_UNEXPECTED;
         }
       default:
         return E_INVALIDARG;
@@ -74,11 +74,11 @@ class __declspec(novtable) FolderListContainer : public TBase {
   size_t GetComponentCount(avesta::AvestaComponent type) {
     switch (type) {
       case avesta::AvestaForm:
-        return m_form ? 1 : 0;
+        return this->m_form ? 1 : 0;
       case avesta::AvestaTab:
-        return m_tab ? 1 : 0;
+        return this->m_tab ? 1 : 0;
       case avesta::AvestaFolder:
-        return m_tab ? m_tab->Count : 0;
+        return this->m_tab ? this->m_tab->Count : 0;
       default:
         ASSERT(0);
         return 0;
@@ -86,7 +86,7 @@ class __declspec(novtable) FolderListContainer : public TBase {
   }
   mew::ref<IEnumUnknown> EnumFolders(mew::Status status) const {
     mew::ref<IEnumUnknown> pEnum;
-    m_tab->GetContents(&pEnum, status);
+    this->m_tab->GetContents(&pEnum, status);
     return pEnum;
   }
 
@@ -118,7 +118,7 @@ class __declspec(novtable) FolderListContainer : public TBase {
   }
   HRESULT EnableIfCheckBoxEnabled(mew::message msg) {
     UINT32 state = 0;
-    if (m_booleans[avesta::BoolCheckBox] && CurrentView()) {
+    if (this->m_booleans[avesta::BoolCheckBox] && CurrentView()) {
       state = mew::ENABLED;
     }
     msg["state"] = state;
@@ -225,7 +225,7 @@ class __declspec(novtable) FolderListContainer : public TBase {
     ASSERT(window);
     switch (msg.code) {
       case mew::ui::CommandClose:
-        if (!avesta::GetOption(avesta::BoolLockClose) && IsLocked(window, m_tab)) {
+        if (!avesta::GetOption(avesta::BoolLockClose) && IsLocked(window, this->m_tab)) {
           return;
         }
         break;
@@ -242,13 +242,13 @@ class __declspec(novtable) FolderListContainer : public TBase {
     }
     switch (boolean) {
       case BoolTrue:
-        m_tab->SetStatus(focus, mew::CHECKED);
+        this->m_tab->SetStatus(focus, mew::CHECKED);
         break;
       case BoolFalse:
-        m_tab->SetStatus(focus, mew::UNCHECKED);
+        this->m_tab->SetStatus(focus, mew::UNCHECKED);
         break;
       case BoolUnknown:
-        m_tab->SetStatus(focus, mew::ToggleCheck);
+        this->m_tab->SetStatus(focus, mew::ToggleCheck);
         break;
       default:
         TRESPASS();
@@ -260,7 +260,7 @@ class __declspec(novtable) FolderListContainer : public TBase {
     INT32 boolean = msg.code;
     if (mew::ref<mew::ui::IWindow> focus = CurrentView()) {
       DWORD status = 0;
-      m_tab->GetStatus(focus, &status);
+      this->m_tab->GetStatus(focus, &status);
       if (status & mew::CHECKED) {  // locked
         switch (boolean) {
           case BoolTrue:
@@ -295,34 +295,34 @@ class __declspec(novtable) FolderListContainer : public TBase {
     return S_OK;
   }
   HRESULT ProcessTabShow(mew::message msg) {
-    if (!m_tab) {
+    if (!this->m_tab) {
       return false;
     }
     UINT index = msg.code;
-    if FAILED (m_tab->SetStatus(index, mew::ToggleSelect)) {
+    if FAILED (this->m_tab->SetStatus(index, mew::ToggleSelect)) {
       theAvesta->Notify(avesta::NotifyWarning, mew::string::load(IDS_ERR_NTH_TAB, index + 1));
     }
     return S_OK;
   }
   HRESULT ObserveTabShow(mew::message msg) {
-    if (!m_tab) {
+    if (!this->m_tab) {
       return false;
     }
     UINT32 state = 0;
     DWORD status = 0;
-    if SUCCEEDED (m_tab->GetStatus((int)msg.code, &status)) {
+    if SUCCEEDED (this->m_tab->GetStatus((int)msg.code, &status)) {
       state = mew::ENABLED | ((status & mew::SELECTED) ? mew::CHECKED : 0);
     }
     msg["state"] = state;
     return S_OK;
   }
   HRESULT ProcessTabFocus(mew::message msg) {
-    if (!m_tab) {
+    if (!this->m_tab) {
       return false;
     }
     UINT index = msg.code;
     mew::ref<mew::ui::IWindow> window;
-    if (SUCCEEDED(m_tab->SetStatus(index, mew::SELECTED)) && SUCCEEDED(m_tab->GetAt(&window, index))) {
+    if (SUCCEEDED(this->m_tab->SetStatus(index, mew::SELECTED)) && SUCCEEDED(this->m_tab->GetAt(&window, index))) {
       window->Focus();
     } else {
       theAvesta->Notify(avesta::NotifyWarning, mew::string::load(IDS_ERR_NTH_TAB, index + 1));
@@ -330,7 +330,7 @@ class __declspec(novtable) FolderListContainer : public TBase {
     return S_OK;
   }
   HRESULT ObserveTabFocus(mew::message msg) {
-    if (!m_tab) {
+    if (!this->m_tab) {
       return false;
     }
     UINT32 state = 0;
@@ -371,7 +371,7 @@ class __declspec(novtable) FolderListContainer : public TBase {
     if FAILED (hr = m_gesture->OnGestureUpdate(modifiers, length, gesture)) {
       return hr;
     }
-    if (length == 0 || !m_status) {
+    if (length == 0 || !this->m_status) {
       return S_OK;
     }
 
@@ -382,17 +382,17 @@ class __declspec(novtable) FolderListContainer : public TBase {
     }
 
     mew::string text;
-    if (m_callback) {
-      text = m_callback->GestureText(gesture, length, description);
+    if (this->m_callback) {
+      text = this->m_callback->GestureText(gesture, length, description);
     }
-    SetStatusText(avesta::NotifyResult, text);
+    this->SetStatusText(avesta::NotifyResult, text);
     return S_OK;
   }
   HRESULT OnGestureFinish(UINT16 modifiers, size_t length, const mew::ui::Gesture gesture[]) {
     if (!m_gesture) {
       return E_FAIL;
     }
-    SetStatusText(avesta::NotifyResult, mew::null);
+    this->SetStatusText(avesta::NotifyResult, mew::null);
     if (mew::ref<mew::ui::IShellListView> current = CurrentView()) {
       SetStatusText(avesta::NotifyInfo, FormatViewStatusText(current, current->GetLastStatusText()));
       return m_gesture->OnGestureFinish(modifiers, length, gesture);

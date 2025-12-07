@@ -50,6 +50,7 @@ class __declspec(novtable) WallPaperImpl : public TBase {
   WallPaperImpl() : m_WallPaperAlign(mew::ui::DirMaskWE | mew::ui::DirMaskNS) {}
 
  public:  // IWallPaper
+  using TBase::Update;
   mew::string get_WallPaperFile() { return m_WallPaperFile; }
   UINT32 get_WallPaperAlign() { return m_WallPaperAlign; }
   void set_WallPaperFile(mew::string value) {
@@ -123,17 +124,17 @@ class __declspec(novtable) WallPaperImpl : public TBase {
         } else {  // tile vert
           dc.FillSolidRect(&rc, clrBkgnd);
           for (int y = rc.top; y < rc.bottom; y += sz.h) {
-            g.DrawImage(m_BackgroundImage, pt.x, y);
+            g.DrawImage(m_BackgroundImage, static_cast<int>(pt.x), y);
           }
         }
       } else if ((m_WallPaperAlign & mew::ui::DirMaskWE) == (mew::ui::DirMaskWE)) {  // tile horz
         dc.FillSolidRect(&rc, clrBkgnd);
         for (int x = rc.left; x < rc.right; x += sz.w) {
-          g.DrawImage(m_BackgroundImage, x, pt.y);
+          g.DrawImage(m_BackgroundImage, x, static_cast<int>(pt.y));
         }
       } else {  // non-tiling
         dc.FillSolidRect(&rc, clrBkgnd);
-        g.DrawImage(m_BackgroundImage, pt.x, pt.y);
+        g.DrawImage(m_BackgroundImage, static_cast<int>(pt.x), static_cast<int>(pt.y));
       }
     } else {
       dc.FillSolidRect(&rc, clrBkgnd);

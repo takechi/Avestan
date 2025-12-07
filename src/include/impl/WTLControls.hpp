@@ -6,14 +6,15 @@
 #endif
 
 #include "widgets.client.hpp"
+#include "drawing.hpp"
 
 namespace WTLEX {
 //==============================================================================
 
 template <class TParam, class TItem>
 struct CTypedItem : TItem {
-  TParam get_Param() { return (TParam)lParam; }
-  void set_Param(TParam p) { lParam = (LPARAM)p; }
+  TParam get_Param() { return (TParam)this->lParam; }
+  void set_Param(TParam p) { this->lParam = (LPARAM)p; }
   __declspec(property(get = get_Param, put = set_Param)) TParam Param;
 
   CTypedItem() {}
@@ -34,7 +35,7 @@ class CTypedList : public TBase {
  public:
   CTypedList() : m_SelectedColumn(-1) {}
   ParamType GetItemData(int nItem) const { return (ParamType) __super::GetItemData(nItem); }
-  INT32 GetColumnCount() const { return GetHeader().GetItemCount(); }
+  INT32 GetColumnCount() const { return this->GetHeader().GetItemCount(); }
   void InsertColumn(int index, PCTSTR text, int width, int align) {
     LVCOLUMN column = {
         LVCF_FMT | LVCF_WIDTH | LVCF_TEXT,
@@ -62,11 +63,11 @@ class CTypedList : public TBase {
   void DeleteAllColumn() {
     int nColumnCount = GetColumnCount();
     for (int i = 0; i < nColumnCount; i++) {
-      DeleteColumn(0);
+      this->DeleteColumn(0);
     }
   }
   void MakeEmpty() {
-    DeleteAllItems();
+    this->DeleteAllItems();
     DeleteAllColumn();
   }
   // SelectedColumn は、XP以上を要求.
@@ -106,18 +107,18 @@ class __declspec(novtable) CTypedListImpl : public mew::ui::CWindowImplEx<TFinal
  public:  // operation
   bool IsSortedAscending() const noexcept { return m_SortedAscending; }
   void SortElements() {
-    SortParam param(final, GetSelectedColumn(), IsSortedAscending());
+    SortParam param(this->final, this->GetSelectedColumn(), IsSortedAscending());
     SortItems((PFNLVCOMPARE)CompareItemThunk, (LPARAM)&param);
   }
   void SortElements(INT32 column, SortFlags flags) {
-    if (column < 0 || column >= GetColumnCount()) {  // 不正なので、デフォルト (0, ascending) に設定する
+    if (column < 0 || column >= this->GetColumnCount()) {  // 不正なので、デフォルト (0, ascending) に設定する
       column = 0;
       if (flags == SortDefault) flags = SortAscending;
     }
     bool ascending;
     switch (flags) {
       case SortDefault:
-        if (GetSelectedColumn() == column) {
+        if (this->GetSelectedColumn() == column) {
           ascending = !m_SortedAscending;
         } else {
           ascending = true;
@@ -133,16 +134,16 @@ class __declspec(novtable) CTypedListImpl : public mew::ui::CWindowImplEx<TFinal
         ASSERT(0);
         ascending = true;
     }
-    SetSelectedColumn(column);
+    this->SetSelectedColumn(column);
     m_SortedAscending = ascending;
-    SortParam param(final, column, ascending);
+    SortParam param(this->final, column, ascending);
     SortItems((PFNLVCOMPARE)CompareItemThunk, (LPARAM)&param);
   }
 
  public:
   BEGIN_MSG_MAP(_)
   // デフォルトハンドラで処理させたいため。フレームワークにまわすとREFLECT_NOTIFICATIONS()してしまう
-  MSG_LAMBDA(WM_NOTIFY, { lResult = DefWindowProc(uMsg, wParam, lParam); })
+  MSG_LAMBDA(WM_NOTIFY, { lResult = this->DefWindowProc(uMsg, wParam, lParam); })
   MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
   MESSAGE_HANDLER(WM_CONTEXTMENU, OnContextMenu)
   // WindowsXPスタイルを使うとUnicode版が呼ばれるぽい
@@ -157,33 +158,33 @@ class __declspec(novtable) CTypedListImpl : public mew::ui::CWindowImplEx<TFinal
   END_MSG_MAP()
 
   LRESULT OnDestroy(UINT, WPARAM, LPARAM, BOOL& bHandled) {
-    MakeEmpty();  // 破棄時には自動的に LVM_DELETEALLITEMS は呼ばれないもよう
+    this->MakeEmpty();  // 破棄時には自動的に LVM_DELETEALLITEMS は呼ばれないもよう
     bHandled = false;
     return 0;
   }
   LRESULT OnContextMenu(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-    Point ptScreen(GET_XY_LPARAM(lParam));
+    mew::Point ptScreen(GET_XY_LPARAM(lParam));
     if (ptScreen.x < 0 || ptScreen.y < 0) {
-      int index = GetNextItem(-1, LVNI_ALL | LVNI_SELECTED);
+      int index = this->GetNextItem(-1, LVNI_ALL | LVNI_SELECTED);
       if (index >= 0) {
         RECT rc;
-        GetItemRect(index, &rc, LVIR_BOUNDS);
+        this->GetItemRect(index, &rc, LVIR_BOUNDS);
         ptScreen.x = rc.left;
         ptScreen.y = rc.bottom;
       } else {
         ptScreen.x = ptScreen.y = 0;
       }
-      ClientToScreen(&ptScreen);
+      this->ClientToScreen(&ptScreen);
     }
-    bHandled = final.OnContextMenu(ptScreen);
+    bHandled = this->final.OnContextMenu(ptScreen);
     return 0;
   }
   LRESULT OnInsertItem(int, LPNMHDR pnmh, BOOL&) {
-    final.OnInsertItem(((NMLISTVIEW*)pnmh)->iItem);
+    this->final.OnInsertItem(((NMLISTVIEW*)pnmh)->iItem);
     return 0;
   }
   LRESULT OnDeleteItem(int, LPNMHDR pnmh, BOOL&) {
-    final.OnDeleteItem(((NMLISTVIEW*)pnmh)->iItem);
+    this->final.OnDeleteItem(((NMLISTVIEW*)pnmh)->iItem);
     return 0;
   }
   struct SortParam {
@@ -199,8 +200,8 @@ class __declspec(novtable) CTypedListImpl : public mew::ui::CWindowImplEx<TFinal
     return 0;
   }
   LRESULT OnExecuteItem(int, LPNMHDR, BOOL&) {
-    if (GetSelectedCount() > 0) {
-      final.OnExecuteItem();
+    if (this->GetSelectedCount() > 0) {
+      this->final.OnExecuteItem();
     }
     return 0;
   }
@@ -208,7 +209,7 @@ class __declspec(novtable) CTypedListImpl : public mew::ui::CWindowImplEx<TFinal
   LRESULT OnGetDispInfo(int, LPNMHDR pnmh, BOOL&) {
     DISPINFO& disp = *(DISPINFO*)pnmh;
     ParamType p = (disp.item.mask & LVIF_PARAM) ? (ParamType)disp.item.lParam : GetItemData(disp.item.iItem);
-    final.OnGetDispInfo(disp.item, p);
+    this->final.OnGetDispInfo(disp.item, p);
     return 0;
   }
 
@@ -250,13 +251,13 @@ class CTypedTree : public TBase {
     if (!hParent) {
       MakeEmpty();
     } else {
-      Expand(hParent, TVE_COLLAPSE | TVE_COLLAPSERESET);
+      this->Expand(hParent, TVE_COLLAPSE | TVE_COLLAPSERESET);
     }
   }
-  void MakeEmpty() { DeleteAllItems(); }
+  void MakeEmpty() { this->DeleteAllItems(); }
   template <class Op>
   bool ForEach(HTREEITEM hParent, Op op) {
-    for (HTREEITEM hChild = GetChildItem(hParent); hChild; hChild = GetNextSiblingItem(hChild)) {
+    for (HTREEITEM hChild = this->GetChildItem(hParent); hChild; hChild = this->GetNextSiblingItem(hChild)) {
       if (!op(hChild)) {
         return false;
       }
@@ -308,7 +309,7 @@ class __declspec(novtable) CTypedTreeImpl : public mew::ui::CWindowImplEx<TFinal
     item.iImage = item.iSelectedImage = I_IMAGECALLBACK;
     HTREEITEM hItem = __super::InsertItem(hParent, item);
     if (hItem) {
-      final.OnInsertItem(hItem, param);
+      this->final.OnInsertItem(hItem, param);
     }
     return hItem;
   }
@@ -317,8 +318,8 @@ class __declspec(novtable) CTypedTreeImpl : public mew::ui::CWindowImplEx<TFinal
     //
     Item item(TVIF_HANDLE | TVIF_PARAM);
     item.hItem = hItem;
-    if (GetItem(&item)) {
-      final.OnResetItem(hItem, item.Param, param);
+    if (this->GetItem(&item)) {
+      this->final.OnResetItem(hItem, item.Param, param);
     }
     item.mask |= TVIF_CHILDREN | TVIF_TEXT | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
     item.Param = param;
@@ -331,7 +332,7 @@ class __declspec(novtable) CTypedTreeImpl : public mew::ui::CWindowImplEx<TFinal
  public:
   BEGIN_MSG_MAP(_)
   // デフォルトハンドラで処理させたいため。フレームワークにまわすとREFLECT_NOTIFICATIONS()してしまう
-  MSG_LAMBDA(WM_NOTIFY, { lResult = DefWindowProc(uMsg, wParam, lParam); })
+  MSG_LAMBDA(WM_NOTIFY, { lResult = this->DefWindowProc(uMsg, wParam, lParam); })
   MSG_HANDLER(WM_LBUTTONDBLCLK, OnLButtonDblClk)
   MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
   MESSAGE_HANDLER(WM_RBUTTONDOWN, OnRButtonDown)
@@ -351,7 +352,7 @@ class __declspec(novtable) CTypedTreeImpl : public mew::ui::CWindowImplEx<TFinal
   END_MSG_MAP()
 
   LRESULT OnDestroy(UINT, WPARAM, LPARAM, BOOL& bHandled) {
-    MakeEmpty();  // 破棄時には自動的に LVM_DELETEALLITEMS は呼ばれないもよう
+    this->MakeEmpty();  // 破棄時には自動的に LVM_DELETEALLITEMS は呼ばれないもよう
     bHandled = false;
     return 0;
   }
@@ -359,29 +360,29 @@ class __declspec(novtable) CTypedTreeImpl : public mew::ui::CWindowImplEx<TFinal
     mew::Point ptScreen(GET_XY_LPARAM(lParam));
     HTREEITEM hItem;
     if (ptScreen.x == -1 || ptScreen.y == -1) {
-      hItem = GetSelectedItem();
+      hItem = this->GetSelectedItem();
       RECT rc;
-      GetItemRect(hItem, &rc, true);
+      this->GetItemRect(hItem, &rc, true);
       mew::Point pt(rc.left, rc.bottom);
-      ClientToScreen(&pt);
+      this->ClientToScreen(&pt);
       ptScreen = pt;
     } else {
       TVHITTESTINFO hit = {ptScreen.x, ptScreen.y};
-      ScreenToClient(&hit.pt);
-      hItem = HitTest(&hit);
+      this->ScreenToClient(&hit.pt);
+      hItem = this->HitTest(&hit);
     }
-    final.OnContextMenu(hItem, ptScreen);
+    this->final.OnContextMenu(hItem, ptScreen);
     return 0;
   }
   bool OnLButtonDblClk(UINT, WPARAM, LPARAM lParam, LRESULT&) {
     TVHITTESTINFO hit = {GET_XY_LPARAM(lParam)};
-    if (HTREEITEM hItem = HitTest(&hit)) {
+    if (HTREEITEM hItem = this->HitTest(&hit)) {
       switch (hit.flags) {
         case TVHT_ONITEM:
         case TVHT_ONITEMICON:
         case TVHT_ONITEMLABEL:
         case TVHT_ONITEMSTATEICON:
-          final.OnExecuteItem(hItem);
+          this->final.OnExecuteItem(hItem);
           return true;
       }
     }
@@ -390,7 +391,7 @@ class __declspec(novtable) CTypedTreeImpl : public mew::ui::CWindowImplEx<TFinal
   LRESULT OnRButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) { return 0; }
   LRESULT OnRButtonUp(UINT uMsg, WPARAM wParam, LPARAM lParam,
                       BOOL& bHandled) {  // ツリービューではなく、デフォルト（WM_CONTEXTMENUを発生させる）
-    ::DefWindowProc(m_hWnd, uMsg, wParam, lParam);
+    ::DefWindowProc(this->m_hWnd, uMsg, wParam, lParam);
     return 0;
   }
   LRESULT OnItemReturn(int, LPNMHDR /*pnmh*/, BOOL& /*bHandled*/) {  // デフォルト動作は「ビープを鳴らす」ので、キャンセルする。
@@ -401,10 +402,10 @@ class __declspec(novtable) CTypedTreeImpl : public mew::ui::CWindowImplEx<TFinal
     NMTVKEYDOWN* key = (NMTVKEYDOWN*)pnmh;
     switch (key->wVKey) {
       case VK_RETURN:
-        final.OnExecuteItem(GetSelectedItem());
+        this->final.OnExecuteItem(this->GetSelectedItem());
         return 1;  // non-zero インクリメンタルサーチに含まない
       case VK_SPACE:
-        Expand(GetSelectedItem(), TVE_TOGGLE);
+        this->Expand(this->GetSelectedItem(), TVE_TOGGLE);
         return 1;
       default:
         bHandled = false;
@@ -413,19 +414,19 @@ class __declspec(novtable) CTypedTreeImpl : public mew::ui::CWindowImplEx<TFinal
   }
   LRESULT OnDeleteItem(int, LPNMHDR pnmh, BOOL&) {
     Notify* nm = (Notify*)pnmh;
-    final.OnDeleteItem(nm->itemOld.hItem, (ParamType)nm->itemOld.lParam);
+    this->final.OnDeleteItem(nm->itemOld.hItem, (ParamType)nm->itemOld.lParam);
     return 0;
   }
   LRESULT OnSelChanged(int, LPNMHDR pnmh, BOOL&) {
     Notify* nm = (Notify*)pnmh;
-    final.OnSelChanged(nm->itemNew.hItem, (ParamType)nm->itemNew.lParam);
+    this->final.OnSelChanged(nm->itemNew.hItem, (ParamType)nm->itemNew.lParam);
     return 0;
   }
   LRESULT OnExpanding(int, LPNMHDR pnmh, BOOL&) {
     Notify* nm = (Notify*)pnmh;
     HTREEITEM hItem = nm->itemNew.hItem;
-    final.OnExpanding(hItem, (ParamType)nm->itemNew.lParam, nm->action == TVE_EXPAND);
-    if (!GetNextItem(hItem, TVGN_CHILD)) {  // 開いてみたら、実は子供を持っていなかった
+    this->final.OnExpanding(hItem, (ParamType)nm->itemNew.lParam, nm->action == TVE_EXPAND);
+    if (!this->GetNextItem(hItem, TVGN_CHILD)) {  // 開いてみたら、実は子供を持っていなかった
       Item item(TVIF_HANDLE | TVIF_CHILDREN);
       item.hItem = hItem;
       item.cChildren = 0;
@@ -435,33 +436,33 @@ class __declspec(novtable) CTypedTreeImpl : public mew::ui::CWindowImplEx<TFinal
   }
   LRESULT OnExpanded(int, LPNMHDR pnmh, BOOL&) {
     Notify* nm = (Notify*)pnmh;
-    final.OnExpanded(nm->action, nm->itemNew);
+    this->final.OnExpanded(nm->action, nm->itemNew);
     return 0;
   }
   LRESULT OnGetDispInfo(int, LPNMHDR pnmh, BOOL&) {
     NMTVDISPINFOW& disp = *(NMTVDISPINFOW*)pnmh;
     if (disp.item.mask & TVIF_CHILDREN) {
       bool hasChildren = false;
-      final.OnQueryHasChildren(disp.item.hItem, (ParamType)disp.item.lParam, hasChildren);
+      this->final.OnQueryHasChildren(disp.item.hItem, (ParamType)disp.item.lParam, hasChildren);
       disp.item.cChildren = hasChildren;
     }
     if (disp.item.mask & TVIF_TEXT) {
       PCWSTR name = NULL;
-      final.OnQueryName(disp.item.hItem, (ParamType)disp.item.lParam, name);
+      this->final.OnQueryName(disp.item.hItem, (ParamType)disp.item.lParam, name);
       disp.item.pszText = const_cast<PWSTR>(name);
     }
     if (disp.item.mask & TVIF_IMAGE) {
-      final.OnQueryImage(disp.item.hItem, (ParamType)disp.item.lParam, false, disp.item.iImage);
+      this->final.OnQueryImage(disp.item.hItem, (ParamType)disp.item.lParam, false, disp.item.iImage);
     }
     if (disp.item.mask & TVIF_SELECTEDIMAGE) {
-      final.OnQueryImage(disp.item.hItem, (ParamType)disp.item.lParam, true, disp.item.iSelectedImage);
+      this->final.OnQueryImage(disp.item.hItem, (ParamType)disp.item.lParam, true, disp.item.iSelectedImage);
     }
     disp.item.mask |= TVIF_DI_SETITEM;
     return 0;
   }
   LRESULT OnBeginDrag(int, LPNMHDR pnmh, BOOL&) {
     Notify* notify = (Notify*)pnmh;
-    final.OnDrag(*notify);
+    this->final.OnDrag(*notify);
     return 0;
   }
 };
@@ -478,8 +479,8 @@ class CTypedTab : public TBase {
   int SetCurSel(int index, bool notify) {
     int result = __super::SetCurSel(index);
     if (result >= 0 && notify) {
-      NMHDR nm = {m_hWnd, GetDlgCtrlID(), TCN_SELCHANGE};
-      GetParent().SendMessage(WM_NOTIFY, nm.idFrom, (LPARAM)&nm);
+      NMHDR nm = {this->m_hWnd, this->GetDlgCtrlID(), TCN_SELCHANGE};
+      this->GetParent().SendMessage(WM_NOTIFY, nm.idFrom, (LPARAM)&nm);
     }
     return result;
   }
@@ -493,7 +494,7 @@ class CTypedTab : public TBase {
   }
   int InsertItem(const Item& item, int index = -1) {
     if (index < 0) {
-      index = GetItemCount();
+      index = this->GetItemCount();
     }
     int result = __super::InsertItem(index, const_cast<Item*>(&item));
     ASSERT(result >= 0);
@@ -506,8 +507,8 @@ class CTypedTab : public TBase {
     return InsertItem(item, index);
   }
   void MakeEmpty() {
-    DeleteAllItems();
-    DeleteAllColumn();
+    this->DeleteAllItems();
+    this->DeleteAllColumn();
   }
 };
 
@@ -517,6 +518,7 @@ template <class TFinal, class TParam, class TClient = CTabCtrl, class TWinTraits
 class __declspec(novtable) CTypedTabImpl : public mew::ui::CWindowImplEx<TFinal, CTypedTab<TParam, TClient>, TWinTraits> {
  public:
   using ParamType = TParam;
+  using Item = CTypedItem<TParam, TCITEM>;
 
  public:  // overridable
   void OnSelChange(int index);
@@ -529,7 +531,7 @@ class __declspec(novtable) CTypedTabImpl : public mew::ui::CWindowImplEx<TFinal,
 
  public:  // operation
   int IndexFromParam(ParamType param) noexcept {
-    int count = GetItemCount();
+    int count = this->GetItemCount();
     for (int i = 0; i < count; ++i) {
       Item item(TCIF_PARAM);
       if (GetItem(i, &item) && item.Param == param) {
@@ -540,8 +542,8 @@ class __declspec(novtable) CTypedTabImpl : public mew::ui::CWindowImplEx<TFinal,
   }
   bool GetTabsRect(LPRECT rc) const {
     RECT rcTab;
-    GetItemRect(0, &rcTab);  // タブが無くても高さは取れるが、falseが返るもよう
-    GetClientRect(rc);
+    this->GetItemRect(0, &rcTab);  // タブが無くても高さは取れるが、falseが返るもよう
+    this->GetClientRect(rc);
     rc->bottom = rcTab.bottom;
     return true;
   }
@@ -549,9 +551,9 @@ class __declspec(novtable) CTypedTabImpl : public mew::ui::CWindowImplEx<TFinal,
  public:
   BEGIN_MSG_MAP(_)
   // デフォルトハンドラで処理させたいため。フレームワークにまわすとREFLECT_NOTIFICATIONS()してしまう
-  MSG_LAMBDA(WM_NOTIFY, { lResult = DefWindowProc(uMsg, wParam, lParam); })
-  REFLECTED_NOTIFY_CODE_LAMBDA(TCN_SELCHANGE, { final.OnSelChange(GetCurSel()); })
-  REFLECTED_NOTIFY_CODE_LAMBDA(NM_CLICK, { final.OnLeftClick(GetCurSel()); })
+  MSG_LAMBDA(WM_NOTIFY, { lResult = this->DefWindowProc(uMsg, wParam, lParam); })
+  REFLECTED_NOTIFY_CODE_LAMBDA(TCN_SELCHANGE, { this->final.OnSelChange(this->GetCurSel()); })
+  REFLECTED_NOTIFY_CODE_LAMBDA(NM_CLICK, { this->final.OnLeftClick(this->GetCurSel()); })
   REFLECTED_NOTIFY_CODE_HANDLER(NM_RCLICK, OnRClick)
   MESSAGE_HANDLER(WM_MBUTTONUP, OnMButtonUp)
   // REFLECTED_NOTIFY_CODE_HANDLER(LVN_INSERTITEM, OnInsertItem)
@@ -564,13 +566,13 @@ class __declspec(novtable) CTypedTabImpl : public mew::ui::CWindowImplEx<TFinal,
   LRESULT OnRClick(int, LPNMHDR pnmh, BOOL&) {
     TCHITTESTINFO info;
     ::GetCursorPos(&info.pt);
-    ScreenToClient(&info.pt);
-    final.OnRightClick(HitTest(&info));
+    this->ScreenToClient(&info.pt);
+    this->final.OnRightClick(this->HitTest(&info));
     return 0;
   }
   LRESULT OnMButtonUp(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     TCHITTESTINFO info = {GET_XY_LPARAM(lParam)};
-    final.OnMiddleClick(HitTest(&info));
+    this->final.OnMiddleClick(this->HitTest(&info));
     return 0;
   }
   /*
@@ -604,6 +606,10 @@ class CTypedToolBar : public TBase {
   };
 
  public:
+  using TBase::DeleteButton;
+  using TBase::GetButtonCount;
+  using TBase::GetButtonInfo;
+  using TBase::SetButtonInfo;
   int GetItemCount() const { return __super::GetButtonCount(); }
   TParam GetItemData(int index) const {
     ASSERT(index >= 0);
@@ -707,7 +713,7 @@ class CTypedToolBar : public TBase {
     if (nCount == 0) {
       return;
     }
-    mew::ui::SuppressRedraw redraw(m_hWnd);
+    mew::ui::SuppressRedraw redraw(this->m_hWnd);
     for (int i = 0; i < nCount; i++) {
       VERIFY(DeleteButton(0));
     }
@@ -720,7 +726,7 @@ class CTypedToolBar : public TBase {
     }
   }
   WTL::CImageList SetImageList(HIMAGELIST hImageList, int index = 0) {
-    return (HIMAGELIST)SendMessage(TB_SETIMAGELIST, (WPARAM)index, (LPARAM)hImageList);
+    return (HIMAGELIST)this->SendMessage(TB_SETIMAGELIST, (WPARAM)index, (LPARAM)hImageList);
   }
 };
 
@@ -731,9 +737,9 @@ class CReBar : public TBase {
  public:
   int FindBand(HWND hWnd) const {
     REBARBANDINFO band = {sizeof(REBARBANDINFO), RBBIM_CHILD};
-    int count = GetBandCount();
+    int count = this->GetBandCount();
     for (int i = 0; i < count; ++i) {
-      if (GetBandInfo(i, &band) && band.hwndChild == hWnd) {
+      if (this->GetBandInfo(i, &band) && band.hwndChild == hWnd) {
         return i;
       }
     }

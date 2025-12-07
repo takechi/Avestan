@@ -14,8 +14,11 @@ class __declspec(novtable) TaskTrayProvider : public TBase {
 
  private:
   HRESULT TaskTray_HandleResize(mew::message msg) {
+    auto& m_form = this->m_form;
     HWND hwnd = m_form->Handle;
-    if (!IsWindowEnabled(hwnd)) {return S_OK;}
+    if (!IsWindowEnabled(hwnd)) {
+      return S_OK;
+    }
     if (m_EnableTray && ::IsIconic(hwnd) &&
         m_form->Visible) {  // 復帰は、Form.CommandRestore で実装されているため処理する必要は無い
       m_form->Visible = false;
@@ -28,6 +31,7 @@ class __declspec(novtable) TaskTrayProvider : public TBase {
     return S_OK;
   }
   HRESULT TaskTray_HandleQueryClose(mew::message msg) {
+    auto& m_form = this->m_form;
     if (m_form && m_CloseToTray && m_form->Visible && theMainResult == 0) {  // cancel close and minimize to tasktray
       ShowWindow(m_form->Handle, SW_MINIMIZE);
       m_form->Visible = false;
@@ -47,7 +51,7 @@ class __declspec(novtable) TaskTrayProvider : public TBase {
     m_EnableTray = msg["TaskTray"] | false;
     m_AlwaysTray = msg["AlwaysTray"] | false;
     m_CloseToTray = msg["CloseToTray"] | false;
-    m_form->TaskTray = m_AlwaysTray;
+    this->m_form->TaskTray = m_AlwaysTray;
   }
   void TaskTray_Save(mew::message& msg) {
     msg["TaskTray"] = m_EnableTray;
@@ -70,7 +74,7 @@ class __declspec(novtable) TaskTrayProvider : public TBase {
   }
   HRESULT OptionAlwaysTray(mew::message = mew::null) {
     m_AlwaysTray = !m_AlwaysTray;
-    m_form->TaskTray = m_AlwaysTray;
+    this->m_form->TaskTray = m_AlwaysTray;
     return S_OK;
   }
   HRESULT ObserveAlwaysTray(mew::message msg) {

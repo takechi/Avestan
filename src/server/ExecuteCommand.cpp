@@ -324,12 +324,12 @@ mew::ref<mew::ICommand> CreateExecuteCommand(mew::string path, mew::string args)
     PCWSTR le, rs;
     ExecuteType type;
     // 'all' variables
-    type = SearchVarsInArgs(wcsArgs, L"{}", &le, &rs);
+    type = SearchVarsInArgs(wcsArgs, (PWSTR)L"{}", &le, &rs);
     if (type != ExecuteNoArg) {
       return mew::objnew<ExecuteAllCommand>(path, type, wcsArgs, le, rs);
     }
     // 'each' variables
-    type = SearchVarsInArgs(wcsArgs, L"[]", &le, &rs);
+    type = SearchVarsInArgs(wcsArgs, (PWSTR)L"[]", &le, &rs);
     if (type != ExecuteNoArg) {
       return mew::objnew<ExecuteEachCommand>(path, type, wcsArgs, le, rs);
     }

@@ -29,20 +29,20 @@ class __declspec(novtable) TreeViewBase
     if (!pNode) {
       return nullptr;
     }
-    DeleteChildren(hNode);
+    this->DeleteChildren(hNode);
     pNode->OnUpdate();
     if (hNode) {
-      SetItem(hNode, pNode);
+      this->SetItem(hNode, pNode);
       return hNode;
     } else {
-      return InsertItem(NULL, pNode);
+      return this->InsertItem(NULL, pNode);
     }
   }
   void AddChildren(HTREEITEM hParant, ParamType pParent) {}
 
  public:
   void HandleDestroy() {
-    MakeEmpty();
+    this->MakeEmpty();
     m_root.clear();
     m_image.clear();
   }
@@ -67,29 +67,29 @@ class __declspec(novtable) TreeViewBase
     }
   }
   void OnExpanding(HTREEITEM hItem, ParamType param, bool expand) {
-    if (expand && GetChildItem(hItem) == NULL) {
-      final.AddChildren(hItem, param);
+    if (expand && this->GetChildItem(hItem) == NULL) {
+      this->final.AddChildren(hItem, param);
     }
   }
   void OnQueryHasChildren(HTREEITEM hItem, ParamType param, bool& hasChildren) { hasChildren = param->HasChildren(); }
   void OnQueryName(HTREEITEM hItem, ParamType param, PCWSTR& name) { name = param->Name.str(); }
   void OnQueryImage(HTREEITEM hItem, ParamType param, bool selected, int& image) { image = param->Image; }
-  void OnSelChanged(HTREEITEM hItem, ParamType param) { InvokeEvent<mew::ui::EventItemFocus>(this, param); }
+  void OnSelChanged(HTREEITEM hItem, ParamType param) { this->InvokeEvent<mew::ui::EventItemFocus>(this, param); }
 
  public:  // ITree
   mew::ui::ITreeItem* get_Root() { return m_root; }
   void set_Root(mew::ui::ITreeItem* value) {
-    mew::ui::SuppressRedraw redraw(m_hWnd);
+    mew::ui::SuppressRedraw redraw(this->m_hWnd);
     m_root = mew::cast(value);
     ASSERT(m_root);
-    HTREEITEM hItem = final.UpdateTree(NULL, m_root);
-    Expand(hItem);
-    SelectItem(hItem);
+    HTREEITEM hItem = this->final.UpdateTree(NULL, m_root);
+    this->Expand(hItem);
+    this->SelectItem(hItem);
   }
   IImageList* get_ImageList() { return m_image; }
   void set_ImageList(IImageList* value) {
     m_image = value;
-    SetImageList(value);
+    this->SetImageList(value);
   }
 
  public:
@@ -109,7 +109,7 @@ class __declspec(novtable) TreeViewBase
   HRESULT GetContents(mew::REFINTF ppInterface, mew::Status status) {
     switch (status) {
       case mew::FOCUSED:
-        return objcpy(GetItemData(GetSelectedItem()), ppInterface);
+        return objcpy(this->GetItemData(this->GetSelectedItem()), ppInterface);
       default:
         TRESPASS_DBG(return E_NOTIMPL);
     }
@@ -129,7 +129,7 @@ class __declspec(novtable) TreeViewBase
 
   LRESULT OnForwardMsg(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     MSG* msg = (MSG*)lParam;
-    if (IsChild(msg->hwnd)) {  // リストビューの子供＝ファイルリネーム中のエディットなので処理を任せる
+    if (this->IsChild(msg->hwnd)) {  // リストビューの子供＝ファイルリネーム中のエディットなので処理を任せる
       return 0;
     }
     bHandled = false;
@@ -139,17 +139,17 @@ class __declspec(novtable) TreeViewBase
     UINT32 m = theAvesta->MiddleClick;
     if (m != 0) {
       TVHITTESTINFO hit = {GET_XY_LPARAM(lParam)};
-      if (HTREEITEM hItem = HitTest(&hit)) {
-        SelectDropTarget(hItem);
+      if (HTREEITEM hItem = this->HitTest(&hit)) {
+        this->SelectDropTarget(hItem);
         // TODO: ユーザがカスタマイズできるように
         UINT32 mods = mew::ui::GetCurrentModifiers();
         if (mods == 0) {
           mods = m;
         }
         afx::SetModifierState(0, mods);
-        final.OnExecuteItem(hItem);
+        this->final.OnExecuteItem(hItem);
         afx::RestoreModifierState(0);
-        SelectDropTarget(NULL);
+        this->SelectDropTarget(NULL);
         return true;
       }
     }
@@ -157,8 +157,8 @@ class __declspec(novtable) TreeViewBase
   }
   LRESULT OnKillFocus(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     HWND hwndFocus = (HWND)wParam;
-    if (!IsChild(hwndFocus)) {
-      EndEditLabelNow(FALSE);
+    if (!this->IsChild(hwndFocus)) {
+      this->EndEditLabelNow(FALSE);
     }
     bHandled = false;
     return 0;
@@ -166,12 +166,12 @@ class __declspec(novtable) TreeViewBase
   bool OnBeginLabelEdit(HTREEITEM hItem, ParamType param, PCTSTR text) { return true; }
   LRESULT OnBeginLabelEdit(int, LPNMHDR pnmh, BOOL& bHandled) {
     NMTVDISPINFO* disp = (NMTVDISPINFO*)pnmh;
-    return !final.OnBeginLabelEdit(disp->item.hItem, (ParamType)disp->item.lParam, disp->item.pszText);
+    return !this->final.OnBeginLabelEdit(disp->item.hItem, (ParamType)disp->item.lParam, disp->item.pszText);
   }
   bool OnEndLabelEdit(HTREEITEM hItem, ParamType param, PCTSTR text) { return false; }
   LRESULT OnEndLabelEdit(int, LPNMHDR pnmh, BOOL& bHandled) {
     NMTVDISPINFO* disp = (NMTVDISPINFO*)pnmh;
-    return final.OnEndLabelEdit(disp->item.hItem, (ParamType)disp->item.lParam, disp->item.pszText);
+    return this->final.OnEndLabelEdit(disp->item.hItem, (ParamType)disp->item.lParam, disp->item.pszText);
   }
 };
 

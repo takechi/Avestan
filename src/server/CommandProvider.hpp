@@ -39,11 +39,11 @@ class __declspec(novtable) CommandProvider : public TBase {
   }
   template <class T, class M>
   void CommandProcess(const mew::string& command, const T& p, HRESULT (M::*fn)(mew::message), mew::message msg = mew::null) {
-    if (p){
+    if (p) {
       CommandProcess(command, mew::function(p, fn), msg);
-    }else{
+    } else {
       DisableCommand(command);
-      }
+    }
   }
   void CommandProcess(const mew::string& command, mew::ui::IWindow* window, mew::message msg = mew::null) {
     if (window) {
@@ -147,7 +147,7 @@ class __declspec(novtable) CommandProvider : public TBase {
   }
 
   void RegisterForms(Templates& templates, mew::ICommands* commands) {
-    for (Templates::const_iterator i = m_forms.begin(); i != m_forms.end(); ++i) {
+    for (Templates::const_iterator i = this->m_forms.begin(); i != this->m_forms.end(); ++i) {
       if (!i->window || !i->id) {
         continue;
       }

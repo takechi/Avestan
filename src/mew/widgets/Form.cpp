@@ -31,20 +31,20 @@ class __declspec(novtable) DockBase
     hDWP = ::DeferWindowPos(hDWP, view->Handle, nullptr, x, y, w, h, SWP_NOZORDER | SWP_NOACTIVATE);
   }
   void HandleUpdateLayout() {
-    if (IsIconic() || !Visible) {
+    if (this->IsIconic() || !this->Visible) {
       return;
     }
-    UpdateLayout(ClientArea);
+    UpdateLayout(this->ClientArea);
   }
   void UpdateLayout(mew::Rect rc) {
-    if (IsIconic() || !Visible) {
+    if (this->IsIconic() || !this->Visible) {
       return;
     }
-    mew::Size border = final.GetBorder();
-    using Views = mew::array_set<mew::ref<IWindow>, false, CompareDockStyle>;
+    mew::Size border = this->final.GetBorder();
+    using Views = mew::array_set<mew::ref<mew::ui::IWindow>, false, CompareDockStyle>;
     Views views;
-    for (CWindowEx w = GetWindow(GW_CHILD); w; w = w.GetWindow(GW_HWNDNEXT)) {
-      mew::ref<IWindow> view;
+    for (CWindowEx w = (HWND)this->GetWindow(GW_CHILD); w; w = w.GetWindow(GW_HWNDNEXT)) {
+      mew::ref<mew::ui::IWindow> view;
       if (FAILED(QueryInterfaceInWindow(w, &view)) || !view->Visible || view->Dock == mew::ui::DirNone) {
         continue;
       }
@@ -54,7 +54,7 @@ class __declspec(novtable) DockBase
       return;
     }
     HDWP hDWP = ::BeginDeferWindowPos(views.size());
-    for (Views::const_iterator i = views.begin(); i != views.end(); ++i) {
+    for (auto i = views.begin(); i != views.end(); ++i) {
       mew::Rect bounds = (*i)->Bounds;
       switch ((*i)->Dock) {
         case mew::ui::DirCenter:
@@ -101,7 +101,7 @@ class __declspec(novtable) DockBase
       m_wndLastFocus.SetFocus();
     } else {
       m_wndLastFocus = NULL;
-      for (CWindowEx w = GetWindow(GW_CHILD); w; w = w.GetWindow(GW_HWNDNEXT)) {
+      for (CWindowEx w = (HWND)this->GetWindow(GW_CHILD); w; w = w.GetWindow(GW_HWNDNEXT)) {
         mew::ref<mew::ui::IWindow> p;
         if (SUCCEEDED(QueryInterfaceInWindow(w, &p)) && p->Dock == mew::ui::DirCenter) {
           m_wndLastFocus = w.m_hWnd;

@@ -132,10 +132,10 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
     ASSERT(theAvesta == this);
     theAvesta = nullptr;
   }
-  static mew::string GetConfigPath() { return RelativePath(_T("var\\config.xml")); }
+  static mew::string GetConfigPath() { return (PCTSTR)RelativePath(_T("var\\config.xml")); }
 #ifdef _M_X64
-  static mew::string GetStoragePath() { return RelativePath(_T("var\\settings64.dat")); }
-  static mew::string GetDefaultSaveName() { return RelativePath(_T("var\\default64.ave")); }
+  static mew::string GetStoragePath() { return (PCTSTR)RelativePath(_T("var\\settings64.dat")); }
+  static mew::string GetDefaultSaveName() { return (PCTSTR)RelativePath(_T("var\\default64.ave")); }
 #else
   static string GetStoragePath() { return RelativePath(_T("var\\settings.dat")); }
   static string GetDefaultSaveName() { return RelativePath(_T("var\\default.ave")); }
@@ -398,28 +398,28 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
  public:  // Avesta
   HRESULT OptionCheckBox(mew::message = mew::null) {
     m_booleans[avesta::BoolCheckBox] = !m_booleans[avesta::BoolCheckBox];
-    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone); i.next();) {
+    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone).get(); i.next();) {
       i->CheckBox = m_booleans[avesta::BoolCheckBox];
     }
     return S_OK;
   }
   HRESULT OptionFullRowSelect(mew::message = mew::null) {
     m_booleans[avesta::BoolFullRowSelect] = !m_booleans[avesta::BoolFullRowSelect];
-    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone); i.next();) {
+    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone).get(); i.next();) {
       i->FullRowSelect = m_booleans[avesta::BoolFullRowSelect];
     }
     return S_OK;
   }
   HRESULT OptionGridLine(mew::message = mew::null) {
     m_booleans[avesta::BoolGridLine] = !m_booleans[avesta::BoolGridLine];
-    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone); i.next();) {
+    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone).get(); i.next();) {
       i->GridLine = m_booleans[avesta::BoolGridLine];
     }
     return S_OK;
   }
   HRESULT OptionRenameExtension(mew::message = mew::null) {
     m_booleans[avesta::BoolRenameExtension] = !m_booleans[avesta::BoolRenameExtension];
-    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone); i.next();) {
+    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone).get(); i.next();) {
       i->RenameExtension = m_booleans[avesta::BoolRenameExtension];
     }
     return S_OK;
@@ -467,7 +467,7 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
     if (!entry) {
       return mew::null;
     }
-    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone); i.next();) {
+    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone).get(); i.next();) {
       mew::ref<mew::io::IEntry> e;
       i->GetFolder(&e);
       if (entry->Equals(e, mew::io::IEntry::PATH)) {
@@ -1220,7 +1220,7 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
 
     std::vector<Tab> tabs;
     //
-    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone); i.next();) {
+    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone).get(); i.next();) {
       Tab tab;
       tab.index = tabs.size();
       tab.obj = i;
@@ -1553,7 +1553,7 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
     using Entries = std::vector<EntryAndStatus>;
     Entries entries;
     entries.reserve(10);
-    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone); i.next();) {
+    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone).get(); i.next();) {
       EntryAndStatus item;
       item.view = i;
       item.mask = i->PatternMask;
@@ -1819,7 +1819,7 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
   mew::string get_WallPaperFile() { return m_WallPaper; }
   void set_WallPaperFile(mew::string value) {
     m_WallPaper = ave::ResolvePath(value);
-    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone); i.next();) {
+    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone).get(); i.next();) {
       SetWallPaperToView(i, ave::GetFolderOfView(i));
     }
   }
@@ -1844,12 +1844,12 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
   }
   HRESULT OptionFont_Address(mew::message m) {
     HFONT font = FontFromMessage(avesta::FontAddress, m);
-    for (mew::each<mew::ui::IWindow> i = EnumFolders(mew::StatusNone); i.next();) SetFont(i, font, 0);
+    for (mew::each<mew::ui::IWindow> i = EnumFolders(mew::StatusNone).get(); i.next();) SetFont(i, font, 0);
     return S_OK;
   }
   HRESULT OptionFont_List(mew::message m) {
     HFONT font = FontFromMessage(avesta::FontList, m);
-    for (mew::each<mew::ui::IWindow> i = EnumFolders(mew::StatusNone); i.next();) SetFont(i, font, 1);
+    for (mew::each<mew::ui::IWindow> i = EnumFolders(mew::StatusNone).get(); i.next();) SetFont(i, font, 1);
     return S_OK;
   }
   HRESULT OptionFont_Status(mew::message m) {
@@ -1885,7 +1885,7 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
       afx::ScreenToClient(hwndRoot, &rc);
       expose->AddRect(ExposeTab, 0, rc, 'T');
     }
-    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone); i.next();) {
+    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone).get(); i.next();) {
       if (i->Visible) {  // TODO: もうちょいどうにか
         if (HWND hComboBox = ::FindWindowEx(i->Handle, NULL, _T("ComboBoxEx32"), NULL)) {
           mew::Rect rc;

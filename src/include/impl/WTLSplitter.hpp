@@ -152,7 +152,7 @@ class __declspec(novtable) CSplitter : public CSplitterBase {
     }
     mew::ui::CWindowEx view[2];
     int dis[2] = {INT_MAX, INT_MAX};
-    for (mew::ui::CWindowEx w = final.GetWindow(GW_CHILD); w; w = w.GetWindow(GW_HWNDNEXT)) {
+    for (mew::ui::CWindowEx w = (HWND) final.GetWindow(GW_CHILD); w; w = w.GetWindow(GW_HWNDNEXT)) {
       final.IsDragTarget(w);
       if (!IsDragTarget(w)) {
         continue;
