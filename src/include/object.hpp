@@ -124,7 +124,7 @@ class DefaultFactory {
  public:
   DefaultFactory() { mew::RegisterFactory(__uuidof(T), &CreateInstance); }
   static void CreateInstance(REFINTF pp, IUnknown* arg) throw(...) {
-    T* obj = T::__new__<T>(arg);
+    T* obj = T::template __new__<T>(arg);
     VERIFY_HRESULT(obj->QueryInterface(pp.iid, pp.pp));
     try {
       obj->__init__(arg);

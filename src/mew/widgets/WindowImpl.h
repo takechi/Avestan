@@ -113,7 +113,7 @@ class WindowMessageSource : public SignalImpl<DynamicLife<TBase> > {
 
  protected:
   LRESULT OnQueryInterface(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-    if (!m_msgr) {  // 破棄中、下手をするとすでにRelease()済みなので、絶対にAddRef()してはならない
+    if (!this->m_msgr) {  // 破棄中、下手をするとすでにRelease()済みなので、絶対にAddRef()してはならない
       return E_UNEXPECTED;
     }
     const IID* piid = (const IID*)wParam;
@@ -125,14 +125,14 @@ class WindowMessageSource : public SignalImpl<DynamicLife<TBase> > {
       return E_POINTER;
     }
 #endif
-    return (LRESULT)QueryInterface(*piid, ppObject);
+    return (LRESULT)(this->QueryInterface(*piid, ppObject));
   }
   LRESULT OnCopyDataEcho(UINT, WPARAM, LPARAM lParam, BOOL&) {
     string data;
     data.attach((IString*)lParam);
     if (data) {
       try {
-        InvokeEvent<EventData>(static_cast<IWindow*>(this), data);
+        this->InvokeEvent<EventData>(static_cast<IWindow*>(this), data);
         ::PostThreadMessage(::GetCurrentThreadId(), WM_UPDATEUISTATE, 0, 0);
       } catch (mew::exceptions::Error&) {
       }
@@ -147,14 +147,11 @@ template <class TAtlWindow, class TImplements, class TMixin = mixin<WindowMessag
 class __declspec(novtable) WindowImpl : public Root<TImplements, TMixin>, public TAtlWindow {
   using super = TAtlWindow;
 
- private:
-  HWND Create(HWND hParent);
-
  public:  // overridable
   /// コンストラクタの直後に呼ばれ、ウィンドウを作成する.
-  void DoCreate(CWindowEx parent, ATL::_U_RECT rect = rcDefault, Direction dock = DirNone, DWORD dwStyle = 0,
+  void DoCreate(CWindowEx parent, ATL::_U_RECT rect = super::rcDefault, Direction dock = DirNone, DWORD dwStyle = 0,
                 DWORD dwExStyle = 0) {
-    m_Dock = dock;
+    super::m_Dock = dock;
     __super::Create(parent, rect, NULL, dwStyle, dwExStyle);
   }
   /// ウィンドウの作成直後に呼ばれる.
@@ -169,12 +166,17 @@ class __declspec(novtable) WindowImpl : public Root<TImplements, TMixin>, public
   void HandleUpdateLayout() {}
   ///
   bool HandleQueryGesture(IGesture** pp, Point ptScreen, size_t length, const Gesture gesture[]) {
-    return m_Extensions.ProcessQueryGesture(pp);
+    return super::m_Extensions.ProcessQueryGesture(pp);
   }
   ///
-  bool HandleQueryDrop(IDropTarget** pp, LPARAM lParam) { return m_Extensions.ProcessQueryDrop(pp); }
+  bool HandleQueryDrop(IDropTarget** pp, LPARAM lParam) { return super::m_Extensions.ProcessQueryDrop(pp); }
 
  public:  // Object
+  using super::DefWindowProc;
+  using super::DestroyWindow;
+  using super::GetParent;
+  using super::IsWindow;
+  using super::PostMessage;
   WindowImpl() { DEBUG_ONLY(TRACE(_T("$1()"), GetFinalClassName())); }
   ~WindowImpl() { DEBUG_ONLY(TRACE(_T("~$1()"), GetFinalClassName())); }
   void __init__(IUnknown* arg) {
@@ -186,19 +188,19 @@ class __declspec(novtable) WindowImpl : public Root<TImplements, TMixin>, public
       throw mew::exceptions::ArgumentError(string::load(IDS_ERR_INVALIDPARENT), E_INVALIDARG);
     }
     //
-    final.DoCreate(hWndParent);
-    if (!m_hWnd) {
+    super::final.DoCreate(hWndParent);
+    if (!super::m_hWnd) {
       throw mew::exceptions::RuntimeError(string(IDS_ERR_CREATEWINDOW), AtlHresultFromLastError());
     }
   }
   void Dispose() noexcept {
-    if (m_msgr && IsWindow()) {
+    if (this->m_msgr && IsWindow()) {
       DestroyWindow();
     }
-    m_msgr.dispose();
+    this->m_msgr.dispose();
   }
   HRESULT Connect(EventCode code, function fn, message msg = null) noexcept {
-    if (final.SupportsEvent(code)) {
+    if (super::final.SupportsEvent(code)) {
       return __super::Connect(code, fn, msg);
     } else {
       ASSERT(!"Unsupported event code");
@@ -207,41 +209,41 @@ class __declspec(novtable) WindowImpl : public Root<TImplements, TMixin>, public
   }
   HWND Recreate(_U_RECT rc = 0, PCTSTR name = 0, DWORD dwStyle = 0, DWORD dwStyleEx = 0) {
     TRACE(_T("warning: TODO ハンドラ系が全滅します"));
-    CWindowEx parent = GetParent();
+    CWindowEx parent = (HWND)GetParent();
     DestroyWindow();
     return __super::Create(parent, rc, name, dwStyle, dwStyleEx);
   }
 
  public:  // IWindow
-  HWND get_Handle() { return m_hWnd; }
+  HWND get_Handle() { return super::m_hWnd; }
 
   Size get_DefaultSize() { return Size::Zero; }
-  Direction get_Dock() { return m_Dock; }
+  Direction get_Dock() { return super::m_Dock; }
   void set_Dock(Direction value) { super::set_Dock(value); }
 
   HRESULT Send(message msg) {
     if SUCCEEDED (super::Send(this, msg)) return S_OK;
-    InvokeEvent<EventUnsupported>(static_cast<IWindow*>(this), msg);
+    this->InvokeEvent<EventUnsupported>(static_cast<IWindow*>(this), msg);
     return S_OK;
   }
 
   void Close(bool sync = false) {
-    if (!m_msgr) return;
+    if (!this->m_msgr) return;
     if (sync) {
       if (ProcessClose()) Dispose();
     } else {
-      ::PostMessage(m_hWnd, WM_CLOSE, 0, 0);
+      ::PostMessage(super::m_hWnd, WM_CLOSE, 0, 0);
     }
   }
-  HRESULT GetExtension(REFGUID which, REFINTF what) { return m_Extensions.Get(which, what); }
-  HRESULT SetExtension(REFGUID which, IUnknown* what) { return m_Extensions.Set(which, what); }
+  HRESULT GetExtension(REFGUID which, REFINTF what) { return super::m_Extensions.Get(which, what); }
+  HRESULT SetExtension(REFGUID which, IUnknown* what) { return super::m_Extensions.Set(which, what); }
   void Update(bool sync = false) {
     if (sync) {
-      ::RedrawWindow(m_hWnd, null, null, RDW_INVALIDATE | RDW_UPDATENOW);
-      final.HandleUpdateLayout();
+      ::RedrawWindow(super::m_hWnd, null, null, RDW_INVALIDATE | RDW_UPDATENOW);
+      super::final.HandleUpdateLayout();
     } else {
-      PostMessage(MEW_ECHO_UPDATE);
-      ::InvalidateRect(m_hWnd, null, false);
+      super::PostMessage(MEW_ECHO_UPDATE);
+      ::InvalidateRect(super::m_hWnd, null, false);
     }
   }
 
@@ -251,13 +253,13 @@ class __declspec(novtable) WindowImpl : public Root<TImplements, TMixin>, public
       case 0:
         switch (uMsg) {
           case WM_NCCREATE:
-            m_msgr.create(__uuidof(Messenger));
+            this->m_msgr.create(__uuidof(Messenger));
             this->AddRef();  // HWND として保持される分.
             lResult = DefWindowProc();
             break;
           case WM_CREATE:
             lResult = DefWindowProc();
-            if (!final.HandleCreate(*(LPCREATESTRUCT)lParam)) lResult = -1;
+            if (!super::final.HandleCreate(*(LPCREATESTRUCT)lParam)) lResult = -1;
             break;
           default:
             break;
@@ -282,10 +284,10 @@ class __declspec(novtable) WindowImpl : public Root<TImplements, TMixin>, public
       MESSAGE_HANDLER(WM_FORWARDMSG, OnForwardMsg) MESSAGE_HANDLER(WM_COPYDATA, OnCopyData)
           MESSAGE_HANDLER(WM_SETTINGCHANGE, OnSettingChange)
       // msg source
-      MESSAGE_HANDLER(MEW_ECHO_COPYDATA, OnCopyDataEcho) MESSAGE_HANDLER(WM_CLOSE, OnClose)
+      MESSAGE_HANDLER(MEW_ECHO_COPYDATA, this->OnCopyDataEcho) MESSAGE_HANDLER(WM_CLOSE, OnClose)
           MESSAGE_HANDLER(WM_ENDSESSION, OnEndSession) MESSAGE_HANDLER(WM_SETTEXT, OnSetText) MESSAGE_HANDLER(WM_SIZE, OnSize)
       // query
-      MESSAGE_HANDLER(MEW_QUERY_INTERFACE, OnQueryInterface) MESSAGE_HANDLER(MEW_QUERY_GESTURE, OnQueryGesture)
+      MESSAGE_HANDLER(MEW_QUERY_INTERFACE, this->OnQueryInterface) MESSAGE_HANDLER(MEW_QUERY_GESTURE, OnQueryGesture)
           MESSAGE_HANDLER(MEW_QUERY_DROP, OnQueryDrop)
       //
       DEFAULT_REFLECTION_HANDLER() REFLECT_NOTIFICATIONS() END_MSG_MAP()
@@ -295,11 +297,11 @@ class __declspec(novtable) WindowImpl : public Root<TImplements, TMixin>, public
     this->Release();  // HWND として保持される分.
   }
   bool ProcessClose() {
-    message reply = InvokeEvent<EventPreClose>(static_cast<IWindow*>(this));
+    message reply = this->InvokeEvent<EventPreClose>(static_cast<IWindow*>(this));
     bool cancel = (bool)reply["cancel"];
     if (!cancel) {
-      InvokeEvent<EventClose>(static_cast<IWindow*>(this));
-      final.HandleClose();
+      this->InvokeEvent<EventClose>(static_cast<IWindow*>(this));
+      super::final.HandleClose();
     }
     return !cancel;
   }
@@ -309,39 +311,39 @@ class __declspec(novtable) WindowImpl : public Root<TImplements, TMixin>, public
   }
   LRESULT OnEndSession(UINT, WPARAM wParam, LPARAM, BOOL& bHandled) {
     if (wParam) {  // the session is being ended
-      InvokeEvent<EventClose>(static_cast<IWindow*>(this));
-      final.HandleClose();
+      this->InvokeEvent<EventClose>(static_cast<IWindow*>(this));
+      super::final.HandleClose();
     }
     bHandled = false;
     return 0;
   }
   LRESULT OnDestroy(UINT, WPARAM, LPARAM, BOOL& bHandled) {
-    if (m_msgr) {
-      ref<IMessenger> tmp = m_msgr;
-      m_msgr.clear();
+    if (this->m_msgr) {
+      ref<IMessenger> tmp = this->m_msgr;
+      this->m_msgr.clear();
       if (function fn = tmp->Invoke(EventDispose)) {
         message args;
         Event<EventDispose>::event(args, static_cast<IWindow*>(this));
         fn(args);
       }
-      final.HandleDestroy();
+      super::final.HandleDestroy();
       tmp->Dispose();
     }
-    m_Extensions.Dispose();
+    this->m_Extensions.Dispose();
     bHandled = false;
     return 0;
   }
   LRESULT OnShowWindow(UINT, WPARAM wParam, LPARAM lParam, BOOL&) {
     if (lParam == 0) {
-      if (wParam) final.HandleUpdateLayout();
-      UpdateParent();
+      if (wParam) super::final.HandleUpdateLayout();
+      this->UpdateParent();
     }
     return 0;
   }
   LRESULT OnSetText(UINT, WPARAM, LPARAM lParam, BOOL& bHandled) {
     PCTSTR name = (PCTSTR)lParam;
-    final.HandleSetText(name);
-    InvokeEvent<EventRename>(static_cast<IWindow*>(this), name);
+    super::final.HandleSetText(name);
+    this->InvokeEvent<EventRename>(static_cast<IWindow*>(this), name);
     bHandled = false;
     return 0;
   }
@@ -353,7 +355,7 @@ class __declspec(novtable) WindowImpl : public Root<TImplements, TMixin>, public
       case SIZE_MINIMIZED:
       case SIZE_MAXIMIZED:
       case SIZE_RESTORED:
-        InvokeEvent<EventResize>(static_cast<IWindow*>(this), Size(GET_XY_LPARAM(lParam)));
+        this->InvokeEvent<EventResize>(static_cast<IWindow*>(this), Size(GET_XY_LPARAM(lParam)));
         PostMessage(MEW_ECHO_UPDATE);
         break;
     }
@@ -362,21 +364,21 @@ class __declspec(novtable) WindowImpl : public Root<TImplements, TMixin>, public
   }
   LRESULT OnUpdateLayout(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     MSG msg;
-    if (!::PeekMessage(&msg, m_hWnd, MEW_ECHO_UPDATE, MEW_ECHO_UPDATE,
+    if (!::PeekMessage(&msg, super::m_hWnd, MEW_ECHO_UPDATE, MEW_ECHO_UPDATE,
                        PM_NOREMOVE)) {  // メッセージキューにこれ以上MEW_ECHO_UPDATEが無い場合のみ処理する。
       // 複数回レイアウト更新された場合に、無駄に再配置するのを防ぐ.
-      final.HandleUpdateLayout();
-    } else if (msg.hwnd != m_hWnd) {  // 自分の子供ウィンドウのメッセージも見つけてしまうので、特別処理
-      PostMessage(MEW_ECHO_UPDATE);  // 最後にもう一度自分を通知して欲しい
+      super::final.HandleUpdateLayout();
+    } else if (msg.hwnd != super::m_hWnd) {  // 自分の子供ウィンドウのメッセージも見つけてしまうので、特別処理
+      PostMessage(MEW_ECHO_UPDATE);          // 最後にもう一度自分を通知して欲しい
     }
     return 0;
   }
   LRESULT OnQueryGesture(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     QueryGestureStruct* param = (QueryGestureStruct*)lParam;
-    return final.HandleQueryGesture(param->ppGesture, param->ptScreen, param->length, param->gesture);
+    return super::final.HandleQueryGesture(param->ppGesture, param->ptScreen, param->length, param->gesture);
   }
   LRESULT OnQueryDrop(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-    return final.HandleQueryDrop((IDropTarget**)wParam, lParam);
+    return super::final.HandleQueryDrop((IDropTarget**)wParam, lParam);
   }
   LRESULT OnSettingChange(UINT, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     Update();

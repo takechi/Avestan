@@ -116,7 +116,7 @@ class AboutDlg : public CDialogImpl<AboutDlg> {
     // ExtractIconEx(path.str(), 0, &hIconLarge, null, 1);
     // ASSERT(hIconLarge);
     hIconLarge = GetParent().GetIcon();
-    mew::ui::CWindowEx wndIcon = GetDlgItem(IDC_ABOUTICON);
+    mew::ui::CWindowEx wndIcon = HWND(GetDlgItem(IDC_ABOUTICON));
     ASSERT(wndIcon.IsWindow());
     wndIcon.SendMessage(STM_SETICON, (WPARAM)hIconLarge, 0);
     return TRUE;

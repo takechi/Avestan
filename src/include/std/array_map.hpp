@@ -10,8 +10,8 @@ namespace mew {
 namespace detail {
 template <class Value, class C>
 class AssocVectorCompare : public C {
-  using Data = std::pair<typename C::first_argument_type, Value>;
-  using first_argument_type = typename C::first_argument_type;
+  template <typename K>
+  using Data = std::pair<K, Value>;
 
  public:
   AssocVectorCompare() {}
@@ -23,17 +23,20 @@ class AssocVectorCompare : public C {
     return C::operator()(lhs, rhs);
   }
 
-  template <typename LHS>
-  bool operator()(const LHS& lhs, const Data& rhs) const {
+  template <typename LHS, typename K>
+  bool operator()(const LHS& lhs, const Data<K>& rhs) const {
     return C::operator()(lhs, rhs.first);
   }
 
-  template <typename RHS>
-  bool operator()(const Data& lhs, const RHS& rhs) const {
+  template <typename K, typename RHS>
+  bool operator()(const Data<K>& lhs, const RHS& rhs) const {
     return C::operator()(lhs.first, rhs);
   }
 
-  bool operator()(const Data& lhs, const Data& rhs) const { return C::operator()(lhs.first, rhs.first); }
+  template <typename K>
+  bool operator()(const Data<K>& lhs, const Data<K>& rhs) const {
+    return C::operator()(lhs.first, rhs.first);
+  }
 };
 }  // namespace detail
 
@@ -60,14 +63,14 @@ class array_map : private std::vector<std::pair<K, V>, A>, private detail::Assoc
 
   using key_compare = C;
   using allocator_type = A;
-  using reference = typename A::reference;
-  using const_reference = typename A::const_reference;
+  // using reference = typename A::reference;
+  // using const_reference = typename A::const_reference;
   using iterator = typename Base::iterator;
   using const_iterator = typename Base::const_iterator;
   using size_type = typename Base::size_type;
   using difference_type = typename Base::difference_type;
-  using pointer = typename A::pointer;
-  using const_pointer = typename A::const_pointer;
+  // using pointer = typename A::pointer;
+  // using const_pointer = typename A::const_pointer;
   using reverse_iterator = typename Base::reverse_iterator;
   using const_reverse_iterator = typename Base::const_reverse_iterator;
 

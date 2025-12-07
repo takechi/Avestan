@@ -5,6 +5,7 @@
 #include "mew.hpp"
 #include "std/algorithm.hpp"
 #include "std/vector.hpp"
+#include "math.hpp"
 
 namespace mew {
 //==============================================================================
@@ -76,7 +77,7 @@ class ref_base {
    private:
     ULONG __stdcall AddRef() noexcept = 0;
     ULONG __stdcall Release() noexcept = 0;
-    ~thunk();  // operator delete is forbidden.
+    ~thunk() = default;  // operator delete is forbidden.
   };
 #pragma warning(default : 4510)
 #pragma warning(default : 4610)
@@ -91,7 +92,7 @@ class ref_base {
   T* m_ptr;
 
  private:
-  void operator[](size_t) const;  // 配列に対するスマートポインタは有り得ない.
+  void operator[](size_t) const {};  // 配列に対するスマートポインタは有り得ない.
  public:
   ref_base() noexcept : m_ptr(null) {}
   ref_base(const ref_base& p) noexcept : m_ptr(p.m_ptr) {
@@ -178,13 +179,14 @@ class ref : public ref_base<T> {
   using super = ref_base<T>;
 
  public:
+  using pointer_in = super::pointer_in;
   ref() noexcept {}
   ref(const Null&) noexcept {}
   ref(const ref& p) noexcept : super(p) {}
   ref(pointer_in p) noexcept : super(p) {}
   template <class U>
   ref(const ref_base<U>& p) noexcept : super(p) {}
-  explicit ref(REFCLSID clsid, IUnknown* arg = null) throw(...) { create(clsid, arg); }
+  explicit ref(REFCLSID clsid, IUnknown* arg = null) throw(...) { super::create(clsid, arg); }
   ref& operator=(const ref& p) noexcept {
     super::operator=(p);
     return *this;
@@ -194,7 +196,7 @@ class ref : public ref_base<T> {
     return *this;
   }
   ref& operator=(const Null&) noexcept {
-    clear();
+    super::clear();
     return *this;
   }
   template <class U>
@@ -266,9 +268,9 @@ class each : public ref<T> {
   }
   bool next() {
     if (!m_enum) return false;
-    clear();
+    super::clear();
     ref<IUnknown> unk;
-    if (m_enum->Next(1, &unk, null) == S_OK && SUCCEEDED(unk->QueryInterface(&m_ptr))) return true;
+    if (m_enum->Next(1, &unk, null) == S_OK && SUCCEEDED(unk->QueryInterface(&(super::m_ptr)))) return true;
     m_enum.clear();
     return false;
   }
@@ -288,7 +290,7 @@ class EnumUnknownBase : public IEnumUnknown {
 
  private:  // non-copyable
   EnumUnknownBase(const EnumUnknownBase&);
-  EnumUnknownBase& operator=(const EnumUnknownBase&);
+  EnumUnknownBase& operator=(const EnumUnknownBase&) {};
 
  protected:
   EnumUnknownBase(const sequence& seq, size_t iter = 0) : m_range(seq), m_iter(iter), m_refcount(1) {
@@ -361,6 +363,9 @@ class EnumUnknown : public EnumUnknownBase<TSequence> {
  protected:
   ref<IUnknown> m_owner;
 
+ public:
+  using sequence = super::sequence;
+
  private:
   EnumUnknown(IUnknown* owner, const sequence& seq, size_t iter = 0) : m_owner(owner), super(seq, iter) {}
 
@@ -370,7 +375,7 @@ class EnumUnknown : public EnumUnknownBase<TSequence> {
   }
   HRESULT __stdcall Clone(IEnumUnknown** ppEnum) {
     if (!ppEnum) return E_POINTER;
-    EnumUnknown* clone = new EnumUnknown(m_owner, m_range, m_iter);
+    EnumUnknown* clone = new EnumUnknown(m_owner, super::m_range, super::m_iter);
     *ppEnum = clone;
     return S_OK;
   }
@@ -419,12 +424,12 @@ class array {
  public:  // vector compatible
   void insert(pointer_in p, size_t index) noexcept {
     if (p) p->AddRef();
-    sequence::iterator i = m_items.begin();
+    auto i = m_items.begin();
     std::advance(i, math::min<size_type>(index, m_items.size()));
     m_items.insert(i, p);
   }
   void clear() noexcept {
-    for (sequence::iterator i = m_items.begin(); i != m_items.end(); ++i) {
+    for (auto i = m_items.begin(); i != m_items.end(); ++i) {
       if (*i) (*i)->Release();
     }
     m_items.clear();
@@ -457,11 +462,6 @@ class array {
     erase(i);
     return true;
   }
-  bool erase(size_t index) noexcept {
-    if ((size_type)index >= m_items.size()) return false;
-    if (!p || objcmp(m_items[index], p)) erase(m_items.begin() + index);
-    return true;
-  }
   iterator begin() noexcept { return m_items.begin(); }
   iterator end() noexcept { return m_items.end(); }
   const_iterator begin() const noexcept { return m_items.begin(); }
@@ -470,13 +470,13 @@ class array {
  public:  // algorithm extension
   template <class Op>
   void foreach (Op op, bool acceptNull = false) {
-    for (sequence::iterator i = m_items.begin(); i != m_items.end(); ++i) {
+    for (auto i = m_items.begin(); i != m_items.end(); ++i) {
       if (acceptNull || *i) op(*i);
     }
   }
   template <class T, class M>
   void foreach (T* p, M m, bool acceptNull = false) {
-    for (sequence::iterator i = m_items.begin(); i != m_items.end(); ++i) {
+    for (auto i = m_items.begin(); i != m_items.end(); ++i) {
       if (acceptNull || *i) (p->*m)(*i);
     }
   }
@@ -505,7 +505,7 @@ class Enumerator : public array<T, TSequence, TAlloc>, public EnumUnknownBase<ty
   using enum_type = EnumUnknownBase<typename array<T, TSequence, TAlloc>::sequence>;
 
  public:
-  Enumerator() : enum_type(m_items, 0) {}
-  HRESULT __stdcall Clone(IEnumUnknown** ppEnum) { return enumerate(this).copyto(ppEnum); }
+  Enumerator() : enum_type(this->m_items, 0) {}
+  HRESULT __stdcall Clone(IEnumUnknown** ppEnum) { return this->enumerate(this).copyto(ppEnum); }
 };
 }  // namespace mew

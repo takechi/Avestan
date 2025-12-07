@@ -23,11 +23,11 @@ class BufferT : public CHeapPtr<T, TAlloc> {
   }
 
  public:
-  T* data() noexcept { return m_pData; }
-  const T* data() const noexcept { return m_pData; }
+  T* data() noexcept { return super::m_pData; }
+  const T* data() const noexcept { return super::m_pData; }
   void push_back(T c) noexcept {
     reserve(m_length + 1);
-    m_pData[m_length] = c;
+    super::m_pData[m_length] = c;
     ++m_length;
   }
   void append(T c) noexcept { push_back(c); }
@@ -35,7 +35,7 @@ class BufferT : public CHeapPtr<T, TAlloc> {
   size_t read(size_t pos, T* data, size_t len) {
     if (pos >= m_length) return 0;
     if (pos + len >= m_length) len = m_length - pos;
-    memcpy(data, m_pData + pos, len * sizeof(T));
+    memcpy(data, super::m_pData + pos, len * sizeof(T));
     return len;
   }
   void write(size_t pos, const T* data, size_t len) {
@@ -44,10 +44,10 @@ class BufferT : public CHeapPtr<T, TAlloc> {
       size_t length = m_length;
       resize(pos + len);
       if (pos > length) {  // 末尾を越えた書き込みの場合、「穴」をゼロで埋める。
-        memset(m_pData + length, 0, (pos - length) * sizeof(T));
+        memset(super::m_pData + length, 0, (pos - length) * sizeof(T));
       }
     }
-    memcpy(m_pData + pos, data, len * sizeof(T));
+    memcpy(super::m_pData + pos, data, len * sizeof(T));
   }
   bool empty() const noexcept { return m_length == 0; }
   size_t size() const noexcept { return m_length; }
@@ -58,7 +58,7 @@ class BufferT : public CHeapPtr<T, TAlloc> {
   void reserve(size_t capacity) noexcept {
     if (m_capacity >= capacity) return;
     m_capacity = math::max(static_cast<size_t>(16), capacity, m_capacity * 2);
-    Reallocate(m_capacity);
+    super::Reallocate(m_capacity);
   }
   void clear() noexcept { m_length = 0; }
 
@@ -83,8 +83,12 @@ class StringBufferT : public BufferT<T, TAlloc> {
   using super = BufferT<T, TAlloc>;
 
  public:
-  const T* str() const { return empty() ? 0 : data(); }
   using super::append;
+  using super::data;
+  using super::empty;
+  using super::resize;
+  using super::size;
+  const T* str() const { return empty() ? 0 : data(); }
   /// 末端のNULL文字は追加しない.
   void append(const T* str) {
     size_t length = str::length(str);

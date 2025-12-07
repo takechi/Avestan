@@ -13,7 +13,7 @@
 template <typename Key, typename Mapped, class Pred, class Alloc>
 inline IStream& operator<<(IStream& stream, const std::map<Key, Mapped, Pred, Alloc>& v) throw(...) {
   stream << v.size();
-  for (std::map<Key, Mapped, Pred, Alloc>::const_iterator i = v.begin(); i != v.end(); ++i) {
+  for (auto i = v.begin(); i != v.end(); ++i) {
     stream << i->first << i->second;
   }
   return stream;

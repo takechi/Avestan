@@ -700,27 +700,27 @@ class ToolBarImpl
   void DoCreate(HWND hParent) {
     __super::DoCreate(hParent, NULL, mew::ui::DirNorth,
                       WS_CONTROL | CCS_NOLAYOUT | TBSTYLE_FLAT | TBSTYLE_LIST | TBSTYLE_TRANSPARENT, 0);
-    SendMessage(CCM_SETVERSION, 5, 0);
-    SetButtonStructSize();
-    GetSystemSettings();
-    ResetButtons();
+    this->SendMessage(CCM_SETVERSION, 5, 0);
+    this->SetButtonStructSize();
+    this->GetSystemSettings();
+    this->ResetButtons();
     mew::ui::RegisterMessageHook(static_cast<TFinal*>(this), OnHookMessage);
   }
   void HandleDestroy() {
     mew::ui::UnregisterMessageHook(static_cast<TFinal*>(this), OnHookMessage);
-    m_root.clear();
+    this->m_root.clear();
   }
   bool HandleQueryDrop(IDropTarget** pp, LPARAM lParam) {
     if (__super::HandleQueryDrop(pp, lParam)) {
       return true;
     }
     mew::Point pt(GET_XY_LPARAM(lParam));
-    ScreenToClient(&pt);
-    int index = HitTest(&pt);
+    this->ScreenToClient(&pt);
+    int index = this->HitTest(&pt);
     if (index <= 0) {
       return false;
     }
-    return SUCCEEDED(OID->QueryInterface(pp));
+    return SUCCEEDED(this->OID->QueryInterface(pp));
   }
   // bool SupportsEvent(EventCode code) const noexcept
   //{
@@ -747,67 +747,67 @@ class ToolBarImpl
       default:
         TRESPASS();
     }
-    ModifyStyle(CCS_VERT, style);
+    this->ModifyStyle(CCS_VERT, style);
     __super::set_Dock(value);
   }
   mew::Size get_DefaultSize() {
     RECT rc = {0, 0, 0, 0};
-    GetItemRect(GetItemCount() - 1, &rc);
+    this->GetItemRect(this->GetItemCount() - 1, &rc);
     return mew::Size(rc.right, rc.bottom);
   }
-  mew::ui::ITreeItem* get_Root() { return m_root; }
+  mew::ui::ITreeItem* get_Root() { return this->m_root; }
   void OnChangeButtons() {
     ResizeToDefault(this);
-    InvokeEvent<mew::ui::EventResizeDefault>(static_cast<mew::ui::IWindow*>(this), get_DefaultSize());
+    this->InvokeEvent<mew::ui::EventResizeDefault>(static_cast<mew::ui::IWindow*>(this), get_DefaultSize());
   }
   void set_Root(mew::ui::ITreeItem* value) {
-    m_root = value;
-    ReCreateButtons();
+    this->m_root = value;
+    this->ReCreateButtons();
     OnChangeButtons();
   }
-  IImageList* get_ImageList() { return GetMenuImageList(); }
+  IImageList* get_ImageList() { return this->GetMenuImageList(); }
   void set_ImageList(IImageList* value) {
-    SetMenuImageList(value);
+    this->SetMenuImageList(value);
     if (mew::ref<mew::drawing::IImageList2> imagelist2 = mew::cast(value)) {
       if (HIMAGELIST hDisabled = imagelist2->Disabled) {
-        SetDisabledImageList(hDisabled);
+        this->SetDisabledImageList(hDisabled);
       }
       if (HIMAGELIST hHot = imagelist2->Hot) {
-        SetHotImageList(hHot);
+        this->SetHotImageList(hHot);
       }
     }
-    UpdateToolBarImageList(DoesBarUseImage());
-    ReCreateButtons();
+    this->UpdateToolBarImageList(this->DoesBarUseImage());
+    this->ReCreateButtons();
     OnChangeButtons();
   }
 
   BEGIN_MSG_MAP_(HandleWindowMessage)
   CHAIN_MSG_MAP_TO(__super::HandleMenuMessage)
   MESSAGE_HANDLER(WM_SETTINGCHANGE, OnSettingChange)
-  MESSAGE_HANDLER(GetAutoPopupMessage(), OnInternalAutoPopup)
+  MESSAGE_HANDLER(this->GetAutoPopupMessage(), this->OnInternalAutoPopup)
   MESSAGE_HANDLER(WM_KILLFOCUS, OnKillFocus)
-  MESSAGE_HANDLER(WM_UPDATEUISTATE, OnUpdateUIState)
-  MESSAGE_HANDLER(WM_MENUSELECT, OnMenuSelect)
-  MESSAGE_HANDLER(WM_MENUCHAR, OnMenuChar)
-  MESSAGE_HANDLER(WM_KEYDOWN, OnKeyDown)
-  MESSAGE_HANDLER(WM_CHAR, OnChar)
+  MESSAGE_HANDLER(WM_UPDATEUISTATE, this->OnUpdateUIState)
+  MESSAGE_HANDLER(WM_MENUSELECT, this->OnMenuSelect)
+  MESSAGE_HANDLER(WM_MENUCHAR, this->OnMenuChar)
+  MESSAGE_HANDLER(WM_KEYDOWN, this->OnKeyDown)
+  MESSAGE_HANDLER(WM_CHAR, this->OnChar)
   MESSAGE_HANDLER(WM_FORWARDMSG, OnForwardMsg)
-  REFLECTED_NOTIFY_CODE_HANDLER(TBN_HOTITEMCHANGE, OnHotItemChange)
-  REFLECTED_NOTIFY_CODE_HANDLER(TBN_DROPDOWN, OnDropDown)
-  COMMAND_RANGE_HANDLER(ID_FIRST_ITEM, ID_FIRST_ITEM + GetButtonCount() - 1, OnCommand)
-  REFLECTED_COMMAND_RANGE_HANDLER(ID_FIRST_ITEM, ID_FIRST_ITEM + GetButtonCount() - 1, OnCommand)
+  REFLECTED_NOTIFY_CODE_HANDLER(TBN_HOTITEMCHANGE, this->OnHotItemChange)
+  REFLECTED_NOTIFY_CODE_HANDLER(TBN_DROPDOWN, this->OnDropDown)
+  COMMAND_RANGE_HANDLER(ID_FIRST_ITEM, ID_FIRST_ITEM + this->GetButtonCount() - 1, this->OnCommand)
+  REFLECTED_COMMAND_RANGE_HANDLER(ID_FIRST_ITEM, ID_FIRST_ITEM + this->GetButtonCount() - 1, this->OnCommand)
   CHAIN_MSG_MAP_TO(__super::HandleWindowMessage)
   END_MSG_MAP()
 
   BEGIN_MSG_MAP_(ProcessHookMessage)
-  MESSAGE_HANDLER(WM_MOUSEMOVE, OnHookMouseMove)
-  MESSAGE_HANDLER(WM_SYSKEYDOWN, OnHookSysKeyDown)
-  MESSAGE_HANDLER(WM_SYSKEYUP, OnHookSysKeyUp)
-  MESSAGE_HANDLER(WM_KEYDOWN, OnHookKeyDown)
+  MESSAGE_HANDLER(WM_MOUSEMOVE, this->OnHookMouseMove)
+  MESSAGE_HANDLER(WM_SYSKEYDOWN, this->OnHookSysKeyDown)
+  MESSAGE_HANDLER(WM_SYSKEYUP, this->OnHookSysKeyUp)
+  MESSAGE_HANDLER(WM_KEYDOWN, this->OnHookKeyDown)
   END_MSG_MAP()
 
   LRESULT OnKillFocus(UINT, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-    SetHotItem(-1);
+    this->SetHotItem(-1);
     bHandled = false;
     return 0;
   }
@@ -830,7 +830,7 @@ class ToolBarImpl
     return lRet;
   }
   LRESULT OnSettingChange(UINT, WPARAM, LPARAM, BOOL& bHandled) {
-    GetSystemSettings();
+    this->GetSystemSettings();
     bHandled = false;
     return 0;
   }

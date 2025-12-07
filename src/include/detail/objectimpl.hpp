@@ -34,9 +34,9 @@ class __declspec(novtable) Interface : public meta::Inherits<TInherits> {
   template <typename TList>
   HRESULT __stdcall InternalQueryInterface(REFIID iid, void** pp) noexcept {
     if (iid == __uuidof(TList::Head)) {
-      return InterfaceAssign(InternalGetInterface<TList::Head>(), pp);
+      return InterfaceAssign(InternalGetInterface<typename TList::Head>(), pp);
     } else {
-      return InternalQueryInterface<TList::Tail>(iid, pp);
+      return InternalQueryInterface<typename TList::Tail>(iid, pp);
     }
   }
   template <>
@@ -95,12 +95,14 @@ class Object2<meta::Void, TSupports, TMixin> {
     using __inherits__ = TInherits;
     using __supports__ = TSupports;
     HRESULT __stdcall QueryInterface(REFIID iid, void** pp) noexcept {
-      if (!pp) {return E_INVALIDARG;}
+      if (!pp) {
+        return E_INVALIDARG;
+      }
       return __super::QueryInterface(iid, pp);
     }
     HRESULT __stdcall QueryInterface(REFINTF pp) noexcept { return QueryInterface(pp.iid, pp.pp); }
 
-    DEBUG_ONLY(~Result() { mew::UnregisterInstance(OID); })
+    DEBUG_ONLY(~Result() { mew::UnregisterInstance(mixin::OID); })
   };
 };
 
