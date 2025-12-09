@@ -177,8 +177,8 @@ class __declspec(novtable) WindowImpl : public Root<TImplements, TMixin>, public
   using super::GetParent;
   using super::IsWindow;
   using super::PostMessage;
-  WindowImpl() { DEBUG_ONLY(TRACE(_T("$1()"), GetFinalClassName())); }
-  ~WindowImpl() { DEBUG_ONLY(TRACE(_T("~$1()"), GetFinalClassName())); }
+  WindowImpl() { DEBUG_ONLY(TRACE(_T("$1()"), this->GetFinalClassName())); }
+  ~WindowImpl() { DEBUG_ONLY(TRACE(_T("~$1()"), this->GetFinalClassName())); }
   void __init__(IUnknown* arg) {
     HWND hWndParent = null;
     if (ref<IWindow> window = cast(arg)) {
