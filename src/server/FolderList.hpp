@@ -135,19 +135,19 @@ class __declspec(novtable) FolderListContainer : public TBase {
     return S_OK;
   }
   HRESULT ForwardToAll(mew::message msg) {
-    for (mew::each<mew::ui::IWindow> i = EnumFolders(mew::StatusNone); i.next();) {
+    for (mew::each<mew::ui::IWindow> i = EnumFolders(mew::StatusNone).get(); i.next();) {
       SendMessageToWindow(i, msg);
     }
     return S_OK;
   }
   HRESULT ForwardToShown(mew::message msg) {
-    for (mew::each<mew::ui::IWindow> i = EnumFolders(mew::SELECTED); i.next();) {
+    for (mew::each<mew::ui::IWindow> i = EnumFolders(mew::SELECTED).get(); i.next();) {
       SendMessageToWindow(i, msg);
     }
     return S_OK;
   }
   HRESULT ForwardToHidden(mew::message msg) {
-    for (mew::each<mew::ui::IWindow> i = EnumFolders(mew::UNSELECTED); i.next();) {
+    for (mew::each<mew::ui::IWindow> i = EnumFolders(mew::UNSELECTED).get(); i.next();) {
       SendMessageToWindow(i, msg);
     }
     return S_OK;
@@ -183,7 +183,7 @@ class __declspec(novtable) FolderListContainer : public TBase {
   }
   HRESULT ForwardToOthers(mew::message msg) {
     mew::ref<mew::ui::IWindow> focus = CurrentView();
-    for (mew::each<mew::ui::IWindow> i = EnumFolders(mew::StatusNone); i.next();) {
+    for (mew::each<mew::ui::IWindow> i = EnumFolders(mew::StatusNone).get(); i.next();) {
       if (!objcmp(focus, i)) {
         SendMessageToWindow(i, msg);
       }
@@ -192,7 +192,7 @@ class __declspec(novtable) FolderListContainer : public TBase {
   }
   HRESULT ForwardToDuplicate(mew::message msg) {
     std::vector<mew::ref<mew::ui::IShellListView>> views;
-    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone); i.next();) {
+    for (mew::each<mew::ui::IShellListView> i = EnumFolders(mew::StatusNone).get(); i.next();) {
       if (mew::ref<mew::ui::IWindow> w = FindDuplicates(views, i)) {
         SendMessageToWindow(w, msg);
       }
@@ -394,7 +394,7 @@ class __declspec(novtable) FolderListContainer : public TBase {
     }
     this->SetStatusText(avesta::NotifyResult, mew::null);
     if (mew::ref<mew::ui::IShellListView> current = CurrentView()) {
-      SetStatusText(avesta::NotifyInfo, FormatViewStatusText(current, current->GetLastStatusText()));
+      this->SetStatusText(avesta::NotifyInfo, this->FormatViewStatusText(current, current->GetLastStatusText()));
       return m_gesture->OnGestureFinish(modifiers, length, gesture);
     } else {
       return E_FAIL;

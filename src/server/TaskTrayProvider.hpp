@@ -59,8 +59,8 @@ class __declspec(novtable) TaskTrayProvider : public TBase {
     msg["CloseToTray"] = m_CloseToTray;
   }
   void TaskTray_InitComponents(mew::ui::IWindow* form) {
-    HandleEvent(form, mew::ui::EventResize, &TaskTrayProvider::TaskTray_HandleResize);
-    HandleEvent(form, mew::ui::EventPreClose, &TaskTrayProvider::TaskTray_HandleQueryClose);
+    this->HandleEvent(form, mew::ui::EventResize, &TaskTrayProvider::TaskTray_HandleResize);
+    this->HandleEvent(form, mew::ui::EventPreClose, &TaskTrayProvider::TaskTray_HandleQueryClose);
   }
 
  public:  // Commands

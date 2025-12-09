@@ -3,6 +3,9 @@
 
 #include "main.hpp"
 
+// 前方宣言
+class Main;
+
 template <class TBase>
 class __declspec(novtable) CommandProvider : public TBase {
  protected:
@@ -82,19 +85,22 @@ class __declspec(novtable) CommandProvider : public TBase {
       DisableCommand(command);
     }
   }
+  template <class T = Main>
   void CommandToFocus(const mew::string& command, mew::message msg) {
-    CommandProcess(command, mew::function(this, &Main::ForwardToCurrent), msg);
-    CommandObserve(command, mew::function(this, &Main::EnableIfAnyFolder));
+    CommandProcess(command, mew::function(this, &T::ForwardToCurrent), msg);
+    CommandObserve(command, mew::function(this, &T::EnableIfAnyFolder));
   }
+  template <class T = Main>
   void CommandToSelect(const mew::string& command, mew::message msg) {
-    CommandProcess(command, mew::function(this, &Main::ForwardToCurrent), msg);
-    CommandObserve(command, mew::function(this, &Main::EnableIfAnySelection));
+    CommandProcess(command, mew::function(this, &T::ForwardToCurrent), msg);
+    CommandObserve(command, mew::function(this, &T::EnableIfAnySelection));
   }
+  template <class T = Main>
   void CommandToCheck(const mew::string& command, mew::message msg) {
-    CommandProcess(command, mew::function(this, &Main::ForwardToCurrent), msg);
-    CommandObserve(command, mew::function(this, &Main::EnableIfCheckBoxEnabled));
+    CommandProcess(command, mew::function(this, &T::ForwardToCurrent), msg);
+    CommandObserve(command, mew::function(this, &T::EnableIfCheckBoxEnabled));
   }
-  void DisableCommand(const mew::string& command) { CommandObserve(command, &Main::DisableCommandHandler); }
+  void DisableCommand(const mew::string& command) { CommandObserve(command, &CommandProvider::DisableCommandHandler); }
   HRESULT DisableCommandHandler(mew::message msg) {
     msg["state"] = 0;
     return S_OK;
@@ -125,6 +131,7 @@ class __declspec(novtable) CommandProvider : public TBase {
   &Main::DeprecatedHandler), msg); return S_OK;
   }
   */
+  template <class T = Main>
   void CommandWindowControl(const mew::string& name, mew::ui::IWindow* window, mew::ICommands* commands) {
     mew::string cmdShow = mew::string::format(L"$1.Show(toggle)", name);
     mew::string cmdFocus = mew::string::format(L"$1.Focus", name);
@@ -135,7 +142,7 @@ class __declspec(novtable) CommandProvider : public TBase {
       CommandProcess(cmdShow, window, mew::ui::CommandShow);
       mew::message m;
       m["window"] = window;
-      CommandObserve(cmdShow, &Main::ObserveShow, m);
+      CommandObserve(cmdShow, &T::ObserveShow, m);
       // Focus
       CommandProcess(cmdFocus, window, &mew::ui::IWindow::Focus);
     } else {
