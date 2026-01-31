@@ -137,8 +137,8 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
   static mew::string GetStoragePath() { return (PCTSTR)RelativePath(_T("var\\settings64.dat")); }
   static mew::string GetDefaultSaveName() { return (PCTSTR)RelativePath(_T("var\\default64.ave")); }
 #else
-  static string GetStoragePath() { return RelativePath(_T("var\\settings.dat")); }
-  static string GetDefaultSaveName() { return RelativePath(_T("var\\default.ave")); }
+  static mew::string GetStoragePath() { return (PCTSTR)RelativePath(_T("var\\settings.dat")); }
+  static mew::string GetDefaultSaveName() { return (PCTSTR)RelativePath(_T("var\\default.ave")); }
 #endif
   static mew::ui::Direction GetDock(mew::message& msg, PCSTR name, mew::ui::Direction defaultValue) {
     int dock = msg[name];
@@ -220,7 +220,7 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
     // Python
     if (m_booleans[avesta::BoolPython]) {
       // チェックのためのロード
-      if (HINSTANCE hPython = LoadLibrary(_T("python311"))) {
+      if (HINSTANCE hPython = LoadLibrary(_T("python3"))) {
         thePygmy = LoadLibrary(_T("pygmy.pyd"));
         if (thePygmy) {
           m_callback.create(__uuidof(PythonCallback));
@@ -230,7 +230,7 @@ class Main : public mew::Root<mew::implements<IDropTarget, mew::ui::IGesture, me
       }
       if (!m_callback) {
         PCTSTR errormsg =
-            _T("python311.dll または pygmy.pyd ")
+            _T("python3.dll または pygmy.pyd ")
             _T("が見つからないため、スクリプト拡張が\n")
             _T("使用できません。\n")
             _T("スクリプト拡張を使うためには、python ")

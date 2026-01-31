@@ -251,3 +251,4 @@ var/settings64.dat
 var/default64.ave
 
 build/
+build_Win32/

@@ -14,7 +14,7 @@ namespace {
 struct CLSIDHash {
   size_t operator()(const CLSID& clsid) const {
     const auto* var = reinterpret_cast<const size_t*>(&clsid);
-    STATIC_ASSERT(sizeof(CLSID) == sizeof(size_t) * 2);
+    STATIC_ASSERT(sizeof(CLSID) >= sizeof(size_t) * 2);
     return var[0] ^ var[1];
   };
 };
