@@ -101,7 +101,7 @@ class Display : public Root<implements<IDisplay, IWindow, ISignal, IDisposable>,
           ref<ICommand> command;
           m_keymap->GetBind(i, &mod, &vkey, &command);
           TCHAR name[256];
-          wsprintf(name, _T("%s:%04X:%02X:%08X"), module + math::max(len - 230, 0), mod, vkey, (DWORD)(ICommand*)command);
+          wsprintf(name, _T("%s:%04X:%02X:%08X"), module + math::max(len - 230, 0), mod, vkey, (DWORD_PTR)(ICommand*)command);
           ATOM atom = ::GlobalAddAtom(name);
           ASSERT(atom);
           VERIFY(::RegisterHotKey(NULL, (int)atom, ToMOD(mod), vkey));

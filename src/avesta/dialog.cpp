@@ -59,7 +59,7 @@ void Dialog::SetChecked(UINT nID, bool check) {  // BST_CHECKED, BST_INDETERMINA
 void Dialog::SetTip(UINT nID, PCTSTR text) {
   TOOLINFO tip = {sizeof(TOOLINFO)};
   tip.uFlags = TTF_SUBCLASS | TTF_IDISHWND;
-  tip.uId = (UINT)GetDlgItem(m_hwnd, nID);
+  tip.uId = (UINT_PTR)GetDlgItem(m_hwnd, nID);
   tip.lpszText = const_cast<PTSTR>(text);
   ASSERT(::IsWindow(m_hwndToolTip));
   VERIFY(SendMessage(m_hwndToolTip, TTM_ADDTOOL, 0, (LPARAM)&tip));

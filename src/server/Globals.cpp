@@ -346,7 +346,7 @@ HRESULT DropToExe(IDataObject* src, mew::io::IEntry* dst) {
   }
   args.push_back(_T('\0'));
   HINSTANCE result = ::ShellExecute(nullptr, nullptr, exe.str(), args.str(), directory.str(), SW_SHOWNORMAL);
-  return (int)result >= 32 ? S_OK : E_FAIL;
+  return (intptr_t)result >= 32 ? S_OK : E_FAIL;
 }
 }  // namespace
 

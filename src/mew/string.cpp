@@ -250,7 +250,7 @@ void mew::ObjectToString(IString** pp, IUnknown* obj) noexcept {
   else {
     ref<IUnknown> unk;
     objcpy(obj, &unk);
-    *pp = string::format(_T("object[$1]"), (DWORD)(IUnknown*)unk).detach();
+    *pp = string::format(_T("object[$1]"), (DWORD_PTR)(IUnknown*)unk).detach();
   }
 }
 

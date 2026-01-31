@@ -12,7 +12,7 @@ HRESULT HresultFromShellExecute(HINSTANCE hInstance, PCWSTR path, PCWSTR verb, H
   }
   if (hwnd) {  // hwnd が指定された場合のみエラーを表示
     mew::string msg;
-    switch ((int)hInstance) {
+    switch ((intptr_t)hInstance) {
       case SE_ERR_FNF:
       case SE_ERR_PNF:
         msg = mew::string::format(L"\"$1\" が見つかりません", path);

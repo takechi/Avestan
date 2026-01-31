@@ -509,7 +509,7 @@ class ShellTreeView : public TreeViewBase<ShellTreeView, io::IFolder,
     return EditLabel(hItem) ? S_OK : E_FAIL;
   }
   bool OnBeginLabelEdit(HTREEITEM hItem, ParamType param, PCTSTR text) {
-    TRACE(L"OnBeginLabelEdit($1, $2, $3)", (DWORD)hItem, param->Entry->Name, text);
+    TRACE(L"OnBeginLabelEdit($1, $2, $3)", (DWORD_PTR)hItem, param->Entry->Name, text);
     if (param) {
       WTL::CEdit edit = GetEditControl();
       ref<IShellFolder> psf;
@@ -518,7 +518,7 @@ class ShellTreeView : public TreeViewBase<ShellTreeView, io::IFolder,
     return true;
   }
   bool OnEndLabelEdit(HTREEITEM hItem, ParamType param, PCTSTR text) {
-    TRACE(L"OnEndLabelEdit($1, $2, $3)", (DWORD)hItem, param->Entry->Name, text);
+    TRACE(L"OnEndLabelEdit($1, $2, $3)", (DWORD_PTR)hItem, param->Entry->Name, text);
     if (!text) {
       return true;
     }

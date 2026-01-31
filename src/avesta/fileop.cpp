@@ -6,12 +6,10 @@
 
 namespace {
 class SHFileOpHack : public CWindowImpl<SHFileOpHack> {
-  enum {
-    WM_GETSUBCLASS = WM_USER + 1111,
-    SLIP_TIMERID = 0x1234,
-    SLIP_INTERVAL = 10,
-    SLIP_DURATION = 800,
-  };
+  static constexpr int WM_GETSUBCLASS = WM_USER + 1111;
+  static constexpr int SLIP_TIMERID = 0x1234;
+  static constexpr int SLIP_INTERVAL = 10;
+  static constexpr int SLIP_DURATION = 800;
 
   DWORD m_timeFrom;
   mew::Point m_ptFrom;

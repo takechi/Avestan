@@ -400,7 +400,7 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
     if (m_tasktray) {  // nodify trayicon tooltip
       NOTIFYICONDATA icon = {sizeof(NOTIFYICONDATA)};
       icon.hWnd = m_hWnd;
-      icon.uID = (UINT)this;
+      icon.uID = (uintptr_t)this;
       icon.uFlags = NIF_TIP;
       str::copy(icon.szTip, name, 64);
       Shell_NotifyIcon(NIM_MODIFY, &icon);
@@ -696,12 +696,12 @@ class Form : public DockBase<Form, implements<IForm, ITree, IWindow, ISignal, ID
     if (m_tasktray && !value) {  // disable
       NOTIFYICONDATA icon = {sizeof(NOTIFYICONDATA)};
       icon.hWnd = m_hWnd;
-      icon.uID = (UINT)this;
+      icon.uID = (uintptr_t)this;
       Shell_NotifyIcon(NIM_DELETE, &icon);
     } else if (!m_tasktray && value) {  // enable
       NOTIFYICONDATA icon = {sizeof(NOTIFYICONDATA)};
       icon.hWnd = m_hWnd;
-      icon.uID = (UINT)this;
+      icon.uID = (uintptr_t)this;
       icon.uFlags = NIF_MESSAGE | NIF_ICON | NIF_TIP;
       icon.uCallbackMessage = MEW_NM_TASKTRAY;
       icon.hIcon = GetIcon(ICON_SMALL);
